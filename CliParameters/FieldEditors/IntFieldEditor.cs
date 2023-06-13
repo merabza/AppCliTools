@@ -1,0 +1,25 @@
+﻿using LibDataInput;
+using LibParameters;
+
+namespace CliParameters.FieldEditors;
+
+public sealed class IntFieldEditor : FieldEditor<int>
+{
+    private readonly int _defaultValue;
+
+    public IntFieldEditor(string propertyName, int defaultValue = default) : base(propertyName)
+    {
+        _defaultValue = defaultValue;
+    }
+
+    public override void UpdateField(string? recordName, object recordForUpdate)
+    {
+        SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, _defaultValue)));
+        //SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, true, _defaultValue)));//20220811
+    }
+
+    public override void SetDefault(ItemData currentItem)
+    {
+        SetValue(currentItem, _defaultValue);
+    }
+}

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="Fabrics\**" />
+        <Compile Remove="Models\**" />
+        <EmbeddedResource Remove="Fabrics\**" />
+        <EmbeddedResource Remove="Models\**" />
+        <None Remove="Fabrics\**" />
+        <None Remove="Models\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppCliTools\CliTools\CliTools.csproj" />
+        <ProjectReference Include="..\..\ParametersManagement\LibFileParameters\LibFileParameters.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
+        <ProjectReference Include="..\..\ToolsManagement\FileManagersMain\FileManagersMain.csproj" />
+        <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
+    </ItemGroup>
+
+</Project>

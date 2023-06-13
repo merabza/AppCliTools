@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CliMenu\CliMenu.csproj" />
+        <ProjectReference Include="..\LibDataInput\LibDataInput.csproj" />
+    </ItemGroup>
+
+</Project>

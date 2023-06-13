@@ -1,0 +1,106 @@
+﻿using System;
+using System.IO;
+using CarcassDb;
+using DbContextAnalyzer.Domain;
+using DbContextAnalyzer.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using SystemToolsShared;
+
+namespace DbContextAnalyzer;
+
+public sealed class SeederCodeCreatorStarter
+{
+    private readonly ILogger _logger;
+    private readonly CreateProjectSeederCodeParameters _par;
+
+    public SeederCodeCreatorStarter(ILogger logger, CreateProjectSeederCodeParameters par)
+    {
+        _logger = logger;
+        _par = par;
+    }
+
+    public void Go(DbContext context)
+    {
+        var pathToContentRoot = Directory.GetCurrentDirectory();
+        Console.WriteLine("pathToContentRoot=" + pathToContentRoot);
+
+        var excludesRulesParameters =
+            ExcludesRulesParametersDomain.CreateInstance(_par.ExcludesRulesParametersFilePath);
+
+        var carcassOptionsBuilder =
+            new DbContextOptionsBuilder<CarcassDbContext>();
+
+        if (string.IsNullOrWhiteSpace(_par.ConnectionStringProd))
+        {
+            StShared.WriteErrorLine("ConnectionStringProd is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.ProjectPrefix))
+        {
+            StShared.WriteErrorLine("ProjectPrefix is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.GetJsonProjectPlacePath))
+        {
+            StShared.WriteErrorLine("GetJsonProjectPlacePath is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.GetJsonProjectNamespace))
+        {
+            StShared.WriteErrorLine("GetJsonProjectNamespace is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.ProjectPrefixShort))
+        {
+            StShared.WriteErrorLine("ProjectPrefixShort is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.DataSeedingProjectPlacePath))
+        {
+            StShared.WriteErrorLine("DataSeedingProjectPlacePath is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.DataSeedingProjectNamespace))
+        {
+            StShared.WriteErrorLine("DataSeedingProjectNamespace is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.MainDatabaseProjectName))
+        {
+            StShared.WriteErrorLine("MainDatabaseProjectName is empty", true);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_par.ProjectDbContextClassName))
+        {
+            StShared.WriteErrorLine("ProjectDbContextClassName is empty", true);
+            return;
+        }
+
+        carcassOptionsBuilder.UseSqlServer(_par.ConnectionStringProd);
+        using var carcassContext = new CarcassDbContext(carcassOptionsBuilder.Options);
+
+        var getJsonCreatorParameters = new GetJsonCreatorParameters(
+            _par.ProjectPrefix.Replace('.', '_') + "DbScContext", _par.ProjectPrefix + "ScaffoldSeederDbSc", "Models",
+            _par.GetJsonProjectPlacePath, _par.GetJsonProjectNamespace);
+
+        var seederCodeCreatorParameters = new SeederCodeCreatorParameters(_par.ProjectPrefix, _par.ProjectPrefixShort,
+            "Models", _par.ProjectPrefix + "Seeders", "CarcassSeeders", _par.DataSeedingProjectPlacePath,
+            _par.DataSeedingProjectNamespace, $"I{_par.ProjectPrefixShort}DataSeederRepository",
+            $"I{_par.ProjectPrefixShort}KeyNameIdRepository", _par.ProjectPrefixShort + "DataSeedersFabric",
+            _par.MainDatabaseProjectName, _par.ProjectDbContextClassName, "Models",
+            _par.ProjectPrefixShort + "DataSeeder");
+
+        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, context,
+            getJsonCreatorParameters, seederCodeCreatorParameters, excludesRulesParameters);
+        dataExtractor.Go();
+    }
+}

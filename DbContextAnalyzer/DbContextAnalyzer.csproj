@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.CodeDom" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\BackendCarcass\CarcassDb\CarcassDb.csproj" />
+        <ProjectReference Include="..\..\DatabaseTools\DbTools\DbTools.csproj" />
+        <ProjectReference Include="..\..\ParametersManagement\LibParameters\LibParameters.csproj" />
+        <ProjectReference Include="..\CodeTools\CodeTools.csproj" />
+    </ItemGroup>
+
+</Project>

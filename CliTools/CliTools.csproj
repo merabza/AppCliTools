@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="DataInput\**" />
+        <Compile Remove="InputParsers\**" />
+        <Compile Remove="Menu\**" />
+        <EmbeddedResource Remove="DataInput\**" />
+        <EmbeddedResource Remove="InputParsers\**" />
+        <EmbeddedResource Remove="Menu\**" />
+        <None Remove="DataInput\**" />
+        <None Remove="InputParsers\**" />
+        <None Remove="Menu\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Figgle" Version="0.5.1" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
+        <ProjectReference Include="..\..\ToolsManagement\LibToolActions\LibToolActions.csproj" />
+        <ProjectReference Include="..\CliMenu\CliMenu.csproj" />
+    </ItemGroup>
+
+</Project>

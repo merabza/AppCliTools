@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="Domain\**" />
+        <Compile Remove="Models\**" />
+        <EmbeddedResource Remove="Domain\**" />
+        <EmbeddedResource Remove="Models\**" />
+        <None Remove="Domain\**" />
+        <None Remove="Models\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ParametersManagement\LibApiClientParameters\LibApiClientParameters.csproj" />
+        <ProjectReference Include="..\..\ToolsManagement\Installer\Installer.csproj" />
+        <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
+    </ItemGroup>
+
+</Project>
