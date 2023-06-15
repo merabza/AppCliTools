@@ -294,9 +294,10 @@ public /*open*/ class Cruder : IFieldEditors
         return false;
     }
 
-    public CliMenuSet GetItemMenu(string itemName, string? menuNamePrefix = null)
+    public CliMenuSet GetItemMenu(string itemName)//, string? menuNamePrefix = null)
     {
-        CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
+        //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
+        CliMenuSet itemSubMenuSet = new(itemName);
 
         DeleteCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");

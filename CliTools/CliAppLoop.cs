@@ -196,6 +196,8 @@ public /*open*/ class CliAppLoop
             _menuSetsList.Add(menuSet);
         else if (_menuSetsList.Count > _currentMenuSetLevel)
             _menuSetsList[_currentMenuSetLevel] = menuSet;
+        if (_currentMenuSetLevel > 0)
+            menuSet.ParentMenu = _menuSetsList[_currentMenuSetLevel - 1];
         return true;
     }
 

@@ -9,14 +9,13 @@ public sealed class CliMenuSet
 {
     private readonly string? _caption;
     private readonly List<string> _errorMessages = new();
-
+    private List<CliMenuItem> MenuItems { get; } = new();
+    public CliMenuSet? ParentMenu { get; set; }
 
     public CliMenuSet(string? caption = null)
     {
         _caption = caption;
     }
-
-    private List<CliMenuItem> MenuItems { get; } = new();
 
     public CliMenuItem? GetMenuItemWithName(string menuItemName)
     {
@@ -71,16 +70,25 @@ public sealed class CliMenuSet
         var str = strFrom ?? "";
         var strLength = str.Length;
         return strLength > length
-            ? str.Substring(0, length)
+            ? str[..length]
             : $"{str}{(addSpaces ? new string(' ', length - strLength) : "")}";
+    }
+
+    private string? GetCaption()
+    {
+        if (_caption == null) 
+            return null;
+        var parentCaption = ParentMenu?.GetCaption();
+        return parentCaption != null ? $"{parentCaption} => {_caption}" : _caption;
     }
 
     public void Show(bool clearBefore = true)
     {
         if (clearBefore)
             Console.Clear();
-        if (!string.IsNullOrWhiteSpace(_caption))
-            Console.WriteLine(_caption);
+        var caption = GetCaption();
+        if (caption is not null)
+            Console.WriteLine(caption);
         Console.WriteLine();
 
         foreach (var menuItem in MenuItems) menuItem.CliMenuCommand.CountStatus();
