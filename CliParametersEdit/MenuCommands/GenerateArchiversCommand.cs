@@ -26,8 +26,7 @@ public sealed class GenerateArchiversCommand : CliMenuCommand
             if (!Inputer.InputBool("This process will change Archivers, are you sure?", false, false))
                 return;
 
-            StandardArchiversGenerator standardArchiversGenerator = new(true, _parametersManager);
-            standardArchiversGenerator.Generate();
+            StandardArchiversGenerator.Generate(true, _parametersManager);
 
             //შენახვა
             _parametersManager.Save(parameters, "Archivers generated success");

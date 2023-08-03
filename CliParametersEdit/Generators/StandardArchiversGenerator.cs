@@ -6,49 +6,35 @@ using SystemToolsShared;
 
 namespace CliParametersEdit.Generators;
 
-public sealed class StandardArchiversGenerator
+public static class StandardArchiversGenerator
 {
-    private readonly IParametersManager _parametersManager;
-    private readonly bool _useConsole;
-
-
-    public StandardArchiversGenerator(bool useConsole, IParametersManager parametersManager)
+    public static void Generate(bool useConsole, IParametersManager parametersManager)
     {
-        _useConsole = useConsole;
-        _parametersManager = parametersManager;
-    }
-
-    public string? ArchiverZipClassName { get; private set; } //ZipClass
-    public string? ArchiverZipName { get; private set; } //Zip
-    public string? ArchiverRarName { get; private set; } //Rar
-
-    public void Generate()
-    {
-        var parameters = (IParametersWithArchivers)_parametersManager.Parameters;
+        var parameters = (IParametersWithArchivers)parametersManager.Parameters;
 
         //თუ არ არსებობს შეიქმნას zipClass არქივატორი
-        ArchiverZipClassName = CreateArchiverZip(_useConsole, parameters, EArchiveType.ZipClass); //ZipClass
+        CreateArchiverZip(useConsole, parameters, EArchiveType.ZipClass); //ZipClass
 
         //თუ არ არსებობს შეიქმნას zip არქივატორი
-        ArchiverZipName = CreateArchiverZip(_useConsole, parameters, EArchiveType.Zip); //Zip
+        CreateArchiverZip(useConsole, parameters, EArchiveType.Zip); //Zip
 
         //თუ არ არსებობს შეიქმნას zip არქივატორი
-        ArchiverRarName = CreateArchiverZip(_useConsole, parameters, EArchiveType.Rar); //Rar
+        CreateArchiverZip(useConsole, parameters, EArchiveType.Rar); //Rar
     }
 
-    private static string? CreateArchiverZip(bool useConsole, IParametersWithArchivers parameters,
+    private static void CreateArchiverZip(bool useConsole, IParametersWithArchivers parameters,
         EArchiveType archiveType)
     {
         var archiverName = archiveType.ToString();
         if (parameters.Archivers.ContainsKey(archiverName))
-            return archiverName;
+            return;
 
         ArchiverData archiver;
         if (archiveType == EArchiveType.ZipClass)
         {
             archiver = new ArchiverData { Type = EArchiveType.ZipClass, FileExtension = ".zip" };
             parameters.Archivers.Add(archiverName, archiver);
-            return archiverName;
+            return;
         }
 
         var archiverDetector = ArchiverDetectorFabric.Create(useConsole, archiverName);
@@ -58,7 +44,7 @@ public sealed class StandardArchiversGenerator
         var compressProgramPatch = archiverDetectorResults?.CompressProgramPatch;
 
         if (decompressProgramPatch == null || compressProgramPatch == null)
-            return null;
+            return;
 
         archiver = new ArchiverData
         {
@@ -66,6 +52,5 @@ public sealed class StandardArchiversGenerator
             CompressProgramPatch = compressProgramPatch
         };
         parameters.Archivers.Add(archiverName, archiver);
-        return archiverName;
     }
 }
