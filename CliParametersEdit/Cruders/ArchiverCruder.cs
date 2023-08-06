@@ -33,18 +33,18 @@ public sealed class ArchiverCruder : ParCruder
         return archivers.ContainsKey(recordKey);
     }
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newArchiver = (ArchiverData)newRecord;
         var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-        parameters.Archivers[recordName] = newArchiver;
+        parameters.Archivers[recordKey] = newArchiver;
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newArchiver = (ArchiverData)newRecord;
         var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-        parameters.Archivers.Add(recordName, newArchiver);
+        parameters.Archivers.Add(recordKey, newArchiver);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
@@ -54,7 +54,7 @@ public sealed class ArchiverCruder : ParCruder
         archivers.Remove(recordKey);
     }
 
-    protected override ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         return new ArchiverData();
     }

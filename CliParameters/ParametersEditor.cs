@@ -125,7 +125,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
             //if (CheckValidation(newItem)) 
             //  return newItem;
 
-            //return !Inputer.InputBool($"{recordName} is not valid {CrudName}, continue input data?", false, false)
+            //return !Inputer.InputBool($"{recordKey} is not valid {CrudName}, continue input data?", false, false)
             //  ? null
             //  : newItem;
             return true;

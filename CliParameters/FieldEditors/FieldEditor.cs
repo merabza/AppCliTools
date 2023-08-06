@@ -20,7 +20,7 @@ public /*open*/ class FieldEditor
         FieldName = propertyDescriptor ?? PropertyName.SplitWithSpacesCamelParts();
     }
 
-    public virtual void UpdateField(string? recordName, object recordForUpdate)
+    public virtual void UpdateField(string? recordKey, object recordForUpdate)
     {
     }
 
@@ -33,12 +33,12 @@ public /*open*/ class FieldEditor
     }
 
     public void AddFieldEditMenuItem(CliMenuSet menuSet, ItemData recordForUpdate, Cruder cruder,
-        string recordName)
+        string recordKey)
     {
         if (_isSubObject)
             menuSet.AddMenuItem(new SubObjectFieldEditorMenuCommand(FieldName, this, recordForUpdate));
         else
-            menuSet.AddMenuItem(new FieldEditorMenuCommand(FieldName, this, recordForUpdate, cruder, recordName));
+            menuSet.AddMenuItem(new FieldEditorMenuCommand(FieldName, this, recordForUpdate, cruder, recordKey));
     }
 
     public virtual CliMenuSet? GetSubMenu(object record)

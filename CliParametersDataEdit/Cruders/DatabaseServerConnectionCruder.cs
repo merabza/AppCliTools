@@ -47,20 +47,20 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         return databaseServerConnections.ContainsKey(recordKey);
     }
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
         var parameters =
             (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        parameters.DatabaseServerConnections[recordName] = newDatabaseServerConnection;
+        parameters.DatabaseServerConnections[recordKey] = newDatabaseServerConnection;
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
         var parameters =
             (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        parameters.DatabaseServerConnections.Add(recordName, newDatabaseServerConnection);
+        parameters.DatabaseServerConnections.Add(recordKey, newDatabaseServerConnection);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
@@ -172,7 +172,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         return $"{databaseServerConnection?.DataProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
     }
 
-    protected override ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         return new DatabaseServerConnectionData();
     }

@@ -34,7 +34,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         _serverPassPropertyName = serverPassPropertyName;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var currentDatabaseName = GetValue(recordForUpdate);
         var serverAddress = GetValue<string>(recordForUpdate, _serverAddressPropertyName);

@@ -9,7 +9,7 @@ public sealed class FileStoragePathFieldEditor : FieldEditor<string>
     {
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate)
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         SetValue(recordForUpdate, MenuInputer.InputFolderPath(FieldName, GetValue(recordForUpdate)));
     }

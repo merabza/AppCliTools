@@ -15,7 +15,7 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
         _passwordCharacter = passwordCharacter;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var curValue = GetValue(recordForUpdate, _defaultValue);
         //var curValue = GetValue(recordForUpdate, true, _defaultValue);//20220811

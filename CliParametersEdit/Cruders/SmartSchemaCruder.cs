@@ -33,18 +33,18 @@ public sealed class SmartSchemaCruder : ParCruder
         return smartSchemas.ContainsKey(recordKey);
     }
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newFileStorage = (SmartSchema)newRecord;
         var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        parameters.SmartSchemas[recordName] = newFileStorage;
+        parameters.SmartSchemas[recordKey] = newFileStorage;
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newFileStorage = (SmartSchema)newRecord;
         var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        parameters.SmartSchemas.Add(recordName, newFileStorage);
+        parameters.SmartSchemas.Add(recordKey, newFileStorage);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
@@ -54,7 +54,7 @@ public sealed class SmartSchemaCruder : ParCruder
         smartSchemas.Remove(recordKey);
     }
 
-    protected override ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         return new SmartSchema();
     }

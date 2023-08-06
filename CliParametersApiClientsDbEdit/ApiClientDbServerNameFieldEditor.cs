@@ -29,7 +29,7 @@
 //        _databaseApiClientNameFieldName = databaseApiClientNameFieldName;
 //    }
 
-//    public override void UpdateField(string? recordName, object recordForUpdate)
+//    public override void UpdateField(string? recordKey, object recordForUpdate)
 //    {
 //        var currentDatabaseName = GetValue(recordForUpdate);
 

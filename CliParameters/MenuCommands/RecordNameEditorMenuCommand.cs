@@ -5,16 +5,16 @@ using SystemToolsShared;
 
 namespace CliParameters.MenuCommands;
 
-public sealed class RecordNameEditorMenuCommand : CliMenuCommand
+public sealed class RecordKeyEditorMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
-    private readonly string _recordName;
+    private readonly string _recordKey;
 
-    public RecordNameEditorMenuCommand(string fieldName, Cruder cruder, string recordName) : base(fieldName, null,
+    public RecordKeyEditorMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName, null,
         false, EStatusView.Table)
     {
         _cruder = cruder;
-        _recordName = recordName;
+        _recordKey = recordKey;
     }
 
     protected override void RunAction()
@@ -30,13 +30,13 @@ public sealed class RecordNameEditorMenuCommand : CliMenuCommand
             //string newRecordName = nameInput.Text;
 
             var newRecordName =
-                Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordName}", _recordName);
+                Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
 
-            if (!_cruder.ChangeRecordKey(_recordName, newRecordName))
+            if (!_cruder.ChangeRecordKey(_recordKey, newRecordName))
                 return;
 
             //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-            _cruder.Save($"{_cruder.CrudName} {_recordName} Updated {Name}");
+            _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
 
             //ცვლილებების შენახვა დასრულდა
             //StShared.WriteSuccessMessage($"{_cruder.CrudName} {_recordName} Updated {Name}");
@@ -63,6 +63,6 @@ public sealed class RecordNameEditorMenuCommand : CliMenuCommand
 
     protected override string GetStatus()
     {
-        return _recordName;
+        return _recordKey;
     }
 }

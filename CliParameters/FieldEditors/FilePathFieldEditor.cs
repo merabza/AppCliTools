@@ -12,7 +12,7 @@ public /*open*/ class FilePathFieldEditor : FieldEditor<string>
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate)
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         SetValue(recordForUpdate, MenuInputer.InputFilePath(FieldName, GetValue(recordForUpdate, _defaultValue)));
     }

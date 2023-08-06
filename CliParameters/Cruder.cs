@@ -14,17 +14,19 @@ namespace CliParameters;
 public /*open*/ class Cruder : IFieldEditors
 {
     private readonly bool _canEditFieldsInSequence;
-    private readonly bool _fieldNameFromItem;
+
+    private readonly bool _fieldKeyFromItem;
+
     public readonly string CrudName;
     public readonly string CrudNamePlural;
     protected readonly List<FieldEditor> FieldEditors = new();
 
-    protected Cruder(string crudName, string crudNamePlural, bool fieldNameFromItem = false,
+    protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
     {
         CrudName = crudName;
         CrudNamePlural = crudNamePlural;
-        _fieldNameFromItem = fieldNameFromItem;
+        _fieldKeyFromItem = fieldKeyFromItem;
         _canEditFieldsInSequence = canEditFieldsInSequence;
     }
 
@@ -54,44 +56,44 @@ public /*open*/ class Cruder : IFieldEditors
     {
     }
 
-    public virtual void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public virtual void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
     }
 
-    protected virtual void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected virtual void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
     }
 
-    private ItemData? InputRecordData(string recordName, ItemData? defaultItemData = null, bool createNew = false)
+    private ItemData? InputRecordData(string recordKey, ItemData? defaultItemData = null, bool createNew = false)
     {
         try
         {
             ItemData? currentItem;
             if (createNew)
             {
-                currentItem = CreateNewItem(recordName, defaultItemData);
+                currentItem = CreateNewItem(recordKey, defaultItemData);
                 foreach (var fieldUpdater in FieldEditors) fieldUpdater.SetDefault(currentItem);
             }
             else
             {
-                currentItem = GetItemByName(recordName, false);
+                currentItem = GetItemByName(recordKey, false);
                 if (currentItem is null)
                 {
-                    StShared.WriteErrorLine($"Record with name {recordName} not found", true);
+                    StShared.WriteErrorLine($"Record with name {recordKey} not found", true);
                     return null;
                 }
             }
 
             foreach (var fieldUpdater in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
             {
-                fieldUpdater.UpdateField(recordName, currentItem);
+                fieldUpdater.UpdateField(recordKey, currentItem);
                 CheckFieldsEnables(currentItem, fieldUpdater.PropertyName);
             }
 
             if (CheckValidation(currentItem))
                 return currentItem;
 
-            return !Inputer.InputBool($"{recordName} is not valid {CrudName}, continue input data?", false, false)
+            return !Inputer.InputBool($"{recordKey} is not valid {CrudName}, continue input data?", false, false)
                 ? null
                 : currentItem;
         }
@@ -114,8 +116,8 @@ public /*open*/ class Cruder : IFieldEditors
         return true;
     }
 
-    //recordName საჭიროა Crawler-ის პროექტისათვის
-    protected virtual ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    //recordKey საჭიროა Crawler-ის პროექტისათვის
+    protected virtual ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         return new ItemData();
     }
@@ -139,7 +141,7 @@ public /*open*/ class Cruder : IFieldEditors
         CheckFieldsEnables(item);
 
         var fieldName = "Record Name";
-        itemSubMenuSet.AddMenuItem(new RecordNameEditorMenuCommand(fieldName, this, itemName));
+        itemSubMenuSet.AddMenuItem(new RecordKeyEditorMenuCommand(fieldName, this, itemName));
 
         foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
@@ -170,20 +172,20 @@ public /*open*/ class Cruder : IFieldEditors
     {
     }
 
-    public bool DeleteRecord(string recordName)
+    public bool DeleteRecord(string recordKey)
     {
-        if (!ContainsRecordWithKey(recordName))
+        if (!ContainsRecordWithKey(recordKey))
         {
-            StShared.WriteErrorLine($"{CrudName} with Name {recordName} does not exists and cannot be deleted. ",
+            StShared.WriteErrorLine($"{CrudName} with Name {recordKey} does not exists and cannot be deleted. ",
                 true);
             return false;
         }
 
-        if (!Inputer.InputBool($"Are you sure, you wont to delete {recordName}", true, false))
+        if (!Inputer.InputBool($"Are you sure, you wont to delete {recordKey}", true, false))
             return false;
 
-        RemoveRecordWithKey(recordName);
-        Save($"{CrudName} with Name {recordName} deleted successfully.");
+        RemoveRecordWithKey(recordKey);
+        Save($"{CrudName} with Name {recordKey} deleted successfully.");
 
         return true;
     }
@@ -197,37 +199,37 @@ public /*open*/ class Cruder : IFieldEditors
         TextDataInput nameInput = new($"New {CrudName} Name");
         if (!nameInput.DoInput())
             return null;
-        var newRecordName = nameInput.Text;
-        if (!CheckNewRecordNameValid(null, newRecordName))
+        var newRecordKey = nameInput.Text;
+        if (!CheckNewRecordKeyValid(null, newRecordKey))
             return null;
 
-        if (string.IsNullOrWhiteSpace(newRecordName))
+        if (string.IsNullOrWhiteSpace(newRecordKey))
         {
             StShared.WriteErrorLine("New Record name is empty, cannot create new record", true);
             return null;
         }
 
         var defRecordWithStatus = GetDefRecordWithStatus(currentStatus);
-        var newRecord = InputRecordData(newRecordName, defRecordWithStatus, true);
+        var newRecord = InputRecordData(newRecordKey, defRecordWithStatus, true);
 
         if (newRecord == null)
             return null;
 
-        AddRecordWithKey(newRecordName, newRecord);
+        AddRecordWithKey(newRecordKey, newRecord);
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        Save($"Create new {CrudName} {newRecordName} Finished");
+        Save($"Create new {CrudName} {newRecordKey} Finished");
 
         //ყველაფერი კარგად დასრულდა
-        return newRecordName;
+        return newRecordKey;
     }
 
 
-    public bool EditItemAllFieldsInSequence(string recordName)
+    public bool EditItemAllFieldsInSequence(string recordKey)
     {
-        if (!ContainsRecordWithKey(recordName))
+        if (!ContainsRecordWithKey(recordKey))
         {
-            StShared.WriteErrorLine($"{CrudName} with Name {recordName} does not exists and cannot be edited. ",
+            StShared.WriteErrorLine($"{CrudName} with Name {recordKey} does not exists and cannot be edited. ",
                 true);
             return false;
         }
@@ -236,65 +238,65 @@ public /*open*/ class Cruder : IFieldEditors
         Console.WriteLine($"Edit {CrudName} record started");
 
         //ამოცანის სახელის რედაქტირება
-        TextDataInput nameInput = new($"change {CrudName} Name", recordName);
+        TextDataInput nameInput = new($"change {CrudName} Name", recordKey);
         if (!nameInput.DoInput())
             return false;
-        var newRecordName = nameInput.Text;
-        if (!CheckNewRecordNameValid(recordName, newRecordName))
+        var newRecordKey = nameInput.Text;
+        if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
             return false;
 
-        var newRecord = InputRecordData(recordName);
+        var newRecord = InputRecordData(recordKey);
 
         if (newRecord is null)
             return false;
 
-        if (_fieldNameFromItem)
-        {
-            newRecordName = newRecord.GetItemName();
-            if (!CheckNewRecordNameValid(recordName, newRecordName))
-                return false;
-        }
+        //if (_fieldNameFromItem)
+        //{
+        //    newRecordName = newRecord.GetItemName();
+        //    if (!CheckNewRecordNameValid(recordKey, newRecordName))
+        //        return false;
+        //}
 
-        if (newRecordName != recordName)
+        if (newRecordKey != recordKey)
         {
-            if (string.IsNullOrWhiteSpace(newRecordName))
+            if (string.IsNullOrWhiteSpace(newRecordKey))
             {
-                StShared.WriteErrorLine("newRecordName is empty", true);
+                StShared.WriteErrorLine("newRecordKey is empty", true);
                 return false;
             }
 
-            RemoveRecordWithKey(recordName);
-            AddRecordWithKey(newRecordName, newRecord);
+            RemoveRecordWithKey(recordKey);
+            AddRecordWithKey(newRecordKey, newRecord);
         }
         else
         {
-            UpdateRecordWithKey(recordName, newRecord);
+            UpdateRecordWithKey(recordKey, newRecord);
         }
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        Save($"{CrudName} {newRecordName} Updated");
+        Save($"{CrudName} {newRecordKey} Updated");
 
         //ყველაფერი კარგად დასრულდა
         return true;
     }
 
-    private bool CheckNewRecordNameValid(string? recordName, string? newRecordName)
+    private bool CheckNewRecordKeyValid(string? recordKey, string? newRecordKey)
     {
-        if (string.IsNullOrWhiteSpace(newRecordName))
+        if (string.IsNullOrWhiteSpace(newRecordKey))
             return false;
 
-        if (newRecordName == recordName)
+        if (newRecordKey == recordKey)
             return true;
         //გადავამოწმოთ ხომ არ არსებობს იგივე სახელით სხვა ჩანაწერი.
-        if (!ContainsRecordWithKey(newRecordName))
+        if (!ContainsRecordWithKey(newRecordKey))
             return true;
         StShared.WriteErrorLine(
-            $"Another {CrudName} with Name {newRecordName} is already exists. cannot change {CrudName} name. ",
+            $"Another {CrudName} with Name {newRecordKey} is already exists. cannot change {CrudName} name. ",
             true);
         return false;
     }
 
-    public CliMenuSet GetItemMenu(string itemName)//, string? menuNamePrefix = null)
+    public CliMenuSet GetItemMenu(string itemName) //, string? menuNamePrefix = null)
     {
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
         CliMenuSet itemSubMenuSet = new(itemName);
@@ -330,8 +332,8 @@ public /*open*/ class Cruder : IFieldEditors
     {
         var cruderDict = GetCrudersDictionary();
 
-        if (cruderDict.ContainsKey(itemName))
-            return cruderDict[itemName];
+        if (cruderDict.TryGetValue(itemName, out var name))
+            return name;
 
         if (writeErrorIfNotExists)
             StShared.WriteErrorLine($"{CrudName} with Name {itemName} does not exists. ", true);
@@ -381,19 +383,19 @@ public /*open*/ class Cruder : IFieldEditors
     }
 
 
-    public bool ChangeRecordKey(string recordName, string newRecordName)
+    public bool ChangeRecordKey(string recordKey, string newRecordKey)
     {
-        if (recordName == newRecordName)
+        if (recordKey == newRecordKey)
             return true;
-        if (ContainsRecordWithKey(newRecordName))
+        if (ContainsRecordWithKey(newRecordKey))
             return false;
-        if (!ContainsRecordWithKey(recordName))
+        if (!ContainsRecordWithKey(recordKey))
             return false;
-        var itemData = GetItemByName(recordName);
+        var itemData = GetItemByName(recordKey);
         if (itemData is null)
             return false;
-        RemoveRecordWithKey(recordName);
-        AddRecordWithKey(newRecordName, itemData);
+        RemoveRecordWithKey(recordKey);
+        AddRecordWithKey(newRecordKey, itemData);
         return true;
     }
 }

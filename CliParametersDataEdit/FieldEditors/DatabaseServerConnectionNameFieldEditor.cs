@@ -19,7 +19,7 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         _useNone = useNone;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var currentDatabaseServerConnectionName = GetValue(recordForUpdate);
 

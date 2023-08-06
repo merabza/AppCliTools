@@ -40,7 +40,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         _canUseNewDatabaseName = canUseNewDatabaseName;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var currentDatabaseName = GetValue(recordForUpdate);
 

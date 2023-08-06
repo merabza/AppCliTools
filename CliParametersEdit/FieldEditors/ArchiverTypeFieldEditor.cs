@@ -14,9 +14,9 @@ public sealed class ArchiverTypeFieldEditor : EnumFieldEditor<EArchiveType>
         _cruder = cruder;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
-        base.UpdateField(recordName, recordForUpdate);
+        base.UpdateField(recordKey, recordForUpdate);
         var currentArchiveType = GetValue(recordForUpdate);
         var enable = currentArchiveType != EArchiveType.ZipClass;
         _cruder.EnableFieldByName(nameof(ArchiverData.CompressProgramPatch), enable);

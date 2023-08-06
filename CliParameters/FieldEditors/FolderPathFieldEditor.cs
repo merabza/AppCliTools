@@ -12,7 +12,7 @@ public sealed class FolderPathFieldEditor : FieldEditor<string>
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate)
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         SetValue(recordForUpdate, MenuInputer.InputFolderPath(FieldName, GetValue(recordForUpdate, _defaultValue)));
     }

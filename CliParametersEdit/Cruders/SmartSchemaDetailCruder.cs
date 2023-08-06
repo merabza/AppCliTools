@@ -38,24 +38,24 @@ public sealed class SmartSchemaDetailCruder : Cruder
             _currentValuesList.Remove(rbk);
     }
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is not SmartSchemaDetail newSmartSchemaDetail)
             return;
-        if (recordName != newSmartSchemaDetail.PeriodType.ToString())
+        if (recordKey != newSmartSchemaDetail.PeriodType.ToString())
             return;
-        var rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordName);
+        var rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
         if (rbk != null)
             rbk.PreserveCount = newSmartSchemaDetail.PreserveCount;
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is SmartSchemaDetail sid)
             _currentValuesList.Add(sid);
     }
 
-    protected override ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         return new SmartSchemaDetail();
     }

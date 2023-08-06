@@ -16,12 +16,12 @@ public sealed class FieldEditorMenuCommand : CliMenuCommand
 
     public FieldEditorMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate,
         Cruder cruder,
-        string recordName) : base(fieldName, null, false, EStatusView.Table)
+        string recordKey) : base(fieldName, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;
         _recordForUpdate = recordForUpdate;
         _cruder = cruder;
-        _recordName = recordName;
+        _recordName = recordKey;
     }
 
     protected override void RunAction()

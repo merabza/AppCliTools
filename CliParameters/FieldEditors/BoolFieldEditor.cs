@@ -12,7 +12,7 @@ public sealed class BoolFieldEditor : FieldEditor<bool>
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         SetValue(recordForUpdate, Inputer.InputBool(FieldName, GetValue(recordForUpdate, _defaultValue)));
     }

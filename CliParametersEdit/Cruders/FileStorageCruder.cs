@@ -41,22 +41,22 @@ public sealed class FileStorageCruder : ParCruder
         return fileStorages.ContainsKey(recordKey);
     }
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newFileStorage = (FileStorageData)newRecord;
         var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
         if (parameters is null)
             throw new Exception("parameters is null, cannot Update Record");
-        parameters.FileStorages[recordName] = newFileStorage;
+        parameters.FileStorages[recordKey] = newFileStorage;
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newFileStorage = (FileStorageData)newRecord;
         var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
         if (parameters is null)
             throw new Exception("parameters is null, cannot Add Record");
-        parameters.FileStorages.Add(recordName, newFileStorage);
+        parameters.FileStorages.Add(recordKey, newFileStorage);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
@@ -121,7 +121,7 @@ public sealed class FileStorageCruder : ParCruder
         return fileStorage?.FileStoragePath;
     }
 
-    protected override ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         if (defaultItemData is FileStorageData defFileStorageData)
             return new FileStorageData { FileStoragePath = defFileStorageData.FileStoragePath };

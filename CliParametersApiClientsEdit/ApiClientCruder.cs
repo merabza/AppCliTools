@@ -37,18 +37,18 @@ public sealed class ApiClientCruder : ParCruder
         return apiClients.ContainsKey(recordKey);
     }
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newApiClient = (ApiClientSettings)newRecord;
         var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        parameters.ApiClients[recordName] = newApiClient;
+        parameters.ApiClients[recordKey] = newApiClient;
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newApiClient = (ApiClientSettings)newRecord;
         var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        parameters.ApiClients.Add(recordName, newApiClient);
+        parameters.ApiClients.Add(recordKey, newApiClient);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
@@ -89,7 +89,7 @@ public sealed class ApiClientCruder : ParCruder
         return apiClient?.Server;
     }
 
-    protected override ItemData CreateNewItem(string recordName, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
     {
         return new ApiClientSettings();
     }

@@ -12,7 +12,7 @@ public sealed class IntFieldEditor : FieldEditor<int>
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate)
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, _defaultValue)));
         //SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, true, _defaultValue)));//20220811

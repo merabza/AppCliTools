@@ -11,7 +11,7 @@ public sealed class CompressProgramPatchFieldEditor : FilePathFieldEditor
     {
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate)
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         var fileExtension = GetValue<string>(recordForUpdate, nameof(ArchiverData.FileExtension));
 

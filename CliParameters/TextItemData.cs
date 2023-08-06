@@ -4,15 +4,10 @@ namespace CliParameters;
 
 public sealed class TextItemData : ItemData
 {
-    public TextItemData(string text)
-    {
-        Text = text;
-    }
+    public string? Text { get; init; }
 
-    private string Text { get; }
-
-    public override string GetItemName()
-    {
-        return Text;
-    }
+    //public override string? GetItemName()
+    //{
+    //    return Text;
+    //}
 }

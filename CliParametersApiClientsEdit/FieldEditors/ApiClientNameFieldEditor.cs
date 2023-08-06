@@ -21,7 +21,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
         _useNone = useNone;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate)
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         var currentApiClientName = GetValue(recordForUpdate);
 
