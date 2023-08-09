@@ -116,7 +116,6 @@ public /*open*/ class Cruder : IFieldEditors
         return true;
     }
 
-    //recordKey საჭიროა Crawler-ის პროექტისათვის
     protected virtual ItemData CreateNewItem(ItemData? defaultItemData)
     {
         return new ItemData();
