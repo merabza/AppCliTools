@@ -64,7 +64,7 @@ public /*open*/ class Cruder : IFieldEditors
     {
     }
 
-    private ItemData? InputRecordData(string? recordKey=null, ItemData? defaultItemData = null)
+    private ItemData? InputRecordData(string? recordKey = null, ItemData? defaultItemData = null)
     {
         try
         {
@@ -121,7 +121,7 @@ public /*open*/ class Cruder : IFieldEditors
         return new ItemData();
     }
 
-    public virtual List<string> GetKeys()
+    protected virtual List<string> GetKeys()
     {
         var crudersDictionary = GetCrudersDictionary();
         return crudersDictionary.Keys.OrderBy(x => x).ToList();
@@ -139,8 +139,11 @@ public /*open*/ class Cruder : IFieldEditors
 
         CheckFieldsEnables(item);
 
-        var fieldName = "Record Name";
-        itemSubMenuSet.AddMenuItem(new RecordKeyEditorMenuCommand(fieldName, this, itemName));
+        if (!_fieldKeyFromItem)
+        {
+            const string fieldName = "Record Name";
+            itemSubMenuSet.AddMenuItem(new RecordKeyEditorMenuCommand(fieldName, this, itemName));
+        }
 
         foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
@@ -194,10 +197,9 @@ public /*open*/ class Cruder : IFieldEditors
         //ჩანაწერის შექმნის პროცესი დაიწყო
         Console.WriteLine($"Create new {CrudName} started");
 
-        string? newRecordKey=null;
+        string? newRecordKey = null;
         if (!_fieldKeyFromItem)
         {
-
             //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
             TextDataInput nameInput = new($"New {CrudName} Name");
             if (!nameInput.DoInput())
@@ -309,7 +311,7 @@ public /*open*/ class Cruder : IFieldEditors
     public CliMenuSet GetItemMenu(string itemName) //, string? menuNamePrefix = null)
     {
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
-        CliMenuSet itemSubMenuSet = new(itemName);
+        var itemSubMenuSet = new CliMenuSet(itemName);
 
         DeleteCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");
