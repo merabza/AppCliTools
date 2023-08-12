@@ -28,20 +28,12 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
     {
-<<<<<<< HEAD
         return GetFileMasks().ToDictionary(k => k, v => (ItemData)new TextItemData {Text = v});
-=======
-        return GetFileMasks().ToDictionary(k => k, v => (ItemData)new TextItemData{ Text = v });
->>>>>>> 6df0052617f86e0293c4f5e73053c2b20579e2ec
     }
 
     protected override ItemData CreateNewItem(ItemData? defaultItemData)
     {
-<<<<<<< HEAD
-        return new TextItemData();
-=======
         return new TextItemData {Text = ""};
->>>>>>> 6df0052617f86e0293c4f5e73053c2b20579e2ec
     }
 
 
