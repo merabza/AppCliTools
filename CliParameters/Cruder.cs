@@ -64,14 +64,14 @@ public /*open*/ class Cruder : IFieldEditors
     {
     }
 
-    private ItemData? InputRecordData(string recordKey, ItemData? defaultItemData = null, bool createNew = false)
+    private ItemData? InputRecordData(string? recordKey = null, ItemData? defaultItemData = null)
     {
         try
         {
             ItemData? currentItem;
-            if (createNew)
+            if (recordKey is null)
             {
-                currentItem = CreateNewItem(recordKey, defaultItemData);
+                currentItem = CreateNewItem(defaultItemData);
                 foreach (var fieldUpdater in FieldEditors) fieldUpdater.SetDefault(currentItem);
             }
             else
@@ -116,8 +116,7 @@ public /*open*/ class Cruder : IFieldEditors
         return true;
     }
 
-    //recordKey საჭიროა Crawler-ის პროექტისათვის
-    protected virtual ItemData CreateNewItem(string recordKey, ItemData? defaultItemData)
+    protected virtual ItemData CreateNewItem(ItemData? defaultItemData)
     {
         return new ItemData();
     }
@@ -140,8 +139,11 @@ public /*open*/ class Cruder : IFieldEditors
 
         CheckFieldsEnables(item);
 
-        var fieldName = "Record Name";
-        itemSubMenuSet.AddMenuItem(new RecordKeyEditorMenuCommand(fieldName, this, itemName));
+        if (!_fieldKeyFromItem)
+        {
+            const string fieldName = "Record Name";
+            itemSubMenuSet.AddMenuItem(new RecordKeyEditorMenuCommand(fieldName, this, itemName));
+        }
 
         foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
@@ -195,24 +197,34 @@ public /*open*/ class Cruder : IFieldEditors
         //ჩანაწერის შექმნის პროცესი დაიწყო
         Console.WriteLine($"Create new {CrudName} started");
 
-        //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
-        TextDataInput nameInput = new($"New {CrudName} Name");
-        if (!nameInput.DoInput())
-            return null;
-        var newRecordKey = nameInput.Text;
-        if (!CheckNewRecordKeyValid(null, newRecordKey))
-            return null;
-
-        if (string.IsNullOrWhiteSpace(newRecordKey))
+        string? newRecordKey = null;
+        if (!_fieldKeyFromItem)
         {
-            StShared.WriteErrorLine("New Record name is empty, cannot create new record", true);
-            return null;
+            //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
+            TextDataInput nameInput = new($"New {CrudName} Name");
+            if (!nameInput.DoInput())
+                return null;
+            newRecordKey = nameInput.Text;
+            if (!CheckNewRecordKeyValid(null, newRecordKey))
+                return null;
+
+            if (string.IsNullOrWhiteSpace(newRecordKey))
+            {
+                StShared.WriteErrorLine("New Record name is empty, cannot create new record", true);
+                return null;
+            }
         }
 
         var defRecordWithStatus = GetDefRecordWithStatus(currentStatus);
-        var newRecord = InputRecordData(newRecordKey, defRecordWithStatus, true);
+        var newRecord = InputRecordData(null, defRecordWithStatus);
 
-        if (newRecord == null)
+        if (newRecord is null)
+            return null;
+
+        if (_fieldKeyFromItem)
+            newRecordKey = newRecord.GetItemKey();
+
+        if (newRecordKey is null)
             return null;
 
         AddRecordWithKey(newRecordKey, newRecord);
@@ -299,7 +311,7 @@ public /*open*/ class Cruder : IFieldEditors
     public CliMenuSet GetItemMenu(string itemName) //, string? menuNamePrefix = null)
     {
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
-        CliMenuSet itemSubMenuSet = new(itemName);
+        var itemSubMenuSet = new CliMenuSet(itemName);
 
         DeleteCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");
