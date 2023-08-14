@@ -15,9 +15,4 @@ public sealed class CodeFile : CodeBlockBase, ICodeItem
     }
 
     public string? FileName { get; set; }
-
-    //public override string Output(int indentLevel)
-    //{
-    //  return base.Output(indentLevel);
-    //}
 }

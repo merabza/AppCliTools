@@ -2,10 +2,13 @@
 
 namespace CodeTools;
 
-public sealed class OneLineComment : ICodeItem
+public class OneLineComment : ICodeItem
 {
-    public OneLineComment(string commentText)
+    private readonly string _commentSign;
+
+    public OneLineComment(string commentText, string commentSign = "//")
     {
+        _commentSign = commentSign;
         CommentText = commentText;
     }
 
@@ -14,7 +17,7 @@ public sealed class OneLineComment : ICodeItem
     public string Output(int indentLevel)
     {
         var indent = new string(' ', indentLevel * Stats.IndentSize);
-        return indent + "//" + CommentText + Environment.NewLine;
+        return indent + _commentSign + CommentText + Environment.NewLine;
     }
 
     public string OutputCreator(int indentLevel, int additionalIndentLevel)

@@ -75,17 +75,18 @@ public /*open*/ class CodeCreator
         _logger.LogInformation($"Code file created: {forCreateFileName}");
     }
 
-    private string GetTableNameSingular(Dictionary<string, string> singularityExceptions, string tableName)
+    private static string GetTableNameSingular(IReadOnlyDictionary<string, string> singularityExceptions,
+        string tableName)
     {
-        if (singularityExceptions.ContainsKey(tableName))
-            return singularityExceptions[tableName];
+        if (singularityExceptions.TryGetValue(tableName, out var singular))
+            return singular;
         var unCapTableName = tableName.UnCapitalize();
-        return singularityExceptions.ContainsKey(unCapTableName)
-            ? singularityExceptions[unCapTableName]
+        return singularityExceptions.TryGetValue(unCapTableName, out var exception)
+            ? exception
             : tableName.Singularize();
     }
 
-    protected string GetTableNameSingularCapitalizeCamel(Dictionary<string, string> singularityExceptions,
+    protected static string GetTableNameSingularCapitalizeCamel(Dictionary<string, string> singularityExceptions,
         string tableName)
     {
         return GetTableNameSingular(singularityExceptions, tableName).CapitalizeCamel();
