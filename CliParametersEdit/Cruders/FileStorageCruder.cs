@@ -26,6 +26,7 @@ public sealed class FileStorageCruder : ParCruder
         FieldEditors.Add(new TextFieldEditor(nameof(FileStorageData.Password), default, '*'));
         FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileNameMaxLength), 255));
         FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileSizeSplitPositionInRow), 4));
+        FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FtpSiteLsFileOffset), 71));
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -108,6 +109,7 @@ public sealed class FileStorageCruder : ParCruder
         EnableFieldByName(nameof(FileStorageData.UserName), !isFileSchema);
         EnableFieldByName(nameof(FileStorageData.Password), !isFileSchema);
         EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), fileStorageData.IsFtp());
+        EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), fileStorageData.IsFtp());
     }
 
     protected override ItemData GetDefRecordWithStatus(string? currentStatus)
