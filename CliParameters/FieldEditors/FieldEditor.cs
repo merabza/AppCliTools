@@ -54,9 +54,9 @@ public /*open*/ class FieldEditor
     protected static T? GetValue<T>(object record, string propertyName)
     {
         var currentRecordPropertyInfo = record.GetType().GetProperty(propertyName);
-        if (currentRecordPropertyInfo == null) throw new DataInputException($"property {propertyName} not found");
-
-        return (T?)currentRecordPropertyInfo.GetValue(record);
+        return currentRecordPropertyInfo is null
+            ? throw new DataInputException($"property {propertyName} not found")
+            : (T?)currentRecordPropertyInfo.GetValue(record);
     }
 
     public virtual void SetDefault(ItemData currentItem)
@@ -75,7 +75,7 @@ public /*open*/ class FieldEditor<T> : FieldEditor
     public void SetValue(object record, T? value)
     {
         var recordForUpdatePropertyInfo = record.GetType().GetProperty(PropertyName);
-        if (recordForUpdatePropertyInfo == null)
+        if (recordForUpdatePropertyInfo is null)
             throw new DataInputException($"property {PropertyName} not found in record for update");
 
         recordForUpdatePropertyInfo.SetValue(record, value, null);

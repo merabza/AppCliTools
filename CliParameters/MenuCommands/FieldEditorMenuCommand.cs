@@ -37,6 +37,7 @@ public sealed class FieldEditorMenuCommand : CliMenuCommand
                 if (!Inputer.InputBool($"{_recordName} is not valid, continue input data?", false, false))
                     return;
 
+            _cruder.FixRecordName(_recordName, _recordForUpdate);
             //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
             _cruder.Save($"{_cruder.CrudName} {_recordName} Updated {Name}");
         }

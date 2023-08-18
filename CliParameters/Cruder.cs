@@ -248,26 +248,29 @@ public /*open*/ class Cruder : IFieldEditors
 
         //ჩანაწერის შეცვლის პროცესი დაიწყო
         Console.WriteLine($"Edit {CrudName} record started");
-
-        //ამოცანის სახელის რედაქტირება
-        TextDataInput nameInput = new($"change {CrudName} Name", recordKey);
-        if (!nameInput.DoInput())
-            return false;
-        var newRecordKey = nameInput.Text;
-        if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
-            return false;
+        string? newRecordKey = null;
+        if (!_fieldKeyFromItem)
+        {
+            //ამოცანის სახელის რედაქტირება
+            TextDataInput nameInput = new($"change {CrudName} Name", recordKey);
+            if (!nameInput.DoInput())
+                return false;
+            newRecordKey = nameInput.Text;
+            if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
+                return false;
+        }
 
         var newRecord = InputRecordData(recordKey);
 
         if (newRecord is null)
             return false;
 
-        //if (_fieldNameFromItem)
-        //{
-        //    newRecordName = newRecord.GetItemName();
-        //    if (!CheckNewRecordNameValid(recordKey, newRecordName))
-        //        return false;
-        //}
+        if (_fieldKeyFromItem)
+        {
+            newRecordKey = newRecord.GetItemKey();
+            if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
+                return false;
+        }
 
         if (newRecordKey != recordKey)
         {
@@ -409,5 +412,16 @@ public /*open*/ class Cruder : IFieldEditors
         RemoveRecordWithKey(recordKey);
         AddRecordWithKey(newRecordKey, itemData);
         return true;
+    }
+
+    public void FixRecordName(string recordKey, ItemData record)
+    {
+        if (!_fieldKeyFromItem)
+            return;
+        var newRecordKey = record.GetItemKey();
+        if (newRecordKey is not null)
+        {
+            ChangeRecordKey(recordKey, newRecordKey);
+        }
     }
 }
