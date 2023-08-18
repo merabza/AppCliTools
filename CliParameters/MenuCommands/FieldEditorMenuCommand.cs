@@ -12,7 +12,7 @@ public sealed class FieldEditorMenuCommand : CliMenuCommand
     private readonly Cruder _cruder;
     private readonly FieldEditor _fieldEditor;
     private readonly ItemData _recordForUpdate;
-    private readonly string _recordName;
+    private readonly string _recordKey;
 
     public FieldEditorMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate,
         Cruder cruder,
@@ -21,7 +21,7 @@ public sealed class FieldEditorMenuCommand : CliMenuCommand
         _fieldEditor = fieldEditor;
         _recordForUpdate = recordForUpdate;
         _cruder = cruder;
-        _recordName = recordKey;
+        _recordKey = recordKey;
     }
 
     protected override void RunAction()
@@ -30,16 +30,16 @@ public sealed class FieldEditorMenuCommand : CliMenuCommand
         {
             MenuAction = EMenuAction.Reload;
 
-            _fieldEditor.UpdateField(_recordName, _recordForUpdate);
-            _cruder.UpdateRecordWithKey(_recordName, _recordForUpdate);
+            _fieldEditor.UpdateField(_recordKey, _recordForUpdate);
+            _cruder.UpdateRecordWithKey(_recordKey, _recordForUpdate);
 
             if (!_cruder.CheckValidation(_recordForUpdate))
-                if (!Inputer.InputBool($"{_recordName} is not valid, continue input data?", false, false))
+                if (!Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
                     return;
 
-            _cruder.FixRecordName(_recordName, _recordForUpdate);
+            //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
             //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-            _cruder.Save($"{_cruder.CrudName} {_recordName} Updated {Name}");
+            _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
         }
         catch (DataInputEscapeException e)
         {

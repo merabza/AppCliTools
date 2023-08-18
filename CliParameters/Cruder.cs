@@ -197,7 +197,7 @@ public /*open*/ class Cruder : IFieldEditors
         //ჩანაწერის შექმნის პროცესი დაიწყო
         Console.WriteLine($"Create new {CrudName} started");
 
-        string? newRecordKey = null;
+        var newRecordKey = Guid.NewGuid().ToString();
         if (!_fieldKeyFromItem)
         {
             //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
@@ -219,12 +219,6 @@ public /*open*/ class Cruder : IFieldEditors
         var newRecord = InputRecordData(null, defRecordWithStatus);
 
         if (newRecord is null)
-            return null;
-
-        if (_fieldKeyFromItem)
-            newRecordKey = newRecord.GetItemKey();
-
-        if (newRecordKey is null)
             return null;
 
         AddRecordWithKey(newRecordKey, newRecord);
@@ -265,14 +259,14 @@ public /*open*/ class Cruder : IFieldEditors
         if (newRecord is null)
             return false;
 
-        if (_fieldKeyFromItem)
-        {
-            newRecordKey = newRecord.GetItemKey();
-            if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
-                return false;
-        }
+        //if (_fieldKeyFromItem)
+        //{
+        //    newRecordKey = newRecord.GetItemKey();
+        //    if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
+        //        return false;
+        //}
 
-        if (newRecordKey != recordKey)
+        if (newRecordKey is not null && newRecordKey != recordKey)
         {
             if (string.IsNullOrWhiteSpace(newRecordKey))
             {
@@ -313,8 +307,13 @@ public /*open*/ class Cruder : IFieldEditors
 
     public CliMenuSet GetItemMenu(string itemName) //, string? menuNamePrefix = null)
     {
+        var substituteName = itemName;
+        var item = GetItemByName(itemName);
+        if (item is not null)
+            substituteName = item.GetItemKey() ?? substituteName;
+
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
-        var itemSubMenuSet = new CliMenuSet(itemName);
+        var itemSubMenuSet = new CliMenuSet(substituteName);
 
         DeleteCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");
@@ -351,7 +350,7 @@ public /*open*/ class Cruder : IFieldEditors
             return name;
 
         if (writeErrorIfNotExists)
-            StShared.WriteErrorLine($"{CrudName} with Name {itemName} does not exists. ", true);
+            StShared.WriteErrorLine($"{CrudName} with Name {itemName} is not exists. ", true);
 
         return null;
     }
@@ -414,14 +413,14 @@ public /*open*/ class Cruder : IFieldEditors
         return true;
     }
 
-    public void FixRecordName(string recordKey, ItemData record)
-    {
-        if (!_fieldKeyFromItem)
-            return;
-        var newRecordKey = record.GetItemKey();
-        if (newRecordKey is not null)
-        {
-            ChangeRecordKey(recordKey, newRecordKey);
-        }
-    }
+    //public string FixRecordName(string recordKey, ItemData record)
+    //{
+    //    if (!_fieldKeyFromItem)
+    //        return recordKey;
+    //    var newRecordKey = record.GetItemKey();
+    //    if (newRecordKey is null)
+    //        return recordKey;
+    //    ChangeRecordKey(recordKey, newRecordKey);
+    //    return newRecordKey;
+    //}
 }
