@@ -8,7 +8,6 @@ namespace CliParametersEdit.Generators;
 
 public static class StandardArchiversGenerator
 {
-
     public static void Generate(bool useConsole, IParametersManager parametersManager)
     {
         var parameters = (IParametersWithArchivers)parametersManager.Parameters;

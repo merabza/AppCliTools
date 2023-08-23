@@ -9,13 +9,14 @@ public sealed class CliMenuSet
 {
     private readonly string? _caption;
     private readonly List<string> _errorMessages = new();
-    private List<CliMenuItem> MenuItems { get; } = new();
-    public CliMenuSet? ParentMenu { get; set; }
 
     public CliMenuSet(string? caption = null)
     {
         _caption = caption;
     }
+
+    private List<CliMenuItem> MenuItems { get; } = new();
+    public CliMenuSet? ParentMenu { get; set; }
 
     public CliMenuItem? GetMenuItemWithName(string menuItemName)
     {
@@ -76,7 +77,7 @@ public sealed class CliMenuSet
 
     private string? GetCaption()
     {
-        if (_caption == null) 
+        if (_caption == null)
             return null;
         var parentCaption = ParentMenu?.GetCaption();
         return parentCaption != null ? $"{parentCaption} => {_caption}" : _caption;
