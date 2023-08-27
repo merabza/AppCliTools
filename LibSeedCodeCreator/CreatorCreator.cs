@@ -12,7 +12,7 @@ public sealed class CreatorCreator : ToolCommand
 
     private readonly ILogger _logger;
 
-    public CreatorCreator(ILogger logger, ParametersManager parametersManager) : base(logger, true, ActionName,
+    public CreatorCreator(ILogger logger, ParametersManager parametersManager) : base(logger, ActionName,
         parametersManager)
     {
         _logger = logger;
