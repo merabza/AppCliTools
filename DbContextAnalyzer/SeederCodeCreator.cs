@@ -96,11 +96,11 @@ public sealed class SeederCodeCreator
             if (relEntity.Value.Level != lastLevel)
             {
                 lastLevel = relEntity.Value.Level;
-                _logger.LogInformation($"Level = {lastLevel}");
+                _logger.LogInformation("Level = {lastLevel}", lastLevel);
             }
 
             var tableName = relEntity.Key;
-            _logger.LogInformation($"TableName = {tableName}");
+            _logger.LogInformation("TableName = {tableName}", tableName);
 
             var isCarcassType = carcassEntityTypes.Any(a => a.GetTableName() == tableName);
             //2.1

@@ -17,7 +17,7 @@ public /*open*/ class BinFileCreator
         Logger = logger;
         _placePath = placePath;
         BinFile = new BinFile(binFileName);
-        Logger.LogInformation($"create Code file started -> {binFileName}");
+        Logger.LogInformation("create Code file started -> {binFileName}", binFileName);
     }
 
     public virtual void CreateFileData()
@@ -39,6 +39,6 @@ public /*open*/ class BinFileCreator
         if (string.IsNullOrWhiteSpace(BinFile.Base64String))
             throw new Exception("BinFile.Base64String is empty");
         File.WriteAllBytes(forCreateFileName, Convert.FromBase64String(BinFile.Base64String));
-        Logger.LogInformation($"Bin file created: {forCreateFileName}");
+        Logger.LogInformation("Bin file created: {forCreateFileName}", forCreateFileName);
     }
 }

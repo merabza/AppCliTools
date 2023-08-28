@@ -19,7 +19,7 @@ public /*open*/ class CodeCreator
         _logger = logger;
         _placePath = placePath;
         CodeFile = new CodeFile(codeFileName);
-        _logger.LogInformation($"create Code file started -> {codeFileName}");
+        _logger.LogInformation("create Code file started -> {codeFileName}", codeFileName);
     }
 
     public virtual void CreateFileStructure()
@@ -72,7 +72,7 @@ public /*open*/ class CodeCreator
             throw new Exception("CodeFile.FileName is null");
         var forCreateFileName = Path.Combine(placePath, CodeFile.FileName);
         File.WriteAllText(forCreateFileName, strCode);
-        _logger.LogInformation($"Code file created: {forCreateFileName}");
+        _logger.LogInformation("Code file created: {forCreateFileName}", forCreateFileName);
     }
 
     private static string GetTableNameSingular(IReadOnlyDictionary<string, string> singularityExceptions,
