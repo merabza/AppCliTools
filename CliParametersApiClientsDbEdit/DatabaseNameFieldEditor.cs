@@ -66,10 +66,11 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         DatabaseManagementClient? databaseClient = null;
         if (databaseServerConnectionData != null)
             databaseClient =
-                DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger, databaseServerConnectionData);
+                DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger, databaseServerConnectionData,
+                    null, null);
 
         if (databaseClient == null && apiClientSettings != null)
-            databaseClient = DatabaseApiClient.Create(_logger, true, apiClientSettings);
+            databaseClient = DatabaseApiClient.Create(_logger, true, apiClientSettings, null, null);
 
         var databaseInfos = databaseClient is null
             ? new List<DatabaseInfoModel>()
