@@ -76,7 +76,7 @@ public sealed class ApiClientCruder : ParCruder
         }
         catch (Exception e)
         {
-            _logger.LogError(e, null);
+            _logger.LogError(e, "Error in method CheckValidation");
             return false;
         }
     }

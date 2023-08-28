@@ -39,7 +39,7 @@ public /*open*/ class CodeCreator
         CreateFile();
     }
 
-    protected string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
+    protected static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
     {
         var realTypeCandidate = clrTypeName switch
         {
@@ -92,7 +92,7 @@ public /*open*/ class CodeCreator
         return GetTableNameSingular(singularityExceptions, tableName).CapitalizeCamel();
     }
 
-    protected (bool, List<IProperty>) GetFieldsProperties(IEntityType entityType, List<string> ignoreFields)
+    protected static (bool, List<IProperty>) GetFieldsProperties(IEntityType entityType, List<string> ignoreFields)
     {
         var props = entityType.GetProperties()
             .Where(p => p.ValueGenerated == ValueGenerated.Never && !ignoreFields.Contains(p.Name)).ToList();
