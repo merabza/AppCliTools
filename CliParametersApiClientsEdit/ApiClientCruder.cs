@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CliParameters;
 using CliParameters.FieldEditors;
 using Installer.AgentClients;
@@ -66,10 +67,19 @@ public sealed class ApiClientCruder : ParCruder
             if (string.IsNullOrWhiteSpace(apiClientSettings.Server))
                 return false;
 
+            Console.WriteLine("Try connect to Test Api Client...");
+
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
             var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
 
-            return apiClient.CheckValidation().Result;
+            var version = apiClient.GetVersion().Result;
+
+            if (string.IsNullOrWhiteSpace(version))
+                return false;
+
+            Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
+
+            return true;
         }
         catch (Exception e)
         {
