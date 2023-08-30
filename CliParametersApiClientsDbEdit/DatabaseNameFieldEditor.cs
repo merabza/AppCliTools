@@ -8,7 +8,6 @@ using CliParametersDataEdit.Cruders;
 using DatabaseApiClients;
 using DatabaseManagementClients;
 using DbTools.Models;
-using Installer.AgentClients;
 using LibApiClientParameters;
 using LibDatabaseParameters;
 using LibDataInput;
@@ -20,7 +19,6 @@ namespace CliParametersApiClientsDbEdit;
 
 public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 {
-    private readonly IApiClientsFabric _apiClientsFabric;
     private readonly bool _canUseNewDatabaseName;
     private readonly string _databaseApiClientNameFieldName;
     private readonly string _databaseConnectionNamePropertyName;
@@ -28,13 +26,11 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly IParametersManager _parametersManager;
 
     public DatabaseNameFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        IApiClientsFabric apiClientsFabric, string databaseConnectionNamePropertyName,
-        string databaseApiClientNameFieldName, bool canUseNewDatabaseName) :
+        string databaseConnectionNamePropertyName, string databaseApiClientNameFieldName, bool canUseNewDatabaseName) :
         base(propertyName)
     {
         _logger = logger;
         _parametersManager = parametersManager;
-        _apiClientsFabric = apiClientsFabric;
         _databaseConnectionNamePropertyName = databaseConnectionNamePropertyName;
         _databaseApiClientNameFieldName = databaseApiClientNameFieldName;
         _canUseNewDatabaseName = canUseNewDatabaseName;
@@ -57,7 +53,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(
                     databaseServerConnectionName);
 
-        ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _apiClientsFabric);
+        ApiClientCruder apiClientCruder = new(_parametersManager, _logger);
 
         var apiClientSettings = string.IsNullOrWhiteSpace(databaseApiClientName)
             ? null

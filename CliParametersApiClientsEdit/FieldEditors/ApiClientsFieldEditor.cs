@@ -2,7 +2,6 @@
 using System.Linq;
 using CliMenu;
 using CliParameters.FieldEditors;
-using Installer.AgentClients;
 using LibApiClientParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
@@ -11,21 +10,19 @@ namespace CliParametersApiClientsEdit.FieldEditors;
 
 public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiClientSettings>>
 {
-    private readonly IApiClientsFabric _apiClientsFabric;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    public ApiClientsFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        IApiClientsFabric apiClientsFabric) : base(propertyName, null, true)
+    public ApiClientsFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager) : base(
+        propertyName, null, true)
     {
         _parametersManager = parametersManager;
-        _apiClientsFabric = apiClientsFabric;
         _logger = logger;
     }
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _apiClientsFabric);
+        ApiClientCruder apiClientCruder = new(_parametersManager, _logger);
         var menuSet = apiClientCruder.GetListMenu();
         return menuSet;
     }

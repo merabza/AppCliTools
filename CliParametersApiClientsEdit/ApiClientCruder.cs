@@ -12,14 +12,12 @@ namespace CliParametersApiClientsEdit;
 
 public sealed class ApiClientCruder : ParCruder
 {
-    private readonly IApiClientsFabric _apiClientsFabric;
     private readonly ILogger _logger;
 
-    public ApiClientCruder(IParametersManager parametersManager, ILogger logger, IApiClientsFabric apiClientsFabric)
-        : base(parametersManager, "Api Client", "Api Clients")
+    public ApiClientCruder(IParametersManager parametersManager, ILogger logger) : base(parametersManager, "Api Client",
+        "Api Clients")
     {
         _logger = logger;
-        _apiClientsFabric = apiClientsFabric;
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.Server)));
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey)));
     }
@@ -69,8 +67,7 @@ public sealed class ApiClientCruder : ParCruder
                 return false;
 
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
-            var apiClient =
-                _apiClientsFabric.CreateApiClient(_logger, apiClientSettings.Server, apiClientSettings.ApiKey);
+            var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
 
             return apiClient.CheckValidation().Result;
         }
