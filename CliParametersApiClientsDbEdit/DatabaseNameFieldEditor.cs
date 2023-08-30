@@ -58,14 +58,14 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             ? null
             : (ApiClientSettings?)apiClientCruder.GetItemByName(databaseApiClientName);
 
-        DatabaseManagementClient? databaseClient = null;
+        IDatabaseApiClient? databaseClient = null;
         if (databaseServerConnectionData != null)
             databaseClient =
                 DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger, databaseServerConnectionData,
                     null, null);
 
         if (databaseClient == null && apiClientSettings != null)
-            databaseClient = DatabaseApiClient.Create(_logger, true, apiClientSettings, null, null);
+            databaseClient = DatabaseApiClient.Create(_logger, apiClientSettings, null, null);
 
         var databaseInfos = databaseClient is null
             ? new List<DatabaseInfoModel>()
