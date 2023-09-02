@@ -8,8 +8,8 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
     private readonly string? _defaultValue;
     private readonly char _passwordCharacter;
 
-    public TextFieldEditor(string propertyName, string? defaultValue = default, char passwordCharacter = default) :
-        base(propertyName)
+    public TextFieldEditor(string propertyName, string? defaultValue = default,
+        char passwordCharacter = default) : base(propertyName, true)
     {
         _defaultValue = defaultValue;
         _passwordCharacter = passwordCharacter;

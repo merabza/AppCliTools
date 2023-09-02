@@ -15,7 +15,7 @@ public sealed class FileStoragesFieldEditor : FieldEditor<Dictionary<string, Fil
     private readonly IParametersManager _parametersManager;
 
     public FileStoragesFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager) : base(
-        propertyName, null, true)
+        propertyName, false, null, true)
     {
         _logger = logger;
         _parametersManager = parametersManager;

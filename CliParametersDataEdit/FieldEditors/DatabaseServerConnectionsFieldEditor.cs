@@ -15,8 +15,7 @@ public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionar
     private readonly IParametersManager _parametersManager;
 
     public DatabaseServerConnectionsFieldEditor(string propertyName, IParametersManager parametersManager,
-        ILogger logger) : base(
-        propertyName, null, true)
+        ILogger logger) : base(propertyName, false, null, true)
     {
         _parametersManager = parametersManager;
         _logger = logger;

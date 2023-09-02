@@ -84,7 +84,8 @@ public /*open*/ class Cruder : IFieldEditors
                 }
             }
 
-            foreach (var fieldUpdater in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
+            foreach (var fieldUpdater in FieldEditors.Where(fieldUpdater =>
+                         fieldUpdater is { Enabled: true, EnterFieldDataOnCreate: true }))
             {
                 fieldUpdater.UpdateField(recordKey, currentItem);
                 CheckFieldsEnables(currentItem, fieldUpdater.PropertyName);
@@ -219,7 +220,10 @@ public /*open*/ class Cruder : IFieldEditors
         var newRecord = InputRecordData(null, defRecordWithStatus);
 
         if (newRecord is null)
+        {
+            StShared.WriteErrorLine($"New Record {CrudName} could not created", true);
             return null;
+        }
 
         AddRecordWithKey(newRecordKey, newRecord);
 

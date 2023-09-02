@@ -14,7 +14,7 @@ public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiCl
     private readonly IParametersManager _parametersManager;
 
     public ApiClientsFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager) : base(
-        propertyName, null, true)
+        propertyName, false, null, true)
     {
         _parametersManager = parametersManager;
         _logger = logger;

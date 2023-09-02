@@ -12,11 +12,14 @@ public /*open*/ class FieldEditor
     protected readonly string FieldName;
     public readonly string PropertyName;
     public bool Enabled = true;
+    public bool EnterFieldDataOnCreate;
 
-    protected FieldEditor(string propertyName, string? propertyDescriptor, bool isSubObject)
+    protected FieldEditor(string propertyName, string? propertyDescriptor, bool isSubObject,
+        bool enterFieldDataOnCreate = false)
     {
         PropertyName = propertyName;
         _isSubObject = isSubObject;
+        EnterFieldDataOnCreate = enterFieldDataOnCreate;
         FieldName = propertyDescriptor ?? PropertyName.SplitWithSpacesCamelParts();
     }
 
@@ -66,18 +69,17 @@ public /*open*/ class FieldEditor
 
 public /*open*/ class FieldEditor<T> : FieldEditor
 {
-    protected FieldEditor(string propertyName, string? propertyDescriptor = null, bool isSubObject = false) : base(
-        propertyName, propertyDescriptor, isSubObject)
+    protected FieldEditor(string propertyName, bool enterFieldDataOnCreate = false, string? propertyDescriptor = null,
+        bool isSubObject = false) : base(propertyName, propertyDescriptor, isSubObject, enterFieldDataOnCreate)
     {
     }
 
     //აქ public საჭიროა CliParametersDataEdit.ConnectionStringParametersManager.Save მეთოდისათვის
     public void SetValue(object record, T? value)
     {
-        var recordForUpdatePropertyInfo = record.GetType().GetProperty(PropertyName);
-        if (recordForUpdatePropertyInfo is null)
-            throw new DataInputException($"property {PropertyName} not found in record for update");
-
+        var recordForUpdatePropertyInfo = record.GetType().GetProperty(PropertyName) ??
+                                          throw new DataInputException(
+                                              $"property {PropertyName} not found in record for update");
         recordForUpdatePropertyInfo.SetValue(record, value, null);
     }
 
@@ -91,9 +93,8 @@ public /*open*/ class FieldEditor<T> : FieldEditor
     {
         if (record == null)
             return defaultValue;
-        var currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName);
-        if (currentRecordPropertyInfo == null) throw new DataInputException($"property {PropertyName} not found");
-
+        var currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName) ??
+                                        throw new DataInputException($"property {PropertyName} not found");
         var toRet = (T?)currentRecordPropertyInfo.GetValue(record);
         return toRet ?? defaultValue;
     }

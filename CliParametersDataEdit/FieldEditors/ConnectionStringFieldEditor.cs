@@ -18,7 +18,7 @@ public sealed class ConnectionStringFieldEditor : FieldEditor<string>
 
     public ConnectionStringFieldEditor(ILogger logger, string connectionStringParameterName,
         string dataProviderParameterName, IParametersManager parametersManager) : base(connectionStringParameterName,
-        null, true)
+        true, null, true)
     {
         _logger = logger;
         _dataProviderParameterName = dataProviderParameterName;

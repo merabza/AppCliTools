@@ -7,7 +7,7 @@ public sealed class BoolFieldEditor : FieldEditor<bool>
 {
     private readonly bool _defaultValue;
 
-    public BoolFieldEditor(string propertyName, bool defaultValue) : base(propertyName)
+    public BoolFieldEditor(string propertyName, bool defaultValue) : base(propertyName, true)
     {
         _defaultValue = defaultValue;
     }

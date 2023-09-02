@@ -12,8 +12,8 @@ public sealed class ArchiversFieldEditor : FieldEditor<Dictionary<string, Archiv
 {
     private readonly ParametersManager _parametersManager;
 
-    public ArchiversFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName, null,
-        true)
+    public ArchiversFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName, false,
+        null, true)
     {
         _parametersManager = parametersManager;
     }
