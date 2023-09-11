@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CliParameters;
 using CliParameters.FieldEditors;
 using DbTools;
@@ -110,7 +111,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
                     //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
                     //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-                    var dbServerInfo = dc.GetDbServerInfo().Result;
+                    var dbServerInfo = dc.GetDbServerInfo(CancellationToken.None).Result;
 
                     Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
                     Console.WriteLine(

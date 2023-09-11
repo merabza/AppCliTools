@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using CliMenu;
 using CliParameters.FieldEditors;
 using CliParameters.MenuCommands;
@@ -61,7 +62,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         var dbKit = ManagerFactory.GetKit(EDataProvider.Sql);
         DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder,
             dbKit, true);
-        var databaseInfos = dc.GetDatabaseInfos().Result;
+        var databaseInfos = dc.GetDatabaseInfos(CancellationToken.None).Result;
 
         CliMenuSet databasesMenuSet = new();
         databasesMenuSet.AddMenuItem(new MenuCommandWithStatus(null), "New Database Name");
