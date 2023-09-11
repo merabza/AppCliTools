@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CliMenu;
 using CliParameters.FieldEditors;
 using CliParameters.MenuCommands;
@@ -69,7 +70,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 
         var databaseInfos = databaseClient is null
             ? new List<DatabaseInfoModel>()
-            : databaseClient.GetDatabaseNames().Result;
+            : databaseClient.GetDatabaseNames(CancellationToken.None).Result;
 
         CliMenuSet databasesMenuSet = new();
         if (_canUseNewDatabaseName)

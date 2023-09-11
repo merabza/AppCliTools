@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using CliParameters;
 using CliParameters.FieldEditors;
 using Installer.AgentClients;
@@ -72,7 +72,7 @@ public sealed class ApiClientCruder : ParCruder
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
             var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
 
-            var version = apiClient.GetVersion().Result;
+            var version = apiClient.GetVersion(CancellationToken.None).Result;
 
             if (string.IsNullOrWhiteSpace(version))
                 return false;
