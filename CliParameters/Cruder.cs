@@ -132,7 +132,8 @@ public /*open*/ class Cruder : IFieldEditors
     {
     }
 
-    protected virtual void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
+    //public საჭიროა SupportTools TemplateSubMenuCommand
+    public virtual void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
     {
         var item = GetItemByName(itemName);
         if (item == null)
