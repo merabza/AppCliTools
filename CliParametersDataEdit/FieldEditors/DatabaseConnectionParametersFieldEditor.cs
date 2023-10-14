@@ -13,7 +13,8 @@ public sealed class DatabaseConnectionParametersFieldEditor : FieldEditor<Databa
     private readonly ParametersManager _parametersManager;
 
     public DatabaseConnectionParametersFieldEditor(ILogger logger, string devDatabaseConnectionParametersParameterName,
-        ParametersManager parametersManager) : base(devDatabaseConnectionParametersParameterName, false, null, true)
+        ParametersManager parametersManager, bool enterFieldDataOnCreate = false) : base(
+        devDatabaseConnectionParametersParameterName, enterFieldDataOnCreate, null, true)
     {
         _logger = logger;
         _parametersManager = parametersManager;

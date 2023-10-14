@@ -12,7 +12,8 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
     private readonly bool _useNone;
 
     public DatabaseServerConnectionNameFieldEditor(ILogger logger, string propertyName,
-        IParametersManager parametersManager, bool useNone = false) : base(propertyName)
+        IParametersManager parametersManager, bool useNone = false, bool enterFieldDataOnCreate = false) : base(
+        propertyName, enterFieldDataOnCreate)
     {
         _logger = logger;
         _parametersManager = parametersManager;

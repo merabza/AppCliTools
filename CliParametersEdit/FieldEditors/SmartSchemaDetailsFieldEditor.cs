@@ -8,7 +8,8 @@ namespace CliParametersEdit.FieldEditors;
 
 public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchemaDetail>>
 {
-    public SmartSchemaDetailsFieldEditor(string propertyName) : base(propertyName, false, null, true)
+    public SmartSchemaDetailsFieldEditor(string propertyName, bool enterFieldDataOnCreate = false) : base(propertyName,
+        enterFieldDataOnCreate, null, true)
     {
     }
 

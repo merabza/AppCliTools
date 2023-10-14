@@ -11,7 +11,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
     private readonly bool _useNone;
 
     public ApiClientNameFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        bool useNone = false) : base(propertyName)
+        bool useNone = false, bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {
         _logger = logger;
         _parametersManager = parametersManager;

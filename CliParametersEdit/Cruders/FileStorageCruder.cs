@@ -21,7 +21,7 @@ public sealed class FileStorageCruder : ParCruder
         "File Storage", "File Storages")
     {
         _logger = logger;
-        FieldEditors.Add(new FileStoragePathFieldEditor(nameof(FileStorageData.FileStoragePath)));
+        FieldEditors.Add(new FileStoragePathFieldEditor(nameof(FileStorageData.FileStoragePath),true));
         FieldEditors.Add(new TextFieldEditor(nameof(FileStorageData.UserName)));
         FieldEditors.Add(new TextFieldEditor(nameof(FileStorageData.Password), default, '*'));
         FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileNameMaxLength), 255));

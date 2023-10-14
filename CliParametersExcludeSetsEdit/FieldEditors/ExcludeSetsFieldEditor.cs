@@ -12,8 +12,8 @@ public sealed class ExcludeSetsFieldEditor : FieldEditor<Dictionary<string, Excl
 {
     private readonly ParametersManager _parametersManager;
 
-    public ExcludeSetsFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName, false,
-        null, true)
+    public ExcludeSetsFieldEditor(string propertyName, ParametersManager parametersManager,
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
     {
         _parametersManager = parametersManager;
     }

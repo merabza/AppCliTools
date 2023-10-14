@@ -7,7 +7,8 @@ public /*open*/ class FilePathFieldEditor : FieldEditor<string>
 {
     private readonly string? _defaultValue;
 
-    public FilePathFieldEditor(string propertyName, string? defaultValue = default) : base(propertyName)
+    public FilePathFieldEditor(string propertyName, string? defaultValue = default, bool enterFieldDataOnCreate = false)
+        : base(propertyName, enterFieldDataOnCreate)
     {
         _defaultValue = defaultValue;
     }

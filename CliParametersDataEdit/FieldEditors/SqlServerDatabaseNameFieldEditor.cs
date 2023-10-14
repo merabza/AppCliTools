@@ -24,9 +24,8 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
     private readonly string _windowsNtIntegratedSecurityPropertyName;
 
     public SqlServerDatabaseNameFieldEditor(ILogger logger, string propertyName, string serverAddressPropertyName,
-        string windowsNtIntegratedSecurityPropertyName, string serverUserPropertyName,
-        string serverPassPropertyName) :
-        base(propertyName)
+        string windowsNtIntegratedSecurityPropertyName, string serverUserPropertyName, string serverPassPropertyName,
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {
         _logger = logger;
         _serverAddressPropertyName = serverAddressPropertyName;

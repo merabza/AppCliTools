@@ -13,8 +13,8 @@ public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiCl
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    public ApiClientsFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager) : base(
-        propertyName, false, null, true)
+    public ApiClientsFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
     {
         _parametersManager = parametersManager;
         _logger = logger;

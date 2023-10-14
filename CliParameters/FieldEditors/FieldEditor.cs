@@ -99,19 +99,4 @@ public /*open*/ class FieldEditor<T> : FieldEditor
         return toRet ?? defaultValue;
     }
 
-    //protected T? GetValue(object? record, bool throwException = true, T? defaultValue = default)
-    //{
-    //    if (record == null)
-    //        return defaultValue;
-    //    var currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName);
-    //    if (currentRecordPropertyInfo == null)
-    //    {
-    //        if (throwException)
-    //            throw new DataInputException($"property {PropertyName} not found");
-    //        return defaultValue;
-    //    }
-
-    //    var toRet = (T?)currentRecordPropertyInfo.GetValue(record);
-    //    return toRet ?? defaultValue;
-    //}
 }

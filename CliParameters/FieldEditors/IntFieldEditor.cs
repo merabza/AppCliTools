@@ -7,7 +7,8 @@ public sealed class IntFieldEditor : FieldEditor<int>
 {
     private readonly int _defaultValue;
 
-    public IntFieldEditor(string propertyName, int defaultValue = default) : base(propertyName)
+    public IntFieldEditor(string propertyName, int defaultValue = default, bool enterFieldDataOnCreate = false) : base(
+        propertyName, enterFieldDataOnCreate)
     {
         _defaultValue = defaultValue;
     }

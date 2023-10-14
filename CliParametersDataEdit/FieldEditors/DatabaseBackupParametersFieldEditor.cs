@@ -9,8 +9,8 @@ public sealed class DatabaseBackupParametersFieldEditor : FieldEditor<DatabaseBa
 {
     private readonly IParametersManager _parametersManager;
 
-    public DatabaseBackupParametersFieldEditor(string propertyName, IParametersManager parametersManager) : base(
-        propertyName, false, null, true)
+    public DatabaseBackupParametersFieldEditor(string propertyName, IParametersManager parametersManager,
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
     {
         _parametersManager = parametersManager;
     }
