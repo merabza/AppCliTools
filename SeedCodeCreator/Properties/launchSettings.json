@@ -1,9 +1,0 @@
-{
-    "profiles": {
-        "SeedCodeCreator": {
-            "commandName": "Project",
-            "commandLineArgs":
-                "--use D:\\1WorkScaffoldSeeders\\GeoModel\\GeoModelScaffoldSeeder\\Parameters\\seedCodeCreator.json"
-        }
-    }
-}
