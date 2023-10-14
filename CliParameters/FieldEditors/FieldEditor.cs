@@ -12,7 +12,7 @@ public /*open*/ class FieldEditor
     protected readonly string FieldName;
     public readonly string PropertyName;
     public bool Enabled = true;
-    public bool EnterFieldDataOnCreate;
+    public readonly bool EnterFieldDataOnCreate;
 
     protected FieldEditor(string propertyName, string? propertyDescriptor, bool isSubObject,
         bool enterFieldDataOnCreate = false)

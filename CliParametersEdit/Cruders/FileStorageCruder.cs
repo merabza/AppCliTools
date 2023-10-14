@@ -106,10 +106,13 @@ public sealed class FileStorageCruder : ParCruder
         if (itemData is not FileStorageData fileStorageData)
             return;
         var isFileSchema = fileStorageData.IsFileSchema();
-        EnableFieldByName(nameof(FileStorageData.UserName), !isFileSchema);
-        EnableFieldByName(nameof(FileStorageData.Password), !isFileSchema);
-        EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), fileStorageData.IsFtp());
-        EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), fileStorageData.IsFtp());
+        var enableUserNamePassword = isFileSchema is not null && !isFileSchema.Value;
+        EnableFieldByName(nameof(FileStorageData.UserName), enableUserNamePassword);
+        EnableFieldByName(nameof(FileStorageData.Password), enableUserNamePassword);
+        var isFtp = fileStorageData.IsFtp();
+        var enableFtpProperties = isFtp is not null && isFtp.Value;
+        EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
+        EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
     }
 
     protected override ItemData GetDefRecordWithStatus(string? currentStatus)
