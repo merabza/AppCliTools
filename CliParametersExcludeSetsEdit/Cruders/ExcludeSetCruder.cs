@@ -18,7 +18,8 @@ public sealed class ExcludeSetCruder : ParCruder
     {
     }
 
-    protected override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordName)
+    //public გამოიყენება UsbCopy პროექტში
+    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordName)
     {
         base.FillDetailsSubMenu(itemSubMenuSet, recordName);
 
