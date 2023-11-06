@@ -60,7 +60,7 @@ public sealed class SmartSchemaDetailCruder : Cruder
         return new SmartSchemaDetail();
     }
 
-    public override List<string> GetKeys()
+    protected override List<string> GetKeys()
     {
         return _currentValuesList.Select(s => s.PeriodType.ToString()).OrderBy(x => x).ToList();
     }

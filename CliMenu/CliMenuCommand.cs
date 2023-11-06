@@ -65,4 +65,9 @@ public /*open*/ class CliMenuCommand
     {
         return null;
     }
+
+    public virtual string? GetMenuLinkToGo()
+    {
+        return null;
+    }
 }

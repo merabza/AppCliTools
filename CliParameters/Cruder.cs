@@ -122,7 +122,7 @@ public /*open*/ class Cruder : IFieldEditors
         return new ItemData();
     }
 
-    public virtual List<string> GetKeys()
+    protected virtual List<string> GetKeys()
     {
         var crudersDictionary = GetCrudersDictionary();
         return crudersDictionary.Keys.OrderBy(x => x).ToList();

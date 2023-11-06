@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using CliMenu;
@@ -117,41 +118,92 @@ public /*open*/ class CliAppLoop
             var menuAction = menuCommand.MenuAction;
             //თუ მენიუს ცვლილება მოთხოვნილი არ არის, ვაგრძელებთ ჩვეულებრივად
 
-            if (menuAction == EMenuAction.Nothing)
+            switch (menuAction)
             {
-                refreshList = false;
-                continue;
-            }
-
-            //თუ მოთხოვნილია პროგრამიდან გასვლა, გავდივართ
-            if (menuAction == EMenuAction.Exit)
-                return true;
-
-            if (menuAction == EMenuAction.LoadSubMenu)
-            {
-                if (!AddSubMenu(menuCommand.GetSubmenu()))
-                    return false;
-                continue;
-            }
-
-            if (menuAction == EMenuAction.LevelUp)
-            {
-                if (_currentMenuSetLevel <= 0)
+                case EMenuAction.Nothing:
+                    refreshList = false;
+                    continue;
+                //თუ მოთხოვნილია პროგრამიდან გასვლა, გავდივართ
+                case EMenuAction.Exit:
                     return true;
-                _currentMenuSetLevel--;
+                case EMenuAction.LoadSubMenu:
+                    if( !AddSubMenu(menuCommand.GetSubmenu()))
+                        return false;
+                    break;
+                case EMenuAction.LevelUp when _currentMenuSetLevel <= 0:
+                    return true;
+                case EMenuAction.LevelUp:
+                    _currentMenuSetLevel--;
+                    break;
+                case EMenuAction.Reload:
+                    if (!ReloadCurrentMenu()) 
+                        return false;
+                    break;
+                case EMenuAction.GoToMenuLink:
+                    if (!GoToMenu(menuCommand.GetMenuLinkToGo())) 
+                        if (!ReloadCurrentMenu()) 
+                            return false;
+                    break;
+                default:
+                    throw new UnreachableException($"EMenuAction {menuAction} did rot realized");
             }
 
-            if (_currentMenuSetLevel == 0)
-            {
-                BuildMainMenu();
-            }
-            else
-            {
-                var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
-                if (!AddChangeMenu(selectedMenuCommand.GetSubmenu()))
-                    return false;
-            }
+            //თუ სხვა არაფერი არ იყო, აქედან მუშაობს EMenuAction.Reload
         }
+    }
+
+    private bool GoToMenu(string? menuLinkToGo)
+    {
+        if ( menuLinkToGo is null)
+            return false;
+
+        var menuLine = menuLinkToGo.Split('/');
+
+        //Console.WriteLine("GoToMenu Start");
+        //var line = 0;
+        //foreach (var s in menuLine)
+        //{
+        //    Console.WriteLine($"{line}. {s}");    
+        //    line++;
+        //}
+        //Console.WriteLine("GoToMenu Finish");
+        //StShared.Pause();
+        ////return false;
+
+        if (menuLine.Length > 0 && menuLine[0] == string.Empty)
+        {
+            _currentMenuSetLevel = 0;
+            BuildMainMenu();
+        }
+
+        if (menuLine.Length <= 1 || menuLine[1] != _menuSetsList[_currentMenuSetLevel].Name) 
+            return true;
+
+        for (var i = 2; i < menuLine.Length; i++)
+        {
+            var menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemWithName(menuLine[i]);
+            if (menuItem is null)
+                return false;
+
+            if (!AddSubMenu(menuItem.CliMenuCommand.GetSubmenu()))
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool ReloadCurrentMenu()
+    {
+        if (_currentMenuSetLevel == 0)
+            BuildMainMenu();
+        else
+        {
+            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
+            if (!AddChangeMenu(selectedMenuCommand.GetSubmenu()))
+                return false;
+        }
+
+        return true;
     }
 
     private void Console_CancelKeyPress(object? sender, ConsoleCancelEventArgs e)

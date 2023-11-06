@@ -15,6 +15,8 @@ public sealed class CliMenuSet
         _caption = caption;
     }
 
+    public string Name => _caption ?? string.Empty;
+
     private List<CliMenuItem> MenuItems { get; } = new();
     public CliMenuSet? ParentMenu { get; set; }
 
@@ -80,7 +82,7 @@ public sealed class CliMenuSet
         if (_caption == null)
             return null;
         var parentCaption = ParentMenu?.GetCaption();
-        return parentCaption != null ? $"{parentCaption} => {_caption}" : _caption;
+        return parentCaption != null ? $"{parentCaption}/{_caption}" : $"/{_caption}" ;
     }
 
     public void Show(bool clearBefore = true)
@@ -179,7 +181,7 @@ public sealed class CliMenuSet
 
     public void AddMenuItem(CliMenuCommand menuCommand, string? menuItemName = null, int useId = -1)
     {
-        CliMenuItem menuItem = new(menuItemName ?? menuCommand.Name, menuCommand, useId);
+        var menuItem = new CliMenuItem(menuItemName ?? menuCommand.Name, menuCommand, useId);
         MenuItems.Add(menuItem);
     }
 
