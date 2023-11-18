@@ -23,7 +23,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        _seedProjectSpecificDataMethodCodeBlock = new CodeBlock("protected override bool SeedProjectSpecificData()",
+        _seedProjectSpecificDataMethodCodeBlock = new CodeBlock("protected override Option<Err[]> SeedProjectSpecificData()",
             $"{_parameters.ProjectDataSeedersFabricClassName} seederFabric = ({_parameters.ProjectDataSeedersFabricClassName}) DataSeedersFabric",
             "",
             "Logger.LogInformation(\"Seed Project Data Started\")"
@@ -33,9 +33,9 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using System",
             "using CarcassDataSeeding",
-            //"using CarcassIdentity",
-            //"using Microsoft.AspNetCore.Identity", 
+            "using LanguageExt",
             "using Microsoft.Extensions.Logging",
+            "using SystemToolsShared",
             $"namespace {_parameters.ProjectNamespace}",
             "",
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
@@ -57,7 +57,8 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             $"Logger.LogInformation(\"Seeding {tableNameCapitalCamel}\")",
             "",
             new OneLineComment($"{_counter} {tableNameCapitalCamel}"),
-            new CodeBlock($"if (!Use(seederFabric.Create{tableNameCapitalCamel}Seeder()))", "return false"));
+            $"var result = Use(seederFabric.Create{tableNameCapitalCamel}Seeder())",
+            new CodeBlock("if (result.IsSome)", "return (Err[])result"));
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
@@ -67,7 +68,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 
     public override void FinishAndSave()
     {
-        var block = new CodeBlock("", "", "Console.WriteLine(\"DataSeederCreator.Run Finished\")", "return true");
+        var block = new CodeBlock("", "", "Console.WriteLine(\"DataSeederCreator.Run Finished\")", "return null");
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
