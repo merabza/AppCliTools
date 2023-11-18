@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using LibDataInput;
 using LibParameters;
 using Newtonsoft.Json;
 using SystemToolsShared;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CliParameters;
 
@@ -15,14 +17,17 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
     private readonly List<string> _argsList = new();
     private readonly string? _encKey;
+    private readonly string[] _possibleSwitches;
+    private readonly List<string> _switches;
     private readonly string _jsonFileName;
     private readonly ParametersLoader<T> _parLoader;
     private readonly string _pathToContentRoot = Directory.GetCurrentDirectory();
 
-    public ArgumentsParser(IEnumerable<string> args, string appName, string? encKey)
+    public ArgumentsParser(IEnumerable<string> args, string appName, string? encKey, params string[] possibleSwitches)
     {
         _appName = appName;
         _encKey = encKey;
+        _possibleSwitches = possibleSwitches;
         _jsonFileName = $"{appName}.json";
         _argsList.AddRange(args);
         _parLoader = new ParametersLoader<T>(encKey);
@@ -30,17 +35,38 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
     public IParameters? Par => _parLoader.Par;
     public string? ParametersFileName => _parLoader.ParametersFileName;
+    public List<string> Switches => _switches;
 
     public EParseResult Analysis()
     {
         string? fileName = null;
         if (_argsList.Count > 0)
-            if (string.Equals(_argsList[0], "--use", StringComparison.CurrentCultureIgnoreCase))
-                if (_argsList.Count > 1)
-                {
-                    fileName = _argsList[1];
-                    AnalyzeParamFileName(_argsList[1]);
-                }
+        {
+            //var useIndex = _argsList.IndexOf("--use");
+            var useIndex = Array.FindIndex(_argsList.ToArray(), t => t.Equals("--use", StringComparison.CurrentCultureIgnoreCase));
+
+            if (useIndex + 1 < _argsList.Count)
+            {
+                fileName = _argsList[useIndex + 1];
+                AnalyzeParamFileName(_argsList[useIndex + 1]);
+            }
+
+            var switches = new List<string>();
+            if ( useIndex > 0 )
+                switches.AddRange(_argsList.Take(useIndex));
+            if (useIndex + 2 < _argsList.Count)
+                switches.AddRange(_argsList.Skip(useIndex+2));
+
+            foreach (var swt in switches.Where(swt =>
+                         _possibleSwitches.Contains(swt, StringComparer.CurrentCultureIgnoreCase)))
+                _switches.Add(swt);
+            //if (string.Equals(_argsList[0], "--use", StringComparison.CurrentCultureIgnoreCase))
+            //    if (_argsList.Count > 1)
+            //    {
+            //        fileName = _argsList[1];
+            //        AnalyzeParamFileName(_argsList[1]);
+            //    }
+        }
 
         if (Par != null)
             return EParseResult.Ok;
