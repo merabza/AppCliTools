@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CodeTools;
 using Microsoft.Extensions.Logging;
 
@@ -10,13 +12,14 @@ public sealed class ConsoleProgramCreator : CodeCreator
     private readonly FlatCodeBlock _fcbMainCommands;
     private readonly string _parametersClassName;
     private readonly string _projectDescription;
+    private readonly List<string> _possibleSwitches;
 
     private readonly string _projectNamespace;
     private readonly FlatCodeBlock? _serviceCreatorCodeCommands;
 
     public ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAdditionalUsing,
         FlatCodeBlock? serviceCreatorCodeCommands, FlatCodeBlock fcbMainCommands, string parametersClassName,
-        string projectNamespace, string projectDescription, string placePath, string? codeFileName = null) : base(
+        string projectNamespace, string projectDescription, string placePath, List<string> possibleSwitches, string? codeFileName = null) : base(
         logger, placePath, codeFileName)
     {
         _fcbAdditionalUsing = fcbAdditionalUsing;
@@ -25,12 +28,15 @@ public sealed class ConsoleProgramCreator : CodeCreator
         _parametersClassName = parametersClassName;
         _projectNamespace = projectNamespace;
         _projectDescription = projectDescription;
+        _possibleSwitches = possibleSwitches;
     }
 
     public override void CreateFileStructure()
     {
+        var strPossibleSwitches = _possibleSwitches.Count == 0 ? string.Empty : $", {string.Join(", ", _possibleSwitches.Select(s=>$"\"--{s}\""))}";
+
         var serviceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
-            $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\")");
+            $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\"{strPossibleSwitches})");
 
 
         var block = new CodeBlock("",
@@ -67,13 +73,13 @@ public sealed class ConsoleProgramCreator : CodeCreator
                 "",
                 new CodeBlock("if (serviceProvider is null)",
                     "StShared.WriteErrorLine(\"serviceProvider does not created\", true)",
-                    "return 8"),
+                    "return 4"),
                 "",
                 "logger = serviceProvider.GetService<ILogger<Program>>()",
                 "",
                 new CodeBlock("if (logger is null)",
                     "StShared.WriteErrorLine(\"logger is null\", true)",
-                    "return 8"),
+                    "return 5"),
                 "",
                 _fcbMainCommands),
             new CodeBlock("catch (Exception e)",
