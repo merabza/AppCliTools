@@ -7,7 +7,6 @@ using LibDataInput;
 using LibParameters;
 using Newtonsoft.Json;
 using SystemToolsShared;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CliParameters;
 
@@ -18,7 +17,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
     private readonly List<string> _argsList = new();
     private readonly string? _encKey;
     private readonly string[] _possibleSwitches;
-    private readonly List<string> _switches;
+    private readonly List<string> _switches = new();
     private readonly string _jsonFileName;
     private readonly ParametersLoader<T> _parLoader;
     private readonly string _pathToContentRoot = Directory.GetCurrentDirectory();
