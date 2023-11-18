@@ -40,7 +40,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             "",
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(
-                    @"protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric) : base(logger, dataSeedersFabric)"),
+                    "protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric, bool checkOnly) : base(logger, dataSeedersFabric, checkOnly)"),
                 _seedProjectSpecificDataMethodCodeBlock));
         CodeFile.AddRange(block.CodeItems);
     }

@@ -2,6 +2,7 @@
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace LibSeedCodeCreator;
 
@@ -70,7 +71,8 @@ public sealed class GetJsonFromProjectDbProgramCreator
 
         var getJsonCreator = new ConsoleProgramCreator(_logger, fcbGetJsonAdditionalUsing, null, fcbGetJsonMainCommands,
             "GetJsonParameters", _par.GetJsonProjectNamespace, "Creates Json files for seeder",
-            _par.GetJsonProjectPlacePath, "Program.cs");
+            _par.GetJsonProjectPlacePath, new List<string>(), "Program.cs");
+
         getJsonCreator.CreateFileStructure();
 
         var creatorForJsonFilesCreator =

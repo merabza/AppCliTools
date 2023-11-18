@@ -1,4 +1,5 @@
-﻿using CodeTools;
+﻿using System.Collections.Generic;
+using CodeTools;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
@@ -139,7 +140,8 @@ public sealed class CreateProjectSeederCodeProgramCreator // : CodeCreator
         //par.ProjectPlacePath = "D:\\1WorkScaffoldSeeders\\GeoModel\\GeoModelScaffoldSeeder\\GeoModelScaffoldSeeder\\CreateGeoModelSeederCode",
         var starterCreator = new ConsoleProgramCreator(_logger, fcbAdditionalUsing, null, fcbMainCommands,
             "CreateProjectSeederCodeParameters", _par.CreateSeederCodeProjectNamespace,
-            "Creates Code for app CreateProjectSeederCode", _par.CreateSeederCodeProjectPlacePath, "Program.cs");
+            "Creates Code for app CreateProjectSeederCode", _par.CreateSeederCodeProjectPlacePath, new List<string>(),
+            "Program.cs");
         starterCreator.CreateFileStructure();
     }
 }

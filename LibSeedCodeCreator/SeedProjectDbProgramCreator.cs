@@ -1,4 +1,5 @@
-﻿using CodeTools;
+﻿using System.Collections.Generic;
+using CodeTools;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
@@ -48,47 +49,49 @@ public sealed class SeedProjectDbProgramCreator
             "",
             new CodeBlock("if (userManager is null)",
                 "StShared.WriteErrorLine(\"userManager is null\", true)",
-                "return 3"),
+                "return 6"),
             "",
             "var roleManager = serviceProvider.GetService<RoleManager<AppRole>>()",
             "",
             new CodeBlock("if (roleManager is null)",
                 "StShared.WriteErrorLine(\"roleManager is null\", true)",
-                "return 3"),
+                "return 8"),
             "",
             $"{repositoryInterfaceName}? {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()",
             "",
             new CodeBlock($"if ({repositoryObjectName} is null)",
                 $"StShared.WriteErrorLine(\"{repositoryObjectName} is null\", true)",
-                "return 3"),
+                "return 9"),
             "",
             "IDataFixRepository? dataFixRepository =  serviceProvider.GetService<IDataFixRepository>()",
             "",
             new CodeBlock("if (dataFixRepository is null)",
                 "StShared.WriteErrorLine(\"dataFixRepository is null\", true)",
-                "return 3"),
+                "return 10"),
             "",
             "var carcassDataSeeder = serviceProvider.GetService<ILogger<CarcassDataSeeder>>()",
             "",
             new CodeBlock("if (carcassDataSeeder is null)",
                 "StShared.WriteErrorLine(\"carcassDataSeeder is null\", true)",
-                "return 3"),
+                "return 11"),
             "",
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.SecretDataFolder))",
                 "StShared.WriteErrorLine(\"par.SecretDataFolder is empty\", true)",
-                "return 3"),
+                "return 12"),
             "",
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)",
-                "return 3"),
+                "return 13"),
             "",
-            $"ProjectNewDataSeeder seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository)",
+            "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")",
+            "",
+            $"ProjectNewDataSeeder seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository, checkOnly)",
             new CodeBlock("if (seeder.SeedData())",
                 "return 0"),
             new CodeBlock("foreach (string mes in seeder.Messages)",
                 "logger.LogInformation(mes)"),
             "",
-            "return 1",
+            "return 14",
             "");
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock("",
@@ -100,9 +103,9 @@ public sealed class SeedProjectDbProgramCreator
         );
 
         var seedProjectDbProgramCreator = new ConsoleProgramCreator(_logger, fcbSeedProjectDbProgramCreatorUsing,
-            fcbGetJsonMainServiceCreatorCodeCommands,
-            fcbGetJsonMainCommands, "SeederParameters", _par.SeedProjectNamespace, "Seeds data in new database",
-            _par.SeedProjectPlacePath, "Program.cs");
+            fcbGetJsonMainServiceCreatorCodeCommands, fcbGetJsonMainCommands, "SeederParameters",
+            _par.SeedProjectNamespace, "Seeds data in new database", _par.SeedProjectPlacePath,
+            new List<string> { "CheckOnly" }, "Program.cs");
         seedProjectDbProgramCreator.CreateFileStructure();
 
         //var fakeStartUpCreator = new FakeStartUpCreator(_logger, _par);
