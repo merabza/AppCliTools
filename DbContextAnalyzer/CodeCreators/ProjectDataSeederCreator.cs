@@ -57,8 +57,8 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             $"Logger.LogInformation(\"Seeding {tableNameCapitalCamel}\")",
             "",
             new OneLineComment($"{_counter} {tableNameCapitalCamel}"),
-            $"var result = Use(seederFabric.Create{tableNameCapitalCamel}Seeder())",
-            new CodeBlock("if (result.IsSome)", "return (Err[])result"));
+            $"var result{_counter} = Use(seederFabric.Create{tableNameCapitalCamel}Seeder())",
+            new CodeBlock($"if (result{_counter}.IsSome)", $"return (Err[])result{_counter}"));
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");

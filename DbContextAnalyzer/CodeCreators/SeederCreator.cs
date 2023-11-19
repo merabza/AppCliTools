@@ -90,17 +90,17 @@ public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters pa
                 {
                     var seederModelObjectName = seederModelClassName.UnCapitalize();
                     fcb = new FlatCodeBlock(
-                        $"List<{seederModelClassName}> {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
-                        $"Dictionary<int, {tableNameSingular}> {tableNameCamel}Dict = Create{tableNameCapitalCamel}List({seedDataObjectName})",
+                        $"var {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
+                        $"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List({seedDataObjectName})",
                         new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
                             $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
-                        $"Dictionary<int, int> idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
+                        $"var idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
                         $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
                         new CodeBlock(
                             $"foreach ({seederModelClassName} {seederModelObjectName} in {seedDataObjectName}.Where(w => w.{entityData.SelfRecursiveField.Name} != null))",
                             $"{tableNameCamel}Dict[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{entityData.SelfRecursiveField.Name} = idsDict[{seederModelObjectName}.{entityData.SelfRecursiveField.Name}!.Value]"),
                         new CodeBlock(
-                            $"if (!{prPref}Repo.SaveChanges()",
+                            $"if (!{prPref}Repo.SaveChanges() )",
                             $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotBeSaved\", ErrorMessage = \"{seederModelClassName} entities cannot be saved\" }} }}"),
                         "return null"
                     );
@@ -108,7 +108,7 @@ public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters pa
                 else
                 {
                     fcb = new FlatCodeBlock(
-                        $"Dictionary<int, {tableNameSingular}> {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())",
+                        $"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())",
                         new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
                             $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
                         $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>({tableNameCamel}Dict.ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
@@ -130,8 +130,8 @@ public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters pa
                 if (entityData.SelfRecursiveField != null)
                 {
                     fcb = new FlatCodeBlock(
-                        $"List<{seederModelClassName}> {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
-                        $"List<{tableNameSingular}> {tableNameCamel}List = Create{tableNameCapitalCamel}List({seedDataObjectName})",
+                        $"var {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
+                        $"var {tableNameCamel}List = Create{tableNameCapitalCamel}List({seedDataObjectName})",
                         new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
                             $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
@@ -149,7 +149,7 @@ public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters pa
                     setParentsMethod = new CodeBlock(
                         $"private bool SetParents(List<{seederModelClassName}> {seedDataObjectName}, List<{tableNameSingular}> {tableNameCamel}List)",
                         "var tempData = DataSeederTempData.Instance",
-                        $"List<{tableNameSingular}> forUpdate = new List<{tableNameSingular}>()",
+                        $"var forUpdate = new List<{tableNameSingular}>()",
                         new CodeBlock(
                             $"foreach ({seederModelClassName} {seederModelObjectName} in {seedDataObjectName}.Where(w => w.{entityData.SelfRecursiveField.SubstituteField.Fields[0].FullName} != null))",
                             $"{tableNameSingular} oneRec = {tableNameCamel}List.SingleOrDefault(s => s.{keyFieldName} == {seederModelObjectName}.{keyFieldName})",
@@ -165,7 +165,7 @@ public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters pa
                 else
                 {
                     fcb = new FlatCodeBlock(
-                        $"List<{tableNameSingular}> {tableNameCamel}List = Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())",
+                        $"var {tableNameCamel}List = Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())",
                         new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
                             $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
