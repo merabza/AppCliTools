@@ -6,17 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace LibSeedCodeCreator;
 
-public sealed class CreateProjectSeederCodeProgramCreator // : CodeCreator
+public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {
-    private readonly ILogger _logger;
-    private readonly CreatorCreatorParameters _par;
-
-    public CreateProjectSeederCodeProgramCreator(CreatorCreatorParameters par, ILogger logger)
-        //: base(logger, par.CreateSeederCodeProjectPlacePath, "Program.cs")
-    {
-        _par = par;
-        _logger = logger;
-    }
+    //: base(logger, par.CreateSeederCodeProjectPlacePath, "Program.cs")
 
     //public override void CreateFileStructure()
     //{
@@ -110,8 +102,8 @@ public sealed class CreateProjectSeederCodeProgramCreator // : CodeCreator
 
     public void Go()
     {
-        var dbContextProjectName = $"{_par.ProjectPrefix}ScaffoldSeederDbSc";
-        var dbContextClassName = $"{_par.ProjectPrefix.Replace('.', '_')}DbScContext";
+        var dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
+        var dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
         var fcbAdditionalUsing = new FlatCodeBlock(
             $"using {dbContextProjectName}",
@@ -138,9 +130,9 @@ public sealed class CreateProjectSeederCodeProgramCreator // : CodeCreator
 
         //par.ProjectNamespace = "CreateGeoModelSeederCode",
         //par.ProjectPlacePath = "D:\\1WorkScaffoldSeeders\\GeoModel\\GeoModelScaffoldSeeder\\GeoModelScaffoldSeeder\\CreateGeoModelSeederCode",
-        var starterCreator = new ConsoleProgramCreator(_logger, fcbAdditionalUsing, null, fcbMainCommands,
-            "CreateProjectSeederCodeParameters", _par.CreateSeederCodeProjectNamespace,
-            "Creates Code for app CreateProjectSeederCode", _par.CreateSeederCodeProjectPlacePath, new List<string>(),
+        var starterCreator = new ConsoleProgramCreator(logger, fcbAdditionalUsing, null, fcbMainCommands,
+            "CreateProjectSeederCodeParameters", par.CreateSeederCodeProjectNamespace,
+            "Creates Code for app CreateProjectSeederCode", par.CreateSeederCodeProjectPlacePath, new List<string>(),
             "Program.cs");
         starterCreator.CreateFileStructure();
     }
