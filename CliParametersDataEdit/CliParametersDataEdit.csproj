@@ -6,9 +6,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Domain\**" />
-      <EmbeddedResource Remove="Domain\**" />
-      <None Remove="Domain\**" />
+        <Compile Remove="Domain\**" />
+        <EmbeddedResource Remove="Domain\**" />
+        <None Remove="Domain\**" />
     </ItemGroup>
 
     <ItemGroup>

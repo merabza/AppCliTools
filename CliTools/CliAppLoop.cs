@@ -127,7 +127,7 @@ public /*open*/ class CliAppLoop
                 case EMenuAction.Exit:
                     return true;
                 case EMenuAction.LoadSubMenu:
-                    if( !AddSubMenu(menuCommand.GetSubmenu()))
+                    if (!AddSubMenu(menuCommand.GetSubmenu()))
                         return false;
                     break;
                 case EMenuAction.LevelUp when _currentMenuSetLevel <= 0:
@@ -136,12 +136,12 @@ public /*open*/ class CliAppLoop
                     _currentMenuSetLevel--;
                     break;
                 case EMenuAction.Reload:
-                    if (!ReloadCurrentMenu()) 
+                    if (!ReloadCurrentMenu())
                         return false;
                     break;
                 case EMenuAction.GoToMenuLink:
-                    if (!GoToMenu(menuCommand.GetMenuLinkToGo())) 
-                        if (!ReloadCurrentMenu()) 
+                    if (!GoToMenu(menuCommand.GetMenuLinkToGo()))
+                        if (!ReloadCurrentMenu())
                             return false;
                     break;
                 default:
@@ -154,7 +154,7 @@ public /*open*/ class CliAppLoop
 
     private bool GoToMenu(string? menuLinkToGo)
     {
-        if ( menuLinkToGo is null)
+        if (menuLinkToGo is null)
             return false;
 
         var menuLine = menuLinkToGo.Split('/');
@@ -176,7 +176,7 @@ public /*open*/ class CliAppLoop
             BuildMainMenu();
         }
 
-        if (menuLine.Length <= 1 || menuLine[1] != _menuSetsList[_currentMenuSetLevel].Name) 
+        if (menuLine.Length <= 1 || menuLine[1] != _menuSetsList[_currentMenuSetLevel].Name)
             return true;
 
         for (var i = 2; i < menuLine.Length; i++)

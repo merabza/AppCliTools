@@ -19,7 +19,8 @@ public sealed class ConsoleProgramCreator : CodeCreator
 
     public ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAdditionalUsing,
         FlatCodeBlock? serviceCreatorCodeCommands, FlatCodeBlock fcbMainCommands, string parametersClassName,
-        string projectNamespace, string projectDescription, string placePath, List<string> possibleSwitches, string? codeFileName = null) : base(
+        string projectNamespace, string projectDescription, string placePath, List<string> possibleSwitches,
+        string? codeFileName = null) : base(
         logger, placePath, codeFileName)
     {
         _fcbAdditionalUsing = fcbAdditionalUsing;
@@ -33,7 +34,9 @@ public sealed class ConsoleProgramCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var strPossibleSwitches = _possibleSwitches.Count == 0 ? string.Empty : $", {string.Join(", ", _possibleSwitches.Select(s=>$"\"--{s}\""))}";
+        var strPossibleSwitches = _possibleSwitches.Count == 0
+            ? string.Empty
+            : $", {string.Join(", ", _possibleSwitches.Select(s => $"\"--{s}\""))}";
 
         var serviceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
             $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\"{strPossibleSwitches})");

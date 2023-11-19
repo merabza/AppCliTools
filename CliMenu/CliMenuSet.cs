@@ -82,7 +82,7 @@ public sealed class CliMenuSet
         if (_caption == null)
             return null;
         var parentCaption = ParentMenu?.GetCaption();
-        return parentCaption != null ? $"{parentCaption}/{_caption}" : $"/{_caption}" ;
+        return parentCaption != null ? $"{parentCaption}/{_caption}" : $"/{_caption}";
     }
 
     public void Show(bool clearBefore = true)
