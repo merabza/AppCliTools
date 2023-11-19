@@ -23,7 +23,8 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        _seedProjectSpecificDataMethodCodeBlock = new CodeBlock("protected override Option<Err[]> SeedProjectSpecificData()",
+        _seedProjectSpecificDataMethodCodeBlock = new CodeBlock(
+            "protected override Option<Err[]> SeedProjectSpecificData()",
             $"{_parameters.ProjectDataSeedersFabricClassName} seederFabric = ({_parameters.ProjectDataSeedersFabricClassName}) DataSeedersFabric",
             "",
             "Logger.LogInformation(\"Seed Project Data Started\")"

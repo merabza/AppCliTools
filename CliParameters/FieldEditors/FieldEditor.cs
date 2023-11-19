@@ -98,5 +98,4 @@ public /*open*/ class FieldEditor<T> : FieldEditor
         var toRet = (T?)currentRecordPropertyInfo.GetValue(record);
         return toRet ?? defaultValue;
     }
-
 }

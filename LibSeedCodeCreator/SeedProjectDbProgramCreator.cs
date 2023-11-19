@@ -6,37 +6,27 @@ using Microsoft.Extensions.Logging;
 
 namespace LibSeedCodeCreator;
 
-public sealed class SeedProjectDbProgramCreator
+public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {
-    private readonly ILogger _logger;
-    private readonly CreatorCreatorParameters _par;
-
-    public SeedProjectDbProgramCreator(CreatorCreatorParameters par, ILogger logger)
-    {
-        _par = par;
-        _logger = logger;
-    }
-
-
     public void Go()
     {
         //var dataSeedingProjectName = $"{_par.DbProjectNamespace}DataSeeding"; //GeoModelDataSeeding
         //var dataSeedingNewProjectName = $"{_par.DbProjectNamespace}NewDataSeeding"; //GeoModelNewDataSeeding
         //string dbProjectName = _par.ProjectPrefix + "Db"; //GeoModelDb
         //string dbContextClassName = _par.ProjectPrefix + "DbContext"; //GeoModelDbContext
-        var repositoryClassName = $"{_par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
+        var repositoryClassName = $"{par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
         var repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
-        var repositoryObjectName = $"{_par.ProjectPrefixShort.ToLower()}DataSeederRepository"; //gmDataSeederRepository
-        var projectNewDataSeedersFabric = $"{_par.ProjectPrefixShort}NewDataSeedersFabric"; //GmNewDataSeedersFabric
+        var repositoryObjectName = $"{par.ProjectPrefixShort.ToLower()}DataSeederRepository"; //gmDataSeederRepository
+        var projectNewDataSeedersFabric = $"{par.ProjectPrefixShort}NewDataSeedersFabric"; //GmNewDataSeedersFabric
 
 
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock(
             "using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models",
             "using Microsoft.AspNetCore.Identity",
-            $"using Seed{_par.DbProjectNamespace}",
-            $"using {_par.DbProjectNamespace}DataSeeding",
-            $"using {_par.DbProjectNamespace}NewDataSeeding");
+            $"using Seed{par.DbProjectNamespace}",
+            $"using {par.DbProjectNamespace}DataSeeding",
+            $"using {par.DbProjectNamespace}NewDataSeeding");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(
             //"",
@@ -105,9 +95,9 @@ public sealed class SeedProjectDbProgramCreator
             "SeedDbServicesCreator servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"SeedAppGrammarGeDb\", par.ConnectionStringSeed)"
         );
 
-        var seedProjectDbProgramCreator = new ConsoleProgramCreator(_logger, fcbSeedProjectDbProgramCreatorUsing,
+        var seedProjectDbProgramCreator = new ConsoleProgramCreator(logger, fcbSeedProjectDbProgramCreatorUsing,
             fcbGetJsonMainServiceCreatorCodeCommands, fcbGetJsonMainCommands, "SeederParameters",
-            _par.SeedProjectNamespace, "Seeds data in new database", _par.SeedProjectPlacePath,
+            par.SeedProjectNamespace, "Seeds data in new database", par.SeedProjectPlacePath,
             new List<string> { "CheckOnly" }, "Program.cs");
         seedProjectDbProgramCreator.CreateFileStructure();
 
@@ -117,7 +107,7 @@ public sealed class SeedProjectDbProgramCreator
         //var projectDesignTimeDbContextFactoryCreator = new ProjectDesignTimeDbContextFactoryCreator(_logger, _par);
         //projectDesignTimeDbContextFactoryCreator.CreateFileStructure();
 
-        var serviceCreatorCreator = new ServiceCreatorCreator(_logger, _par);
+        var serviceCreatorCreator = new ServiceCreatorCreator(logger, par);
         serviceCreatorCreator.CreateFileStructure();
     }
 }

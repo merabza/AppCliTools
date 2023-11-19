@@ -6,27 +6,17 @@ using System.Collections.Generic;
 
 namespace LibSeedCodeCreator;
 
-public sealed class GetJsonFromProjectDbProgramCreator
+public sealed class GetJsonFromProjectDbProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {
-    private readonly ILogger _logger;
-    private readonly CreatorCreatorParameters _par;
-
-    public GetJsonFromProjectDbProgramCreator(CreatorCreatorParameters par, ILogger logger)
-    {
-        _par = par;
-        _logger = logger;
-    }
-
-
     public void Go()
     {
-        var dbContextProjectName = $"{_par.ProjectPrefix}ScaffoldSeederDbSc";
-        var dbContextClassName = $"{_par.ProjectPrefix.Replace('.', '_')}DbScContext";
+        var dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
+        var dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
         var fcbGetJsonAdditionalUsing = new FlatCodeBlock(
             $"using {dbContextProjectName}",
             "using Microsoft.EntityFrameworkCore",
-            $"using GetJsonFromScaffold{_par.ProjectPrefix}Db");
+            $"using GetJsonFromScaffold{par.ProjectPrefix}Db");
 
         //var fcbGetJsonMainCommands = new FlatCodeBlock(
         //    "",
@@ -69,14 +59,14 @@ public sealed class GetJsonFromProjectDbProgramCreator
             "return 0",
             "");
 
-        var getJsonCreator = new ConsoleProgramCreator(_logger, fcbGetJsonAdditionalUsing, null, fcbGetJsonMainCommands,
-            "GetJsonParameters", _par.GetJsonProjectNamespace, "Creates Json files for seeder",
-            _par.GetJsonProjectPlacePath, new List<string>(), "Program.cs");
+        var getJsonCreator = new ConsoleProgramCreator(logger, fcbGetJsonAdditionalUsing, null, fcbGetJsonMainCommands,
+            "GetJsonParameters", par.GetJsonProjectNamespace, "Creates Json files for seeder",
+            par.GetJsonProjectPlacePath, new List<string>(), "Program.cs");
 
         getJsonCreator.CreateFileStructure();
 
         var creatorForJsonFilesCreator =
-            new FakeCreatorForJsonFilesCreator(_logger, _par);
+            new FakeCreatorForJsonFilesCreator(logger, par);
         creatorForJsonFilesCreator.CreateFileStructure();
         creatorForJsonFilesCreator.FinishAndSave();
     }

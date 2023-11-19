@@ -42,7 +42,8 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         if (_argsList.Count > 0)
         {
             //var useIndex = _argsList.IndexOf("--use");
-            var useIndex = Array.FindIndex(_argsList.ToArray(), t => t.Equals("--use", StringComparison.CurrentCultureIgnoreCase));
+            var useIndex = Array.FindIndex(_argsList.ToArray(),
+                t => t.Equals("--use", StringComparison.CurrentCultureIgnoreCase));
 
             if (useIndex + 1 < _argsList.Count)
             {
@@ -51,10 +52,10 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
             }
 
             var switches = new List<string>();
-            if ( useIndex > 0 )
+            if (useIndex > 0)
                 switches.AddRange(_argsList.Take(useIndex));
             if (useIndex + 2 < _argsList.Count)
-                switches.AddRange(_argsList.Skip(useIndex+2));
+                switches.AddRange(_argsList.Skip(useIndex + 2));
 
             foreach (var swt in switches.Where(swt =>
                          _possibleSwitches.Contains(swt, StringComparer.CurrentCultureIgnoreCase)))
