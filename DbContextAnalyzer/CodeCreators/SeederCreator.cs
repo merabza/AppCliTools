@@ -222,6 +222,8 @@ public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters pa
                 : $"using {parameters.DbProjectNamespace}.{parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : "",
             isIdentity ? "using Microsoft.AspNetCore.Identity" : "",
+            "using LanguageExt",
+            "using SystemToolsShared",
             $"namespace {parameters.ProjectNamespace}.{(isCarcassType ? parameters.CarcassSeedersFolderName : parameters.ProjectSeedersFolderName)}",
             "",
             new CodeBlock(
