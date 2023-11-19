@@ -47,13 +47,13 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
                 "StShared.WriteErrorLine(\"roleManager is null\", true)",
                 "return 8"),
             "",
-            $"{repositoryInterfaceName}? {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()",
+            $"var {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()",
             "",
             new CodeBlock($"if ({repositoryObjectName} is null)",
                 $"StShared.WriteErrorLine(\"{repositoryObjectName} is null\", true)",
                 "return 9"),
             "",
-            "IDataFixRepository? dataFixRepository =  serviceProvider.GetService<IDataFixRepository>()",
+            "var dataFixRepository =  serviceProvider.GetService<IDataFixRepository>()",
             "",
             new CodeBlock("if (dataFixRepository is null)",
                 "StShared.WriteErrorLine(\"dataFixRepository is null\", true)",
@@ -75,7 +75,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             "",
             "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")",
             "",
-            $"ProjectNewDataSeeder seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository, checkOnly)",
+            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository, checkOnly)",
             "",
             "var seedDataResult = seeder.SeedData()",
             "",
@@ -92,7 +92,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
                 "StShared.WriteErrorLine(\"par.ConnectionStringSeed is empty\", true)",
                 "return 3"),
             "",
-            "SeedDbServicesCreator servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"SeedAppGrammarGeDb\", par.ConnectionStringSeed)"
+            $"var servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"{par.SeedProjectNamespace}\", par.ConnectionStringSeed)"
         );
 
         var seedProjectDbProgramCreator = new ConsoleProgramCreator(logger, fcbSeedProjectDbProgramCreatorUsing,

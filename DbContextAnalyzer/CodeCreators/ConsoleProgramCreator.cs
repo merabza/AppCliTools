@@ -39,7 +39,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
             : $", {string.Join(", ", _possibleSwitches.Select(s => $"\"--{s}\""))}";
 
         var serviceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
-            $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\"{strPossibleSwitches})");
+            $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\")");
 
 
         var block = new CodeBlock("",
@@ -58,7 +58,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
             "ILogger<Program>? logger = null",
             new CodeBlock("try",
                 $"Console.WriteLine(\"{_projectDescription}\")",
-                $"IArgumentsParser argParser = new ArgumentsParser<{_parametersClassName}>(args, \"{_projectNamespace}\", null)",
+                $"IArgumentsParser argParser = new ArgumentsParser<{_parametersClassName}>(args, \"{_projectNamespace}\", null, {strPossibleSwitches})",
                 new CodeBlock("switch (argParser.Analysis())",
                     "case EParseResult.Ok: break",
                     "case EParseResult.Usage: return 1",
