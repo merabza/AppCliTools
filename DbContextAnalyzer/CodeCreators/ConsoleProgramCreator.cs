@@ -15,7 +15,7 @@ public sealed class ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAddit
     {
         var strPossibleSwitches = possibleSwitches.Count == 0
             ? string.Empty
-            : string.Join(", ", possibleSwitches.Select(s => $"\"--{s}\""));
+            : $", {string.Join(", ", possibleSwitches.Select(s => $"\"--{s}\""))}";
 
         var finalServiceCreatorCodeCommands = serviceCreatorCodeCommands ?? new FlatCodeBlock(
             $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{projectNamespace}\")");
@@ -37,7 +37,7 @@ public sealed class ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAddit
             "ILogger<Program>? logger = null",
             new CodeBlock("try",
                 $"Console.WriteLine(\"{projectDescription}\")",
-                $"IArgumentsParser argParser = new ArgumentsParser<{parametersClassName}>(args, \"{projectNamespace}\", null, {strPossibleSwitches})",
+                $"IArgumentsParser argParser = new ArgumentsParser<{parametersClassName}>(args, \"{projectNamespace}\", null{strPossibleSwitches})",
                 new CodeBlock("switch (argParser.Analysis())",
                     "case EParseResult.Ok: break",
                     "case EParseResult.Usage: return 1",
