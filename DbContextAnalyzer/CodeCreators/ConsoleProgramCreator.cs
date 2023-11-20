@@ -6,40 +6,19 @@ using Microsoft.Extensions.Logging;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class ConsoleProgramCreator : CodeCreator
+public sealed class ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAdditionalUsing,
+    FlatCodeBlock? serviceCreatorCodeCommands, FlatCodeBlock fcbMainCommands, string parametersClassName,
+    string projectNamespace, string projectDescription, string placePath, IReadOnlyCollection<string> possibleSwitches,
+    string? codeFileName = null) : CodeCreator(logger, placePath, codeFileName)
 {
-    private readonly FlatCodeBlock _fcbAdditionalUsing;
-    private readonly FlatCodeBlock _fcbMainCommands;
-    private readonly string _parametersClassName;
-    private readonly string _projectDescription;
-    private readonly List<string> _possibleSwitches;
-
-    private readonly string _projectNamespace;
-    private readonly FlatCodeBlock? _serviceCreatorCodeCommands;
-
-    public ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAdditionalUsing,
-        FlatCodeBlock? serviceCreatorCodeCommands, FlatCodeBlock fcbMainCommands, string parametersClassName,
-        string projectNamespace, string projectDescription, string placePath, List<string> possibleSwitches,
-        string? codeFileName = null) : base(
-        logger, placePath, codeFileName)
-    {
-        _fcbAdditionalUsing = fcbAdditionalUsing;
-        _serviceCreatorCodeCommands = serviceCreatorCodeCommands;
-        _fcbMainCommands = fcbMainCommands;
-        _parametersClassName = parametersClassName;
-        _projectNamespace = projectNamespace;
-        _projectDescription = projectDescription;
-        _possibleSwitches = possibleSwitches;
-    }
-
     public override void CreateFileStructure()
     {
-        var strPossibleSwitches = _possibleSwitches.Count == 0
+        var strPossibleSwitches = possibleSwitches.Count == 0
             ? string.Empty
-            : $", {string.Join(", ", _possibleSwitches.Select(s => $"\"--{s}\""))}";
+            : string.Join(", ", possibleSwitches.Select(s => $"\"--{s}\""));
 
-        var serviceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
-            $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\")");
+        var finalServiceCreatorCodeCommands = serviceCreatorCodeCommands ?? new FlatCodeBlock(
+            $"ServicesCreator servicesCreator = new ServicesCreator(par.LogFolder, null, \"{projectNamespace}\")");
 
 
         var block = new CodeBlock("",
@@ -53,25 +32,25 @@ public sealed class ConsoleProgramCreator : CodeCreator
             "using Microsoft.Extensions.DependencyInjection",
             "using Microsoft.Extensions.Logging",
             "",
-            _fcbAdditionalUsing,
+            fcbAdditionalUsing,
             "",
             "ILogger<Program>? logger = null",
             new CodeBlock("try",
-                $"Console.WriteLine(\"{_projectDescription}\")",
-                $"IArgumentsParser argParser = new ArgumentsParser<{_parametersClassName}>(args, \"{_projectNamespace}\", null, {strPossibleSwitches})",
+                $"Console.WriteLine(\"{projectDescription}\")",
+                $"IArgumentsParser argParser = new ArgumentsParser<{parametersClassName}>(args, \"{projectNamespace}\", null, {strPossibleSwitches})",
                 new CodeBlock("switch (argParser.Analysis())",
                     "case EParseResult.Ok: break",
                     "case EParseResult.Usage: return 1",
                     "case EParseResult.Error: return 2",
                     "default: throw new ArgumentOutOfRangeException()"),
                 "",
-                $"var par = ({_parametersClassName}?)argParser.Par",
+                $"var par = ({parametersClassName}?)argParser.Par",
                 "",
                 new CodeBlock("if (par is null)",
                     "StShared.WriteErrorLine(\"CreateProjectSeederCodeParameters is null\", true)",
                     "return 3"),
                 "",
-                serviceCreatorCodeCommands,
+                finalServiceCreatorCodeCommands,
                 "var serviceProvider = servicesCreator.CreateServiceProvider(LogEventLevel.Information)",
                 "",
                 new CodeBlock("if (serviceProvider is null)",
@@ -84,7 +63,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
                     "StShared.WriteErrorLine(\"logger is null\", true)",
                     "return 5"),
                 "",
-                _fcbMainCommands),
+                fcbMainCommands),
             new CodeBlock("catch (Exception e)",
                 "StShared.WriteException(e, true, logger)",
                 "return 7"));
