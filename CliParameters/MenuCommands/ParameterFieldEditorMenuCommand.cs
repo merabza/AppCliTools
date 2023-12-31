@@ -3,6 +3,7 @@ using CliMenu;
 using CliParameters.FieldEditors;
 using LibDataInput;
 using SystemToolsShared;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.MenuCommands;
 

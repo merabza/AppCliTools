@@ -37,9 +37,12 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 
     private string? CheckArchiverRunner(string archiverName)
     {
-        var newDotnetRunner = StShared.RunProcessWithOutput(UseConsole, null, "which", archiverName);
-        if (!string.IsNullOrWhiteSpace(newDotnetRunner) && File.Exists(newDotnetRunner))
-            return newDotnetRunner;
+        var runProcessWithOutputResult = StShared.RunProcessWithOutput(UseConsole, null, "which", archiverName);
+        if (runProcessWithOutputResult.IsT1)
+            return null;
+        var archiverRunner = runProcessWithOutputResult.AsT0.Item1;
+        if (!string.IsNullOrWhiteSpace(archiverRunner) && File.Exists(archiverRunner))
+            return archiverRunner;
         return null;
     }
 }

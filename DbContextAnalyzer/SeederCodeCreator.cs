@@ -149,12 +149,8 @@ public sealed class SeederCodeCreator
 
         var place = new DirectoryInfo(_getJsonCreatorParameters.PlacePath);
         var solutionDir = place.Parent?.Parent;
-        if (solutionDir is null)
-            return true;
-
-        StShared.RunProcess(true, _logger, "jb", $"cleanupcode --exclude=\"**.json\" {solutionDir.FullName}");
-
-        return true;
+        return solutionDir is null || StShared
+            .RunProcess(true, _logger, "jb", $"cleanupcode --exclude=\"**.json\" {solutionDir.FullName}").IsNone;
     }
 
 

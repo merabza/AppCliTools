@@ -8,13 +8,14 @@ using CliParametersApiClientsEdit;
 using CliParametersDataEdit.Cruders;
 using DatabasesManagement;
 using DbTools.Models;
-using LanguageExt;
 using LibApiClientParameters;
 using LibDatabaseParameters;
 using LibDataInput;
 using LibMenuInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
+using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParametersApiClientsDbEdit;
@@ -63,21 +64,19 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 
         IDatabaseApiClient? databaseClient = null;
         if (databaseServerConnectionData != null)
-            databaseClient =
-                DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger, databaseServerConnectionData,
-                    null, null);
+            databaseClient = DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger, databaseServerConnectionData, null, null, CancellationToken.None).Result;
 
         if (databaseClient == null && apiClientSettings != null)
-            databaseClient = DatabaseApiClient.Create(_logger, apiClientSettings, null, null);
+            databaseClient = DatabaseApiClient.Create(_logger, apiClientSettings, null, null, CancellationToken.None).Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();
         if (databaseClient is not null)
         {
             var getDatabaseNamesResult = databaseClient.GetDatabaseNames(CancellationToken.None).Result;
-            if (getDatabaseNamesResult.IsSome)
-            {
-                databaseInfos = (List<DatabaseInfoModel>)getDatabaseNamesResult;
-            }
+            if (getDatabaseNamesResult.IsT0)
+                databaseInfos = getDatabaseNamesResult.AsT0;
+            else
+                Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
         }
         CliMenuSet databasesMenuSet = new();
         if (_canUseNewDatabaseName)

@@ -25,6 +25,7 @@ public /*open*/ class FieldEditor
 
     public virtual void UpdateField(string? recordKey, object recordForUpdate)
     {
+
     }
 
     public void AddParameterEditMenuItem(CliMenuSet menuSet, ParametersEditor parametersEditor)

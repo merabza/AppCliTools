@@ -106,17 +106,25 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     if (dc is null)
                         return false;
 
-                    if (!dc.TestConnection(false))
+                    var testConnectionResult = dc.TestConnection(false);
+                    if (testConnectionResult.IsSome)
                         return false;
 
                     //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
                     //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-                    var dbServerInfo = dc.GetDbServerInfo(CancellationToken.None).Result;
+                    var getDbServerInfoResult = dc.GetDbServerInfo(CancellationToken.None).Result;
+                    if ( getDbServerInfoResult.IsT1)
+                        return false;
+
+                    var dbServerInfo = getDbServerInfoResult.AsT0;
 
                     Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
                     Console.WriteLine(
                         $"Server is {(dbServerInfo.AllowsCompression ? "" : "NOT ")} Allows Compression");
-                    Console.WriteLine($"Server is {(dc.IsServerLocal() ? "" : "NOT ")} local");
+                    var isServerLocalResult = dc.IsServerLocal(CancellationToken.None).Result;
+                    Console.WriteLine(isServerLocalResult.IsT0
+                        ? $"Server is {(isServerLocalResult.AsT0 ? "" : "NOT ")} local"
+                        : "Server is local or not is not detected");
 
                     Console.WriteLine($"Server Product Version is {dbServerInfo.ServerProductVersion}");
                     Console.WriteLine($"Server Instance Name is {dbServerInfo.ServerInstanceName}");

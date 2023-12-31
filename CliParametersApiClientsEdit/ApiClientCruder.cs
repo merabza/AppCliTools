@@ -8,6 +8,7 @@ using Installer.AgentClients;
 using LibApiClientParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
+using SystemToolsShared;
 
 namespace CliParametersApiClientsEdit;
 
@@ -72,14 +73,25 @@ public sealed class ApiClientCruder : ParCruder
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
             var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
 
-            var version = apiClient.GetVersion(CancellationToken.None).Result;
+            var getVersionResult = apiClient.GetVersion(CancellationToken.None).Result;
 
-            if (string.IsNullOrWhiteSpace(version))
+            if (getVersionResult.IsT1)
+            {
+                Err.PrintErrorsOnConsole(getVersionResult.AsT1);
                 return false;
+            }   
+            else
+            {
+                var version = getVersionResult.AsT0;
 
-            Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
 
-            return true;
+                if (string.IsNullOrWhiteSpace(version))
+                    return false;
+
+                Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
+
+                return true;
+            }
         }
         catch (Exception e)
         {

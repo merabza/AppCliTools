@@ -1,6 +1,7 @@
 ﻿using CliMenu;
 using CliParameters.FieldEditors;
 using LibParameters;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.MenuCommands;
 
