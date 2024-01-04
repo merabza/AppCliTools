@@ -64,10 +64,12 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 
         IDatabaseApiClient? databaseClient = null;
         if (databaseServerConnectionData != null)
-            databaseClient = DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger, databaseServerConnectionData, null, null, CancellationToken.None).Result;
+            databaseClient = DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger,
+                databaseServerConnectionData, null, null, CancellationToken.None).Result;
 
         if (databaseClient == null && apiClientSettings != null)
-            databaseClient = DatabaseApiClient.Create(_logger, apiClientSettings, null, null, CancellationToken.None).Result;
+            databaseClient = DatabaseApiClient.Create(_logger, apiClientSettings, null, null, CancellationToken.None)
+                .Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();
         if (databaseClient is not null)
@@ -78,6 +80,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             else
                 Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
         }
+
         CliMenuSet databasesMenuSet = new();
         if (_canUseNewDatabaseName)
             databasesMenuSet.AddMenuItem(new MenuCommandWithStatus(null), "New Database Name");

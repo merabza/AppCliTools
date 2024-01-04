@@ -8,8 +8,11 @@ using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class SeederCreator(ILogger logger, SeederCodeCreatorParameters parameters,
-    ExcludesRulesParametersDomain excludesRulesParameters, string placePath) : CodeCreator(logger, placePath)
+public sealed class SeederCreator(
+    ILogger logger,
+    SeederCodeCreatorParameters parameters,
+    ExcludesRulesParametersDomain excludesRulesParameters,
+    string placePath) : CodeCreator(logger, placePath)
 {
     public override void CreateFileStructure()
     {

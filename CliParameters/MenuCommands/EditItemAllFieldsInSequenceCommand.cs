@@ -2,6 +2,7 @@
 using CliMenu;
 using LibDataInput;
 using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.MenuCommands;

@@ -1,5 +1,5 @@
-﻿using LibParameters;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using LibParameters;
 
 namespace CliParameters;
 

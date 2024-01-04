@@ -9,10 +9,10 @@ namespace CliParameters.FieldEditors;
 public /*open*/ class FieldEditor
 {
     private readonly bool _isSubObject;
+    public readonly bool EnterFieldDataOnCreate;
     protected readonly string FieldName;
     public readonly string PropertyName;
     public bool Enabled = true;
-    public readonly bool EnterFieldDataOnCreate;
 
     protected FieldEditor(string propertyName, string? propertyDescriptor, bool isSubObject,
         bool enterFieldDataOnCreate = false)
@@ -25,7 +25,6 @@ public /*open*/ class FieldEditor
 
     public virtual void UpdateField(string? recordKey, object recordForUpdate)
     {
-
     }
 
     public void AddParameterEditMenuItem(CliMenuSet menuSet, ParametersEditor parametersEditor)

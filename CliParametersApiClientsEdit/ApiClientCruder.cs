@@ -79,19 +79,17 @@ public sealed class ApiClientCruder : ParCruder
             {
                 Err.PrintErrorsOnConsole(getVersionResult.AsT1);
                 return false;
-            }   
-            else
-            {
-                var version = getVersionResult.AsT0;
-
-
-                if (string.IsNullOrWhiteSpace(version))
-                    return false;
-
-                Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
-
-                return true;
             }
+
+            var version = getVersionResult.AsT0;
+
+
+            if (string.IsNullOrWhiteSpace(version))
+                return false;
+
+            Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
+
+            return true;
         }
         catch (Exception e)
         {

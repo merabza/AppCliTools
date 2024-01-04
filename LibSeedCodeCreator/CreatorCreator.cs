@@ -5,6 +5,7 @@ using CliParameters;
 using DbContextAnalyzer.Models;
 using LibParameters;
 using Microsoft.Extensions.Logging;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace LibSeedCodeCreator;

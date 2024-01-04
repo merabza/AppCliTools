@@ -6,9 +6,16 @@ using Microsoft.Extensions.Logging;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class ConsoleProgramCreator(ILogger logger, FlatCodeBlock fcbAdditionalUsing,
-    FlatCodeBlock? serviceCreatorCodeCommands, FlatCodeBlock fcbMainCommands, string parametersClassName,
-    string projectNamespace, string projectDescription, string placePath, IReadOnlyCollection<string> possibleSwitches,
+public sealed class ConsoleProgramCreator(
+    ILogger logger,
+    FlatCodeBlock fcbAdditionalUsing,
+    FlatCodeBlock? serviceCreatorCodeCommands,
+    FlatCodeBlock fcbMainCommands,
+    string parametersClassName,
+    string projectNamespace,
+    string projectDescription,
+    string placePath,
+    IReadOnlyCollection<string> possibleSwitches,
     string? codeFileName = null) : CodeCreator(logger, placePath, codeFileName)
 {
     public override void CreateFileStructure()

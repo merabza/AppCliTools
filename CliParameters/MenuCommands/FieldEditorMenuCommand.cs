@@ -4,6 +4,7 @@ using CliParameters.FieldEditors;
 using LibDataInput;
 using LibParameters;
 using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.MenuCommands;

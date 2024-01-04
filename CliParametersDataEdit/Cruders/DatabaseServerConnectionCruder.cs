@@ -113,7 +113,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
                     //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
                     var getDbServerInfoResult = dc.GetDbServerInfo(CancellationToken.None).Result;
-                    if ( getDbServerInfoResult.IsT1)
+                    if (getDbServerInfoResult.IsT1)
                         return false;
 
                     var dbServerInfo = getDbServerInfoResult.AsT0;

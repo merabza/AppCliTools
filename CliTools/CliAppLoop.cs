@@ -195,7 +195,9 @@ public /*open*/ class CliAppLoop
     private bool ReloadCurrentMenu()
     {
         if (_currentMenuSetLevel == 0)
+        {
             BuildMainMenu();
+        }
         else
         {
             var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];

@@ -1,4 +1,5 @@
 ﻿using CliMenu;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.MenuCommands;

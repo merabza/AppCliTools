@@ -2,6 +2,7 @@
 using CliParameters.FieldEditors;
 using LibFileParameters.Models;
 using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParametersEdit.FieldEditors;

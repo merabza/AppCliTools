@@ -14,6 +14,7 @@ using LibDataInput;
 using LibMenuInput;
 using Microsoft.Extensions.Logging;
 using SqlServerDbTools;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParametersDataEdit.FieldEditors;
@@ -67,7 +68,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         var getDatabaseInfosResult = dc.GetDatabaseInfos(CancellationToken.None).Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();
-        if(getDatabaseInfosResult.IsT0)
+        if (getDatabaseInfosResult.IsT0)
             databaseInfos = getDatabaseInfosResult.AsT0;
 
         CliMenuSet databasesMenuSet = new();

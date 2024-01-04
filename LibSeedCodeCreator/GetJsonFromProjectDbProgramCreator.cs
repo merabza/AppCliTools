@@ -1,8 +1,8 @@
-﻿using CodeTools;
+﻿using System.Collections.Generic;
+using CodeTools;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 
 namespace LibSeedCodeCreator;
 

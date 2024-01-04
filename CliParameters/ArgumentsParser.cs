@@ -16,11 +16,10 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
     private readonly List<string> _argsList = new();
     private readonly string? _encKey;
-    private readonly string[] _possibleSwitches;
-    private readonly List<string> _switches = new();
     private readonly string _jsonFileName;
     private readonly ParametersLoader<T> _parLoader;
     private readonly string _pathToContentRoot = Directory.GetCurrentDirectory();
+    private readonly string[] _possibleSwitches;
 
     public ArgumentsParser(IEnumerable<string> args, string appName, string? encKey, params string[] possibleSwitches)
     {
@@ -34,7 +33,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
     public IParameters? Par => _parLoader.Par;
     public string? ParametersFileName => _parLoader.ParametersFileName;
-    public List<string> Switches => _switches;
+    public List<string> Switches { get; } = new();
 
     public EParseResult Analysis()
     {
@@ -59,7 +58,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
             foreach (var swt in switches.Where(swt =>
                          _possibleSwitches.Contains(swt, StringComparer.CurrentCultureIgnoreCase)))
-                _switches.Add(swt);
+                Switches.Add(swt);
             //if (string.Equals(_argsList[0], "--use", StringComparison.CurrentCultureIgnoreCase))
             //    if (_argsList.Count > 1)
             //    {

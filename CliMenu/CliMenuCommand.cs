@@ -1,5 +1,6 @@
 ﻿using System;
 using LibDataInput;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliMenu;
