@@ -14,6 +14,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
     private int _counter;
     private CodeBlock? _seedProjectSpecificDataMethodCodeBlock;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ProjectDataSeederCreator(ILogger logger, SeederCodeCreatorParameters parameters) : base(logger,
         parameters.PlacePath, "ProjectDataSeeder.cs")
     {
