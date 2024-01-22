@@ -7,10 +7,10 @@ namespace DbContextAnalyzer.Domain;
 
 public sealed class ExcludesRulesParametersDomain
 {
-    public List<string> ExcludeTables { get; } = new();
-    public Dictionary<string, string> SingularityExceptions { get; } = new();
-    public List<TableFieldDomain> ExcludeFields { get; } = new();
-    public List<ReplaceFieldNameDomain> ReplaceFieldNames { get; } = new();
+    public List<string> ExcludeTables { get; } = [];
+    public Dictionary<string, string> SingularityExceptions { get; } = [];
+    public List<TableFieldDomain> ExcludeFields { get; } = [];
+    public List<ReplaceFieldNameDomain> ReplaceFieldNames { get; } = [];
 
     public static ExcludesRulesParametersDomain CreateInstance(string? excludesRulesParametersFilePath)
     {

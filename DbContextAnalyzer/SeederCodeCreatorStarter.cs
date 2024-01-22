@@ -14,6 +14,7 @@ public sealed class SeederCodeCreatorStarter
     private readonly ILogger _logger;
     private readonly CreateProjectSeederCodeParameters _par;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SeederCodeCreatorStarter(ILogger logger, CreateProjectSeederCodeParameters par)
     {
         _logger = logger;

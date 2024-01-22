@@ -21,6 +21,7 @@ public sealed class SeederCodeCreator
     private readonly ILogger _logger;
     private readonly SeederCodeCreatorParameters _seederCodeCreatorParameters;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SeederCodeCreator(ILogger logger, DbContext carcassContext, DbContext dbContext,
         GetJsonCreatorParameters getJsonCreatorParameters, SeederCodeCreatorParameters seederCodeCreatorParameters,
         ExcludesRulesParametersDomain excludesRulesParameters)

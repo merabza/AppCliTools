@@ -15,7 +15,7 @@ public sealed class Relations
     private readonly DbContext _dbContext;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly Stack<string> _preventLoopList = new();
-    public readonly Dictionary<string, EntityData> Entities = new();
+    public readonly Dictionary<string, EntityData> Entities = [];
 
     public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)
     {
