@@ -4,6 +4,7 @@ namespace CodeTools;
 
 public sealed class FieldData
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FieldData(string name, string oldName, string realTypeName, string fullName, bool isNullable,
         bool isNullableByParents)
     {

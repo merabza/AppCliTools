@@ -16,6 +16,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
     private readonly GetJsonCreatorParameters _parameters;
     private CodeBlock? _runMethodCodeBlock;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CreatorForJsonFilesCreator(ILogger logger, GetJsonCreatorParameters getJsonCreatorParameters,
         ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, getJsonCreatorParameters.PlacePath,
         "JsonFilesCreator.cs")
@@ -44,20 +45,22 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             new CodeBlock("public sealed class JsonFilesCreator",
                 $"private readonly {_parameters.DbContextClassName} _context",
                 "private readonly string _seederCreatorJsonFolderName",
+                "",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public JsonFilesCreator({_parameters.DbContextClassName} context, string seederCreatorJsonFolderName)",
                     "_context = context",
                     "_seederCreatorJsonFolderName = seederCreatorJsonFolderName"),
                 new CodeBlock("private void SaveJson(object obj, string name)",
-                    "string sampleParamsJsonText = JsonConvert.SerializeObject(obj, Formatting.Indented)",
-                    "string fileName = $\"{name}.json\"",
+                    "var sampleParamsJsonText = JsonConvert.SerializeObject(obj, Formatting.Indented)",
+                    "var fileName = $\"{name}.json\"",
                     "File.WriteAllText(Path.Combine(_seederCreatorJsonFolderName, fileName), sampleParamsJsonText)",
                     "Console.WriteLine($\"{fileName} created\")"),
                 _runMethodCodeBlock));
         CodeFile.AddRange(block.CodeItems);
     }
 
-    private string GetIncludes(FieldData fieldData, int level = 0)
+    private static string GetIncludes(FieldData fieldData, int level = 0)
     {
         if (fieldData.SubstituteField == null || fieldData.SubstituteField.Fields.Count == 0)
             return "";
@@ -107,14 +110,14 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
     private static Dictionary<string, FieldData[]> GetFields(FieldData fieldData)
     {
         if (fieldData.SubstituteField?.Fields is null || !(fieldData.SubstituteField?.Fields.Count > 0))
-            return new Dictionary<string, FieldData[]> { { fieldData.FullName, new[] { fieldData } } };
+            return new Dictionary<string, FieldData[]> { { fieldData.FullName, [fieldData] } };
         var dictionary = new Dictionary<string, FieldData[]>();
         foreach (var fields in fieldData.SubstituteField.Fields.Select(GetFields))
         foreach (var pair in fields)
         {
             var tempList = new List<FieldData> { fieldData };
             tempList.AddRange(pair.Value);
-            dictionary.Add(pair.Key, tempList.ToArray());
+            dictionary.Add(pair.Key, [.. tempList]);
         }
 
         return dictionary;
@@ -190,7 +193,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             "",
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")",
             "",
-            $"List<{seederModelClassName}> {tableName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
+            $"var {tableName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
             $"SaveJson({tableName}, \"{tableNameCapitalCamel}\")");
 
         if (_runMethodCodeBlock is null)

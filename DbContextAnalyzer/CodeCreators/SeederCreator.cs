@@ -201,7 +201,7 @@ public sealed class SeederCreator(
             else
                 createMethod = new CodeBlock(
                     $"protected virtual List<{tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
-                    atLeastOneSubstitute ? "DataSeederTempData tempData = DataSeederTempData.Instance" : null,
+                    atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
                     $"return {seedDataObjectName}.Select(s => new {tableNameSingular}{{ {fieldsListStr} }}).ToList()");
             usedList = true;
         }
@@ -230,7 +230,8 @@ public sealed class SeederCreator(
             $"namespace {parameters.ProjectNamespace}.{(isCarcassType ? parameters.CarcassSeedersFolderName : parameters.ProjectSeedersFolderName)}",
             "",
             new CodeBlock(
-                $"public /*open*/ class {className}({additionalParameters}string dataSeedFolder, {parameters.DataSeederRepositoryInterfaceName} repo) : {baseClassName}({additionalParameters2}dataSeedFolder, repo)",
+                $"public /*open*/ class {className} : {baseClassName}",
+new CodeBlock($"public {className}({additionalParameters}string dataSeedFolder, {parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
                 createByJsonFile,
                 createMethod,
                 setParentsMethod));

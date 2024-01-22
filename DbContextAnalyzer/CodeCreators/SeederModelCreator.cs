@@ -16,6 +16,7 @@ public sealed class SeederModelCreator : CodeCreator
 
     private readonly Dictionary<string, string> _singularityExceptions;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SeederModelCreator(ILogger logger, string placePath, string projectNamespace, string modelsFolderName,
         Dictionary<string, string> singularityExceptions) : base(logger, Path.Combine(placePath, modelsFolderName))
     {
@@ -46,7 +47,8 @@ public sealed class SeederModelCreator : CodeCreator
         constructorCodeBlock.AddRange(fieldDataList.Select(fd =>
             new CodeCommand($"{fd.FullName} = {ValidateIdentifier(fd.FullName.UnCapitalize())}")));
 
-        var classCodeBlock = new CodeBlock("public sealed class " + className, constructorCodeBlock);
+        var classCodeBlock = new CodeBlock("public sealed class " + className, "",
+            new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), constructorCodeBlock);
 
         var usingSystem =
             fieldDataList.Any(a => a.RealTypeName == "DateTime") ? new CodeCommand("using System") : null;

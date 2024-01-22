@@ -9,6 +9,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
 {
     private readonly CreatorCreatorParameters _par;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ServiceCreatorCreator(ILogger logger, CreatorCreatorParameters par) : base(logger,
         par.SeedProjectPlacePath,
         "SeedDbServicesCreator.cs")
@@ -46,6 +47,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
                 "",
                 "private readonly string _connectionString",
                 "",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     "public SeedDbServicesCreator(string? logFolder, string? logFileName, string appName, string connectionString) : base(logFolder, logFileName, appName)",
                     "_connectionString = connectionString"),

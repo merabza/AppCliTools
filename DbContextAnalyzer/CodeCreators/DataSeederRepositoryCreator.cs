@@ -9,6 +9,7 @@ public sealed class DataSeederRepositoryCreator : CodeCreator
 {
     private readonly SeederCodeCreatorParameters _par;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DataSeederRepositoryCreator(ILogger logger, SeederCodeCreatorParameters par) : base(logger,
         par.PlacePath, $"{par.ProjectPrefixShort}DataSeederRepository.cs")
     {
@@ -26,6 +27,8 @@ public sealed class DataSeederRepositoryCreator : CodeCreator
             "",
             new CodeBlock(
                 $"public sealed class {_par.ProjectPrefixShort}DataSeederRepository : DataSeederRepository, {_par.DataSeederRepositoryInterfaceName}",
+                "",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {_par.ProjectPrefixShort}DataSeederRepository({_par.ProjectDbContextClassName} ctx, ILogger<{_par.ProjectPrefixShort}DataSeederRepository> logger)  : base(ctx, logger)"
                 )));

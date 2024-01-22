@@ -155,7 +155,7 @@ public sealed class Relations
 
         FieldData Selector(IProperty s)
         {
-            var name = replaceDict.ContainsKey(s.Name) ? replaceDict[s.Name] : s.Name;
+            var name = replaceDict.TryGetValue(s.Name, out var value) ? value : s.Name;
 
             var forKeys = s.GetContainingForeignKeys().ToList();
             var isNullable = s.IsNullable;
