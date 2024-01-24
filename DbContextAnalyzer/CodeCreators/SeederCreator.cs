@@ -231,7 +231,8 @@ public sealed class SeederCreator(
             "",
             new CodeBlock(
                 $"public /*open*/ class {className} : {baseClassName}",
-new CodeBlock($"public {className}({additionalParameters}string dataSeedFolder, {parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
+                new CodeBlock(
+                    $"public {className}({additionalParameters}string dataSeedFolder, {parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
                 createByJsonFile,
                 createMethod,
                 setParentsMethod));
