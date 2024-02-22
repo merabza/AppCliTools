@@ -12,6 +12,7 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
     private readonly string _projectDbContextClassName;
     private readonly string _projectNamespace;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FakeProjectDesignTimeDbContextFactoryCreator(ILogger logger, string projectPlacePath,
         string dbProjectNamespace, string projectNamespace, string projectDbContextClassName,
         string connectionStringParameterName, string parametersFileName) : base(logger, projectPlacePath,
@@ -39,10 +40,12 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
             new OneLineComment("ეს კლასი საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მიგრაციასთან მუშაობა."),
             new OneLineComment(
                 "ანუ დეველოპერ ბაზის წაშლა და ახლიდან დაგენერირება, ან მიგრაციაში ცვლილებების გაკეთება"),
+            new OneLineComment(" ReSharper disable once UnusedType.Global"),
             new CodeBlock(
                 $"public sealed class {designTimeDbContextFactoryClassName} : DesignTimeDbContextFactory<{_projectDbContextClassName}>",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {designTimeDbContextFactoryClassName}()  : base(\"{projectMigrationProjectName}\", \"{_connectionStringParameterName}\", \"{_parametersFileName.Replace("\\", "\\\\")}\")")));
+                    $"public {designTimeDbContextFactoryClassName}()  : base(\"{projectMigrationProjectName}\", \"{_connectionStringParameterName}\", @\"{_parametersFileName}\")")));
         CodeFile.AddRange(block.CodeItems);
         FinishAndSave();
     }
