@@ -123,10 +123,11 @@ public /*open*/ class Cruder : IFieldEditors
     }
 
     //public საჭიროა ApAgent.FieldEditors.ArchiverFieldEditor.UpdateField მეთოდისთვის
+    // ReSharper disable once MemberCanBeProtected.Global
     public virtual List<string> GetKeys()
     {
         var crudersDictionary = GetCrudersDictionary();
-        return crudersDictionary.Keys.OrderBy(x => x).ToList();
+        return [.. crudersDictionary.Keys.OrderBy(x => x)];
     }
 
     protected virtual void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)
@@ -186,7 +187,7 @@ public /*open*/ class Cruder : IFieldEditors
             return false;
         }
 
-        if (!Inputer.InputBool($"Are you sure, you wont to delete {recordKey}", true, false))
+        if (!Inputer.InputBool($"Are you sure, you wont to delete {recordKey}?", true, false))
             return false;
 
         RemoveRecordWithKey(recordKey);

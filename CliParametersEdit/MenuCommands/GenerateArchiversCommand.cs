@@ -12,6 +12,7 @@ public sealed class GenerateArchiversCommand : CliMenuCommand
 {
     private readonly IParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public GenerateArchiversCommand(IParametersManager parametersManager)
     {
         _parametersManager = parametersManager;

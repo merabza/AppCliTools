@@ -7,6 +7,7 @@ public sealed class BoolFieldEditor : FieldEditor<bool>
 {
     private readonly bool _defaultValue;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public BoolFieldEditor(string propertyName, bool defaultValue) : base(propertyName, true)
     {
         _defaultValue = defaultValue;

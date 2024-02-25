@@ -1,7 +1,6 @@
 ﻿using System;
 using LibDataInput;
 
-// ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliMenu;
 
@@ -10,6 +9,7 @@ public /*open*/ class CliMenuCommand
     private readonly bool _askRunAction;
     protected readonly string? ParentMenuName;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuCommand(string? name = null, string? parentMenuName = null, bool askRunAction = false,
         EStatusView statusView = EStatusView.Brackets, bool nameIsStatus = false)
     {
@@ -40,7 +40,7 @@ public /*open*/ class CliMenuCommand
             if (description is not null)
                 Console.WriteLine(GetActionDescription());
 
-            if (!Inputer.InputBool("Are you sure, you want to run this action", true, false))
+            if (!Inputer.InputBool("Are you sure, you want to run this action?", true, false))
                 return;
         }
 
