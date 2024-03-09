@@ -63,6 +63,7 @@ public /*open*/ class CliMenuCommand
             Console.WriteLine("{0} Finished. {1}", Name, timeTakenMessage);
         else
             _logger.LogInformation("{Name} Finished. {timeTakenMessage}", Name, timeTakenMessage);
+        StShared.Pause();
 
         //if (MessagesDataManager is not null)
         //    await MessagesDataManager.SendMessage(UserName, $"{_actionName} Finished. {timeTakenMessage}",
