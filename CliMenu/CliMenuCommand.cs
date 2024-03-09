@@ -1,5 +1,7 @@
 ﻿using System;
 using LibDataInput;
+using Microsoft.Extensions.Logging;
+using SystemToolsShared;
 
 
 namespace CliMenu;
@@ -7,16 +9,21 @@ namespace CliMenu;
 public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
+    private readonly bool _countRunDuration;
+    private readonly ILogger? _logger;
     protected readonly string? ParentMenuName;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuCommand(string? name = null, string? parentMenuName = null, bool askRunAction = false,
-        EStatusView statusView = EStatusView.Brackets, bool nameIsStatus = false)
+        EStatusView statusView = EStatusView.Brackets, bool nameIsStatus = false, bool countRunDuration = false,
+        ILogger? logger = null)
     {
         MenuAction = EMenuAction.Nothing;
         Name = name;
         ParentMenuName = parentMenuName;
         _askRunAction = askRunAction;
+        _countRunDuration = countRunDuration;
+        _logger = logger;
         StatusView = statusView;
         NameIsStatus = nameIsStatus;
     }
@@ -44,7 +51,23 @@ public /*open*/ class CliMenuCommand
                 return;
         }
 
+        //დავინიშნოთ დრო პროცესისათვის
+        var startDateTime = DateTime.Now;
+
         RunAction();
+
+        if (!_countRunDuration) 
+            return;
+        var timeTakenMessage = StShared.TimeTakenMessage(startDateTime);
+        if (_logger is null)
+            Console.WriteLine("{0} Finished. {1}", Name, timeTakenMessage);
+        else
+            _logger.LogInformation("{Name} Finished. {timeTakenMessage}", Name, timeTakenMessage);
+
+        //if (MessagesDataManager is not null)
+        //    await MessagesDataManager.SendMessage(UserName, $"{_actionName} Finished. {timeTakenMessage}",
+        //        cancellationToken);
+
     }
 
 
