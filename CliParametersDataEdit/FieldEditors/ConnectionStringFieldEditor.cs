@@ -16,6 +16,7 @@ public sealed class ConnectionStringFieldEditor : FieldEditor<string>
 
     private ConnectionStringParametersManager? _memoryParametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ConnectionStringFieldEditor(ILogger logger, string connectionStringParameterName,
         string dataProviderParameterName, IParametersManager parametersManager) : base(connectionStringParameterName,
         true, null, true)

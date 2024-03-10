@@ -12,6 +12,7 @@ public sealed class DatabaseConnectionParametersFieldEditor : FieldEditor<Databa
 
     private readonly ParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseConnectionParametersFieldEditor(ILogger logger, string devDatabaseConnectionParametersParameterName,
         ParametersManager parametersManager, bool enterFieldDataOnCreate = false) : base(
         devDatabaseConnectionParametersParameterName, enterFieldDataOnCreate, null, true)
