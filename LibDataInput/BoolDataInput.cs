@@ -7,6 +7,7 @@ public sealed class BoolDataInput : DataInput
     private readonly bool _defaultValue;
     private readonly string _fieldName;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public BoolDataInput(string fieldName, bool defaultValue = true)
     {
         _fieldName = fieldName;

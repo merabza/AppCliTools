@@ -8,6 +8,7 @@ namespace CliParametersEdit.FieldEditors;
 
 public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchemaDetail>>
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SmartSchemaDetailsFieldEditor(string propertyName, bool enterFieldDataOnCreate = false) : base(propertyName,
         enterFieldDataOnCreate, null, true)
     {
@@ -15,7 +16,7 @@ public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchema
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        var currentValuesDict = GetValue(record) ?? new List<SmartSchemaDetail>();
+        var currentValuesDict = GetValue(record) ?? [];
 
         SmartSchemaDetailCruder smartSchemaDetailCruder = new(currentValuesDict);
         var menuSet = smartSchemaDetailCruder.GetListMenu();

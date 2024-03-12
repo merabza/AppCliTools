@@ -12,6 +12,7 @@ public sealed class SelectFromListInput : DataInput
     private readonly List<string> _sourceList;
     private readonly bool _useNone;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SelectFromListInput(string fieldName, List<string> sourceList, string? defaultValue = default,
         bool useNone = false)
     {

@@ -19,7 +19,7 @@ public /*open*/ class Cruder : IFieldEditors
 
     public readonly string CrudName;
     public readonly string CrudNamePlural;
-    protected readonly List<FieldEditor> FieldEditors = new();
+    protected readonly List<FieldEditor> FieldEditors = [];
 
     protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
@@ -41,7 +41,7 @@ public /*open*/ class Cruder : IFieldEditors
 
     protected virtual Dictionary<string, ItemData> GetCrudersDictionary()
     {
-        return new Dictionary<string, ItemData>();
+        return [];
     }
 
 
@@ -156,7 +156,7 @@ public /*open*/ class Cruder : IFieldEditors
 
     public CliMenuSet GetListMenu()
     {
-        CliMenuSet cruderSubMenuSet = new(CrudNamePlural);
+        CliMenuSet cruderSubMenuSet = new(CrudNamePlural, true);
 
         NewItemCommand newItemCommand = new(this, CrudNamePlural, $"New {CrudName}");
         cruderSubMenuSet.AddMenuItem(newItemCommand);
@@ -320,7 +320,7 @@ public /*open*/ class Cruder : IFieldEditors
             substituteName = item.GetItemKey() ?? substituteName;
 
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
-        var itemSubMenuSet = new CliMenuSet(substituteName);
+        var itemSubMenuSet = new CliMenuSet(substituteName, true);
 
         DeleteCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");

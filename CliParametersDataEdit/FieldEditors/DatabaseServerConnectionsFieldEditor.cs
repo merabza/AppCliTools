@@ -14,6 +14,7 @@ public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionar
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseServerConnectionsFieldEditor(string propertyName, IParametersManager parametersManager,
         ILogger logger, bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
     {

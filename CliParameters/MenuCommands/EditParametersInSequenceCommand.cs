@@ -26,7 +26,7 @@ public sealed class EditParametersInSequenceCommand : CliMenuCommand
                 return;
             }
 
-            if (_parametersEditor.EditParametersInSequence(ParentMenuName))
+            if (_parametersEditor.EditParametersInSequence())
             {
                 MenuAction = EMenuAction.LevelUp;
                 return;

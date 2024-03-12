@@ -44,7 +44,7 @@ public /*open*/ class PathInput : DataInput
 
         var input = Console.ReadKey(true);
 
-        while (input.Key != ConsoleKey.Enter)
+        while (true)
         {
             var currentInput = sb.ToString();
             switch (input.Key)
@@ -66,7 +66,7 @@ public /*open*/ class PathInput : DataInput
                     var names = dir.GetDirectories($"{fileName}*")
                         .Select(s => s.Name + Path.DirectorySeparatorChar).ToList();
                     AddFiles(dir, fileName, names);
-                    names = names.OrderBy(o => o).ToList();
+                    names = [.. names.OrderBy(o => o)];
 
                     var candidate = names.MinBy(o => o);
                     if (candidate != null && names.Count > 1)
@@ -102,6 +102,28 @@ public /*open*/ class PathInput : DataInput
                     }
 
                     break;
+                case ConsoleKey.Delete:
+                    if (sb.Length > 0)
+                    {
+                        ClearCurrentLine();
+                        sb.Clear();
+                    }
+                    else
+                    {
+                        if (Inputer.InputBool("Delete entire text?", false))
+                        {
+                            EnteredPath = "";
+                            return true;
+                        }
+                    }
+                    break;
+                case ConsoleKey.Enter:
+                    Console.Write(input.KeyChar);
+                    EnteredPath = sb.ToString();
+                    Console.WriteLine($"Entered {_fieldName} is: {EnteredPath}");
+                    if (_warningIfFileDoesNotExists && !CheckExists())
+                        StShared.WriteWarningLine($"{EnteredPath} does not exists", true);
+                    return true;
                 default:
                 {
                     var key = input.KeyChar;
@@ -114,17 +136,6 @@ public /*open*/ class PathInput : DataInput
             input = Console.ReadKey(true);
         }
 
-        Console.Write(input.KeyChar);
-
-        EnteredPath = sb.ToString();
-
-        Console.WriteLine($"Entered {_fieldName} is: {EnteredPath}");
-
-        if (_warningIfFileDoesNotExists && !CheckExists())
-            StShared.WriteWarningLine($"{EnteredPath} does not exists", true);
-
-
-        return true;
     }
 
     protected virtual bool CheckExists()

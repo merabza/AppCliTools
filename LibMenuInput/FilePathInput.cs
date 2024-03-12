@@ -6,6 +6,7 @@ namespace LibMenuInput;
 
 public sealed class FilePathInput : PathInput
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FilePathInput(string fieldName, string? defaultValue = null, bool warningIfFileDoesNotExists = true) :
         base(fieldName, false, defaultValue, warningIfFileDoesNotExists)
     {

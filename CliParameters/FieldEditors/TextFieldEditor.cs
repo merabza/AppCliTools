@@ -8,6 +8,7 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
     private readonly string? _defaultValue;
     private readonly char _passwordCharacter;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public TextFieldEditor(string propertyName, string? defaultValue = default,
         char passwordCharacter = default) : base(propertyName, true)
     {

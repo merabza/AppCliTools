@@ -13,7 +13,7 @@ namespace CliParameters;
 public /*open*/ class ParametersEditor : IFieldEditors
 {
     private readonly IParametersManager _parametersManager;
-    protected readonly List<FieldEditor> FieldEditors = new();
+    protected readonly List<FieldEditor> FieldEditors = [];
 
     protected ParametersEditor(string name, IParameters parameters, IParametersManager parametersManager)
     {
@@ -39,7 +39,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
             fieldEditor.Enabled = enable;
     }
 
-    public string? GetStatus()
+    public static string? GetStatus()
     {
         return null;
     }
@@ -51,20 +51,20 @@ public /*open*/ class ParametersEditor : IFieldEditors
         _parametersManager.Save(_parametersManager.Parameters, message, true, saveAsFilePath);
     }
 
-    protected virtual string GetMainMenuCaption()
+    private string GetMainMenuCaption()
     {
         return Name;
     }
 
-    protected virtual void MenuTopCommands(CliMenuSet parametersEditorMenuSet)
-    {
-    }
+    //private void MenuTopCommands(CliMenuSet parametersEditorMenuSet)
+    //{
+    //}
 
-    public virtual CliMenuSet GetParametersMainMenu()
+    public CliMenuSet GetParametersMainMenu()
     {
-        CliMenuSet parametersEditorMenuSet = new(GetMainMenuCaption());
+        CliMenuSet parametersEditorMenuSet = new(GetMainMenuCaption(),true);
 
-        MenuTopCommands(parametersEditorMenuSet);
+        //MenuTopCommands(parametersEditorMenuSet);
 
         //თუ საჭირო გახდა პარამეტრების ნაწილმა უნდა განსაზღვროს სხვა ნაწილის რედაქტირების შესაძლებლობა
         //CheckFieldsEnables(item);
@@ -90,7 +90,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
     }
 
     //ყველა პარამეტრის რედაქტირება თანმიმდევრობით
-    internal virtual bool EditParametersInSequence(string parentMenuName)
+    internal bool EditParametersInSequence()
     {
         //პარამეტრების შეცვლის პროცესი დაიწყო
         Console.WriteLine($"Edit {Name} parameters started");
@@ -106,7 +106,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
         return true;
     }
 
-    protected bool InputParametersData()
+    private bool InputParametersData()
     {
         try
         {
@@ -144,7 +144,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
         }
     }
 
-    public virtual string GetSaveMessage()
+    public static string GetSaveMessage()
     {
         return "Parameters Saved";
     }

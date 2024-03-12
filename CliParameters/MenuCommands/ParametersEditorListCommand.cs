@@ -26,6 +26,6 @@ public sealed class ParametersEditorListCommand : CliMenuCommand
 
     protected override string? GetStatus()
     {
-        return _parametersEditor.GetStatus();
+        return ParametersEditor.GetStatus();
     }
 }

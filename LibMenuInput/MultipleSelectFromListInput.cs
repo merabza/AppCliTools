@@ -11,6 +11,7 @@ public sealed class MultipleSelectFromListInput : DataInput
     private readonly string _fieldName;
     public readonly Dictionary<string, bool> SourceListWithChecks;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MultipleSelectFromListInput(string fieldName, Dictionary<string, bool> sourceListWithChecks)
     {
         _fieldName = fieldName;

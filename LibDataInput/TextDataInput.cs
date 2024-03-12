@@ -9,6 +9,7 @@ public sealed class TextDataInput : DataInput
     private readonly string _fieldName;
     private readonly char _passwordCharacter;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public TextDataInput(string fieldName, string? defaultValue = default, char passwordCharacter = default)
     {
         _fieldName = fieldName;
@@ -60,6 +61,21 @@ public sealed class TextDataInput : DataInput
                             : new string(_passwordCharacter, sb.Length));
                     }
 
+                    break;
+                case ConsoleKey.Delete:
+                    if (sb.Length > 0)
+                    {
+                        sb.Clear();
+                        ClearCurrentInput(promptLength);
+                    }
+                    else
+                    {
+                        if (Inputer.InputBool("Delete entire text?", false))
+                        {
+                            Text = "";
+                            return true;
+                        }
+                    }
                     break;
                 default:
                     if (ch.KeyChar >= 32)

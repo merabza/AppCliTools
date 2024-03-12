@@ -63,9 +63,18 @@ public /*open*/ class CliAppLoop
         {
             if (refreshList)
             {
-                if (_currentMenuSetLevel == 0)
-                    if (!BuildMainMenu())
-                        return false;
+                ReloadCurrentMenu();
+                //if (_currentMenuSetLevel == 0)
+                //{
+                //    if (!BuildMainMenu())
+                //        return false;
+                //}
+                //else
+                //{
+                //    if (!ReBuildMenu(_currentMenuSetLevel))
+                //        return false;
+                //}
+
                 ShowMenu(inFirstTime);
                 inFirstTime = false;
             }

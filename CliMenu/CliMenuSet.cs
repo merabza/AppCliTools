@@ -8,16 +8,19 @@ namespace CliMenu;
 public sealed class CliMenuSet
 {
     private readonly string? _caption;
-    private readonly List<string> _errorMessages = new();
+    private readonly bool _isSubMenu;
+    private readonly List<string> _errorMessages = [];
 
-    public CliMenuSet(string? caption = null)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public CliMenuSet(string? caption = null, bool isSubMenu = false)
     {
         _caption = caption;
+        _isSubMenu = isSubMenu;
     }
 
     public string Name => _caption ?? string.Empty;
 
-    private List<CliMenuItem> MenuItems { get; } = new();
+    private List<CliMenuItem> MenuItems { get; } = [];
     public CliMenuSet? ParentMenu { get; set; }
 
     public CliMenuItem? GetMenuItemWithName(string menuItemName)
@@ -42,7 +45,8 @@ public sealed class CliMenuSet
             ? consoleKeyInfo.KeyChar.ToString()
             : consoleKeyInfo.Key.ToString().ToLower();
 
-        var menuItem = MenuItems.SingleOrDefault(w => w.Key != null && w.Key.ToLower() == key);
+        var menuItem = MenuItems.SingleOrDefault(w =>
+            w.Key != null && w.Key.Equals(key, StringComparison.CurrentCultureIgnoreCase));
         if (menuItem == null)
             return null;
 

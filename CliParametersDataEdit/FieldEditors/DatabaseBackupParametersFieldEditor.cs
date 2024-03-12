@@ -9,6 +9,7 @@ public sealed class DatabaseBackupParametersFieldEditor : FieldEditor<DatabaseBa
 {
     private readonly IParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseBackupParametersFieldEditor(string propertyName, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
     {
