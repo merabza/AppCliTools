@@ -9,12 +9,12 @@ namespace DbContextAnalyzer.CodeCreators;
 public sealed class ConsoleProgramCreator : CodeCreator
 {
     private readonly FlatCodeBlock _fcbAdditionalUsing;
-    private readonly FlatCodeBlock? _serviceCreatorCodeCommands;
     private readonly FlatCodeBlock _fcbMainCommands;
     private readonly string _parametersClassName;
-    private readonly string _projectNamespace;
-    private readonly string _projectDescription;
     private readonly IReadOnlyCollection<string> _possibleSwitches;
+    private readonly string _projectDescription;
+    private readonly string _projectNamespace;
+    private readonly FlatCodeBlock? _serviceCreatorCodeCommands;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ConsoleProgramCreator(ILogger logger,

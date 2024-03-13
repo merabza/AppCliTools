@@ -76,6 +76,7 @@ public sealed class TextDataInput : DataInput
                             return true;
                         }
                     }
+
                     break;
                 default:
                     if (ch.KeyChar >= 32)

@@ -5,7 +5,6 @@ using LibDataInput;
 using LibParameters;
 using SystemToolsShared;
 
-
 namespace CliParameters.MenuCommands;
 
 public sealed class FieldEditorMenuCommand : CliMenuCommand

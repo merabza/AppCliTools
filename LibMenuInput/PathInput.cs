@@ -116,6 +116,7 @@ public /*open*/ class PathInput : DataInput
                             return true;
                         }
                     }
+
                     break;
                 case ConsoleKey.Enter:
                     Console.Write(input.KeyChar);
@@ -135,7 +136,6 @@ public /*open*/ class PathInput : DataInput
 
             input = Console.ReadKey(true);
         }
-
     }
 
     protected virtual bool CheckExists()

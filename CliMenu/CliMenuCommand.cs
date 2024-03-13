@@ -3,7 +3,6 @@ using LibDataInput;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
-
 namespace CliMenu;
 
 public /*open*/ class CliMenuCommand
@@ -56,7 +55,7 @@ public /*open*/ class CliMenuCommand
 
         RunAction();
 
-        if (!_countRunDuration) 
+        if (!_countRunDuration)
             return;
         var timeTakenMessage = StShared.TimeTakenMessage(startDateTime);
         if (_logger is null)
@@ -68,7 +67,6 @@ public /*open*/ class CliMenuCommand
         //if (MessagesDataManager is not null)
         //    await MessagesDataManager.SendMessage(UserName, $"{_actionName} Finished. {timeTakenMessage}",
         //        cancellationToken);
-
     }
 
 
