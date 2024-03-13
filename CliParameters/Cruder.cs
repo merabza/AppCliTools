@@ -156,7 +156,7 @@ public /*open*/ class Cruder : IFieldEditors
 
     public CliMenuSet GetListMenu()
     {
-        CliMenuSet cruderSubMenuSet = new(CrudNamePlural, true);
+        CliMenuSet cruderSubMenuSet = new(CrudNamePlural);
 
         NewItemCommand newItemCommand = new(this, CrudNamePlural, $"New {CrudName}");
         cruderSubMenuSet.AddMenuItem(newItemCommand);
@@ -320,7 +320,7 @@ public /*open*/ class Cruder : IFieldEditors
             substituteName = item.GetItemKey() ?? substituteName;
 
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
-        var itemSubMenuSet = new CliMenuSet(substituteName, true);
+        var itemSubMenuSet = new CliMenuSet(substituteName);
 
         DeleteCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");

@@ -8,14 +8,12 @@ namespace CliMenu;
 public sealed class CliMenuSet
 {
     private readonly string? _caption;
-    private readonly bool _isSubMenu;
     private readonly List<string> _errorMessages = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CliMenuSet(string? caption = null, bool isSubMenu = false)
+    public CliMenuSet(string? caption = null)
     {
         _caption = caption;
-        _isSubMenu = isSubMenu;
     }
 
     public string Name => _caption ?? string.Empty;

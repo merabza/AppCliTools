@@ -62,7 +62,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
     public CliMenuSet GetParametersMainMenu()
     {
-        CliMenuSet parametersEditorMenuSet = new(GetMainMenuCaption(),true);
+        CliMenuSet parametersEditorMenuSet = new(GetMainMenuCaption());
 
         //MenuTopCommands(parametersEditorMenuSet);
 
