@@ -96,7 +96,8 @@ public sealed class CliMenuSet
             Console.WriteLine(caption);
         Console.WriteLine();
 
-        foreach (var menuItem in MenuItems) menuItem.CliMenuCommand.CountStatus();
+        foreach (var menuItem in MenuItems) 
+            menuItem.CliMenuCommand.CountStatus();
 
 
         var width = Console.WindowWidth - 6;
