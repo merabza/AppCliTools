@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\ParametersManagement\LibApiClientParameters\LibApiClientParameters.csproj" />
-        <ProjectReference Include="..\..\ToolsManagement\Installer\Installer.csproj" />
+        <ProjectReference Include="..\..\ToolsManagement\ApiClientsManagement\ApiClientsManagement.csproj" />
         <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
     </ItemGroup>
 
