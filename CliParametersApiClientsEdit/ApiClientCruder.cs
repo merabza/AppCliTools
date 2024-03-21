@@ -22,6 +22,7 @@ public sealed class ApiClientCruder : ParCruder
         _logger = logger;
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.Server)));
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey)));
+        FieldEditors.Add(new BoolFieldEditor(nameof(ApiClientSettings.WithMessaging), false));
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
