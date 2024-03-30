@@ -95,7 +95,9 @@ public /*open*/ class FieldEditor<T> : FieldEditor
             return defaultValue;
         var currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName) ??
                                         throw new DataInputException($"property {PropertyName} not found");
-        var toRet = (T?)currentRecordPropertyInfo.GetValue(record);
-        return toRet ?? defaultValue;
+        var toRet = currentRecordPropertyInfo.GetValue(record);
+        if (toRet is null)
+            return defaultValue;
+        return (T?)toRet ?? defaultValue;
     }
 }
