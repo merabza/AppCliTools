@@ -14,7 +14,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 {
     private readonly string _appName;
 
-    private readonly List<string> _argsList = new();
+    private readonly List<string> _argsList = [];
     private readonly string? _encKey;
     private readonly string _jsonFileName;
     private readonly ParametersLoader<T> _parLoader;
@@ -33,7 +33,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
     public IParameters? Par => _parLoader.Par;
     public string? ParametersFileName => _parLoader.ParametersFileName;
-    public List<string> Switches { get; } = new();
+    public List<string> Switches { get; } = [];
 
     public EParseResult Analysis()
     {
