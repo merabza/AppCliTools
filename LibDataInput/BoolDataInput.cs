@@ -25,7 +25,7 @@ public sealed class BoolDataInput : DataInput
         {
             var ch = Console.ReadKey(true);
             var key = ch.Key == ConsoleKey.Enter ? _defaultValue ? "y" : "n" : ch.Key.Value().ToLower();
-            if (key == "y" || key == "n")
+            if (key is "y" or "n")
             {
                 Value = key == "y";
                 Console.Write(key);
