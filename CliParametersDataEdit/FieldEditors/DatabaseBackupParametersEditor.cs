@@ -12,9 +12,9 @@ public sealed class DatabaseBackupParametersEditor : ParametersEditor
         "Database Backup ParametersEditor", parameters, parametersManager)
     {
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.BackupNamePrefix)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.DateMask)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.BackupFileExtension)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.BackupNameMiddlePart)));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.DateMask), "yyyyMMddHHmmss"));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.BackupFileExtension), ".bak"));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.BackupNameMiddlePart), "_FullDb_"));
         //FIXME აქ სასურველია დადგინდეს შეუძლია თუ არა სერვერს კომპრესია და ისე განისაზღვროს ძირითადი მნიშვნელობა
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseBackupParametersModel.Compress), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseBackupParametersModel.Verify), true));
