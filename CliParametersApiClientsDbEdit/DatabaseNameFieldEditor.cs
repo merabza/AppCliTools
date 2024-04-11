@@ -79,6 +79,8 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 databaseInfos = getDatabaseNamesResult.AsT0;
             else
                 Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+            //+
+            //databaseClient.Dispose();
         }
 
         CliMenuSet databasesMenuSet = new();

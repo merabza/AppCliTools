@@ -7,15 +7,14 @@ namespace DbContextAnalyzer.CodeCreators;
 
 public sealed class FakeCreatorForJsonFilesCreator : CodeCreator
 {
-    private readonly ILogger _logger;
-
+    
     private readonly CreatorCreatorParameters _par;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FakeCreatorForJsonFilesCreator(ILogger logger, CreatorCreatorParameters par) : base(logger,
         par.GetJsonProjectPlacePath, "JsonFilesCreator.cs")
     {
         _par = par;
-        _logger = logger;
     }
 
     public override void CreateFileStructure()

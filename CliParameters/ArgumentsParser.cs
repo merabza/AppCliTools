@@ -103,7 +103,8 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
             return;
 
         Console.WriteLine("Try to use current Directory");
-        var processModule = Process.GetCurrentProcess().MainModule;
+        // ReSharper disable once using
+        using var processModule = Process.GetCurrentProcess().MainModule;
 
         if (processModule == null)
             return;

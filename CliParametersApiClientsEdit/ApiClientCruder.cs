@@ -72,7 +72,9 @@ public sealed class ApiClientCruder : ParCruder
             Console.WriteLine("Try connect to Test Api Client...");
 
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
-            var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
+            // ReSharper disable once using
+            // ReSharper disable once DisposableConstructor
+            using var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
 
             var getVersionResult = apiClient.GetVersion(CancellationToken.None).Result;
 

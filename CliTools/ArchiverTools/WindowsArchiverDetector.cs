@@ -7,6 +7,7 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
     private const string WinRar = "WinRar";
     private const string WinZip = "WinZip";
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public WindowsArchiverDetector(bool useConsole, string fileExtension) : base(useConsole, fileExtension)
     {
     }
@@ -35,12 +36,12 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
 
     private string? GetProgramPath(string fileType)
     {
-        char[] separators = { ',' };
+        char[] separators = [','];
 
-        var extFile = fileType;
-        var subKeyName = extFile + "\\DefaultIcon";
+        var subKeyName = fileType + "\\DefaultIcon";
 #pragma warning disable CA1416 // Validate platform compatibility
-        var key = Registry.ClassesRoot.OpenSubKey(subKeyName);
+        // ReSharper disable once using
+        using var key = Registry.ClassesRoot.OpenSubKey(subKeyName);
         var subKeyVal = key?.GetValue(key.GetValueNames()[0])?.ToString();
 #pragma warning restore CA1416 // Validate platform compatibility
         if (subKeyVal == null)

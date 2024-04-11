@@ -72,7 +72,8 @@ public sealed class SeederModelCreator : CodeCreator
 
     private static string ValidateIdentifier(string identifier)
     {
-        var provider = CodeDomProvider.CreateProvider("C#");
+        // ReSharper disable once using
+        using var provider = CodeDomProvider.CreateProvider("C#");
         return provider.IsValidIdentifier(identifier) ? identifier : $"@{identifier}";
     }
 }

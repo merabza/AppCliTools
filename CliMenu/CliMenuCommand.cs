@@ -44,7 +44,7 @@ public /*open*/ class CliMenuCommand
         {
             var description = GetActionDescription();
             if (description is not null)
-                Console.WriteLine(GetActionDescription());
+                Console.WriteLine(description);
 
             if (!Inputer.InputBool("Are you sure, you want to run this action?", true, false))
                 return;
@@ -77,7 +77,7 @@ public /*open*/ class CliMenuCommand
 
     protected virtual string? GetActionDescription()
     {
-        return null;
+        return Name;
     }
 
     public virtual CliMenuSet? GetSubmenu()
