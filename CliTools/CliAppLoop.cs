@@ -145,7 +145,7 @@ public /*open*/ class CliAppLoop
                     _currentMenuSetLevel--;
                     break;
                 case EMenuAction.Reload:
-                    StShared.Pause();
+                    StShared.Pause(); 
                     if (!ReloadCurrentMenu())
                         return false;
                     break;
