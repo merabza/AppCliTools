@@ -7,6 +7,7 @@ public sealed class CruderListCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CruderListCommand(Cruder cruder) : base(cruder.CrudNamePlural)
     {
         _cruder = cruder;
