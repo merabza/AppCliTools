@@ -5,13 +5,13 @@ using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class EditParametersInSequenceCommand : CliMenuCommand
+public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
 {
     private readonly ParametersEditor _parametersEditor;
 
-    public EditParametersInSequenceCommand(ParametersEditor parametersEditor) : base("Edit Parameters in sequence")
+    public EditParametersInSequenceCliMenuCommand(ParametersEditor parametersEditor) : base("Edit Parameters in sequence")
     {
         _parametersEditor = parametersEditor;
     }

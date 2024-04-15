@@ -1,14 +1,14 @@
 ﻿using CliMenu;
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
 //გამოიყენება ApAgent-ში
-public sealed class CruderListCommand : CliMenuCommand
+public sealed class CruderListCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CruderListCommand(Cruder cruder) : base(cruder.CrudNamePlural)
+    public CruderListCliMenuCommand(Cruder cruder) : base(cruder.CrudNamePlural)
     {
         _cruder = cruder;
     }

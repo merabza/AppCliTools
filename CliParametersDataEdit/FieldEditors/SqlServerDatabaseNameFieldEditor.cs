@@ -4,8 +4,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using CliMenu;
+using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
-using CliParameters.MenuCommands;
 using CliParametersDataEdit.Models;
 using DbTools;
 using DbTools.Models;
@@ -72,11 +72,11 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             databaseInfos = getDatabaseInfosResult.AsT0;
 
         CliMenuSet databasesMenuSet = new();
-        databasesMenuSet.AddMenuItem(new MenuCommandWithStatus(null), "New Database Name");
+        databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(null), "New Database Name");
 
         var keys = databaseInfos.Select(s => s.Name).ToList();
         foreach (var listItem in keys)
-            databasesMenuSet.AddMenuItem(new MenuCommandWithStatus(listItem), listItem);
+            databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem), listItem);
 
         var selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
 

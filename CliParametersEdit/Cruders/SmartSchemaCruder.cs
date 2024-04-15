@@ -3,8 +3,8 @@ using System.Linq;
 using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
+using CliParametersEdit.CliMenuCommands;
 using CliParametersEdit.FieldEditors;
-using CliParametersEdit.MenuCommands;
 using LibFileParameters.Interfaces;
 using LibFileParameters.Models;
 using LibParameters;
@@ -61,7 +61,7 @@ public sealed class SmartSchemaCruder : ParCruder
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {
-        GenerateStandardSmartSchemasCommand generateCommand = new(ParametersManager);
+        GenerateStandardSmartSchemasCliMenuCommand generateCommand = new(ParametersManager);
         cruderSubMenuSet.AddMenuItem(generateCommand, "Generate standard Smart Schemas...");
     }
 }

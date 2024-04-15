@@ -5,13 +5,13 @@ using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class EditItemAllFieldsInSequenceCommand : CliMenuCommand
+public sealed class DeleteCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    public EditItemAllFieldsInSequenceCommand(Cruder cruder, string itemName) : base("Edit", itemName)
+    public DeleteCliMenuCommand(Cruder cruder, string fileStorageName) : base("Delete", fileStorageName)
     {
         _cruder = cruder;
     }
@@ -20,17 +20,8 @@ public sealed class EditItemAllFieldsInSequenceCommand : CliMenuCommand
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(ParentMenuName))
-            {
-                StShared.WriteErrorLine("Empty Parent Menu Name ", true);
+            if (RunBody())
                 return;
-            }
-
-            if (_cruder.EditItemAllFieldsInSequence(ParentMenuName))
-            {
-                MenuAction = EMenuAction.LevelUp;
-                return;
-            }
         }
         catch (DataInputEscapeException)
         {
@@ -44,5 +35,20 @@ public sealed class EditItemAllFieldsInSequenceCommand : CliMenuCommand
         }
 
         MenuAction = EMenuAction.Reload;
+    }
+
+    private bool RunBody()
+    {
+        if (string.IsNullOrWhiteSpace(ParentMenuName))
+        {
+            StShared.WriteErrorLine("Empty Parent Menu Name ", true);
+            return false;
+        }
+
+        if (!_cruder.DeleteRecord(ParentMenuName))
+            return false;
+
+        MenuAction = EMenuAction.LevelUp;
+        return true;
     }
 }

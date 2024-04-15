@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using CliMenu;
+using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
-using CliParameters.MenuCommands;
 using LibDataInput;
 using LibMenuInput;
 using LibParameters;
@@ -146,7 +146,7 @@ public /*open*/ class Cruder : IFieldEditors
         if (!_fieldKeyFromItem)
         {
             const string fieldName = "Record Name";
-            itemSubMenuSet.AddMenuItem(new RecordKeyEditorMenuCommand(fieldName, this, itemName));
+            itemSubMenuSet.AddMenuItem(new RecordKeyEditorCliMenuCommand(fieldName, this, itemName));
         }
 
         foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
@@ -158,18 +158,18 @@ public /*open*/ class Cruder : IFieldEditors
     {
         CliMenuSet cruderSubMenuSet = new(CrudNamePlural);
 
-        NewItemCommand newItemCommand = new(this, CrudNamePlural, $"New {CrudName}");
+        NewItemCliMenuCommand newItemCommand = new(this, CrudNamePlural, $"New {CrudName}");
         cruderSubMenuSet.AddMenuItem(newItemCommand);
 
         var itemDataDict = GetCrudersDictionary();
 
         foreach (var kvp in itemDataDict.OrderBy(o => o.Key))
-            cruderSubMenuSet.AddMenuItem(new ItemSubMenuCommand(this, kvp.Key, CrudNamePlural), kvp.Key);
+            cruderSubMenuSet.AddMenuItem(new ItemSubMenuCliMenuCommand(this, kvp.Key, CrudNamePlural), kvp.Key);
 
         FillListMenuAdditional(cruderSubMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        cruderSubMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCommand(null, null), key.Length);
+        cruderSubMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCliMenuCommand(null, null), key.Length);
 
         return cruderSubMenuSet;
     }
@@ -322,19 +322,19 @@ public /*open*/ class Cruder : IFieldEditors
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
         var itemSubMenuSet = new CliMenuSet(substituteName);
 
-        DeleteCommand deleteCommand = new(this, itemName);
+        DeleteCliMenuCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");
 
         if (_canEditFieldsInSequence)
         {
-            EditItemAllFieldsInSequenceCommand editCommand = new(this, itemName);
+            EditItemAllFieldsInSequenceCliMenuCommand editCommand = new(this, itemName);
             itemSubMenuSet.AddMenuItem(editCommand, "Edit All fields in sequence");
         }
 
         FillDetailsSubMenu(itemSubMenuSet, itemName);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        itemSubMenuSet.AddMenuItem(key, $"Exit to {CrudNamePlural} menu", new ExitToMainMenuCommand(null, null),
+        itemSubMenuSet.AddMenuItem(key, $"Exit to {CrudNamePlural} menu", new ExitToMainMenuCliMenuCommand(null, null),
             key.Length);
 
         return itemSubMenuSet;
@@ -370,11 +370,11 @@ public /*open*/ class Cruder : IFieldEditors
         if (useNone) listSet.AddMenuItem("-", "(None)", new CliMenuCommand(), 1);
 
         var id = 0;
-        listSet.AddMenuItem(new MenuCommandWithStatus(currentStatus), $"New {fieldName}", id++);
+        listSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(currentStatus), $"New {fieldName}", id++);
 
         var keys = GetKeys();
         foreach (var listItem in keys)
-            listSet.AddMenuItem(new ListItemMenuCommand(this, listItem), null, id++);
+            listSet.AddMenuItem(new ListItemCliMenuCommand(this, listItem), null, id++);
 
         var selectedId = MenuInputer.InputIdFromMenuList(fieldName.Pluralize(), listSet, currentName);
 

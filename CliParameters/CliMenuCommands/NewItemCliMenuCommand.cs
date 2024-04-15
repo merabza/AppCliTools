@@ -5,13 +5,13 @@ using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class NewItemCommand : CliMenuCommand
+public sealed class NewItemCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    public NewItemCommand(Cruder cruder, string parentMenuName, string commandName) : base(commandName,
+    public NewItemCliMenuCommand(Cruder cruder, string parentMenuName, string commandName) : base(commandName,
         parentMenuName)
     {
         _cruder = cruder;

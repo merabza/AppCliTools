@@ -3,14 +3,14 @@ using CliParameters.FieldEditors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class ParameterSubObjectFieldEditorMenuCommand : CliMenuCommand
+public sealed class ParameterSubObjectFieldEditorCliMenuCommand : CliMenuCommand
 {
     private readonly FieldEditor _fieldEditor;
     private readonly ParametersEditor _parametersEditor;
 
-    public ParameterSubObjectFieldEditorMenuCommand(string fieldName, FieldEditor fieldEditor,
+    public ParameterSubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor,
         ParametersEditor parametersEditor) : base(fieldName, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;

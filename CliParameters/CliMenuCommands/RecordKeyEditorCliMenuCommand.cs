@@ -5,14 +5,14 @@ using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class RecordKeyEditorMenuCommand : CliMenuCommand
+public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
     private readonly string _recordKey;
 
-    public RecordKeyEditorMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName, null,
+    public RecordKeyEditorCliMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName, null,
         false, EStatusView.Table)
     {
         _cruder = cruder;

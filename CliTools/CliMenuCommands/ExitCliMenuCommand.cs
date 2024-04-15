@@ -1,8 +1,8 @@
 ﻿using CliMenu;
 
-namespace CliTools.Commands;
+namespace CliTools.CliMenuCommands;
 
-public sealed class ExitCommand : CliMenuCommand
+public sealed class ExitCliMenuCommand : CliMenuCommand
 {
     protected override void RunAction()
     {

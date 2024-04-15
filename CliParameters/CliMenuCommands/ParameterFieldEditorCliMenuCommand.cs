@@ -6,14 +6,14 @@ using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class ParameterFieldEditorMenuCommand : CliMenuCommand
+public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
 {
     private readonly FieldEditor _fieldEditor;
     private readonly ParametersEditor _parametersEditor;
 
-    public ParameterFieldEditorMenuCommand(string fieldName, FieldEditor fieldEditor, ParametersEditor parametersEditor)
+    public ParameterFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor, ParametersEditor parametersEditor)
         : base(fieldName, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;

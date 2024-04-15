@@ -1,5 +1,5 @@
 ﻿using CliMenu;
-using CliParameters.MenuCommands;
+using CliParameters.CliMenuCommands;
 using LibDataInput;
 using LibParameters;
 using SystemToolsShared;
@@ -30,18 +30,18 @@ public /*open*/ class FieldEditor
     public void AddParameterEditMenuItem(CliMenuSet menuSet, ParametersEditor parametersEditor)
     {
         if (_isSubObject)
-            menuSet.AddMenuItem(new ParameterSubObjectFieldEditorMenuCommand(FieldName, this, parametersEditor));
+            menuSet.AddMenuItem(new ParameterSubObjectFieldEditorCliMenuCommand(FieldName, this, parametersEditor));
         else
-            menuSet.AddMenuItem(new ParameterFieldEditorMenuCommand(FieldName, this, parametersEditor));
+            menuSet.AddMenuItem(new ParameterFieldEditorCliMenuCommand(FieldName, this, parametersEditor));
     }
 
     public void AddFieldEditMenuItem(CliMenuSet menuSet, ItemData recordForUpdate, Cruder cruder,
         string recordKey)
     {
         if (_isSubObject)
-            menuSet.AddMenuItem(new SubObjectFieldEditorMenuCommand(FieldName, this, recordForUpdate));
+            menuSet.AddMenuItem(new SubObjectFieldEditorCliMenuCommand(FieldName, this, recordForUpdate));
         else
-            menuSet.AddMenuItem(new FieldEditorMenuCommand(FieldName, this, recordForUpdate, cruder, recordKey));
+            menuSet.AddMenuItem(new FieldEditorMenuCliMenuCommand(FieldName, this, recordForUpdate, cruder, recordKey));
     }
 
     public virtual CliMenuSet? GetSubMenu(object record)

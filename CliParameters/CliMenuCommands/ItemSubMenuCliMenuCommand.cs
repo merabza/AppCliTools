@@ -2,13 +2,13 @@
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class ItemSubMenuCommand : CliMenuCommand
+public sealed class ItemSubMenuCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    public ItemSubMenuCommand(Cruder cruder, string name, string parentMenuName, bool nameIsStatus = false) : base(name,
+    public ItemSubMenuCliMenuCommand(Cruder cruder, string name, string parentMenuName, bool nameIsStatus = false) : base(name,
         parentMenuName, false, EStatusView.Brackets, nameIsStatus)
     {
         _cruder = cruder;

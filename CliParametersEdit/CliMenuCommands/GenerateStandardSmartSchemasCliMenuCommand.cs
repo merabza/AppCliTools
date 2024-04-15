@@ -6,14 +6,15 @@ using LibFileParameters.Interfaces;
 using LibParameters;
 using SystemToolsShared;
 
-namespace CliParametersEdit.MenuCommands;
+// ReSharper disable ConvertToPrimaryConstructor
 
-public sealed class GenerateArchiversCommand : CliMenuCommand
+namespace CliParametersEdit.CliMenuCommands;
+
+public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
 {
     private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public GenerateArchiversCommand(IParametersManager parametersManager)
+    public GenerateStandardSmartSchemasCliMenuCommand(IParametersManager parametersManager)
     {
         _parametersManager = parametersManager;
     }
@@ -21,16 +22,16 @@ public sealed class GenerateArchiversCommand : CliMenuCommand
     protected override void RunAction()
     {
         MenuAction = EMenuAction.Reload;
-        var parameters = (IParametersWithArchivers)_parametersManager.Parameters;
+        var parameters = (IParametersWithSmartSchemas)_parametersManager.Parameters;
         try
         {
-            if (!Inputer.InputBool("This process will change Archivers, are you sure?", false, false))
+            if (!Inputer.InputBool("This process will change Smart Schemas, are you sure?", false, false))
                 return;
 
-            StandardArchiversGenerator.Generate(true, _parametersManager);
+            StandardSmartSchemas.Generate(_parametersManager);
 
             //შენახვა
-            _parametersManager.Save(parameters, "Archivers generated success");
+            _parametersManager.Save(parameters, "Smart Schemas generated success");
         }
         catch (DataInputEscapeException)
         {

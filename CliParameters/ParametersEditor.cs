@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using CliMenu;
+using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
-using CliParameters.MenuCommands;
 using LibDataInput;
 using LibParameters;
 using SystemToolsShared;
@@ -72,7 +72,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
         FillDetailsSubMenu(parametersEditorMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        parametersEditorMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCommand(null, null),
+        parametersEditorMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCliMenuCommand(null, null),
             key.Length);
 
 
@@ -82,7 +82,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
     public void FillDetailsSubMenu(CliMenuSet parametersEditorMenuSet)
     {
         //მენიუს ჩანაწერი, რომელიც საშუალებას გვაძლევს პარამეტრები დავარედაქტიროთ ყველა თანმიმდევრობით
-        EditParametersInSequenceCommand editCommand = new(this);
+        EditParametersInSequenceCliMenuCommand editCommand = new(this);
         parametersEditorMenuSet.AddMenuItem(editCommand, "Edit All Parameters in sequence");
 
         foreach (var fieldEditor in FieldEditors) //.Where(w=>w.Enabled)

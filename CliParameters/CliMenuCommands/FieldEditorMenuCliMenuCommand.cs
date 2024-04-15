@@ -5,9 +5,9 @@ using LibDataInput;
 using LibParameters;
 using SystemToolsShared;
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class FieldEditorMenuCommand : CliMenuCommand
+public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
     private readonly FieldEditor _fieldEditor;
@@ -15,7 +15,7 @@ public sealed class FieldEditorMenuCommand : CliMenuCommand
     private readonly string _recordKey;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public FieldEditorMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate, Cruder cruder,
+    public FieldEditorMenuCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate, Cruder cruder,
         string recordKey) : base(fieldName, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;

@@ -2,13 +2,13 @@
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.MenuCommands;
+namespace CliParameters.CliMenuCommands;
 
-public sealed class ParametersEditorListCommand : CliMenuCommand
+public sealed class ParametersEditorListCliMenuCommand : CliMenuCommand
 {
     private readonly ParametersEditor _parametersEditor;
 
-    public ParametersEditorListCommand(ParametersEditor parametersEditor) : base(parametersEditor.Name)
+    public ParametersEditorListCliMenuCommand(ParametersEditor parametersEditor) : base(parametersEditor.Name)
     {
         _parametersEditor = parametersEditor;
     }

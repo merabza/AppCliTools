@@ -2,8 +2,8 @@
 using System.Linq;
 using CliMenu;
 using CliParameters;
+using CliParametersEdit.CliMenuCommands;
 using CliParametersEdit.FieldEditors;
-using CliParametersEdit.MenuCommands;
 using LibFileParameters.Interfaces;
 using LibFileParameters.Models;
 using LibParameters;
@@ -61,7 +61,7 @@ public sealed class ArchiverCruder : ParCruder
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {
-        GenerateArchiversCommand generateCommand = new(ParametersManager);
+        GenerateArchiversCliMenuCommand generateCommand = new(ParametersManager);
         cruderSubMenuSet.AddMenuItem(generateCommand, "Generate standard Archivers...");
     }
 }
