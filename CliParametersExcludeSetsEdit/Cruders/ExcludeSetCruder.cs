@@ -2,7 +2,7 @@
 using System.Linq;
 using CliMenu;
 using CliParameters;
-using CliParameters.MenuCommands;
+using CliParameters.CliMenuCommands;
 using CliParametersExcludeSetsEdit.MenuCommands;
 using LibFileParameters.Interfaces;
 using LibFileParameters.Models;
@@ -13,6 +13,7 @@ namespace CliParametersExcludeSetsEdit.Cruders;
 
 public sealed class ExcludeSetCruder : ParCruder
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ExcludeSetCruder(IParametersManager parametersManager) : base(parametersManager, "Exclude Set",
         "Exclude Sets", true)
     {
@@ -27,17 +28,16 @@ public sealed class ExcludeSetCruder : ParCruder
         var excludeSets = parameters.ExcludeSets;
         var excludeSet = excludeSets[recordName];
 
-        //NewStringCommand newStringCommand = new NewStringCommand(this, recordName, "Create new mask");
         var detailsCruder = new ExcludeSetFileMaskCruder(ParametersManager, recordName);
         var newItemCommand =
-            new NewItemCommand(detailsCruder, recordName, $"Create New {detailsCruder.CrudName}");
+            new NewItemCliMenuCommand(detailsCruder, recordName, $"Create New {detailsCruder.CrudName}");
         itemSubMenuSet.AddMenuItem(newItemCommand);
 
         //if (excludeSet.FolderFileMasks == null)
         //    return;
 
         foreach (var detailListCommand in excludeSet.FolderFileMasks.Select(mask =>
-                     new ItemSubMenuCommand(detailsCruder, mask, recordName, true)))
+                     new ItemSubMenuCliMenuCommand(detailsCruder, mask, recordName, true)))
             itemSubMenuSet.AddMenuItem(detailListCommand);
     }
 
