@@ -9,6 +9,7 @@ public sealed class DataSeederBaseGenericClassCreator : CodeCreator
 {
     private readonly SeederCodeCreatorParameters _parameters;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DataSeederBaseGenericClassCreator(ILogger logger, SeederCodeCreatorParameters parameters) : base(logger,
         parameters.PlacePath, $"{parameters.DataSeederBaseClassName}.cs")
     {
