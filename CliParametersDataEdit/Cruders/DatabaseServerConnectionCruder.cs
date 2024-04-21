@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
+using CliParametersDataEdit.CliMenuCommands;
 using DbTools;
 using DbToolsFabric;
 using LibDatabaseParameters;
@@ -90,32 +92,46 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     //რადგან სწორედ ასეთი ტიპის კავშირების რედაქტორია ეს.
 
                     if (string.IsNullOrWhiteSpace(databaseServerConnectionData.ServerAddress))
+                    {
+                        StShared.WriteErrorLine("ServerAddress is not specified", true);
                         return false;
+                    }
 
                     var dbAuthSettings = DbAuthSettingsCreator.Create(
                         databaseServerConnectionData.WindowsNtIntegratedSecurity,
                         databaseServerConnectionData.ServerUser, databaseServerConnectionData.ServerPass);
 
                     if (dbAuthSettings is null)
+                    {
+                        StShared.WriteErrorLine("Authentication parameters is not valid", true);
                         return false;
+                    }
 
                     var dc = DbClientFabric.GetDbClient(_logger, true, databaseServerConnectionData.DataProvider,
                         databaseServerConnectionData.ServerAddress, dbAuthSettings,
                         ProgramAttributes.Instance.GetAttribute<string>("AppName"));
 
                     if (dc is null)
+                    {
+                        StShared.WriteErrorLine("Database Client is not created", true);
                         return false;
+                    }
 
                     var testConnectionResult = dc.TestConnection(false, CancellationToken.None).Result;
                     if (testConnectionResult.IsSome)
+                    {
+                        Err.PrintErrorsOnConsole((Err[])testConnectionResult);
                         return false;
+                    }
 
                     //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
                     //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
                     var getDbServerInfoResult = dc.GetDbServerInfo(CancellationToken.None).Result;
                     if (getDbServerInfoResult.IsT1)
+                    {
+                        Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
                         return false;
-
+                    }
                     var dbServerInfo = getDbServerInfoResult.AsT0;
 
                     Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
@@ -143,8 +159,10 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
                     return true;
                 case EDataProvider.SqLite:
-                    return
-                        false; //აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
+                    //აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
+                    StShared.WriteErrorLine("SqLite Client is not implemented", true);
+                    return false;
+
             }
 
             return false;
@@ -185,4 +203,19 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     {
         return new DatabaseServerConnectionData();
     }
+
+    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordKey)
+    {
+        base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
+
+        GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
+        itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand, "Get Database Server Folders and save in parameters");
+
+        PutDbServerFoldersCliMenuCommand putDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
+        itemSubMenuSet.AddMenuItem(putDbServerFoldersCliMenuCommand, "Put Database Server Folders from parameters to server");
+
+    }
+
+
+
 }

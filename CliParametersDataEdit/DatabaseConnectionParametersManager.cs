@@ -10,6 +10,7 @@ public sealed class DatabaseConnectionParametersManager : IParametersManager
     private readonly FieldEditor<DatabaseConnectionParameters> _fieldEditor;
     private readonly IParametersManager _parentParametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseConnectionParametersManager(IParameters parameters,
         IParametersManager parentParametersManager,
         FieldEditor<DatabaseConnectionParameters> fieldEditor, object record)

@@ -4,6 +4,7 @@ namespace DbContextAnalyzer.Domain;
 
 public sealed class CreateProjectSeederCodeParametersDomain : IParameters
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CreateProjectSeederCodeParametersDomain(string projectPrefix, string projectPrefixShort,
         string logFolder,
         string connectionStringProd, string getJsonProjectPlacePath, string getJsonProjectNamespace,

@@ -13,9 +13,9 @@ namespace CliTools;
 public /*open*/ class CliAppLoop
 {
     private readonly string? _header;
-    private readonly List<CliMenuSet> _menuSetsList = new();
+    private readonly List<CliMenuSet> _menuSetsList = [];
     private readonly IProcesses? _processes;
-    private readonly List<CliMenuCommand> _selectedMenuCommandsList = new();
+    private readonly List<CliMenuCommand> _selectedMenuCommandsList = [];
     private int _currentMenuSetLevel;
 
     protected CliAppLoop(string? header = null, IProcesses? processes = null)

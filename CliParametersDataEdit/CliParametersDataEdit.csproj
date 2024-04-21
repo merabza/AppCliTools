@@ -21,7 +21,12 @@
         <ProjectReference Include="..\..\DatabaseTools\DbTools\DbTools.csproj" />
         <ProjectReference Include="..\..\DatabaseTools\SqlServerDbTools\SqlServerDbTools.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibDatabaseParameters\LibDatabaseParameters.csproj" />
+        <ProjectReference Include="..\..\ToolsManagement\DatabasesManagement\DatabasesManagement.csproj" />
         <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ToolActions\" />
     </ItemGroup>
 
 </Project>

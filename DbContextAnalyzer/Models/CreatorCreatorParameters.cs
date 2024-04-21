@@ -4,6 +4,7 @@ namespace DbContextAnalyzer.Models;
 
 public sealed class CreatorCreatorParameters : IParameters
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CreatorCreatorParameters(string projectPrefix, string dbProjectNamespace, string projectDbContextClassName,
         string projectPrefixShort, string createSeederCodeProjectNamespace, string createSeederCodeProjectPlacePath,
         string getJsonProjectNamespace, string getJsonProjectPlacePath, string seedProjectNamespace,

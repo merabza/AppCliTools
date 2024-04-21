@@ -35,7 +35,7 @@ public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionar
     {
         var val = GetValue(record);
 
-        if (val == null || val.Count <= 0)
+        if (val is null || val.Count <= 0)
             return "No Details";
 
         if (val.Count > 1)
