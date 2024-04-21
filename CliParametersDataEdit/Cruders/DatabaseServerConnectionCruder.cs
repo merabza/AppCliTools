@@ -106,7 +106,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     if (dc is null)
                         return false;
 
-                    var testConnectionResult = dc.TestConnection(false);
+                    var testConnectionResult = dc.TestConnection(false, CancellationToken.None).Result;
                     if (testConnectionResult.IsSome)
                         return false;
 
@@ -159,8 +159,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     protected override void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
-        var enable = databaseServerConnection.DataProvider == EDataProvider.Sql &&
-                     !databaseServerConnection.WindowsNtIntegratedSecurity;
+        var enable = databaseServerConnection is
+            { DataProvider: EDataProvider.Sql, WindowsNtIntegratedSecurity: false };
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerUser), enable);
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerPass), enable);
 
