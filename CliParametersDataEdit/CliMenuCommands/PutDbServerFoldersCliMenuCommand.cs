@@ -1,8 +1,9 @@
 ﻿using CliMenu;
-using LibDatabaseParameters;
 using LibDataInput;
 using LibParameters;
 using System;
+using System.Threading;
+using CliParametersDataEdit.ToolActions;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
@@ -25,16 +26,11 @@ public class PutDbServerFoldersCliMenuCommand : CliMenuCommand
     protected override void RunAction()
     {
         MenuAction = EMenuAction.Reload;
-        var parameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
         try
         {
-            //if (!Inputer.InputBool("This process will change Environments, are you sure?", false, false))
-            //    return;
-
-            //StandardEnvironmentsGenerator.Generate(_parametersManager);
-
-            ////შენახვა
-            //_parametersManager.Save(parameters, "Environments generated success");
+            var putDbServerFoldersToolAction =
+                new PutDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
+            putDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
         }
         catch (DataInputEscapeException)
         {
