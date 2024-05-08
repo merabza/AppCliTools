@@ -7,7 +7,6 @@ namespace DbContextAnalyzer.CodeCreators;
 
 public sealed class FakeCreatorForJsonFilesCreator : CodeCreator
 {
-    
     private readonly CreatorCreatorParameters _par;
 
     // ReSharper disable once ConvertToPrimaryConstructor

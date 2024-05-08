@@ -11,7 +11,8 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
 {
     private readonly ParametersEditor _parametersEditor;
 
-    public EditParametersInSequenceCliMenuCommand(ParametersEditor parametersEditor) : base("Edit Parameters in sequence")
+    public EditParametersInSequenceCliMenuCommand(ParametersEditor parametersEditor) : base(
+        "Edit Parameters in sequence")
     {
         _parametersEditor = parametersEditor;
     }

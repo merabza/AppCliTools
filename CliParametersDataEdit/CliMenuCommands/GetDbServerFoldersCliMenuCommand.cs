@@ -28,7 +28,8 @@ public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
         MenuAction = EMenuAction.Reload;
         try
         {
-            var getDbServerFoldersToolAction = new GetDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
+            var getDbServerFoldersToolAction =
+                new GetDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
             getDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
         }
         catch (DataInputEscapeException)

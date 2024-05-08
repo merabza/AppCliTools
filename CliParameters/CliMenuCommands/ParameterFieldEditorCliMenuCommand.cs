@@ -13,7 +13,8 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
     private readonly FieldEditor _fieldEditor;
     private readonly ParametersEditor _parametersEditor;
 
-    public ParameterFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor, ParametersEditor parametersEditor)
+    public ParameterFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor,
+        ParametersEditor parametersEditor)
         : base(fieldName, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;

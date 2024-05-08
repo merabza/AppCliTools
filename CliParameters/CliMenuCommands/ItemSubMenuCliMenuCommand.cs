@@ -8,8 +8,9 @@ public sealed class ItemSubMenuCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    public ItemSubMenuCliMenuCommand(Cruder cruder, string name, string parentMenuName, bool nameIsStatus = false) : base(name,
-        parentMenuName, false, EStatusView.Brackets, nameIsStatus)
+    public ItemSubMenuCliMenuCommand(Cruder cruder, string name, string parentMenuName, bool nameIsStatus = false) :
+        base(name,
+            parentMenuName, false, EStatusView.Brackets, nameIsStatus)
     {
         _cruder = cruder;
     }

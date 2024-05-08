@@ -12,8 +12,9 @@ public sealed class SubObjectFieldEditorCliMenuCommand : CliMenuCommand
 
     private readonly ItemData _recordForUpdate;
 
-    public SubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate) : base(
-        fieldName, null, false, EStatusView.Table)
+    public SubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate) :
+        base(
+            fieldName, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;
         _recordForUpdate = recordForUpdate;

@@ -29,7 +29,6 @@ public class PutDbServerFoldersToolAction : ToolAction
 
     protected override async Task<bool> RunAction(CancellationToken cancellationToken)
     {
-
         var parameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
 
         DatabaseServerConnections databaseServerConnections = new(parameters.DatabaseServerConnections);

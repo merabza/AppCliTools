@@ -132,6 +132,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                         Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
                         return false;
                     }
+
                     var dbServerInfo = getDbServerInfoResult.AsT0;
 
                     Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
@@ -162,7 +163,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     //აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
                     StShared.WriteErrorLine("SqLite Client is not implemented", true);
                     return false;
-
             }
 
             return false;
@@ -209,14 +209,11 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
 
         GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
-        itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand, "Get Database Server Folders and save in parameters");
+        itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand,
+            "Get Database Server Folders and save in parameters");
 
         //ამ ვარიანტმა არ იმუშავა
         //PutDbServerFoldersCliMenuCommand putDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
         //itemSubMenuSet.AddMenuItem(putDbServerFoldersCliMenuCommand, "Put Database Server Folders from parameters to server");
-
     }
-
-
-
 }

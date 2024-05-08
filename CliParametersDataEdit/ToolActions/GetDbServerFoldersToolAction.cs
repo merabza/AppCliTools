@@ -29,7 +29,6 @@ public class GetDbServerFoldersToolAction : ToolAction
 
     protected override async Task<bool> RunAction(CancellationToken cancellationToken)
     {
-
         var parameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
 
         DatabaseServerConnections databaseServerConnections = new(parameters.DatabaseServerConnections);
@@ -43,7 +42,7 @@ public class GetDbServerFoldersToolAction : ToolAction
         var databaseManagementClient = await DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger,
             _dbServerName, databaseServerConnections, null, null, CancellationToken.None);
 
-        if ( databaseManagementClient is null)
+        if (databaseManagementClient is null)
         {
             StShared.WriteErrorLine("Database Management Clients could not created", true, _logger);
             return false;
@@ -63,10 +62,8 @@ public class GetDbServerFoldersToolAction : ToolAction
         dbCon.DataFolderName = dbInfo.DefaultDataDirectory;
         dbCon.DataLogFolderName = dbInfo.DefaultLogDirectory;
 
-        _parametersManager.Save(parameters,"folders Changed and saved");
+        _parametersManager.Save(parameters, "folders Changed and saved");
 
         return true;
     }
-
-
 }

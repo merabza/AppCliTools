@@ -169,7 +169,8 @@ public /*open*/ class Cruder : IFieldEditors
         FillListMenuAdditional(cruderSubMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        cruderSubMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCliMenuCommand(null, null), key.Length);
+        cruderSubMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCliMenuCommand(null, null),
+            key.Length);
 
         return cruderSubMenuSet;
     }
