@@ -1,9 +1,9 @@
-﻿using CliMenu;
+﻿using System;
+using System.Threading;
+using CliMenu;
+using CliParametersDataEdit.ToolActions;
 using LibDataInput;
 using LibParameters;
-using System;
-using System.Threading;
-using CliParametersDataEdit.ToolActions;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
@@ -11,8 +11,8 @@ namespace CliParametersDataEdit.CliMenuCommands;
 
 public class PutDbServerFoldersCliMenuCommand : CliMenuCommand
 {
-    private readonly ILogger _logger;
     private readonly string _dbServerName;
+    private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor

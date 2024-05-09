@@ -1,21 +1,21 @@
-﻿using LibToolActions;
-using Microsoft.Extensions.Logging;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Threading;
 using DatabasesManagement;
 using LibDatabaseParameters;
-using SystemToolsShared;
 using LibParameters;
+using LibToolActions;
+using Microsoft.Extensions.Logging;
+using SystemToolsShared;
 
 namespace CliParametersDataEdit.ToolActions;
 
 public class GetDbServerFoldersToolAction : ToolAction
 {
-    private readonly ILogger _logger;
-    private readonly string _dbServerName;
-    private readonly IParametersManager _parametersManager;
     private const string ActionName = "Get Database Server Folders and save in parameters";
     public const string ActionDescription = "Get Database Server Folders and save in parameters";
+    private readonly string _dbServerName;
+    private readonly ILogger _logger;
+    private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public GetDbServerFoldersToolAction(ILogger logger, string dbServerName, IParametersManager parametersManager) :

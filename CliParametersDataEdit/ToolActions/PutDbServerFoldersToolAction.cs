@@ -1,21 +1,21 @@
-﻿using DatabasesManagement;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using DatabasesManagement;
 using LibDatabaseParameters;
 using LibParameters;
 using LibToolActions;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.Threading;
 using SystemToolsShared;
 
 namespace CliParametersDataEdit.ToolActions;
 
 public class PutDbServerFoldersToolAction : ToolAction
 {
-    private readonly ILogger _logger;
-    private readonly string _dbServerName;
-    private readonly IParametersManager _parametersManager;
     private const string ActionName = "Put Database Server Folders and save in parameters";
     public const string ActionDescription = "Put Database Server Folders and save in parameters";
+    private readonly string _dbServerName;
+    private readonly ILogger _logger;
+    private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public PutDbServerFoldersToolAction(ILogger logger, string dbServerName, IParametersManager parametersManager) :
