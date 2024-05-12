@@ -101,7 +101,6 @@ public /*open*/ class ParametersEditor : IFieldEditors
     {
         try
         {
-
             foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
                 fieldEditor.UpdateField(null, _parametersManager.Parameters);
             //FIXME IF NEED ვალიდაცია პარამეტრების რედაქტირებისას გვჭირდება თუ არა ჯერ არ ვიცი, ალბათ გვჭირდება და უნდა გაკეთდეს
