@@ -19,17 +19,10 @@ public sealed class ConnectionStringParametersManager : IParametersManager
         Record = record;
     }
 
-    public object Record { get; }
+    private object Record { get; }
     public IParameters Parameters { get; set; }
 
-    //public string? ParametersFileName
-    //{
-    //    get => throw new NotImplementedException();
-    //    set => throw new NotImplementedException();
-    //}
-
-    public void Save(IParameters parameters, string message, bool pauseAfterMessage = true,
-        string? saveAsFilePath = null)
+    public void Save(IParameters parameters, string message, string? saveAsFilePath = null)
     {
         Parameters = parameters;
         if (parameters is not DbConnectionParameters dbp)
@@ -38,6 +31,6 @@ public sealed class ConnectionStringParametersManager : IParametersManager
         if (_parametersManager.Parameters is null)
             throw new Exception(
                 "_parametersManager.Parameters is null in ConnectionStringParametersManager.Save");
-        _parametersManager.Save(_parametersManager.Parameters, message, true, saveAsFilePath);
+        _parametersManager.Save(_parametersManager.Parameters, message, saveAsFilePath);
     }
 }

@@ -11,8 +11,7 @@ public sealed class DatabaseConnectionParametersManager : IParametersManager
     private readonly IParametersManager _parentParametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseConnectionParametersManager(IParameters parameters,
-        IParametersManager parentParametersManager,
+    public DatabaseConnectionParametersManager(IParameters parameters, IParametersManager parentParametersManager,
         FieldEditor<DatabaseConnectionParameters> fieldEditor, object record)
     {
         _parentParametersManager = parentParametersManager;
@@ -21,13 +20,11 @@ public sealed class DatabaseConnectionParametersManager : IParametersManager
         Record = record;
     }
 
-    public object Record { get; }
+    private object Record { get; }
 
     public IParameters Parameters { get; set; }
-    //public string? ParametersFileName { get; set; }
 
-    public void Save(IParameters parameters, string message, bool pauseAfterMessage = true,
-        string? saveAsFilePath = null)
+    public void Save(IParameters parameters, string message, string? saveAsFilePath = null)
     {
         Parameters = parameters;
         if (parameters is not DatabaseConnectionParameters dbp)
@@ -36,6 +33,6 @@ public sealed class DatabaseConnectionParametersManager : IParametersManager
         if (_parentParametersManager.Parameters is null)
             throw new Exception(
                 "_parentParametersManager.Parameters is null in DatabaseConnectionParametersManager.Save");
-        _parentParametersManager.Save(_parentParametersManager.Parameters, message, true, saveAsFilePath);
+        _parentParametersManager.Save(_parentParametersManager.Parameters, message, saveAsFilePath);
     }
 }

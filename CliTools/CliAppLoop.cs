@@ -24,9 +24,8 @@ public /*open*/ class CliAppLoop
         _processes = processes;
     }
 
-    protected virtual bool BuildMainMenu()
+    protected virtual void BuildMainMenu()
     {
-        return false;
     }
 
     private void ShowMenu(bool inFirstTime)

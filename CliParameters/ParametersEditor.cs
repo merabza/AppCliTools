@@ -48,7 +48,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
     {
         if (_parametersManager.Parameters is null)
             throw new Exception("Invalid parameters for save");
-        _parametersManager.Save(_parametersManager.Parameters, message, true, saveAsFilePath);
+        _parametersManager.Save(_parametersManager.Parameters, message, saveAsFilePath);
     }
 
     private string GetMainMenuCaption()
@@ -56,18 +56,9 @@ public /*open*/ class ParametersEditor : IFieldEditors
         return Name;
     }
 
-    //private void MenuTopCommands(CliMenuSet parametersEditorMenuSet)
-    //{
-    //}
-
     public CliMenuSet GetParametersMainMenu()
     {
         CliMenuSet parametersEditorMenuSet = new(GetMainMenuCaption());
-
-        //MenuTopCommands(parametersEditorMenuSet);
-
-        //თუ საჭირო გახდა პარამეტრების ნაწილმა უნდა განსაზღვროს სხვა ნაწილის რედაქტირების შესაძლებლობა
-        //CheckFieldsEnables(item);
 
         FillDetailsSubMenu(parametersEditorMenuSet);
 
@@ -110,12 +101,6 @@ public /*open*/ class ParametersEditor : IFieldEditors
     {
         try
         {
-            //if (_parametersManager.Parameters is null)
-            //{
-            //    StShared.WriteErrorLine("Parameters is null, cannot update", true);
-            //    return false;
-            //}
-
 
             foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
                 fieldEditor.UpdateField(null, _parametersManager.Parameters);

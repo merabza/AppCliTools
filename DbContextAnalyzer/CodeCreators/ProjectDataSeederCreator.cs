@@ -47,7 +47,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
         CodeFile.AddRange(block.CodeItems);
     }
 
-    public override void UseEntity(EntityData entityData, bool isCarcassType)
+    public void UseEntity(EntityData entityData)
     {
         var tableName = entityData.TableName;
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
@@ -76,6 +76,6 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
 
         _seedProjectSpecificDataMethodCodeBlock.AddRange(block.CodeItems);
-        CreateFile();
+        base.FinishAndSave();
     }
 }

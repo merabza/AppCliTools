@@ -46,7 +46,7 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
         {
             Console.WriteLine();
             Console.WriteLine($"{e.Message}... ");
-            StShared.Pause();
+            //StShared.Pause();
         }
         catch (Exception e)
         {

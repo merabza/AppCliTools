@@ -37,7 +37,7 @@ public sealed class SeederCreator(
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
-    public override void UseEntity(EntityData entityData, bool isCarcassType)
+    public void UseEntity(EntityData entityData, bool isCarcassType)
     {
         var usedList = false;
         var tableName = entityData.TableName;
@@ -58,7 +58,6 @@ public sealed class SeederCreator(
 
         var additionalParameters = tableName switch
         {
-            //"dataRights" => "string secretDataFolder, ",
             "manyToManyJoins" => "string secretDataFolder, ",
             "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
             "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
@@ -68,7 +67,6 @@ public sealed class SeederCreator(
 
         var additionalParameters2 = tableName switch
         {
-            //"dataRights" => "secretDataFolder, ",
             "manyToManyJoins" => "secretDataFolder, ",
             "roles" => "roleManager, secretDataFolder, ",
             "users" => "userManager, secretDataFolder, ",
@@ -239,6 +237,6 @@ public sealed class SeederCreator(
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
 
-        CreateFile();
+        FinishAndSave();
     }
 }

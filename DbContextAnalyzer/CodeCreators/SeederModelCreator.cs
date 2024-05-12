@@ -29,7 +29,7 @@ public sealed class SeederModelCreator : CodeCreator
     {
     }
 
-    public override void UseEntity(EntityData entityData, bool isCarcassType)
+    public void UseEntity(EntityData entityData)
     {
         var tableName = entityData.TableName;
 
@@ -66,7 +66,7 @@ public sealed class SeederModelCreator : CodeCreator
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
 
-        CreateFile();
+        FinishAndSave();
     }
 
 

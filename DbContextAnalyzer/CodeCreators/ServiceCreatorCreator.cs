@@ -71,20 +71,17 @@ public sealed class ServiceCreatorCreator : CodeCreator
                     "",
                     $"services.AddDbContext<{projectDbContextClassName}>(options => options.UseSqlServer(_connectionString))",
                     "",
-                    @"services.AddIdentity<AppUser, AppRole>(options =>
-        {
-          options.Password.RequiredLength = 3;
-          options.Password.RequireNonAlphanumeric = false;
-          options.Password.RequireLowercase = false;
-          options.Password.RequireUppercase = false;
-          options.Password.RequireDigit = false;
-        }).AddDefaultTokenProviders()")));
+                    """
+                    services.AddIdentity<AppUser, AppRole>(options =>
+                            {
+                              options.Password.RequiredLength = 3;
+                              options.Password.RequireNonAlphanumeric = false;
+                              options.Password.RequireLowercase = false;
+                              options.Password.RequireUppercase = false;
+                              options.Password.RequireDigit = false;
+                            }).AddDefaultTokenProviders()
+                    """)));
         CodeFile.AddRange(block.CodeItems);
         FinishAndSave();
-    }
-
-    public override void FinishAndSave()
-    {
-        CreateFile();
     }
 }

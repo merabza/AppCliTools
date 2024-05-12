@@ -14,6 +14,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     private CodeRegion? _carcassRegion;
     private CodeRegion? _projectRegion;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
         bool isAnyCarcassType) : base(logger, parameters.PlacePath,
         $"{parameters.ProjectDataSeedersFabricClassName}.cs")
@@ -40,16 +41,18 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
             new CodeBlock($"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
                 new CodeBlock(
-                    $@"public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
-  string secretDataFolder, string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
-  secretDataFolder, dataSeedFolder, repo)",
+                    $"""
+                     public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
+                       string secretDataFolder, string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
+                       secretDataFolder, dataSeedFolder, repo)
+                     """,
                     "Repo = repo"),
                 _carcassRegion,
                 _projectRegion));
         CodeFile.AddRange(block.CodeItems);
     }
 
-    public override void UseEntity(EntityData entityData, bool isCarcassType)
+    public void UseEntity(EntityData entityData, bool isCarcassType)
     {
         var tableName = entityData.TableName;
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
@@ -60,7 +63,6 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         {
             "roles" => "MyRoleManager, SecretDataFolder, ",
             "users" => "MyUserManager, SecretDataFolder, ",
-            //"dataRights" => "SecretDataFolder, ",
             "manyToManyJoins" => "SecretDataFolder, ",
             _ => ""
         };

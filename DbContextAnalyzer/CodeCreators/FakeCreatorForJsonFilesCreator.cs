@@ -32,9 +32,4 @@ public sealed class FakeCreatorForJsonFilesCreator : CodeCreator
                 new CodeBlock("public bool Run()", "return true")));
         CodeFile.AddRange(block.CodeItems);
     }
-
-    public override void FinishAndSave()
-    {
-        CreateFile();
-    }
 }

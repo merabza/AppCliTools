@@ -9,6 +9,7 @@ public sealed class DataSeederRepositoryInterfaceCreator : CodeCreator
 {
     private readonly SeederCodeCreatorParameters _parameters;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DataSeederRepositoryInterfaceCreator(ILogger logger, SeederCodeCreatorParameters parameters) : base(logger,
         parameters.PlacePath, $"{parameters.DataSeederRepositoryInterfaceName}.cs")
     {
@@ -24,6 +25,6 @@ public sealed class DataSeederRepositoryInterfaceCreator : CodeCreator
             "",
             new CodeBlock($"public interface {_parameters.DataSeederRepositoryInterfaceName} : IDataSeederRepository"));
         CodeFile.AddRange(block.CodeItems);
-        CreateFile();
+        FinishAndSave();
     }
 }

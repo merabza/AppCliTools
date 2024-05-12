@@ -65,42 +65,33 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         if (fieldData.SubstituteField == null || fieldData.SubstituteField.Fields.Count == 0)
             return "";
 
-        //if (level > 0)
-        //{
-        //  string result = "";
-        //  foreach (FieldData field in fieldData.SubstituteField.Fields)
-        //    result = result +
-        //             $".{(level > 0 ? "Then" : "")}Include(i{level}=>i{level}.{fieldData.NavigationFieldName}){GetIncludes(field, level + 1)}";
-        //  return result;
-        //}
-
         var res = fieldData.SubstituteField.Fields.Select(field =>
                 $".{(level > 0 ? "Then" : "")}Include(i{level}=>i{level}.{fieldData.NavigationFieldName}){GetIncludes(field, level + 1)}")
             .ToList();
 
-        if (res.Count > 1)
+        if (res.Count <= 1)
+            return res.Aggregate("", (current, includeString) => current + includeString);
+
+        res.Sort();
+
+        var changed = true;
+        while (changed)
         {
-            res.Sort();
+            changed = false;
+            string? toRemove = null;
+            foreach (var includeString in res.Where(includeString =>
+                         res.Any(w => w != includeString && w.StartsWith(includeString)) ||
+                         res.Count(w => w == includeString) > 1))
+                toRemove = includeString;
 
-            var changed = true;
-            while (changed)
-            {
-                changed = false;
-                string? toRemove = null;
-                foreach (var includeString in res.Where(includeString =>
-                             res.Any(w => w != includeString && w.StartsWith(includeString)) ||
-                             res.Count(w => w == includeString) > 1))
-                    toRemove = includeString;
+            if (toRemove == null)
+                continue;
 
-                if (toRemove == null)
-                    continue;
-
-                var index = res.FindIndex(f => f == toRemove);
-                if (index < 0)
-                    continue;
-                res.RemoveAt(index);
-                changed = true;
-            }
+            var index = res.FindIndex(f => f == toRemove);
+            if (index < 0)
+                continue;
+            res.RemoveAt(index);
+            changed = true;
         }
 
         return res.Aggregate("", (current, includeString) => current + includeString);
@@ -123,32 +114,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         return dictionary;
     }
 
-
-    //private static Dictionary<string, string> GetFieldNames(FieldData fieldData)
-    //{
-
-    //    if (fieldData.SubstituteField?.Fields == null)
-    //        return new Dictionary<string, string> { { fieldData.FullName, fieldData.OldName } };
-
-    //    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-    //    foreach (Dictionary<string, string> fieldNames in fieldData.SubstituteField.Fields.Select(GetFieldNames))
-    //    {
-    //        foreach (KeyValuePair<string, string> pair in fieldNames)
-    //        {
-    //            var newField = $"s.{fieldData.NavigationFieldName}.{pair.Value}";
-    //            if (fieldData.IsNullable)
-    //            {
-    //                newField =
-    //                    $"s.{fieldData.NavigationFieldName} == null ? null : s.{fieldData.NavigationFieldName}.{pair.Value}";
-    //            }
-    //            dictionary.Add(pair.Key, newField);
-    //        }
-    //    }
-    //    return dictionary;
-    //}
-
-
-    public override void UseEntity(EntityData entityData, bool isCarcassType)
+    public void UseEntity(EntityData entityData)
     {
         var tableName = entityData.TableName;
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
@@ -158,18 +124,8 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
         var includes = entityData.FieldsData.Aggregate("", (current, field) => current + GetIncludes(field));
 
-
-        //string strFieldsList = string.Join(", ", entityData.GetFlatFieldData().Select(p => $"{p.FullName} = s.{p.FullName}"));
-
         var strFieldsList = "";
         var atLeastOneAdded = false;
-        //foreach (var kvp in entityData.FieldsData.SelectMany(GetFieldNames))
-        //{
-        //    if (atLeastOneAdded)
-        //        strFieldsList += ", ";
-        //    strFieldsList += $"{kvp.Key} = s.{kvp.Value}";
-        //    atLeastOneAdded = true;
-        //}
 
         foreach (var (_, fieldList) in entityData.FieldsData.SelectMany(GetFields))
         {
@@ -182,7 +138,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
                 for (var i = fieldList.Length - 2; i >= 0; i--)
                     if (fieldList[i].IsNullable)
                         rightPart = $"{FieldName(fieldList, i + 1)} == null ? null : ({rightPart})";
-            //strFieldsList += $"{key} = {rightPart}";
             strFieldsList += rightPart;
 
             atLeastOneAdded = true;
@@ -213,28 +168,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         return rightPart;
     }
 
-    //public override void UseEntity(IEntityType entityType, bool isCarcassType, List<string> ignoreFields)
-    //{
-    //  (_, List<IProperty> props) = GetFieldsProperties(entityType, ignoreFields);
-
-    //  string tableName = entityType.GetTableName();
-    //  string tableNameCapitalCamel = tableName.CapitalizeCamel();
-    //  string tableNameSingular = GetTableNameSingular(_excludesRulesParameters.SingularityExceptions, tableName);
-    //  string seederModelClassName = tableNameSingular + "SeederModel";
-
-    //  string strFieldsList = string.Join(",", props.Select(p => $"{p.Name} = s.{p.Name}"));
-    //  CodeBlock block = new CodeBlock("",
-    //    "",
-    //    $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")",
-    //    "",
-    //    $"List<{seederModelClassName}> {tableName} = _context.{tableNameCapitalCamel}.Select(s => new {seederModelClassName} {{{strFieldsList}}}).ToList()",
-    //    $"SaveJson({tableName}, \"{tableNameCapitalCamel}\")");
-
-    //  _runMethodCodeBlock.AddRange(block.CodeItems);
-    //  //Logger.LogInformation($"used table -> {tableName}");
-    //}
-
-
     public override void FinishAndSave()
     {
         var block = new CodeBlock("", "", "Console.WriteLine(\"DataSeederCreator.Run Finished\")",
@@ -242,6 +175,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         if (_runMethodCodeBlock is null)
             throw new Exception("_runMethodCodeBlock is null");
         _runMethodCodeBlock.AddRange(block.CodeItems);
-        CreateFile();
+        base.FinishAndSave();
     }
 }

@@ -49,9 +49,4 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
         CodeFile.AddRange(block.CodeItems);
         FinishAndSave();
     }
-
-    public override void FinishAndSave()
-    {
-        CreateFile();
-    }
 }

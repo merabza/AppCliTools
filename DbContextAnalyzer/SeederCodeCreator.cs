@@ -17,7 +17,6 @@ public sealed class SeederCodeCreator
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly GetJsonCreatorParameters _getJsonCreatorParameters;
 
-    //private readonly List<string> _tempDataTableNames = new List<string>();
     private readonly ILogger _logger;
     private readonly SeederCodeCreatorParameters _seederCodeCreatorParameters;
 
@@ -35,7 +34,7 @@ public sealed class SeederCodeCreator
     }
 
 
-    public bool Go()
+    public void Go()
     {
         //0.1
         var dataSeederBaseGenericClassCreator =
@@ -108,7 +107,7 @@ public sealed class SeederCodeCreator
             var seederModelCreatorForJsonCreatorProject = new SeederModelCreator(_logger,
                 _getJsonCreatorParameters.PlacePath, _getJsonCreatorParameters.ProjectNamespace,
                 _getJsonCreatorParameters.ModelsFolderName, _excludesRulesParameters.SingularityExceptions);
-            seederModelCreatorForJsonCreatorProject.UseEntity(relEntity.Value, isCarcassType);
+            seederModelCreatorForJsonCreatorProject.UseEntity(relEntity.Value);
 
             if (!isCarcassType)
             {
@@ -117,7 +116,7 @@ public sealed class SeederCodeCreator
                     _seederCodeCreatorParameters.PlacePath,
                     _seederCodeCreatorParameters.ProjectNamespace, _seederCodeCreatorParameters.ModelsFolderName,
                     _excludesRulesParameters.SingularityExceptions);
-                seederModelCreator.UseEntity(relEntity.Value, false);
+                seederModelCreator.UseEntity(relEntity.Value);
             }
 
             //2.3
@@ -131,10 +130,10 @@ public sealed class SeederCodeCreator
             seederCreator.UseEntity(relEntity.Value, isCarcassType);
 
             //1.1
-            creatorForJsonFilesCreator.UseEntity(relEntity.Value, isCarcassType);
+            creatorForJsonFilesCreator.UseEntity(relEntity.Value);
             //1.2
             if (!isCarcassType)
-                projectDataSeederCreator.UseEntity(relEntity.Value, false);
+                projectDataSeederCreator.UseEntity(relEntity.Value);
 
             //1.3
             projectDataSeedersFabricCreator.UseEntity(relEntity.Value, isCarcassType);
@@ -150,17 +149,9 @@ public sealed class SeederCodeCreator
 
         var place = new DirectoryInfo(_getJsonCreatorParameters.PlacePath);
         var solutionDir = place.Parent?.Parent;
-        return solutionDir is null || StShared
-            .RunProcess(true, _logger, "jb", $"cleanupcode --exclude=\"**.json\" {solutionDir.FullName}").IsNone;
+        if (solutionDir is null)
+            return;
+
+        StShared.RunProcess(true, _logger, "jb", $"cleanupcode --exclude=\"**.json\" {solutionDir.FullName}");
     }
-
-
-    //private void ClearFolder(string folderPath)
-    //{
-    //  DirectoryInfo jsonFolder = new DirectoryInfo(folderPath);
-    //  foreach (FileInfo file in jsonFolder.GetFiles())
-    //  {
-    //    file.Delete();
-    //  }
-    //}
 }

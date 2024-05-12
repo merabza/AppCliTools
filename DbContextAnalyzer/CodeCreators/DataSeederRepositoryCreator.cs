@@ -33,11 +33,6 @@ public sealed class DataSeederRepositoryCreator : CodeCreator
                     $"public {_par.ProjectPrefixShort}DataSeederRepository({_par.ProjectDbContextClassName} ctx, ILogger<{_par.ProjectPrefixShort}DataSeederRepository> logger)  : base(ctx, logger)"
                 )));
         CodeFile.AddRange(block.CodeItems);
-        CreateFile();
-    }
-
-    public override void FinishAndSave()
-    {
-        CreateFile();
+        FinishAndSave();
     }
 }
