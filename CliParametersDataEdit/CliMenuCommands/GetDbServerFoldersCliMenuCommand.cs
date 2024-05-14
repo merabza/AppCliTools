@@ -1,8 +1,8 @@
-﻿using CliMenu;
+﻿using System.Threading;
+using CliMenu;
 using CliParametersDataEdit.ToolActions;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 
 namespace CliParametersDataEdit.CliMenuCommands;
 
@@ -26,6 +26,5 @@ public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
 
         var getDbServerFoldersToolAction = new GetDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
         getDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
-
     }
 }

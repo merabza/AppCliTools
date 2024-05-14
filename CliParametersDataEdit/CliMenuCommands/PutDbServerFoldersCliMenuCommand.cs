@@ -1,8 +1,8 @@
-﻿using CliMenu;
+﻿using System.Threading;
+using CliMenu;
 using CliParametersDataEdit.ToolActions;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 
 namespace CliParametersDataEdit.CliMenuCommands;
 
