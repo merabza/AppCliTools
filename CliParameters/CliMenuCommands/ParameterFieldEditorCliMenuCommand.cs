@@ -1,8 +1,5 @@
-﻿using System;
-using CliMenu;
+﻿using CliMenu;
 using CliParameters.FieldEditors;
-using LibDataInput;
-using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -23,25 +20,12 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
 
     protected override void RunAction()
     {
-        try
-        {
-            MenuAction = EMenuAction.Reload;
+        MenuAction = EMenuAction.Reload;
 
-            _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
+        _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
 
-            ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-            _parametersEditor.Save(ParametersEditor.GetSaveMessage());
-        }
-        catch (DataInputEscapeException)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
-        }
+        ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
+        _parametersEditor.Save(ParametersEditor.GetSaveMessage());
     }
 
     protected override string GetStatus()

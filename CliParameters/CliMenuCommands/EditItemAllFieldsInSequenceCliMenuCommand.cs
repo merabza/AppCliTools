@@ -1,9 +1,5 @@
-﻿using System;
-using CliMenu;
-using LibDataInput;
+﻿using CliMenu;
 using SystemToolsShared;
-
-// ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.CliMenuCommands;
 
@@ -11,6 +7,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public EditItemAllFieldsInSequenceCliMenuCommand(Cruder cruder, string itemName) : base("Edit", itemName)
     {
         _cruder = cruder;
@@ -18,29 +15,16 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommand : CliMenuCommand
 
     protected override void RunAction()
     {
-        try
+        if (string.IsNullOrWhiteSpace(ParentMenuName))
         {
-            if (string.IsNullOrWhiteSpace(ParentMenuName))
-            {
-                StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-                return;
-            }
+            StShared.WriteErrorLine("Empty Parent Menu Name ", true);
+            return;
+        }
 
-            if (_cruder.EditItemAllFieldsInSequence(ParentMenuName))
-            {
-                MenuAction = EMenuAction.LevelUp;
-                return;
-            }
-        }
-        catch (DataInputEscapeException)
+        if (_cruder.EditItemAllFieldsInSequence(ParentMenuName))
         {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
+            MenuAction = EMenuAction.LevelUp;
+            return;
         }
 
         MenuAction = EMenuAction.Reload;

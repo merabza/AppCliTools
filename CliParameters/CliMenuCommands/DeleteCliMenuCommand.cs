@@ -1,9 +1,5 @@
-﻿using System;
-using CliMenu;
-using LibDataInput;
+﻿using CliMenu;
 using SystemToolsShared;
-
-// ReSharper disable ConvertToPrimaryConstructor
 
 namespace CliParameters.CliMenuCommands;
 
@@ -11,6 +7,7 @@ public sealed class DeleteCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DeleteCliMenuCommand(Cruder cruder, string fileStorageName) : base("Delete", fileStorageName)
     {
         _cruder = cruder;
@@ -18,22 +15,8 @@ public sealed class DeleteCliMenuCommand : CliMenuCommand
 
     protected override void RunAction()
     {
-        try
-        {
-            if (RunBody())
-                return;
-        }
-        catch (DataInputEscapeException)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
-        }
-
+        if (RunBody())
+            return;
         MenuAction = EMenuAction.Reload;
     }
 

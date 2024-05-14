@@ -1,5 +1,6 @@
 ﻿using System;
 using LibDataInput;
+using SystemToolsShared;
 
 namespace CliMenu;
 
@@ -48,25 +49,20 @@ public /*open*/ class CliMenuCommand
                 return;
         }
 
-        //დავინიშნოთ დრო პროცესისათვის
-        //var startDateTime = DateTime.Now;
-
-        RunAction();
-
-        //if (_countRunDuration)
-        //{
-        //    var timeTakenMessage = StShared.TimeTakenMessage(startDateTime);
-        //    if (_logger is null)
-        //        Console.WriteLine("{0} Finished. {1}", Name, timeTakenMessage);
-        //    else
-        //        _logger.LogInformation("{Name} Finished. {timeTakenMessage}", Name, timeTakenMessage);
-        //}
-
-        //StShared.Pause();
-
-        //if (MessagesDataManager is not null)
-        //    await MessagesDataManager.SendMessage(UserName, $"{_actionName} Finished. {timeTakenMessage}",
-        //        cancellationToken);
+        try
+        {
+            RunAction();
+        }
+        catch (DataInputEscapeException)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Escape... ");
+            MenuAction = EMenuAction.Reload;
+        }
+        catch (Exception e)
+        {
+            StShared.WriteException(e, true);
+        }
     }
 
 

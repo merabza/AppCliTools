@@ -1,6 +1,4 @@
-﻿using System;
-using CliMenu;
-using LibDataInput;
+﻿using CliMenu;
 using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -19,31 +17,15 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
 
     protected override void RunAction()
     {
-        try
+        if (string.IsNullOrWhiteSpace(ParentMenuName))
         {
-            if (string.IsNullOrWhiteSpace(ParentMenuName))
-            {
-                StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-                return;
-            }
-
-            if (_parametersEditor.EditParametersInSequence())
-            {
-                MenuAction = EMenuAction.LevelUp;
-                return;
-            }
-        }
-        catch (DataInputEscapeException)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
+            StShared.WriteErrorLine("Empty Parent Menu Name ", true);
+            return;
         }
 
-        MenuAction = EMenuAction.Reload;
+        if (!_parametersEditor.EditParametersInSequence()) 
+            return;
+
+        MenuAction = EMenuAction.LevelUp;
     }
 }

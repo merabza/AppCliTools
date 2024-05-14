@@ -1,9 +1,7 @@
-﻿using System;
-using CliMenu;
+﻿using CliMenu;
 using CliParameters.FieldEditors;
 using LibDataInput;
 using LibParameters;
-using SystemToolsShared;
 
 namespace CliParameters.CliMenuCommands;
 
@@ -27,31 +25,18 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
 
     protected override void RunAction()
     {
-        try
-        {
-            MenuAction = EMenuAction.Reload;
+        MenuAction = EMenuAction.Reload;
 
-            _fieldEditor.UpdateField(_recordKey, _recordForUpdate);
-            _cruder.UpdateRecordWithKey(_recordKey, _recordForUpdate);
+        _fieldEditor.UpdateField(_recordKey, _recordForUpdate);
+        _cruder.UpdateRecordWithKey(_recordKey, _recordForUpdate);
 
-            if (!_cruder.CheckValidation(_recordForUpdate))
-                if (!Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
-                    return;
+        if (!_cruder.CheckValidation(_recordForUpdate))
+            if (!Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
+                return;
 
-            //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
-            //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-            _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
-        }
-        catch (DataInputEscapeException e)
-        {
-            Console.WriteLine();
-            Console.WriteLine($"{e.Message}... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
-        }
+        //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
+        //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
+        _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
     }
 
     protected override string GetStatus()

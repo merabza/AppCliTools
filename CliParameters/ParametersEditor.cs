@@ -70,7 +70,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
         return parametersEditorMenuSet;
     }
 
-    public void FillDetailsSubMenu(CliMenuSet parametersEditorMenuSet)
+    private void FillDetailsSubMenu(CliMenuSet parametersEditorMenuSet)
     {
         //მენიუს ჩანაწერი, რომელიც საშუალებას გვაძლევს პარამეტრები დავარედაქტიროთ ყველა თანმიმდევრობით
         EditParametersInSequenceCliMenuCommand editCommand = new(this);

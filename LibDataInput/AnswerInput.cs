@@ -8,6 +8,7 @@ public sealed class AnswerInput : DataInput
     private readonly EDialogResult _defaultValue;
     private readonly string _fieldName;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public AnswerInput(string fieldName, EDialogResult defaultValue = EDialogResult.Yes)
     {
         _fieldName = fieldName;
@@ -34,9 +35,9 @@ public sealed class AnswerInput : DataInput
         {
             var ch = Console.ReadKey(true);
             var key = ch.Key == ConsoleKey.Enter ? defaultAnswer : ch.Key.Value().ToLower();
-            if (key != null && mainLetters.ContainsKey(key))
+            if (key != null && mainLetters.TryGetValue(key, out var letter))
             {
-                Value = mainLetters[key];
+                Value = letter;
                 Console.Write(key);
                 Console.WriteLine();
                 return true;
