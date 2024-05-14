@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading;
-using CliMenu;
+﻿using CliMenu;
 using CliParametersDataEdit.ToolActions;
-using LibDataInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using System.Threading;
 
 namespace CliParametersDataEdit.CliMenuCommands;
 
@@ -26,21 +23,8 @@ public class PutDbServerFoldersCliMenuCommand : CliMenuCommand
     protected override void RunAction()
     {
         MenuAction = EMenuAction.Reload;
-        try
-        {
-            var putDbServerFoldersToolAction =
-                new PutDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
-            putDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
-        }
-        catch (DataInputEscapeException)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
-        }
+
+        var putDbServerFoldersToolAction = new PutDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
+        putDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using LibDataInput;
+﻿using LibDataInput;
+using System;
 using SystemToolsShared;
 
 namespace CliMenu;

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading;
-using CliMenu;
+﻿using CliMenu;
 using CliParametersDataEdit.ToolActions;
-using LibDataInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using System.Threading;
 
 namespace CliParametersDataEdit.CliMenuCommands;
 
@@ -26,21 +23,9 @@ public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
     protected override void RunAction()
     {
         MenuAction = EMenuAction.Reload;
-        try
-        {
-            var getDbServerFoldersToolAction =
-                new GetDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
-            getDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
-        }
-        catch (DataInputEscapeException)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
-        }
+
+        var getDbServerFoldersToolAction = new GetDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
+        getDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
+
     }
 }

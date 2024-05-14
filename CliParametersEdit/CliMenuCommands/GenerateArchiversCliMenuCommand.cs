@@ -1,10 +1,8 @@
-﻿using System;
-using CliMenu;
+﻿using CliMenu;
 using CliParametersEdit.Generators;
 using LibDataInput;
 using LibFileParameters.Interfaces;
 using LibParameters;
-using SystemToolsShared;
 
 namespace CliParametersEdit.CliMenuCommands;
 
@@ -22,25 +20,13 @@ public sealed class GenerateArchiversCliMenuCommand : CliMenuCommand
     {
         MenuAction = EMenuAction.Reload;
         var parameters = (IParametersWithArchivers)_parametersManager.Parameters;
-        try
-        {
-            if (!Inputer.InputBool("This process will change Archivers, are you sure?", false, false))
-                return;
 
-            StandardArchiversGenerator.Generate(true, _parametersManager);
+        if (!Inputer.InputBool("This process will change Archivers, are you sure?", false, false))
+            return;
 
-            //შენახვა
-            _parametersManager.Save(parameters, "Archivers generated success");
-        }
-        catch (DataInputEscapeException)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Escape... ");
-            //StShared.Pause();
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, true);
-        }
+        StandardArchiversGenerator.Generate(true, _parametersManager);
+
+        //შენახვა
+        _parametersManager.Save(parameters, "Archivers generated success");
     }
 }

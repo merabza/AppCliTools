@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CliMenu;
+using Figgle;
+using LibToolActions.BackgroundTasks;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
-using CliMenu;
-using Figgle;
-using LibToolActions.BackgroundTasks;
 using SystemToolsShared;
 
 namespace CliTools;
