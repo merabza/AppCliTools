@@ -4,14 +4,13 @@ using LibDataInput;
 using LibFileParameters.Interfaces;
 using LibParameters;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
 namespace CliParametersEdit.CliMenuCommands;
 
 public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
 {
     private readonly IParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public GenerateStandardSmartSchemasCliMenuCommand(IParametersManager parametersManager)
     {
         _parametersManager = parametersManager;

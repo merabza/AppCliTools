@@ -2,8 +2,6 @@
 using CliParameters.FieldEditors;
 using LibParameters;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
 namespace CliParameters.CliMenuCommands;
 
 public sealed class SubObjectFieldEditorCliMenuCommand : CliMenuCommand
@@ -12,6 +10,7 @@ public sealed class SubObjectFieldEditorCliMenuCommand : CliMenuCommand
 
     private readonly ItemData _recordForUpdate;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate) :
         base(
             fieldName, null, false, EStatusView.Table)

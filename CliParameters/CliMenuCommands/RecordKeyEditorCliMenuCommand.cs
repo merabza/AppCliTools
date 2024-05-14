@@ -1,8 +1,6 @@
 ﻿using CliMenu;
 using LibDataInput;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
 namespace CliParameters.CliMenuCommands;
 
 public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
@@ -10,6 +8,7 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
     private readonly Cruder _cruder;
     private readonly string _recordKey;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public RecordKeyEditorCliMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName, null,
         false, EStatusView.Table)
     {
