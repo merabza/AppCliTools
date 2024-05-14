@@ -23,7 +23,7 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
             return;
         }
 
-        if (!_parametersEditor.EditParametersInSequence()) 
+        if (!_parametersEditor.EditParametersInSequence())
             return;
 
         MenuAction = EMenuAction.LevelUp;
