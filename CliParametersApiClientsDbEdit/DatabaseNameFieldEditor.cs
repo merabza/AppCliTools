@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters.CliMenuCommands;
@@ -26,13 +27,13 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly string _databaseApiClientNameFieldName;
     private readonly string _databaseConnectionNamePropertyName;
     private readonly ILogger _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IParametersManager _parametersManager;
 
-    public DatabaseNameFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        string databaseConnectionNamePropertyName, string databaseApiClientNameFieldName, bool canUseNewDatabaseName) :
-        base(propertyName)
+    public DatabaseNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName, IParametersManager parametersManager, string databaseConnectionNamePropertyName, string databaseApiClientNameFieldName, bool canUseNewDatabaseName) : base(propertyName)
     {
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
         _parametersManager = parametersManager;
         _databaseConnectionNamePropertyName = databaseConnectionNamePropertyName;
         _databaseApiClientNameFieldName = databaseApiClientNameFieldName;
@@ -56,7 +57,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(
                     databaseServerConnectionName);
 
-        ApiClientCruder apiClientCruder = new(_parametersManager, _logger);
+        ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
 
         var apiClientSettings = string.IsNullOrWhiteSpace(databaseApiClientName)
             ? null
@@ -68,7 +69,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 databaseServerConnectionData, null, null, CancellationToken.None).Result;
 
         if (databaseClient == null && apiClientSettings != null)
-            databaseClient = DatabaseApiClient.Create(_logger, apiClientSettings, null, null, CancellationToken.None)
+            databaseClient = DatabaseApiClient.Create(_logger, _httpClientFactory, apiClientSettings, null, null, CancellationToken.None)
                 .Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();

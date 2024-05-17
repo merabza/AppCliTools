@@ -10,6 +10,7 @@ public sealed class SelectFromMenuListInput : DataInput
     private readonly string _fieldName;
     private readonly CliMenuSet _listSet;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SelectFromMenuListInput(string fieldName, CliMenuSet listSet, string? defaultValue = default)
     {
         _fieldName = fieldName;
