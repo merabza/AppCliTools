@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using ApiClientsManagement;
 using CliParameters;
@@ -15,11 +16,13 @@ namespace CliParametersApiClientsEdit;
 public sealed class ApiClientCruder : ParCruder
 {
     private readonly ILogger _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public ApiClientCruder(IParametersManager parametersManager, ILogger logger) : base(parametersManager, "Api Client",
-        "Api Clients")
+    public ApiClientCruder(IParametersManager parametersManager, ILogger logger, IHttpClientFactory httpClientFactory) :
+        base(parametersManager, "Api Client", "Api Clients")
     {
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.Server)));
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey)));
         FieldEditors.Add(new BoolFieldEditor(nameof(ApiClientSettings.WithMessaging), false));
@@ -72,9 +75,7 @@ public sealed class ApiClientCruder : ParCruder
             Console.WriteLine("Try connect to Test Api Client...");
 
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
-            // ReSharper disable once using
-            // ReSharper disable once DisposableConstructor
-            using var apiClient = new TestApiClient(_logger, apiClientSettings.Server);
+            var apiClient = new TestApiClient(_logger, _httpClientFactory, apiClientSettings.Server);
 
             var getVersionResult = apiClient.GetVersion(CancellationToken.None).Result;
 
