@@ -4,8 +4,9 @@ namespace CliTools.CliMenuCommands;
 
 public sealed class ExitCliMenuCommand : CliMenuCommand
 {
-    protected override void RunAction()
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public ExitCliMenuCommand() : base(null, EMenuAction.Exit)
     {
-        MenuAction = EMenuAction.Exit;
+
     }
 }

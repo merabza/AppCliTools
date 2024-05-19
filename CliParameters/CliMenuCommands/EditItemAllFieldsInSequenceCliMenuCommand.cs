@@ -8,25 +8,19 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommand : CliMenuCommand
     private readonly Cruder _cruder;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public EditItemAllFieldsInSequenceCliMenuCommand(Cruder cruder, string itemName) : base("Edit", itemName)
+    public EditItemAllFieldsInSequenceCliMenuCommand(Cruder cruder, string itemName) : base("Edit", EMenuAction.LevelUp,
+        EMenuAction.Reload, itemName)
     {
         _cruder = cruder;
     }
 
-    protected override void RunAction()
+    protected override bool RunBody()
     {
-        if (string.IsNullOrWhiteSpace(ParentMenuName))
-        {
-            StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-            return;
-        }
+        if (!string.IsNullOrWhiteSpace(ParentMenuName))
+            return _cruder.EditItemAllFieldsInSequence(ParentMenuName);
 
-        if (_cruder.EditItemAllFieldsInSequence(ParentMenuName))
-        {
-            MenuAction = EMenuAction.LevelUp;
-            return;
-        }
+        StShared.WriteErrorLine("Empty Parent Menu Name ", true);
+        return false;
 
-        MenuAction = EMenuAction.Reload;
     }
 }

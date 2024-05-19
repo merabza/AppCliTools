@@ -7,21 +7,22 @@ namespace CliMenu;
 public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
+    private readonly EMenuAction _menuActionOnBodySuccess;
+    private readonly EMenuAction _menuActionOnBodyFail;
 
-    //private readonly bool _countRunDuration;
-    //private readonly ILogger? _logger;
     protected readonly string? ParentMenuName;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CliMenuCommand(string? name = null, string? parentMenuName = null, bool askRunAction = false,
+    public CliMenuCommand(string? name = null, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
+        EMenuAction menuActionOnBodyFail = EMenuAction.Reload, string? parentMenuName = null, bool askRunAction = false,
         EStatusView statusView = EStatusView.Brackets, bool nameIsStatus = false)
     {
-        MenuAction = EMenuAction.Nothing;
         Name = name;
+        MenuAction = EMenuAction.Nothing;
+        _menuActionOnBodySuccess = menuActionOnBodySuccess;
+        _menuActionOnBodyFail = menuActionOnBodyFail;
         ParentMenuName = parentMenuName;
         _askRunAction = askRunAction;
-        //_countRunDuration = countRunDuration;
-        //_logger = logger;
         StatusView = statusView;
         NameIsStatus = nameIsStatus;
     }
@@ -46,12 +47,15 @@ public /*open*/ class CliMenuCommand
                 Console.WriteLine(description);
 
             if (!Inputer.InputBool("Are you sure, you want to run this action?", true, false))
+            {
+                MenuAction = EMenuAction.Reload;
                 return;
+            }
         }
 
         try
         {
-            RunAction();
+            MenuAction = RunBody() ? _menuActionOnBodySuccess : _menuActionOnBodyFail;
         }
         catch (DataInputEscapeException)
         {
@@ -66,8 +70,14 @@ public /*open*/ class CliMenuCommand
     }
 
 
-    protected virtual void RunAction()
+    //protected virtual void RunAction()
+    //{
+    //    MenuAction = RunBody() ? _menuActionOnBodySuccess : _menuActionOnBodyFail;
+    //}
+
+    protected virtual bool RunBody()
     {
+        return true;
     }
 
 

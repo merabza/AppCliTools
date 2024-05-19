@@ -130,7 +130,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
         if (!File.Exists(startFileName))
         {
-            StShared.WriteWarningLine($"File {startFileName} does not exists", true);
+            StShared.WriteWarningLine($"File {startFileName} is not exists", true);
 
             FileInfo fileInfo = new(startFileName);
             if (fileInfo.Directory == null)
@@ -147,7 +147,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
                 return;
             }
 
-            if (!Inputer.InputBool($"File {startFileName} does not exists, Create and use file with this name?",
+            if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?",
                     true, false))
                 return;
 

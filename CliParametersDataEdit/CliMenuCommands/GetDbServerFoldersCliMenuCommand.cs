@@ -13,18 +13,16 @@ public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GetDbServerFoldersCliMenuCommand(ILogger logger, string dbServerName, IParametersManager parametersManager)
+    public GetDbServerFoldersCliMenuCommand(ILogger logger, string dbServerName, IParametersManager parametersManager):base(null,EMenuAction.Reload)
     {
         _logger = logger;
         _dbServerName = dbServerName;
         _parametersManager = parametersManager;
     }
 
-    protected override void RunAction()
+    protected override bool RunBody()
     {
-        MenuAction = EMenuAction.Reload;
-
         var getDbServerFoldersToolAction = new GetDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
-        getDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
+        return getDbServerFoldersToolAction.Run(CancellationToken.None).Result;
     }
 }

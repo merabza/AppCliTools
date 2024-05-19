@@ -11,21 +11,21 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
     private readonly ParametersEditor _parametersEditor;
 
     public ParameterFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor,
-        ParametersEditor parametersEditor)
-        : base(fieldName, null, false, EStatusView.Table)
+        ParametersEditor parametersEditor) : base(fieldName, EMenuAction.Reload, EMenuAction.Reload, null, false,
+        EStatusView.Table)
     {
         _fieldEditor = fieldEditor;
         _parametersEditor = parametersEditor;
     }
 
-    protected override void RunAction()
+    protected override bool RunBody()
     {
-        MenuAction = EMenuAction.Reload;
 
         _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
 
         ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         _parametersEditor.Save(ParametersEditor.GetSaveMessage());
+        return true;
     }
 
     protected override string GetStatus()

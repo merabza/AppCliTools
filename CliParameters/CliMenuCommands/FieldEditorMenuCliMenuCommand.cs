@@ -15,7 +15,7 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
     // ReSharper disable once ConvertToPrimaryConstructor
     public FieldEditorMenuCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate,
         Cruder cruder,
-        string recordKey) : base(fieldName, null, false, EStatusView.Table)
+        string recordKey) : base(fieldName, EMenuAction.Reload, EMenuAction.Reload, null, false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;
         _recordForUpdate = recordForUpdate;
@@ -23,20 +23,19 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
         _recordKey = recordKey;
     }
 
-    protected override void RunAction()
+    protected override bool RunBody()
     {
-        MenuAction = EMenuAction.Reload;
-
         _fieldEditor.UpdateField(_recordKey, _recordForUpdate);
         _cruder.UpdateRecordWithKey(_recordKey, _recordForUpdate);
 
-        if (!_cruder.CheckValidation(_recordForUpdate))
-            if (!Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
-                return;
+        if (!_cruder.CheckValidation(_recordForUpdate) &&
+            !Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
+            return false;
 
         //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
+        return true;
     }
 
     protected override string GetStatus()

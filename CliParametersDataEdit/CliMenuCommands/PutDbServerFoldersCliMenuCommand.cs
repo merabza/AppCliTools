@@ -13,18 +13,17 @@ public class PutDbServerFoldersCliMenuCommand : CliMenuCommand
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public PutDbServerFoldersCliMenuCommand(ILogger logger, string dbServerName, IParametersManager parametersManager)
+    public PutDbServerFoldersCliMenuCommand(ILogger logger, string dbServerName, IParametersManager parametersManager) :
+        base(null, EMenuAction.Reload)
     {
         _logger = logger;
         _dbServerName = dbServerName;
         _parametersManager = parametersManager;
     }
 
-    protected override void RunAction()
+    protected override bool RunBody()
     {
-        MenuAction = EMenuAction.Reload;
-
         var putDbServerFoldersToolAction = new PutDbServerFoldersToolAction(_logger, _dbServerName, _parametersManager);
-        putDbServerFoldersToolAction.Run(CancellationToken.None).Wait();
+        return putDbServerFoldersToolAction.Run(CancellationToken.None).Result;
     }
 }

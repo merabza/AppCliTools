@@ -10,22 +10,17 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
     private readonly ParametersEditor _parametersEditor;
 
     public EditParametersInSequenceCliMenuCommand(ParametersEditor parametersEditor) : base(
-        "Edit Parameters in sequence")
+        "Edit Parameters in sequence", EMenuAction.LevelUp, EMenuAction.Reload)
     {
         _parametersEditor = parametersEditor;
     }
 
-    protected override void RunAction()
+    protected override bool RunBody()
     {
-        if (string.IsNullOrWhiteSpace(ParentMenuName))
-        {
-            StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-            return;
-        }
+        if (!string.IsNullOrWhiteSpace(ParentMenuName))
+            return _parametersEditor.EditParametersInSequence();
 
-        if (!_parametersEditor.EditParametersInSequence())
-            return;
-
-        MenuAction = EMenuAction.LevelUp;
+        StShared.WriteErrorLine("Empty Parent Menu Name ", true);
+        return false;
     }
 }

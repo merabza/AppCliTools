@@ -10,17 +10,13 @@ public sealed class ParameterSubObjectFieldEditorCliMenuCommand : CliMenuCommand
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ParameterSubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor,
-        ParametersEditor parametersEditor) : base(fieldName, null, false, EStatusView.Table)
+        ParametersEditor parametersEditor) : base(fieldName, EMenuAction.LoadSubMenu, EMenuAction.LoadSubMenu, null,
+        false, EStatusView.Table)
     {
         _fieldEditor = fieldEditor;
         _parametersEditor = parametersEditor;
     }
 
-
-    protected override void RunAction()
-    {
-        MenuAction = EMenuAction.LoadSubMenu;
-    }
 
     public override CliMenuSet? GetSubmenu()
     {

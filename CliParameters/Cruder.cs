@@ -323,7 +323,7 @@ public /*open*/ class Cruder : IFieldEditors
         //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
         var itemSubMenuSet = new CliMenuSet(substituteName);
 
-        DeleteCliMenuCommand deleteCommand = new(this, itemName);
+        DeleteCruderRecordCliMenuCommand deleteCommand = new(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand, "Delete this record");
 
         if (_canEditFieldsInSequence)

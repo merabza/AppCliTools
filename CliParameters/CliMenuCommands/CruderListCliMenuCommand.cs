@@ -8,14 +8,9 @@ public sealed class CruderListCliMenuCommand : CliMenuCommand
     private readonly Cruder _cruder;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CruderListCliMenuCommand(Cruder cruder) : base(cruder.CrudNamePlural)
+    public CruderListCliMenuCommand(Cruder cruder) : base(cruder.CrudNamePlural, EMenuAction.LoadSubMenu)
     {
         _cruder = cruder;
-    }
-
-    protected override void RunAction()
-    {
-        MenuAction = EMenuAction.LoadSubMenu;
     }
 
     public override CliMenuSet GetSubmenu()
