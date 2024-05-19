@@ -10,7 +10,7 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
     private readonly ParametersEditor _parametersEditor;
 
     public EditParametersInSequenceCliMenuCommand(ParametersEditor parametersEditor) : base(
-        "Edit Parameters in sequence", EMenuAction.LevelUp, EMenuAction.Reload)
+        "Edit Parameters in sequence", EMenuAction.LevelUp)
     {
         _parametersEditor = parametersEditor;
     }
