@@ -10,6 +10,7 @@ using LibApiClientParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
+using TestApiContracts;
 
 namespace CliParametersApiClientsEdit;
 
