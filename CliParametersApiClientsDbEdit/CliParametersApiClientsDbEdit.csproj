@@ -9,7 +9,6 @@
         <ProjectReference Include="..\..\DatabaseTools\DbTools\DbTools.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibDatabaseParameters\LibDatabaseParameters.csproj" />
         <ProjectReference Include="..\..\ToolsManagement\DatabasesManagement\DatabasesManagement.csproj" />
-        <ProjectReference Include="..\..\WebAgentContracts\WebAgentDatabasesApiContracts\WebAgentDatabasesApiContracts.csproj" />
         <ProjectReference Include="..\CliParametersApiClientsEdit\CliParametersApiClientsEdit.csproj" />
         <ProjectReference Include="..\CliParametersDataEdit\CliParametersDataEdit.csproj" />
         <ProjectReference Include="..\CliParameters\CliParameters.csproj" />

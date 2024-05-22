@@ -39,7 +39,7 @@ public class PutDbServerFoldersToolAction : ToolAction
             return false;
         }
 
-        var databaseManagementClient = await DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger,
+        var databaseManagementClient = await DatabaseAgentClientsFabric.CreateDatabaseManager(true, _logger,
             _dbServerName, databaseServerConnections, null, null, CancellationToken.None);
 
         if (databaseManagementClient is null)

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using CliMenu;
+﻿using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit;
@@ -15,8 +11,11 @@ using LibDataInput;
 using LibMenuInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
 using SystemToolsShared;
-using WebAgentDatabasesApiContracts;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -31,7 +30,9 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IParametersManager _parametersManager;
 
-    public DatabaseNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName, IParametersManager parametersManager, string databaseConnectionNamePropertyName, string databaseApiClientNameFieldName, bool canUseNewDatabaseName) : base(propertyName)
+    public DatabaseNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
+        IParametersManager parametersManager, string databaseConnectionNamePropertyName,
+        string databaseApiClientNameFieldName, bool canUseNewDatabaseName) : base(propertyName)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -64,19 +65,20 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             ? null
             : (ApiClientSettings?)apiClientCruder.GetItemByName(databaseApiClientName);
 
-        IDatabaseApiClient? databaseClient = null;
+        IDatabaseManager? databaseManager = null;
         if (databaseServerConnectionData != null)
-            databaseClient = DatabaseAgentClientsFabric.CreateDatabaseManagementClient(true, _logger,
+            databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(true, _logger,
                 databaseServerConnectionData, null, null, CancellationToken.None).Result;
 
-        if (databaseClient == null && apiClientSettings != null)
-            databaseClient = DatabaseApiClient.Create(_logger, _httpClientFactory, apiClientSettings, null, null, CancellationToken.None)
-                .Result;
+
+        if (databaseManager == null && apiClientSettings != null)
+            databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(_logger, _httpClientFactory,
+                apiClientSettings, null, null, CancellationToken.None).Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();
-        if (databaseClient is not null)
+        if (databaseManager is not null)
         {
-            var getDatabaseNamesResult = databaseClient.GetDatabaseNames(CancellationToken.None).Result;
+            var getDatabaseNamesResult = databaseManager.GetDatabaseNames(CancellationToken.None).Result;
             if (getDatabaseNamesResult.IsT0)
                 databaseInfos = getDatabaseNamesResult.AsT0;
             else
