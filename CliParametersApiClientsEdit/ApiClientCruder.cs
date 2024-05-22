@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using ApiClientsManagement;
 using CliParameters;
 using CliParameters.FieldEditors;
 using LibApiClientParameters;

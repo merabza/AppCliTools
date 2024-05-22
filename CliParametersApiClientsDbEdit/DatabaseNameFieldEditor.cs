@@ -16,6 +16,7 @@ using LibMenuInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
+using WebAgentDatabasesApiContracts;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
