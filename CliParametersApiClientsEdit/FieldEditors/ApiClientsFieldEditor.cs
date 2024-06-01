@@ -44,6 +44,6 @@ public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiCl
             return $"{val.Count} Details";
 
         var kvp = val.Single();
-        return $"{kvp.Key} - {kvp.Value.Server} {kvp.Value.ApiKey} {(kvp.Value.WithMessaging ? "WithMessaging" : "")}";
+        return $"{kvp.Key} - {kvp.Value.Server} {kvp.Value.ApiKey}";
     }
 }
