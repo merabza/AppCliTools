@@ -1,4 +1,8 @@
-﻿using CliMenu;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit;
@@ -11,10 +15,6 @@ using LibDataInput;
 using LibMenuInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -26,8 +26,8 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly bool _canUseNewDatabaseName;
     private readonly string _databaseApiClientNameFieldName;
     private readonly string _databaseConnectionNamePropertyName;
-    private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     public DatabaseNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
