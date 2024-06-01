@@ -11,8 +11,8 @@ namespace CliParametersApiClientsEdit.FieldEditors;
 
 public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiClientSettings>>
 {
-    private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor

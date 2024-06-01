@@ -18,7 +18,6 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
 
     protected override bool RunBody()
     {
-
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Exclude Sets, are you sure?", false, false))

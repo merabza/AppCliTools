@@ -7,8 +7,8 @@ namespace CliMenu;
 public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
-    private readonly EMenuAction _menuActionOnBodySuccess;
     private readonly EMenuAction _menuActionOnBodyFail;
+    private readonly EMenuAction _menuActionOnBodySuccess;
 
     protected readonly string? ParentMenuName;
 

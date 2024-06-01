@@ -21,6 +21,5 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommand : CliMenuCommand
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
         return false;
-
     }
 }

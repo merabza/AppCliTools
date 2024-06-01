@@ -1,14 +1,14 @@
-﻿using CliParameters.FieldEditors;
+﻿using System.Net.Http;
+using CliParameters.FieldEditors;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 
 namespace CliParametersApiClientsEdit.FieldEditors;
 
 public sealed class ApiClientNameFieldEditor : FieldEditor<string>
 {
-    private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
     private readonly bool _useNone;
 

@@ -9,7 +9,8 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
     private readonly string _recordKey;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RecordKeyEditorCliMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName, EMenuAction.LevelUp, EMenuAction.Reload, null,
+    public RecordKeyEditorCliMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName,
+        EMenuAction.LevelUp, EMenuAction.Reload, null,
         false, EStatusView.Table)
     {
         _cruder = cruder;
@@ -18,7 +19,6 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
 
     protected override bool RunBody()
     {
-
         var newRecordName =
             Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
 

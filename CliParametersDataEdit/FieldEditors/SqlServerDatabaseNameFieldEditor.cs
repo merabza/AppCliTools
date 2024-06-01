@@ -1,4 +1,9 @@
-﻿using CliMenu;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading;
+using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.Models;
@@ -9,11 +14,6 @@ using LibDataInput;
 using LibMenuInput;
 using Microsoft.Extensions.Logging;
 using SqlServerDbTools;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading;
 
 // ReSharper disable ConvertToPrimaryConstructor
 

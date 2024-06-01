@@ -20,7 +20,6 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
 
     protected override bool RunBody()
     {
-
         _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
 
         ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)

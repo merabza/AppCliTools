@@ -13,7 +13,8 @@ public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GetDbServerFoldersCliMenuCommand(ILogger logger, string dbServerName, IParametersManager parametersManager):base(null,EMenuAction.Reload)
+    public GetDbServerFoldersCliMenuCommand(ILogger logger, string dbServerName, IParametersManager parametersManager) :
+        base(null, EMenuAction.Reload)
     {
         _logger = logger;
         _dbServerName = dbServerName;

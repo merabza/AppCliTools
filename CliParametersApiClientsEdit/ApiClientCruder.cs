@@ -15,8 +15,8 @@ namespace CliParametersApiClientsEdit;
 
 public sealed class ApiClientCruder : ParCruder
 {
-    private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger _logger;
 
     public ApiClientCruder(IParametersManager parametersManager, ILogger logger, IHttpClientFactory httpClientFactory) :
         base(parametersManager, "Api Client", "Api Clients")
