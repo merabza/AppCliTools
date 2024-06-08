@@ -6,6 +6,7 @@ using LibParameters;
 using LibToolActions;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CliParametersDataEdit.ToolActions;
 
