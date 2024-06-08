@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using CliMenu;
+﻿using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit;
@@ -15,7 +11,11 @@ using LibDataInput;
 using LibMenuInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
