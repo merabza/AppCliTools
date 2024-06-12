@@ -148,6 +148,10 @@ public /*open*/ class CliAppLoop
                     if (!ReloadCurrentMenu())
                         return false;
                     break;
+                case EMenuAction.ReloadWithoutPause:
+                    if (!ReloadCurrentMenu())
+                        return false;
+                    break;
                 case EMenuAction.GoToMenuLink:
                     if (!GoToMenu(menuCommand.GetMenuLinkToGo()))
                         if (!ReloadCurrentMenu())

@@ -6,6 +6,7 @@ public enum EMenuAction
     LevelUp,
     LoadSubMenu,
     Reload,
+    ReloadWithoutPause,
     GoToMenuLink,
     Nothing
 }
