@@ -200,7 +200,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         return $"{databaseServerConnection?.DataProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
     }
 
-    protected override ItemData CreateNewItem(ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         return new DatabaseServerConnectionData();
     }
