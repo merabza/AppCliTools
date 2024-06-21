@@ -126,7 +126,7 @@ public sealed class FileStorageCruder : ParCruder
         return fileStorage?.FileStoragePath;
     }
 
-    protected override ItemData CreateNewItem(ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         if (defaultItemData is FileStorageData defFileStorageData)
             return new FileStorageData { FileStoragePath = defFileStorageData.FileStoragePath };

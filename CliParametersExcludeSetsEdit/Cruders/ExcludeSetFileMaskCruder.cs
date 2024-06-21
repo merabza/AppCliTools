@@ -31,7 +31,7 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
         return GetFileMasks().ToDictionary(k => k, v => (ItemData)new TextItemData { Text = v });
     }
 
-    protected override ItemData CreateNewItem(ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         return new TextItemData { Text = "" };
     }

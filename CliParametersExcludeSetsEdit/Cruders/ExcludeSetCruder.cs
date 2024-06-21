@@ -88,7 +88,7 @@ public sealed class ExcludeSetCruder : ParCruder
         excludeSets.Remove(recordKey);
     }
 
-    protected override ItemData CreateNewItem(ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         return new ExcludeSet();
     }

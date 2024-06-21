@@ -54,7 +54,7 @@ public sealed class ArchiverCruder : ParCruder
         archivers.Remove(recordKey);
     }
 
-    protected override ItemData CreateNewItem(ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         return new ArchiverData();
     }
