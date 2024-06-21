@@ -74,7 +74,7 @@ public sealed class ApiClientCruder : ParCruder
             Console.WriteLine("Try connect to Test Api Client...");
 
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
-            var apiClient = new TestApiClient(_logger, _httpClientFactory, apiClientSettings.Server);
+            var apiClient = new TestApiClient(_logger, _httpClientFactory, apiClientSettings.Server, true);
 
             var getVersionResult = apiClient.GetVersion(CancellationToken.None).Result;
 
