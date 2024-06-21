@@ -73,7 +73,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 
         if (databaseManager == null && apiClientSettings != null)
             databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(_logger, _httpClientFactory,
-                apiClientSettings, null, null, CancellationToken.None).Result;
+                apiClientSettings, null, null, true, CancellationToken.None).Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();
         if (databaseManager is not null)
