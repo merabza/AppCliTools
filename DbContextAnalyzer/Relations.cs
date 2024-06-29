@@ -7,7 +7,6 @@ using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Newtonsoft.Json;
-using SystemToolsShared;
 
 namespace DbContextAnalyzer;
 
