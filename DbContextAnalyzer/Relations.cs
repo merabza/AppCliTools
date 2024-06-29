@@ -7,6 +7,7 @@ using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Newtonsoft.Json;
+using SystemToolsShared;
 
 namespace DbContextAnalyzer;
 
@@ -57,7 +58,7 @@ public sealed class Relations
     private void EntityAnalysis(IEntityType entityType)
     {
         //დავადგინოთ ცხრილის სახელი.
-        var tableName = entityType.GetTableName();
+        var tableName = entityType.GetTableName()?.UnCapitalize();
         if (tableName is null || Entities.ContainsKey(tableName))
             //თუ ეს ცხრილი უკვე ყოფილა გაანალიზებულების სიაში, მაშინ აქ აღარაფერი გვესაქმება
             return;
@@ -153,6 +154,9 @@ public sealed class Relations
         var replaceDict = _excludesRulesParameters.ReplaceFieldNames
             .Where(w => w.TableName == tableName).ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
 
+        return fieldsBase
+            .Select(Selector).ToList();
+
         FieldData Selector(IProperty s)
         {
             var name = replaceDict.TryGetValue(s.Name, out var value) ? value : s.Name;
@@ -181,15 +185,14 @@ public sealed class Relations
             var substEntityType = forKeys[0].PrincipalEntityType;
             EntityAnalysis(substEntityType);
             _preventLoopList.Pop();
-            var substTableName = substEntityType.GetTableName();
 
-            if (substTableName == null)
-                throw new Exception($"substitute table for table {tableName} have no name");
+            var substTableName = substEntityType.GetTableName() ??
+                                 throw new Exception($"substitute table for table {tableName} have no name");
 
             if (_excludesRulesParameters.ExcludeTables.Contains(substTableName))
                 return fieldData;
 
-            if (!Entities.ContainsKey(substTableName))
+            if (!Entities.TryGetValue(substTableName, out var entity))
                 throw new Exception($"substitute table {substTableName} Not analyzed for table {tableName}");
 
             //fieldData.SubstituteField = new SubstituteFieldData(parent: fieldData, tableName: substTableName,
@@ -199,26 +202,21 @@ public sealed class Relations
             //            fieldData)
             //        : null);
 
-            var optIndex = Entities[substTableName].OptimalIndex;
+            var optIndex = entity.OptimalIndex;
 
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
                 optIndex is not null
                     ? GetFieldsData(optIndex.Properties.AsEnumerable(), substTableName, fieldData)
-                    : new List<FieldData>());
-            var nav = forKeys[0].DependentToPrincipal;
-            if (nav is null)
-                throw new Exception($"Foreign Keys nam in table {tableName} is empty");
-
+                    : []);
+            var nav = forKeys[0].DependentToPrincipal ??
+                      throw new Exception($"Foreign Keys nam in table {tableName} is empty");
             fieldData.NavigationFieldName = nav.Name;
             return fieldData;
         }
-
-        return fieldsBase
-            .Select(Selector).ToList();
     }
 
 
-    private string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
+    private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
     {
         var realTypeCandidate = clrTypeName switch
         {
@@ -242,7 +240,7 @@ public sealed class Relations
     }
 
 
-    private IIndex? GetOptimalUniIndex(IEntityType entityType)
+    private static IIndex? GetOptimalUniIndex(IEntityType entityType)
     {
         //თავიდან დავუშვათ, რომ ოპტიმალური ინდექსი არ მოიძებნა
 
