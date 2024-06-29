@@ -93,7 +93,6 @@ public sealed class Relations
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
             entityData.OptimalIndex = GetOptimalUniIndex(entityType);
-            
         }
 
         var haveOneToOneReference = entityType.GetForeignKeys()
