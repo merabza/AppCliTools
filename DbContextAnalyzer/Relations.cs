@@ -6,7 +6,6 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using SystemToolsShared;
 
@@ -90,9 +89,12 @@ public sealed class Relations
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
         if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never &&
             entityType.GetReferencingForeignKeys().Any())
+        {
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
             entityData.OptimalIndex = GetOptimalUniIndex(entityType);
+            
+        }
 
         var haveOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
@@ -129,7 +131,7 @@ public sealed class Relations
 
     public static string? GetTableName(IEntityType entityType)
     {
-        return entityType.GetTableName()?.UnCapitalize();
+        return entityType.GetTableName();
     }
 
     private int GetMaxLevel(EntityData entityData)
