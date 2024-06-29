@@ -37,7 +37,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             "using CarcassDataSeeding",
             "using LanguageExt",
             "using Microsoft.Extensions.Logging",
-            "using SystemToolsShared",
+            "using SystemToolsShared.Errors",
             $"namespace {_parameters.ProjectNamespace}",
             "",
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",

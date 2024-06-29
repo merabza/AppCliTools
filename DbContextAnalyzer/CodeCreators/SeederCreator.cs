@@ -224,16 +224,14 @@ public sealed class SeederCreator(
             isIdentity ? "using CarcassMasterDataDom.Models" : "",
             isIdentity ? "using Microsoft.AspNetCore.Identity" : "",
             "using LanguageExt",
-            "using SystemToolsShared",
+            "using SystemToolsShared.Errors",
             $"namespace {parameters.ProjectNamespace}.{(isCarcassType ? parameters.CarcassSeedersFolderName : parameters.ProjectSeedersFolderName)}",
             "",
-            new CodeBlock(
-                $"public /*open*/ class {className} : {baseClassName}",
+            new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {className}({additionalParameters}string dataSeedFolder, {parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
-                createByJsonFile,
-                createMethod,
-                setParentsMethod));
+                createByJsonFile, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
 

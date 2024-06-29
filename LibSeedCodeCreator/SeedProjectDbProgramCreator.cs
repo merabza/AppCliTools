@@ -29,18 +29,15 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             $"using {par.DbProjectNamespace}NewDataSeeding");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(
-            //"",
-            //$"DbContextOptionsBuilder<{dbContextClassName}> optionsBuilder = new DbContextOptionsBuilder<{dbContextClassName}>()",
-            //"optionsBuilder.UseSqlServer(par.ConnectionStringSeed)",
-            //"",
-            //$"using {dbContextClassName} context = new {dbContextClassName}(optionsBuilder.Options, null)",
             "",
+            new OneLineComment(" ReSharper disable once using"),
             "var userManager = serviceProvider.GetService<UserManager<AppUser>>()",
             "",
             new CodeBlock("if (userManager is null)",
                 "StShared.WriteErrorLine(\"userManager is null\", true)",
                 "return 6"),
             "",
+            new OneLineComment(" ReSharper disable once using"),
             "var roleManager = serviceProvider.GetService<RoleManager<AppRole>>()",
             "",
             new CodeBlock("if (roleManager is null)",
