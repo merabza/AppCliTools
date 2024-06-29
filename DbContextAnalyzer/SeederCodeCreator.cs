@@ -65,6 +65,7 @@ public sealed class SeederCodeCreator
         //----
         var carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
         var relations = new Relations(_dbContext, _excludesRulesParameters);
+        relations.DbContextAnalysis();
         //-----
 
 

@@ -17,11 +17,11 @@ public sealed class Relations
     private readonly Stack<string> _preventLoopList = new();
     public readonly Dictionary<string, EntityData> Entities = [];
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)
     {
         _dbContext = dbContext;
         _excludesRulesParameters = excludesRulesParameters;
-        DbContextAnalysis();
     }
 
     public void SaveJson(string fileFullName)
@@ -36,7 +36,7 @@ public sealed class Relations
     }
 
 
-    private void DbContextAnalysis()
+    public void DbContextAnalysis()
     {
         foreach (var entityType in _dbContext.Model.GetEntityTypes())
         {
