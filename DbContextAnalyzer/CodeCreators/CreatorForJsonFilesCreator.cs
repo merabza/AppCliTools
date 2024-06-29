@@ -33,7 +33,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         var block = new CodeBlock("",
             new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using System",
-            "using System.Collections.Generic",
             "using System.IO",
             "using System.Linq",
             $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}",
@@ -144,12 +143,13 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         }
 
 
+        var tableVarName = tableName.UnCapitalize();
         var block = new CodeBlock("",
             "",
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")",
             "",
-            $"var {tableName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
-            $"SaveJson({tableName}, \"{tableNameCapitalCamel}\")");
+            $"var {tableVarName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
+            $"SaveJson({tableVarName}, \"{tableNameCapitalCamel}\")");
 
         if (_runMethodCodeBlock is null)
             throw new Exception("_runMethodCodeBlock is null");
