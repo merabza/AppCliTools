@@ -55,7 +55,6 @@ public sealed class ConsoleProgramCreator : CodeCreator
             "using CliParameters",
             "using DbContextAnalyzer.Models",
             "using SystemToolsShared",
-            "using SystemToolsShared.Errors",
             "using Microsoft.Extensions.DependencyInjection",
             "using Microsoft.Extensions.Logging",
             "",

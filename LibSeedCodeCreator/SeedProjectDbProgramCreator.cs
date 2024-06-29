@@ -24,6 +24,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             "using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models",
             "using Microsoft.AspNetCore.Identity",
+            "using SystemToolsShared.Errors",
             $"using Seed{par.DbProjectNamespace}",
             $"using {par.DbProjectNamespace}DataSeeding",
             $"using {par.DbProjectNamespace}NewDataSeeding");
