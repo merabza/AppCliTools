@@ -77,7 +77,7 @@ public sealed class SeederCodeCreator
         {
             var tableName = relEntity.Key;
 
-            var isCarcassType = carcassEntityTypes.Any(a => a.GetTableName() == tableName);
+            var isCarcassType = carcassEntityTypes.Any(a => Relations.GetTableName(a) == tableName);
             if (isCarcassType)
                 isAnyCarcassType = true;
         }
@@ -103,7 +103,7 @@ public sealed class SeederCodeCreator
             var tableName = relEntity.Key;
             _logger.LogInformation("TableName = {tableName}", tableName);
 
-            var isCarcassType = carcassEntityTypes.Any(a => a.GetTableName() == tableName);
+            var isCarcassType = carcassEntityTypes.Any(a => Relations.GetTableName(a) == tableName);
             //2.1
             var seederModelCreatorForJsonCreatorProject = new SeederModelCreator(_logger,
                 _getJsonCreatorParameters.PlacePath, _getJsonCreatorParameters.ProjectNamespace,

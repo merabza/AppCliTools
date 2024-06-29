@@ -6,6 +6,7 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using SystemToolsShared;
 
@@ -43,7 +44,7 @@ public sealed class Relations
         {
             if (entityType.GetKeys().Count(w => w.IsPrimaryKey()) != 1)
                 continue;
-            var tableName = entityType.GetTableName();
+            var tableName = GetTableName(entityType);
 
             if (tableName is not null && _excludesRulesParameters?.ExcludeTables is not null &&
                 _excludesRulesParameters.ExcludeTables.Contains(tableName))
@@ -58,7 +59,7 @@ public sealed class Relations
     private void EntityAnalysis(IEntityType entityType)
     {
         //დავადგინოთ ცხრილის სახელი.
-        var tableName = entityType.GetTableName()?.UnCapitalize();
+        var tableName = GetTableName(entityType);
         if (tableName is null || Entities.ContainsKey(tableName))
             //თუ ეს ცხრილი უკვე ყოფილა გაანალიზებულების სიაში, მაშინ აქ აღარაფერი გვესაქმება
             return;
@@ -126,6 +127,11 @@ public sealed class Relations
         //    return;
     }
 
+    public static string? GetTableName(IEntityType entityType)
+    {
+        return entityType.GetTableName()?.UnCapitalize();
+    }
+
     private int GetMaxLevel(EntityData entityData)
     {
         //List<string> principals = _excludesRulesParameters.TableRelationships
@@ -186,7 +192,7 @@ public sealed class Relations
             EntityAnalysis(substEntityType);
             _preventLoopList.Pop();
 
-            var substTableName = substEntityType.GetTableName() ??
+            var substTableName = GetTableName(substEntityType) ??
                                  throw new Exception($"substitute table for table {tableName} have no name");
 
             if (_excludesRulesParameters.ExcludeTables.Contains(substTableName))
