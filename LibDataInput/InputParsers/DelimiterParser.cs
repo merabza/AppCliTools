@@ -67,7 +67,7 @@ public /*open*/ class DelimiterParser : InputParser
                 return false;
             if (i < digs.Length - 1 && len < 1)
                 return false;
-            if (dig == "")
+            if (dig == string.Empty)
                 continue;
             if (!int.TryParse(dig, out var number))
                 return false;

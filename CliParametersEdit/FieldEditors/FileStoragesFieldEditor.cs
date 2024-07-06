@@ -41,6 +41,6 @@ public sealed class FileStoragesFieldEditor : FieldEditor<Dictionary<string, Fil
             return $"{val.Count} Details";
 
         var kvp = val.Single();
-        return $"{kvp.Key} - {kvp.Value.FileStoragePath} {kvp.Value.UserName ?? ""}";
+        return $"{kvp.Key} - {kvp.Value.FileStoragePath} {kvp.Value.UserName ?? string.Empty}";
     }
 }

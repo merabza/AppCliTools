@@ -8,6 +8,7 @@ public sealed class OptionalTextFieldEditor : FieldEditor<string?>
     private readonly string? _defaultValue;
     private readonly char _passwordCharacter;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public OptionalTextFieldEditor(string propertyName, bool enterFieldDataOnCreate = false,
         string? propertyDescriptor = null, string? defaultValue = default, char passwordCharacter = default) : base(
         propertyName, enterFieldDataOnCreate, propertyDescriptor)
@@ -27,8 +28,8 @@ public sealed class OptionalTextFieldEditor : FieldEditor<string?>
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record) ?? "";
-        return _passwordCharacter == default || val == "" ? val : new string(_passwordCharacter, val.Length);
+        var val = GetValue(record) ?? string.Empty;
+        return _passwordCharacter == default || val == string.Empty ? val : new string(_passwordCharacter, val.Length);
 
         //სტანდარტული ფორმატის გადაყვანა custom ფორმატში
         //DateTime.Now.ToString("G", CultureInfo.InvariantCulture);

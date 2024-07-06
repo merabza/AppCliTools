@@ -22,7 +22,7 @@ public sealed class DateTimeInput : DataInput
     public override bool DoInput()
     {
         var prompt =
-            $"{_fieldName} {(_defaultValue == default ? "" : $"[{_defaultValue.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}]")}: ";
+            $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}]")}: ";
         Console.Write(prompt);
 
         var promptLength = prompt.Length;

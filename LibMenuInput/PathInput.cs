@@ -112,7 +112,7 @@ public /*open*/ class PathInput : DataInput
                     {
                         if (Inputer.InputBool("Delete entire text?", false))
                         {
-                            EnteredPath = "";
+                            EnteredPath = string.Empty;
                             return true;
                         }
                     }

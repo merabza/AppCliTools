@@ -10,6 +10,7 @@ public sealed class TimeSpanInput : DataInput
     private readonly string _fieldName;
 
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public TimeSpanInput(string fieldName, TimeSpan defaultValue = default)
     {
         _fieldName = fieldName;
@@ -21,7 +22,7 @@ public sealed class TimeSpanInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"{_fieldName} {(_defaultValue == default ? "" : $"[{_defaultValue}]")}: ";
+        var prompt = $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
 
 

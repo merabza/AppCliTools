@@ -21,10 +21,10 @@ public sealed class TextDataInput : DataInput
 
     public override bool DoInput()
     {
-        var showDefValue = _defaultValue ?? "";
+        var showDefValue = _defaultValue ?? string.Empty;
         if (_passwordCharacter != default && _defaultValue != default)
             showDefValue = new string(_passwordCharacter, showDefValue.Length);
-        var prompt = $"Enter {_fieldName} {(_defaultValue == default ? "" : $"[{showDefValue}]")}: ";
+        var prompt = $"Enter {_fieldName} {(_defaultValue == default ? string.Empty : $"[{showDefValue}]")}: ";
         Console.Write(prompt);
 
         var promptLength = prompt.Length;
@@ -72,7 +72,7 @@ public sealed class TextDataInput : DataInput
                     {
                         if (Inputer.InputBool("Delete entire text?", false))
                         {
-                            Text = "";
+                            Text = string.Empty;
                             return true;
                         }
                     }

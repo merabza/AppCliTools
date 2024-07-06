@@ -26,7 +26,7 @@ public sealed class SelectFromListInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"Select for {_fieldName} {(_defaultValue == default ? "" : $"[{_defaultValue}]")}: ";
+        var prompt = $"Select for {_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
         var listSet = new CliMenuSet();
 

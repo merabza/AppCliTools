@@ -18,8 +18,7 @@ public static class MenuInputer
 
     public static TEnum InputFromEnumList<TEnum>(string fieldName, TEnum defaultValue) where TEnum : struct, Enum
     {
-        SelectFromListInput selectInput = new(fieldName,
-            Enum.GetNames<TEnum>().ToList(), defaultValue.ToString());
+        SelectFromListInput selectInput = new(fieldName, [.. Enum.GetNames<TEnum>()], defaultValue.ToString());
         if (!selectInput.DoInput())
             throw new DataInputException($"Input {fieldName} Escaped");
         var key = selectInput.Text;
@@ -48,11 +47,11 @@ public static class MenuInputer
 
     public static string InputFolderPathRequired(string fieldName, string? defaultValue = default)
     {
-        var result = "";
-        while (result == "")
+        var result = string.Empty;
+        while (result == string.Empty)
         {
             Console.WriteLine($"{fieldName} is required");
-            result = InputFolderPath(fieldName, defaultValue) ?? "";
+            result = InputFolderPath(fieldName, defaultValue) ?? string.Empty;
         }
 
         return result;

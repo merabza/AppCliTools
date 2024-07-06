@@ -10,6 +10,7 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FileStorageNameFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {
@@ -31,11 +32,11 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
         var val = GetValue(record);
 
         if (val == null)
-            return "";
+            return string.Empty;
 
         FileStorageCruder fileStorageCruder = new(_logger, _parametersManager);
 
         var status = fileStorageCruder.GetStatusFor(val);
-        return $"{val} {(string.IsNullOrWhiteSpace(status) ? "" : $"({status})")}";
+        return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";
     }
 }

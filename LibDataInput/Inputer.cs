@@ -43,11 +43,11 @@ public static class Inputer
     public static string InputTextRequired(string fieldName, string? defaultValue = null,
         char passwordCharacter = default)
     {
-        var result = "";
-        while (result == "")
+        var result = string.Empty;
+        while (result == string.Empty)
         {
             Console.WriteLine($"{fieldName} is required");
-            result = InputText(fieldName, defaultValue, passwordCharacter) ?? "";
+            result = InputText(fieldName, defaultValue, passwordCharacter) ?? string.Empty;
         }
 
         return result;

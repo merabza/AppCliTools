@@ -8,6 +8,7 @@ public sealed class TimeInput : DataInput
     private readonly DateTime _defaultValue;
     private readonly string _fieldName;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public TimeInput(string fieldName, DateTime defaultValue = default)
     {
         _fieldName = fieldName;
@@ -27,7 +28,7 @@ public sealed class TimeInput : DataInput
             Console.Write(prompt);
             Text = Console.ReadLine();
 
-            if (Text == "")
+            if (Text == string.Empty)
             {
                 Value = _defaultValue;
                 break;

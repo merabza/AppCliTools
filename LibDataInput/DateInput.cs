@@ -24,7 +24,7 @@ public sealed class DateInput : DataInput
     public override bool DoInput()
     {
         var prompt =
-            $"{_fieldName} {(_defaultValue == default ? "" : $"[{_defaultValue.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}]")}: ";
+            $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}]")}: ";
         Console.Write(prompt);
 
         var promptLength = prompt.Length;

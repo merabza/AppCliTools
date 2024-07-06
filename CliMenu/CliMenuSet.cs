@@ -72,11 +72,11 @@ public sealed class CliMenuSet
 
     private static string UseLength(string? strFrom, int length, bool addSpaces = true)
     {
-        var str = strFrom ?? "";
+        var str = strFrom ?? string.Empty;
         var strLength = str.Length;
         return strLength > length
             ? str[..length]
-            : $"{str}{(addSpaces ? new string(' ', length - strLength) : "")}";
+            : $"{str}{(addSpaces ? new string(' ', length - strLength) : string.Empty)}";
     }
 
     private string? GetCaption()
@@ -137,7 +137,7 @@ public sealed class CliMenuSet
             if (key.Length > 3)
                 key = key.Substring(0, 3);
             string preSpace = new(' ', 4 - key.Length);
-            //Console.WriteLine($"{preSpace}{key}. {menuItem.MenuItemName} {menuItem.CliMenuCommand.GetStatus() ?? ""}");
+            //Console.WriteLine($"{preSpace}{key}. {menuItem.MenuItemName} {menuItem.CliMenuCommand.GetStatus() ?? string.Empty}");
 
             Console.Write($"{preSpace}{key}. ");
             if (menuItem.CliMenuCommand.NameIsStatus)
@@ -164,7 +164,7 @@ public sealed class CliMenuSet
                 else
                 {
                     Console.WriteLine(UseLength(
-                        $"{menuItem.MenuItemName} {(string.IsNullOrWhiteSpace(menuItem.CliMenuCommand.Status) ? "" : $"({menuItem.CliMenuCommand.Status})")}",
+                        $"{menuItem.MenuItemName} {(string.IsNullOrWhiteSpace(menuItem.CliMenuCommand.Status) ? string.Empty : $"({menuItem.CliMenuCommand.Status})")}",
                         width, false));
                 }
             }
@@ -172,7 +172,7 @@ public sealed class CliMenuSet
 
         foreach (var errorMessage in _errorMessages) StShared.WriteErrorLine(errorMessage, true);
 
-        Console.WriteLine("");
+        Console.WriteLine(string.Empty);
         Console.Write("enter your choice: ");
     }
 

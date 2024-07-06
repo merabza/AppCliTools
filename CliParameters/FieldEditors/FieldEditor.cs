@@ -75,6 +75,7 @@ public /*open*/ class FieldEditor<T> : FieldEditor
     }
 
     //აქ public საჭიროა CliParametersDataEdit.ConnectionStringParametersManager.Save მეთოდისათვის
+    // ReSharper disable once MemberCanBeProtected.Global
     public void SetValue(object record, T? value)
     {
         var recordForUpdatePropertyInfo = record.GetType().GetProperty(PropertyName) ??
@@ -86,7 +87,7 @@ public /*open*/ class FieldEditor<T> : FieldEditor
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);
-        return val is null ? "" : val.ToString() ?? "";
+        return val is null ? string.Empty : val.ToString() ?? string.Empty;
     }
 
     protected T? GetValue(object? record, T? defaultValue = default)

@@ -42,7 +42,7 @@ public static class Stat
             return true;
 
         StShared.WriteWarningLine(
-            $"Folder with name {path} already exists.{(askQuestion ? " and will be deleted." : "")}", useConsole);
+            $"Folder with name {path} already exists.{(askQuestion ? " and will be deleted." : string.Empty)}", useConsole);
 
         if (askQuestion && !Inputer.InputBool($"Delete folder {path}?", false))
             return false;

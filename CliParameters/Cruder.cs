@@ -320,7 +320,7 @@ public /*open*/ class Cruder : IFieldEditors
         if (item is not null)
             substituteName = item.GetItemKey() ?? substituteName;
 
-        //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? ""}{CrudName} => {itemName}:");
+        //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? string.Empty}{CrudName} => {itemName}:");
         var itemSubMenuSet = new CliMenuSet(substituteName);
 
         DeleteCruderRecordCliMenuCommand deleteCommand = new(this, itemName);

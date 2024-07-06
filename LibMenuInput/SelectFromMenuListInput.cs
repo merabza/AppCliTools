@@ -22,7 +22,7 @@ public sealed class SelectFromMenuListInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"Select {_fieldName} {(_defaultValue == default ? "" : $"[{_defaultValue}]")}: ";
+        var prompt = $"Select {_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
         _listSet.Show(false);
 

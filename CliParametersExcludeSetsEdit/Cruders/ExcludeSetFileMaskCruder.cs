@@ -10,6 +10,7 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
 {
     private readonly string _excludeSetName;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ExcludeSetFileMaskCruder(IParametersManager parametersManager, string excludeSetName) : base(
         parametersManager, "File Mask", "File Masks", true)
     {
@@ -20,10 +21,7 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
     {
         var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
         var excludeSets = parameters.ExcludeSets;
-        if (!excludeSets.ContainsKey(_excludeSetName))
-            return new List<string>();
-        var excludeSet = excludeSets[_excludeSetName];
-        return excludeSet.FolderFileMasks;
+        return !excludeSets.TryGetValue(_excludeSetName, out var excludeSet) ? [] : excludeSet.FolderFileMasks;
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -33,7 +31,7 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
 
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
-        return new TextItemData { Text = "" };
+        return new TextItemData { Text = string.Empty };
     }
 
 
@@ -53,9 +51,8 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
     {
         var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
         var excludeSets = parameters.ExcludeSets;
-        if (!excludeSets.ContainsKey(_excludeSetName))
+        if (!excludeSets.TryGetValue(_excludeSetName, out var excludeSet))
             return;
-        var excludeSet = excludeSets[_excludeSetName];
 
         excludeSet.FolderFileMasks.Add(recordName);
     }

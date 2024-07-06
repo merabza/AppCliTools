@@ -27,8 +27,8 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record) ?? "";
-        return _passwordCharacter == default || val == "" ? val : new string(_passwordCharacter, val.Length);
+        var val = GetValue(record) ?? string.Empty;
+        return _passwordCharacter == default || val == string.Empty ? val : new string(_passwordCharacter, val.Length);
 
         //სტანდარტული ფორმატის გადაყვანა custom ფორმატში
         //DateTime.Now.ToString("G", CultureInfo.InvariantCulture);
