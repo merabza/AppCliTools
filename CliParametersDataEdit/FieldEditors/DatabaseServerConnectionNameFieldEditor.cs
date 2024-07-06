@@ -52,11 +52,11 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
 
 
         if (val is null)
-            return "";
+            return string.Empty;
 
         DatabaseServerConnectionCruder databaseServerConnectionCruder = new(_parametersManager, _logger);
 
         var status = databaseServerConnectionCruder.GetStatusFor(val);
-        return $"{val} {(string.IsNullOrWhiteSpace(status) ? "" : $"({status})")}";
+        return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";
     }
 }

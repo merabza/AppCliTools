@@ -138,10 +138,10 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
                     Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
                     Console.WriteLine(
-                        $"Server is {(dbServerInfo.AllowsCompression ? "" : "NOT ")} Allows Compression");
+                        $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
                     var isServerLocalResult = dc.IsServerLocal(CancellationToken.None).Result;
                     Console.WriteLine(isServerLocalResult.IsT0
-                        ? $"Server is {(isServerLocalResult.AsT0 ? "" : "NOT ")} local"
+                        ? $"Server is {(isServerLocalResult.AsT0 ? string.Empty : "NOT ")} local"
                         : "Server is local or not is not detected");
 
                     Console.WriteLine($"Server Product Version is {dbServerInfo.ServerProductVersion}");
