@@ -47,7 +47,7 @@ public sealed class SeederModelCreator : CodeCreator
         constructorCodeBlock.AddRange(fieldDataList.Select(fd =>
             new CodeCommand($"{fd.FullName} = {ValidateIdentifier(fd.FullName.UnCapitalize())}")));
 
-        var classCodeBlock = new CodeBlock("public sealed class " + className, "",
+        var classCodeBlock = new CodeBlock("public sealed class " + className, string.Empty,
             new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), constructorCodeBlock);
 
         var usingSystem =
@@ -56,11 +56,11 @@ public sealed class SeederModelCreator : CodeCreator
         classCodeBlock.AddRange(fieldDataList.Select(fd =>
             new CodeBlock($"public {fd.RealTypeName} {fd.FullName}", true, "get", "set")));
 
-        var block = new CodeBlock("",
+        var block = new CodeBlock(string.Empty,
             new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             usingSystem,
             $"namespace {_projectNamespace}.{_modelsFolderName}",
-            "",
+            string.Empty,
             classCodeBlock);
 
         CodeFile.FileName = className + ".cs";

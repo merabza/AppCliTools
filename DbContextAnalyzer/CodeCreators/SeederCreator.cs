@@ -46,13 +46,14 @@ public sealed class SeederCreator(
 
         var tableNameSingular =
             GetTableNameSingularCapitalizeCamel(excludesRulesParameters.SingularityExceptions, tableName);
-        var className = (isCarcassType ? parameters.ProjectPrefixShort : "") + tableNameCapitalCamel + "Seeder";
+        var className = (isCarcassType ? parameters.ProjectPrefixShort : string.Empty) + tableNameCapitalCamel +
+                        "Seeder";
         var baseClassName = isCarcassType
             ? tableNameCapitalCamel + "Seeder"
             : $"{parameters.DataSeederBaseClassName}<{tableNameSingular}>";
         var seederModelClassName = tableNameSingular + "SeederModel";
         var seedDataObjectName = tableName.UnCapitalize() + "SeedData";
-        var prPref = isCarcassType ? "" : parameters.ProjectPrefixShort;
+        var prPref = isCarcassType ? string.Empty : parameters.ProjectPrefixShort;
 
         var isIdentity = tableName is "roles" or "users";
 
@@ -61,7 +62,7 @@ public sealed class SeederCreator(
             "manyToManyJoins" => "string secretDataFolder, ",
             "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
             "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
-            _ => ""
+            _ => string.Empty
         };
 
 
@@ -70,7 +71,7 @@ public sealed class SeederCreator(
             "manyToManyJoins" => "secretDataFolder, ",
             "roles" => "roleManager, secretDataFolder, ",
             "users" => "userManager, secretDataFolder, ",
-            _ => ""
+            _ => string.Empty
         };
 
         CodeBlock? setParentsMethod = null;
@@ -204,7 +205,7 @@ public sealed class SeederCreator(
             usedList = true;
         }
 
-        var block = new CodeBlock("",
+        var block = new CodeBlock(string.Empty,
             new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             !isCarcassType && entityData.OptimalIndex is not null && entityData.OptimalIndexFieldsData.Count > 1
                 ? "using System"
@@ -221,12 +222,12 @@ public sealed class SeederCreator(
             isCarcassType
                 ? null // "using CarcassDb.Models"
                 : $"using {parameters.DbProjectNamespace}.{parameters.DbProjectModelsFolderName}",
-            isIdentity ? "using CarcassMasterDataDom.Models" : "",
-            isIdentity ? "using Microsoft.AspNetCore.Identity" : "",
+            isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
+            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty,
             "using LanguageExt",
             "using SystemToolsShared.Errors",
             $"namespace {parameters.ProjectNamespace}.{(isCarcassType ? parameters.CarcassSeedersFolderName : parameters.ProjectSeedersFolderName)}",
-            "",
+            string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(

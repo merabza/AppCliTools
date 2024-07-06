@@ -18,7 +18,7 @@ public /*open*/ class CodeBlockBase
             switch (o)
             {
                 case string s:
-                    if (s == "")
+                    if (s == string.Empty)
                         CodeItems.Add(new CodeExtraLine());
                     else
                         CodeItems.Add(new CodeCommand(s));

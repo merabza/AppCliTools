@@ -4,6 +4,7 @@ namespace CodeTools;
 
 public sealed class CodeRegion : CodeBlockBase, ICodeItem
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CodeRegion(string regionHeader, params object[] codeList) : base(codeList)
     {
         RegionHeader = regionHeader;
@@ -18,9 +19,9 @@ public sealed class CodeRegion : CodeBlockBase, ICodeItem
 
         sb.AppendLine();
         sb.AppendLine(indent + $"#region {RegionHeader}");
-        sb.AppendLine(indent + "");
+        sb.AppendLine(indent + string.Empty);
         sb.Append(base.Output(indentLevel));
-        sb.AppendLine(indent + "");
+        sb.AppendLine(indent + string.Empty);
         sb.AppendLine(indent + "#endregion");
 
         return sb.ToString();

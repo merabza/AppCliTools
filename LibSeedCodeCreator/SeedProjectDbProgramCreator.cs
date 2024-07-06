@@ -10,10 +10,6 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
 {
     public void Go()
     {
-        //var dataSeedingProjectName = $"{_par.DbProjectNamespace}DataSeeding"; //GeoModelDataSeeding
-        //var dataSeedingNewProjectName = $"{_par.DbProjectNamespace}NewDataSeeding"; //GeoModelNewDataSeeding
-        //string dbProjectName = _par.ProjectPrefix + "Db"; //GeoModelDb
-        //string dbContextClassName = _par.ProjectPrefix + "DbContext"; //GeoModelDbContext
         var repositoryClassName = $"{par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
         var repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
         var repositoryObjectName = $"{par.ProjectPrefixShort.ToLower()}DataSeederRepository"; //gmDataSeederRepository
@@ -30,66 +26,66 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             $"using {par.DbProjectNamespace}NewDataSeeding");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(
-            "",
+            string.Empty,
             new OneLineComment(" ReSharper disable once using"),
             "var userManager = serviceProvider.GetService<UserManager<AppUser>>()",
-            "",
+            string.Empty,
             new CodeBlock("if (userManager is null)",
                 "StShared.WriteErrorLine(\"userManager is null\", true)",
                 "return 6"),
-            "",
+            string.Empty,
             new OneLineComment(" ReSharper disable once using"),
             "var roleManager = serviceProvider.GetService<RoleManager<AppRole>>()",
-            "",
+            string.Empty,
             new CodeBlock("if (roleManager is null)",
                 "StShared.WriteErrorLine(\"roleManager is null\", true)",
                 "return 8"),
-            "",
+            string.Empty,
             $"var {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()",
-            "",
+            string.Empty,
             new CodeBlock($"if ({repositoryObjectName} is null)",
                 $"StShared.WriteErrorLine(\"{repositoryObjectName} is null\", true)",
                 "return 9"),
-            "",
+            string.Empty,
             "var dataFixRepository =  serviceProvider.GetService<IDataFixRepository>()",
-            "",
+            string.Empty,
             new CodeBlock("if (dataFixRepository is null)",
                 "StShared.WriteErrorLine(\"dataFixRepository is null\", true)",
                 "return 10"),
-            "",
+            string.Empty,
             "var carcassDataSeeder = serviceProvider.GetService<ILogger<CarcassDataSeeder>>()",
-            "",
+            string.Empty,
             new CodeBlock("if (carcassDataSeeder is null)",
                 "StShared.WriteErrorLine(\"carcassDataSeeder is null\", true)",
                 "return 11"),
-            "",
+            string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.SecretDataFolder))",
                 "StShared.WriteErrorLine(\"par.SecretDataFolder is empty\", true)",
                 "return 12"),
-            "",
+            string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)",
                 "return 13"),
-            "",
+            string.Empty,
             "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")",
-            "",
+            string.Empty,
             $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository, checkOnly)",
-            "",
+            string.Empty,
             "var seedDataResult = seeder.SeedData()",
-            "",
+            string.Empty,
             new CodeBlock("if (seedDataResult.IsSome)",
                 new CodeBlock("foreach (var err in (Err[])seedDataResult)",
                     "logger.LogError(err.ErrorMessage)"),
                 "return 1"),
-            "",
+            string.Empty,
             "return 0",
-            "");
+            string.Empty);
 
-        var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock("",
+        var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringSeed))",
                 "StShared.WriteErrorLine(\"par.ConnectionStringSeed is empty\", true)",
                 "return 3"),
-            "",
+            string.Empty,
             $"var servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"{par.SeedProjectNamespace}\", par.ConnectionStringSeed)"
         );
 
@@ -98,12 +94,6 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             par.SeedProjectNamespace, "Seeds data in new database", par.SeedProjectPlacePath,
             new List<string> { "CheckOnly" }, "Program.cs");
         seedProjectDbProgramCreator.CreateFileStructure();
-
-        //var fakeStartUpCreator = new FakeStartUpCreator(_logger, _par);
-        //fakeStartUpCreator.CreateFileStructure();
-
-        //var projectDesignTimeDbContextFactoryCreator = new ProjectDesignTimeDbContextFactoryCreator(_logger, _par);
-        //projectDesignTimeDbContextFactoryCreator.CreateFileStructure();
 
         var serviceCreatorCreator = new ServiceCreatorCreator(logger, par);
         serviceCreatorCreator.CreateFileStructure();

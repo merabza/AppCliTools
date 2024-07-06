@@ -7,7 +7,7 @@ public sealed class CodeEnum : ICodeItem
     private readonly string[] _enumElementsList;
     private readonly string _enumHeader;
 
-
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CodeEnum(string enumHeader, params string[] enumElementsList)
     {
         _enumHeader = enumHeader;
@@ -44,30 +44,3 @@ public sealed class CodeEnum : ICodeItem
         return sb.ToString();
     }
 }
-
-/*
-  public sealed class CodeRegion : CodeBlockBase, ICodeItem
-  {
-    public string RegionHeader { get; set; }
-
-    public CodeRegion(string regionHeader, params object[] codeList) : base(codeList)
-    {
-      RegionHeader = regionHeader;
-    }
-
-    public override string Output(int indentLevel)
-    {
-      string indent = new string(' ', indentLevel * Stats.IndentSize);
-      StringBuilder sb = new StringBuilder();
-
-      sb.AppendLine();
-      sb.AppendLine(indent + $"#region {RegionHeader}");
-      sb.AppendLine(indent + "");
-      sb.Append(base.Output(indentLevel));
-      sb.AppendLine(indent + "");
-      sb.AppendLine(indent + "#endregion");
-
-      return sb.ToString();
-    }
-  }
- */

@@ -58,9 +58,9 @@ public /*open*/ class CodeCreator
 
     //    return typeName switch
     //    {
-    //        "smallint" => $"short{(isNullable ? "?" : "")}",
-    //        "int" => $"int{(isNullable ? "?" : "")}",
-    //        "bit" => $"bool{(isNullable ? "?" : "")}",
+    //        "smallint" => $"short{(isNullable ? "?" : string.Empty)}",
+    //        "int" => $"int{(isNullable ? "?" : string.Empty)}",
+    //        "bit" => $"bool{(isNullable ? "?" : string.Empty)}",
     //        _ => typeName
     //    };
     //}

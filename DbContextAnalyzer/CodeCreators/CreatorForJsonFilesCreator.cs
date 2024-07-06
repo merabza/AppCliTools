@@ -30,7 +30,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         _runMethodCodeBlock =
             new CodeBlock("public bool Run()", $"Console.WriteLine(\"{_parameters.ProjectNamespace} Started\")");
 
-        var block = new CodeBlock("",
+        var block = new CodeBlock(string.Empty,
             new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using System",
             "using System.IO",
@@ -40,11 +40,11 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             "using Newtonsoft.Json",
             "using Microsoft.EntityFrameworkCore",
             $"namespace {_parameters.ProjectNamespace}",
-            "",
+            string.Empty,
             new CodeBlock("public sealed class JsonFilesCreator",
                 $"private readonly {_parameters.DbContextClassName} _context",
                 "private readonly string _seederCreatorJsonFolderName",
-                "",
+                string.Empty,
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public JsonFilesCreator({_parameters.DbContextClassName} context, string seederCreatorJsonFolderName)",
@@ -62,14 +62,14 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
     private static string GetIncludes(FieldData fieldData, int level = 0)
     {
         if (fieldData.SubstituteField == null || fieldData.SubstituteField.Fields.Count == 0)
-            return "";
+            return string.Empty;
 
         var res = fieldData.SubstituteField.Fields.Select(field =>
-                $".{(level > 0 ? "Then" : "")}Include(i{level}=>i{level}.{fieldData.NavigationFieldName}){GetIncludes(field, level + 1)}")
+                $".{(level > 0 ? "Then" : string.Empty)}Include(i{level}=>i{level}.{fieldData.NavigationFieldName}){GetIncludes(field, level + 1)}")
             .ToList();
 
         if (res.Count <= 1)
-            return res.Aggregate("", (current, includeString) => current + includeString);
+            return res.Aggregate(string.Empty, (current, includeString) => current + includeString);
 
         res.Sort();
 
@@ -93,7 +93,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             changed = true;
         }
 
-        return res.Aggregate("", (current, includeString) => current + includeString);
+        return res.Aggregate(string.Empty, (current, includeString) => current + includeString);
     }
 
 
@@ -121,9 +121,9 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             GetTableNameSingularCapitalizeCamel(_excludesRulesParameters.SingularityExceptions, tableName);
         var seederModelClassName = tableNameSingular + "SeederModel";
 
-        var includes = entityData.FieldsData.Aggregate("", (current, field) => current + GetIncludes(field));
+        var includes = entityData.FieldsData.Aggregate(string.Empty, (current, field) => current + GetIncludes(field));
 
-        var strFieldsList = "";
+        var strFieldsList = string.Empty;
         var atLeastOneAdded = false;
 
         foreach (var (_, fieldList) in entityData.FieldsData.SelectMany(GetFields))
@@ -144,10 +144,10 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
 
         var tableVarName = tableName.UnCapitalize();
-        var block = new CodeBlock("",
-            "",
+        var block = new CodeBlock(string.Empty,
+            string.Empty,
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")",
-            "",
+            string.Empty,
             $"var {tableVarName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
             $"SaveJson({tableVarName}, \"{tableNameCapitalCamel}\")");
 
@@ -170,7 +170,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
     public override void FinishAndSave()
     {
-        var block = new CodeBlock("", "", "Console.WriteLine(\"DataSeederCreator.Run Finished\")",
+        var block = new CodeBlock(string.Empty, string.Empty, "Console.WriteLine(\"DataSeederCreator.Run Finished\")",
             "return true");
         if (_runMethodCodeBlock is null)
             throw new Exception("_runMethodCodeBlock is null");

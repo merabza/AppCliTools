@@ -172,7 +172,7 @@ public sealed class Relations
             var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
             var fieldData = new FieldData(name, s.Name,
                 GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents),
-                (parent == null ? "" : parent.FullName) + name, isNullable, isNullableByParents);
+                (parent == null ? string.Empty : parent.FullName) + name, isNullable, isNullableByParents);
 
             switch (forKeys.Count)
             {
@@ -242,7 +242,7 @@ public sealed class Relations
             _ => typeName
         };
 
-        return $"{realTypeCandidate}{(isNullable ? "?" : "")}";
+        return $"{realTypeCandidate}{(isNullable ? "?" : string.Empty)}";
     }
 
 

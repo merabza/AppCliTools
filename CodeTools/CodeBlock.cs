@@ -64,7 +64,7 @@ public sealed class CodeBlock : CodeBlockBase, ICodeItem
     public override string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
         var indent = indentLevel == 0
-            ? ""
+            ? string.Empty
             : new string(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
         var sb = new StringBuilder();
         if (indentLevel > 0) sb.Append("," + Environment.NewLine + indent);

@@ -113,6 +113,6 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 
     public override string GetValueStatus(object? record)
     {
-        return GetValue(record) ?? "";
+        return GetValue(record) ?? string.Empty;
     }
 }

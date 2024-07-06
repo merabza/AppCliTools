@@ -28,16 +28,18 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         _carcassRegion = new CodeRegion("Carcass");
         _projectRegion = new CodeRegion(_parameters.ProjectPrefix);
 
-        var block = new CodeBlock("",
+        var block = new CodeBlock(string.Empty,
             new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding",
             "using CarcassDataSeeding.Seeders",
             "using CarcassMasterDataDom.Models",
             "using Microsoft.AspNetCore.Identity",
-            _isAnyCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}" : "",
+            _isAnyCarcassType
+                ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
+                : string.Empty,
             $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}",
-            "",
+            string.Empty,
             new CodeBlock($"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
                 new CodeBlock(
@@ -57,14 +59,14 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         var tableName = entityData.TableName;
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
         var seederClassName = tableNameCapitalCamel + "Seeder";
-        var newClassName = (isCarcassType ? _parameters.ProjectPrefixShort : "") + seederClassName;
+        var newClassName = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + seederClassName;
 
         var additionalParameters = tableName switch
         {
             "roles" => "MyRoleManager, SecretDataFolder, ",
             "users" => "MyUserManager, SecretDataFolder, ",
             "manyToManyJoins" => "SecretDataFolder, ",
-            _ => ""
+            _ => string.Empty
         };
 
         var block = new CodeBlock(
