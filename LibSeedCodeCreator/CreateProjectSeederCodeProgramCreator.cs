@@ -8,7 +8,6 @@ namespace LibSeedCodeCreator;
 
 public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {
-
     public void Go()
     {
         var dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
