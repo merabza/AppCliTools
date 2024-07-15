@@ -15,6 +15,7 @@
         <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
         <ProjectReference Include="..\..\ToolsManagement\LibToolActions\LibToolActions.csproj" />
         <ProjectReference Include="..\CliMenu\CliMenu.csproj" />
+        <ProjectReference Include="..\LibDataInput\LibDataInput.csproj" />
         <ProjectReference Include="..\LibMenuInput\LibMenuInput.csproj" />
     </ItemGroup>
 
