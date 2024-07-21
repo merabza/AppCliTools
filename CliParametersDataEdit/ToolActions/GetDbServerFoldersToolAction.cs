@@ -13,7 +13,7 @@ namespace CliParametersDataEdit.ToolActions;
 public class GetDbServerFoldersToolAction : ToolAction
 {
     private const string ActionName = "Get Database Server Folders and save in parameters";
-    public const string ActionDescription = "Get Database Server Folders and save in parameters";
+    //public const string ActionDescription = "Get Database Server Folders and save in parameters";
     private readonly string _dbServerName;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
