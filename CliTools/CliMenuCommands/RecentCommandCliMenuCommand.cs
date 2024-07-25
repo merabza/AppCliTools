@@ -33,8 +33,11 @@ public class RecentCommandCliMenuCommand : InfoCliMenuCommand
         if (menuItem is null) 
             return false;
 
+        MenuActionOnBodySuccess = menuItem.CliMenuCommand.MenuActionOnBodySuccess;
+        MenuActionOnBodyFail = menuItem.CliMenuCommand.MenuActionOnBodyFail;
+
         menuItem.CliMenuCommand.Run();
-        MenuAction = menuItem.CliMenuCommand.MenuAction;
+        //MenuAction = menuItem.CliMenuCommand.MenuAction;
         return true;
 
     }

@@ -7,10 +7,16 @@ namespace CliMenu;
 public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
-    private readonly EMenuAction _menuActionOnBodyFail;
-    private readonly EMenuAction _menuActionOnBodySuccess;
+    public EMenuAction MenuActionOnBodyFail { get; protected set; }
+    public EMenuAction MenuActionOnBodySuccess { get; protected set; }
 
     protected readonly string? ParentMenuName;
+
+    public EMenuAction MenuAction { get; protected set; }
+    public string? Name { get; }
+    public EStatusView StatusView { get; }
+    public string? Status { get; private set; }
+    public bool NameIsStatus { get; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuCommand(string? name = null, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
@@ -19,20 +25,13 @@ public /*open*/ class CliMenuCommand
     {
         Name = name;
         MenuAction = EMenuAction.Nothing;
-        _menuActionOnBodySuccess = menuActionOnBodySuccess;
-        _menuActionOnBodyFail = menuActionOnBodyFail;
+        MenuActionOnBodySuccess = menuActionOnBodySuccess;
+        MenuActionOnBodyFail = menuActionOnBodyFail;
         ParentMenuName = parentMenuName;
         _askRunAction = askRunAction;
         StatusView = statusView;
         NameIsStatus = nameIsStatus;
     }
-
-    public EMenuAction MenuAction { get; protected set; }
-    public string? Name { get; }
-    public EStatusView StatusView { get; }
-    public string? Status { get; private set; }
-    public bool NameIsStatus { get; }
-
     public void CountStatus()
     {
         Status = GetStatus();
@@ -55,7 +54,7 @@ public /*open*/ class CliMenuCommand
 
         try
         {
-            MenuAction = RunBody() ? _menuActionOnBodySuccess : _menuActionOnBodyFail;
+            MenuAction = RunBody() ? MenuActionOnBodySuccess : MenuActionOnBodyFail;
         }
         catch (DataInputEscapeException)
         {
