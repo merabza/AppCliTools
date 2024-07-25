@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using CliMenu;
 using Figgle;
@@ -62,18 +63,12 @@ public /*open*/ class CliAppLoop
         {
             if (refreshList)
             {
-                ReloadCurrentMenu();
-                //if (_currentMenuSetLevel == 0)
-                //{
-                //    if (!BuildMainMenu())
-                //        return false;
-                //}
-                //else
-                //{
-                //    if (!ReBuildMenu(_currentMenuSetLevel))
-                //        return false;
-                //}
-
+                if (!ReloadCurrentMenu())
+                {
+                    StShared.WriteErrorLine("Menu could not loaded", true);
+                    return false;
+                }
+                    
                 ShowMenu(inFirstTime);
                 inFirstTime = false;
             }
@@ -144,13 +139,15 @@ public /*open*/ class CliAppLoop
                     _currentMenuSetLevel--;
                     break;
                 case EMenuAction.Reload:
+                    SaveRecent();
                     StShared.Pause();
-                    if (!ReloadCurrentMenu())
-                        return false;
+                    //if (!ReloadCurrentMenu())
+                    //    return false;
                     break;
                 case EMenuAction.ReloadWithoutPause:
-                    if (!ReloadCurrentMenu())
-                        return false;
+                    SaveRecent();
+                    //if (!ReloadCurrentMenu())
+                    //    return false;
                     break;
                 case EMenuAction.GoToMenuLink:
                     if (!GoToMenu(menuCommand.GetMenuLinkToGo()))
@@ -163,6 +160,19 @@ public /*open*/ class CliAppLoop
 
             //თუ სხვა არაფერი არ იყო, აქედან მუშაობს EMenuAction.Reload
         }
+    }
+
+    private void SaveRecent()
+    {
+        var recentCommands = new RecentCommands();
+        var commLink = new StringBuilder();
+        for (var i = 0; i < _selectedMenuCommandsList.Count; i++)
+        {
+            commLink.Append('/');
+            commLink.Append(_selectedMenuCommandsList[i].Name);
+        }
+        recentCommands.Rc.Add(DateTime.Now, commLink.ToString());
+        
     }
 
     private bool GoToMenu(string? menuLinkToGo)
@@ -198,6 +208,8 @@ public /*open*/ class CliAppLoop
             if (menuItem is null)
                 return false;
 
+            AddSelectedCommand(menuItem.CliMenuCommand);
+
             if (!AddSubMenu(menuItem.CliMenuCommand.GetSubmenu()))
                 return false;
         }
@@ -213,7 +225,7 @@ public /*open*/ class CliAppLoop
         }
         else
         {
-            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
+            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel-1];
             if (!AddChangeMenu(selectedMenuCommand.GetSubmenu()))
                 return false;
         }
