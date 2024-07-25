@@ -169,7 +169,7 @@ public /*open*/ class CliAppLoop
 
     private void SaveRecent()
     {
-        if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName))
+        if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
         var parLoader = new ParametersLoader<RecentCommands>();
         var recentCommands = new RecentCommands();
