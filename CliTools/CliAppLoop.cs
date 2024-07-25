@@ -158,11 +158,11 @@ public abstract class CliAppLoop
                     //if (!ReloadCurrentMenu())
                     //    return false;
                     break;
-                case EMenuAction.ReloadWithoutPause:
-                    SaveRecent();
-                    //if (!ReloadCurrentMenu())
-                    //    return false;
-                    break;
+                //case EMenuAction.ReloadWithoutPause:
+                //    SaveRecent();
+                //    //if (!ReloadCurrentMenu())
+                //    //    return false;
+                //    break;
                 case EMenuAction.GoToMenuLink:
                     if (!GoToMenu(menuCommand.GetMenuLinkToGo()))
                         if (!ReloadCurrentMenu())

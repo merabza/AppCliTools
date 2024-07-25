@@ -34,7 +34,7 @@ public class RecentCommandCliMenuCommand : InfoCliMenuCommand
             return false;
 
         menuItem.CliMenuCommand.Run();
-
+        MenuAction = menuItem.CliMenuCommand.MenuAction;
         return true;
 
     }
