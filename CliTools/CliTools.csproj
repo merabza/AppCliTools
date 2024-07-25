@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ParametersManagement\LibParameters\LibParameters.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
         <ProjectReference Include="..\..\ToolsManagement\LibToolActions\LibToolActions.csproj" />
         <ProjectReference Include="..\CliMenu\CliMenu.csproj" />

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CliMenu;
 using Figgle;
+using LibParameters;
 using LibToolActions.BackgroundTasks;
 using SystemToolsShared;
 
@@ -13,14 +16,16 @@ namespace CliTools;
 
 public /*open*/ class CliAppLoop
 {
+    private readonly IParametersWithRecentData? _par;
     private readonly string? _header;
     private readonly List<CliMenuSet> _menuSetsList = [];
     private readonly IProcesses? _processes;
     private readonly List<CliMenuCommand> _selectedMenuCommandsList = [];
     private int _currentMenuSetLevel;
 
-    protected CliAppLoop(string? header = null, IProcesses? processes = null)
+    protected CliAppLoop(IParametersWithRecentData? par = null, string? header = null, IProcesses? processes = null)
     {
+        _par = par;
         _header = header;
         _processes = processes;
     }
@@ -164,15 +169,24 @@ public /*open*/ class CliAppLoop
 
     private void SaveRecent()
     {
+        if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName))
+            return;
+        var parLoader = new ParametersLoader<RecentCommands>();
         var recentCommands = new RecentCommands();
+        if (parLoader.TryLoadParameters(_par.RecentCommandsFileName) && parLoader.Par is not null)
+            recentCommands = (RecentCommands)parLoader.Par;
         var commLink = new StringBuilder();
-        for (var i = 0; i < _selectedMenuCommandsList.Count; i++)
+        foreach (var command in _selectedMenuCommandsList)
         {
             commLink.Append('/');
-            commLink.Append(_selectedMenuCommandsList[i].Name);
+            commLink.Append(command.Name);
         }
         recentCommands.Rc.Add(DateTime.Now, commLink.ToString());
-        
+        if (recentCommands.Rc.Count > _par.RecentCommandsCount)
+            recentCommands.Rc = recentCommands.Rc.OrderByDescending(x => x.Key).Take(_par.RecentCommandsCount)
+                .ToDictionary(k => k.Key, v => v.Value);
+        var parMan = new ParametersManager(_par.RecentCommandsFileName, recentCommands);
+        parMan.Save(recentCommands);
     }
 
     private bool GoToMenu(string? menuLinkToGo)
