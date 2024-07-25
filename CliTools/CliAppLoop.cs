@@ -194,11 +194,11 @@ public abstract class CliAppLoop
 
         _recentCommands.Rc.Add(DateTime.Now, commLink);
 
-        //_recentCommands.Rc = _recentCommands.Rc.DistinctBy(x => x.Value).ToDictionary(k => k.Key, v => v.Value);
+        _recentCommands.Rc = _recentCommands.Rc.DistinctBy(x => x.Value).ToDictionary(k => k.Key, v => v.Value);
 
         if (_recentCommands.Rc.Count > _par.RecentCommandsCount)
-            _recentCommands.Rc = _recentCommands.Rc.DistinctBy(x => x.Value).OrderByDescending(x => x.Key)
-                .Take(_par.RecentCommandsCount).ToDictionary(k => k.Key, v => v.Value);
+            _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).Take(_par.RecentCommandsCount)
+                .ToDictionary(k => k.Key, v => v.Value);
         var parMan = new ParametersManager(_par.RecentCommandsFileName, _recentCommands);
         parMan.Save(_recentCommands);
     }
