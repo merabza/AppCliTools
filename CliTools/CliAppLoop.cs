@@ -173,7 +173,7 @@ public /*open*/ class CliAppLoop
             return;
         var parLoader = new ParametersLoader<RecentCommands>();
         var recentCommands = new RecentCommands();
-        if (parLoader.TryLoadParameters(_par.RecentCommandsFileName) && parLoader.Par is not null)
+        if (parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) && parLoader.Par is not null)
             recentCommands = (RecentCommands)parLoader.Par;
         var commLink = new StringBuilder();
         foreach (var command in _selectedMenuCommandsList)
