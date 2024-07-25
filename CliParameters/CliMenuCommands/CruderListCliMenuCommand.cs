@@ -3,6 +3,7 @@
 namespace CliParameters.CliMenuCommands;
 
 //გამოიყენება ApAgent-ში
+// ReSharper disable once UnusedType.Global
 public sealed class CruderListCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;

@@ -180,8 +180,10 @@ public abstract class CliAppLoop
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
         var parLoader = new ParametersLoader<RecentCommands>();
-        if (parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) && parLoader.Par is not null)
-            _recentCommands = (RecentCommands)parLoader.Par;
+        if (!parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) || parLoader.Par is null) 
+            return;
+        _recentCommands = (RecentCommands)parLoader.Par;
+        _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).ToDictionary(k => k.Key, v => v.Value);
     }
 
     private void SaveRecent()
