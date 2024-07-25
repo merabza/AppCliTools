@@ -63,7 +63,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
         FillDetailsSubMenu(parametersEditorMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        parametersEditorMenuSet.AddMenuItem(key, "Exit to Main menu", new ExitToMainMenuCliMenuCommand(null, null),
+        parametersEditorMenuSet.AddMenuItem(key, "Exit to level up menu", new ExitToMainMenuCliMenuCommand(null, null),
             key.Length);
 
 

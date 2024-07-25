@@ -80,7 +80,6 @@ public /*open*/ class CliMenuCommand
         return true;
     }
 
-
     protected virtual string? GetActionDescription()
     {
         return Name;

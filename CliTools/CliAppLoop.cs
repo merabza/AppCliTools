@@ -1,20 +1,20 @@
-﻿using System;
+﻿using CliMenu;
+using CliTools.CliMenuCommands;
+using Figgle;
+using LibParameters;
+using LibToolActions.BackgroundTasks;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using CliMenu;
-using Figgle;
-using LibParameters;
-using LibToolActions.BackgroundTasks;
 using SystemToolsShared;
 
 namespace CliTools;
 
-public /*open*/ class CliAppLoop
+public abstract class CliAppLoop
 {
     private readonly IParametersWithRecentData? _par;
     private readonly string? _header;
@@ -22,7 +22,9 @@ public /*open*/ class CliAppLoop
     private readonly IProcesses? _processes;
     private readonly List<CliMenuCommand> _selectedMenuCommandsList = [];
     private int _currentMenuSetLevel;
+    private RecentCommands _recentCommands = new();
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     protected CliAppLoop(IParametersWithRecentData? par = null, string? header = null, IProcesses? processes = null)
     {
         _par = par;
@@ -30,13 +32,18 @@ public /*open*/ class CliAppLoop
         _processes = processes;
     }
 
-    protected virtual void BuildMainMenu()
-    {
-    }
-
+    public abstract CliMenuSet BuildMainMenu();
+    
     private void ShowMenu(bool inFirstTime)
     {
         _menuSetsList[_currentMenuSetLevel].Show(!inFirstTime);
+    }
+
+
+    protected IEnumerable<RecentCommandCliMenuCommand> GetRecentCommands()
+    {
+        return _recentCommands.Rc.OrderBy(x => x.Key)
+            .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Value));
     }
 
 
@@ -63,6 +70,8 @@ public /*open*/ class CliAppLoop
         var refreshList = true;
         _currentMenuSetLevel = 0;
         var inFirstTime = true;
+
+        LoadRecent();
 
         while (true)
         {
@@ -167,26 +176,28 @@ public /*open*/ class CliAppLoop
         }
     }
 
-    private void SaveRecent()
+    private void LoadRecent()
     {
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
         var parLoader = new ParametersLoader<RecentCommands>();
-        var recentCommands = new RecentCommands();
         if (parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) && parLoader.Par is not null)
-            recentCommands = (RecentCommands)parLoader.Par;
-        var commLink = new StringBuilder();
-        foreach (var command in _selectedMenuCommandsList)
-        {
-            commLink.Append('/');
-            commLink.Append(command.Name);
-        }
-        recentCommands.Rc.Add(DateTime.Now, commLink.ToString());
-        if (recentCommands.Rc.Count > _par.RecentCommandsCount)
-            recentCommands.Rc = recentCommands.Rc.OrderByDescending(x => x.Key).Take(_par.RecentCommandsCount)
+            _recentCommands = (RecentCommands)parLoader.Par;
+    }
+
+    private void SaveRecent()
+    {
+        if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
+            return;
+
+        var commLink = string.Join('/', _selectedMenuCommandsList.Select(x => x.Name));
+
+        _recentCommands.Rc.Add(DateTime.Now, commLink.ToString());
+        if (_recentCommands.Rc.Count > _par.RecentCommandsCount)
+            _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).Take(_par.RecentCommandsCount)
                 .ToDictionary(k => k.Key, v => v.Value);
-        var parMan = new ParametersManager(_par.RecentCommandsFileName, recentCommands);
-        parMan.Save(recentCommands);
+        var parMan = new ParametersManager(_par.RecentCommandsFileName, _recentCommands);
+        parMan.Save(_recentCommands);
     }
 
     private bool GoToMenu(string? menuLinkToGo)
@@ -207,18 +218,18 @@ public /*open*/ class CliAppLoop
         //StShared.Pause();
         ////return false;
 
-        if (menuLine.Length > 0 && menuLine[0] == string.Empty)
+        if (menuLine.Length > 0) // && menuLine[0] == string.Empty
         {
             _currentMenuSetLevel = 0;
-            BuildMainMenu();
+            AddChangeMenu(BuildMainMenu());
         }
 
-        if (menuLine.Length <= 1 || menuLine[1] != _menuSetsList[_currentMenuSetLevel].Name)
-            return true;
+        //if (menuLine.Length <= 1 || menuLine[1] != _menuSetsList[_currentMenuSetLevel].Name)
+        //    return true;
 
-        for (var i = 2; i < menuLine.Length; i++)
+        foreach (var menuName in menuLine)
         {
-            var menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemWithName(menuLine[i]);
+            var menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemWithName(menuName);
             if (menuItem is null)
                 return false;
 
@@ -235,7 +246,7 @@ public /*open*/ class CliAppLoop
     {
         if (_currentMenuSetLevel == 0)
         {
-            BuildMainMenu();
+            AddChangeMenu(BuildMainMenu());
         }
         else
         {
@@ -277,7 +288,7 @@ public /*open*/ class CliAppLoop
         return false;
     }
 
-    protected bool AddChangeMenu(CliMenuSet? menuSet)
+    private bool AddChangeMenu(CliMenuSet? menuSet)
     {
         if (menuSet == null)
         {
