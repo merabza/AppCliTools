@@ -6,7 +6,7 @@ public enum EMenuAction
     LevelUp,
     LoadSubMenu,
     Reload,
-    //ReloadWithoutPause,
+    ReloadWithoutPause,//გამოიყენება ProcessMonitoringCliMenuCommand-ში
     GoToMenuLink,
     Nothing
 }
