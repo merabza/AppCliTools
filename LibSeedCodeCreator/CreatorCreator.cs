@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CliParameters;
 using DbContextAnalyzer.Models;
-using LibParameters;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable ConvertToPrimaryConstructor

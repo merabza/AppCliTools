@@ -4,6 +4,6 @@ namespace CliTools;
 
 public interface IParametersWithRecentData : IParameters
 {
-    string RecentCommandsFileName { get; }
+    string? RecentCommandsFileName { get; }
     int RecentCommandsCount { get; }
 }
