@@ -11,6 +11,7 @@ public sealed class FileStorageCruderNameCounter
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FileStorageCruderNameCounter(ILogger logger, IParametersManager parametersManager, string fieldName,
         string? currentName)
     {

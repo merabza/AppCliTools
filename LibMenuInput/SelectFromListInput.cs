@@ -31,10 +31,10 @@ public sealed class SelectFromListInput : DataInput
         var listSet = new CliMenuSet();
 
         if (_useNone)
-            listSet.AddMenuItem("-", "(None)", new CliMenuCommand(), 1);
+            listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
 
         foreach (var listItem in _sourceList)
-            listSet.AddMenuItem(new CliMenuCommand(), listItem);
+            listSet.AddMenuItem(new CliMenuCommand(listItem));
 
         listSet.Show(false);
 

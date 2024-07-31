@@ -13,13 +13,13 @@ public /*open*/ class CliMenuCommand
     protected readonly string? ParentMenuName;
 
     public EMenuAction MenuAction { get; protected set; }
-    public string? Name { get; }
+    public string Name { get; }
     public EStatusView StatusView { get; }
     public string? Status { get; private set; }
     public bool NameIsStatus { get; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CliMenuCommand(string? name = null, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
+    public CliMenuCommand(string name, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
         EMenuAction menuActionOnBodyFail = EMenuAction.Reload, string? parentMenuName = null, bool askRunAction = false,
         EStatusView statusView = EStatusView.Brackets, bool nameIsStatus = false)
     {

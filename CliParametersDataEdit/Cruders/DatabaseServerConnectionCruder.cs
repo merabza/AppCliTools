@@ -210,8 +210,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
 
         GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
-        itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand,
-            "Get Database Server Folders and save in parameters");
+        //"Get Database Server Folders and save in parameters"
+        itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
 
         //ამ ვარიანტმა არ იმუშავა
         //PutDbServerFoldersCliMenuCommand putDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);

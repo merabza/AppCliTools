@@ -2,23 +2,24 @@
 
 public sealed class CliMenuItem
 {
-    public CliMenuItem(string? menuItemName, CliMenuCommand cliMenuCommand, int countedId)
+    public CliMenuItem(CliMenuCommand cliMenuCommand, int countedId)
     {
-        MenuItemName = menuItemName;
+        //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
         CountedId = countedId;
     }
 
-    public CliMenuItem(string? menuItemName, CliMenuCommand cliMenuCommand)
+    public CliMenuItem(CliMenuCommand cliMenuCommand)
     {
-        MenuItemName = menuItemName;
+        //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
     }
 
-    public CliMenuItem(string? key, string? menuItemName, CliMenuCommand cliMenuCommand, int countedId)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public CliMenuItem(string? key, CliMenuCommand cliMenuCommand, int countedId)
     {
         Key = key;
-        MenuItemName = menuItemName;
+        //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
         CountedId = countedId;
     }
@@ -26,6 +27,6 @@ public sealed class CliMenuItem
     public string? CountedKey { get; set; }
     public int CountedId { get; set; }
     public string? Key { get; set; }
-    public string? MenuItemName { get; set; }
+    public string MenuItemName => CliMenuCommand.Name;
     public CliMenuCommand CliMenuCommand { get; set; }
 }

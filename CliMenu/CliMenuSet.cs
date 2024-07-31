@@ -16,7 +16,7 @@ public sealed class CliMenuSet
         _caption = caption;
     }
 
-    public string Name => _caption ?? string.Empty;
+    //public string Name => _caption ?? string.Empty;
 
     private List<CliMenuItem> MenuItems { get; } = [];
     public CliMenuSet? ParentMenu { get; set; }
@@ -106,7 +106,7 @@ public sealed class CliMenuSet
         if (MenuItems.Any(w => w.CliMenuCommand.StatusView == EStatusView.Table))
         {
             max1 = MenuItems.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
-                .Max(m => m.MenuItemName?.Length ?? 0);
+                .Max(m => m.MenuItemName.Length);
             max2 = MenuItems.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
                 .Max(m => m.CliMenuCommand.Status?.Length ?? 0);
             var k = (max1 + max2 + 3.0) / width;
@@ -176,25 +176,25 @@ public sealed class CliMenuSet
         Console.Write("enter your choice: ");
     }
 
-    public void AddMenuItemsRange(IEnumerable<CliMenuCommand> menuCommands, int useIdFrom = -1)
-    {
-        MenuItems.AddRange(menuCommands.Select((x, i) =>
-            new CliMenuItem(x.Name, x, useIdFrom == -1 ? -1 : i + useIdFrom)));
-    }
+    //public void AddMenuItemsRange(IEnumerable<CliMenuCommand> menuCommands, int useIdFrom = -1)
+    //{
+    //    MenuItems.AddRange(menuCommands.Select((x, i) =>
+    //        new CliMenuItem(x.Name, x, useIdFrom == -1 ? -1 : i + useIdFrom)));
+    //}
 
-    public void AddMenuItem(CliMenuCommand menuCommand, string? menuItemName = null, int useId = -1)
+    public void AddMenuItem(CliMenuCommand menuCommand, int useId = -1)
     {
-        var menuItem = new CliMenuItem(menuItemName ?? menuCommand.Name, menuCommand, useId);
+        var menuItem = new CliMenuItem(menuCommand, useId);
         MenuItems.Add(menuItem);
     }
 
 
-    public void InsertMenuItem(int index, CliMenuCommand menuCommand, string? menuItemName = null)
-    {
-        CliMenuItem menuItem = new(menuItemName, menuCommand);
+    //public void InsertMenuItem(int index, CliMenuCommand menuCommand, string? menuItemName = null)
+    //{
+    //    CliMenuItem menuItem = new(menuItemName, menuCommand);
 
-        MenuItems.Insert(index, menuItem);
-    }
+    //    MenuItems.Insert(index, menuItem);
+    //}
 
     private static string? GetKey(int keyId)
     {
@@ -209,16 +209,15 @@ public sealed class CliMenuSet
     }
 
 
-    public void AddMenuItem(string key, string menuItemName, CliMenuCommand menuCommand, int checkKeyLength,
-        int useId = -1)
+    public void AddMenuItem(string key, CliMenuCommand menuCommand, int checkKeyLength, int useId = -1)
     {
         if (key.Length > checkKeyLength)
         {
-            _errorMessages.Add($"Length of key {key} is not valid. menu line \"{menuItemName}\" not added");
+            _errorMessages.Add($"Length of key {key} is not valid. menu line \"{menuCommand.Name}\" not added");
             return;
         }
 
-        CliMenuItem menuItem = new(key, menuItemName, menuCommand, useId);
+        CliMenuItem menuItem = new(key, menuCommand, useId);
 
         MenuItems.Add(menuItem);
     }

@@ -8,8 +8,8 @@ public sealed class DeleteCruderRecordCliMenuCommand : CliMenuCommand
     private readonly Cruder _cruder;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DeleteCruderRecordCliMenuCommand(Cruder cruder, string recordName) : base("Delete", EMenuAction.LevelUp,
-        EMenuAction.Reload, recordName)
+    public DeleteCruderRecordCliMenuCommand(Cruder cruder, string recordName) : base("Delete this record",
+        EMenuAction.LevelUp, EMenuAction.Reload, recordName)
     {
         _cruder = cruder;
     }

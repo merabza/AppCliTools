@@ -63,9 +63,8 @@ public /*open*/ class ParametersEditor : IFieldEditors
         FillDetailsSubMenu(parametersEditorMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        parametersEditorMenuSet.AddMenuItem(key, "Exit to level up menu", new ExitToMainMenuCliMenuCommand(null, null),
+        parametersEditorMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null),
             key.Length);
-
 
         return parametersEditorMenuSet;
     }
@@ -74,7 +73,8 @@ public /*open*/ class ParametersEditor : IFieldEditors
     {
         //მენიუს ჩანაწერი, რომელიც საშუალებას გვაძლევს პარამეტრები დავარედაქტიროთ ყველა თანმიმდევრობით
         EditParametersInSequenceCliMenuCommand editCommand = new(this);
-        parametersEditorMenuSet.AddMenuItem(editCommand, "Edit All Parameters in sequence");
+        //"Edit All Parameters in sequence"
+        parametersEditorMenuSet.AddMenuItem(editCommand);
 
         foreach (var fieldEditor in FieldEditors) //.Where(w=>w.Enabled)
             fieldEditor.AddParameterEditMenuItem(parametersEditorMenuSet, this);
