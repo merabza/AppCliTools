@@ -189,10 +189,10 @@ public abstract class CliAppLoop
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
 
-        if (_selectedMenuCommandsList.Count < 2)
+        if (_currentMenuSetLevel < 1)
             return;
 
-        var commLink = string.Join('/', _selectedMenuCommandsList.Select(x => x.Name));
+        var commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel - 1).Select(x => x.Name));
 
         _recentCommands.Rc.Add(DateTime.Now, commLink);
 
@@ -238,7 +238,7 @@ public abstract class CliAppLoop
             if (menuItem is null)
                 return false;
 
-            AddSelectedCommand(menuItem.CliMenuCommand);
+            //AddSelectedCommand(menuItem.CliMenuCommand);
 
             if (!AddSubMenu(menuItem.CliMenuCommand.GetSubmenu()))
                 return false;
