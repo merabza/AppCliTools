@@ -192,7 +192,7 @@ public abstract class CliAppLoop
         if (_currentMenuSetLevel < 1)
             return;
 
-        var commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel - 1).Select(x => x.Name));
+        var commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel + 1).Select(x => x.Name));
 
         _recentCommands.Rc.Add(DateTime.Now, commLink);
 
