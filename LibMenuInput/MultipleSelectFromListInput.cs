@@ -25,9 +25,10 @@ public sealed class MultipleSelectFromListInput : DataInput
             var listSet = new CliMenuSet(_fieldName);
 
             listSet.AddMenuItem(new CliMenuCommand("(Save and exit)"));
+
             foreach (var listItem in SourceListWithChecks)
-                //$"{(listItem.Value ? "√" : "×")} {listItem.Key}"
-                listSet.AddMenuItem(new CliMenuCommand(listItem.Key));
+                listSet.AddMenuItem(new CliMenuCommand($"{(listItem.Value ? "√" : "×")} {listItem.Key}"));
+
             var key = ConsoleKey.Escape.Value().ToLower();
             listSet.AddMenuItem(key, new CliMenuCommand("(Exit without saving)"), key.Length);
 
