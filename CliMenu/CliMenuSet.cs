@@ -188,13 +188,13 @@ public sealed class CliMenuSet
         MenuItems.Add(menuItem);
     }
 
+    //საჭიროა ApAgent პროექტში
+    public void InsertMenuItem(int index, CliMenuCommand menuCommand)
+    {
+        CliMenuItem menuItem = new(menuCommand);
 
-    //public void InsertMenuItem(int index, CliMenuCommand menuCommand, string? menuItemName = null)
-    //{
-    //    CliMenuItem menuItem = new(menuItemName, menuCommand);
-
-    //    MenuItems.Insert(index, menuItem);
-    //}
+        MenuItems.Insert(index, menuItem);
+    }
 
     private static string? GetKey(int keyId)
     {

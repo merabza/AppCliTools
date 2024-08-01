@@ -11,7 +11,8 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GenerateExcludeSetsCommand(IParametersManager parametersManager) : base(null, EMenuAction.Reload)
+    public GenerateExcludeSetsCommand(IParametersManager parametersManager) : base("Generate standard Exclude Sets...",
+        EMenuAction.Reload)
     {
         _parametersManager = parametersManager;
     }

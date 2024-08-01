@@ -96,6 +96,6 @@ public sealed class ExcludeSetCruder : ParCruder
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {
         var generateCommand = new GenerateExcludeSetsCommand(ParametersManager);
-        cruderSubMenuSet.AddMenuItem(generateCommand, "Generate standard Exclude Sets...");
+        cruderSubMenuSet.AddMenuItem(generateCommand);
     }
 }

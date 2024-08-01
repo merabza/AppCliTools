@@ -79,6 +79,9 @@ public /*open*/ class CliMenuCommand
         return true;
     }
 
+    //virtual string? საჭიროა SupportTools პროექტში
+    // ReSharper disable once ReturnTypeCanBeNotNullable
+    // ReSharper disable once VirtualMemberNeverOverridden.Global
     protected virtual string? GetActionDescription()
     {
         return Name;
