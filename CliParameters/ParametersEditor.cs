@@ -73,7 +73,6 @@ public /*open*/ class ParametersEditor : IFieldEditors
     {
         //მენიუს ჩანაწერი, რომელიც საშუალებას გვაძლევს პარამეტრები დავარედაქტიროთ ყველა თანმიმდევრობით
         EditParametersInSequenceCliMenuCommand editCommand = new(this);
-        //"Edit All Parameters in sequence"
         parametersEditorMenuSet.AddMenuItem(editCommand);
 
         foreach (var fieldEditor in FieldEditors) //.Where(w=>w.Enabled)

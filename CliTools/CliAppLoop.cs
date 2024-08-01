@@ -41,7 +41,7 @@ public abstract class CliAppLoop
 
     protected IEnumerable<RecentCommandCliMenuCommand> GetRecentCommands()
     {
-        return _recentCommands.Rc.OrderBy(x => x.Key)
+        return _recentCommands.Rc.OrderByDescending(x => x.Key)
             .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Value));
     }
 
@@ -129,7 +129,9 @@ public abstract class CliAppLoop
 
             var menuCommand = menuItem.CliMenuCommand;
             menuCommand.Run();
-            AddSelectedCommand(menuCommand);
+
+            if (menuCommand is not RecentCommandCliMenuCommand)
+                AddSelectedCommand(menuCommand);
 
             var menuAction = menuCommand.MenuAction;
             //თუ მენიუს ცვლილება მოთხოვნილი არ არის, ვაგრძელებთ ჩვეულებრივად
@@ -185,6 +187,9 @@ public abstract class CliAppLoop
     private void SaveRecent()
     {
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
+            return;
+
+        if (_selectedMenuCommandsList.Count < 2)
             return;
 
         var commLink = string.Join('/', _selectedMenuCommandsList.Select(x => x.Name));

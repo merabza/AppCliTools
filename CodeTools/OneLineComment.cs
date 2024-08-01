@@ -6,13 +6,14 @@ public class OneLineComment : ICodeItem
 {
     private readonly string _commentSign;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public OneLineComment(string commentText, string commentSign = "//")
     {
         _commentSign = commentSign;
         CommentText = commentText;
     }
 
-    public string CommentText { get; set; }
+    private string CommentText { get; set; }
 
     public string Output(int indentLevel)
     {
