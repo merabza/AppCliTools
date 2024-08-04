@@ -8,8 +8,7 @@ public sealed class NewItemCliMenuCommand : CliMenuCommand
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public NewItemCliMenuCommand(Cruder cruder, string parentMenuName, string commandName) : base(commandName,
-        EMenuAction.Reload, EMenuAction.Reload,
-        parentMenuName)
+        EMenuAction.Reload, EMenuAction.Reload, parentMenuName)
     {
         _cruder = cruder;
     }

@@ -32,6 +32,7 @@ public /*open*/ class CliMenuCommand
         StatusView = statusView;
         NameIsStatus = nameIsStatus;
     }
+
     public void CountStatus()
     {
         Status = GetStatus();
