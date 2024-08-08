@@ -154,11 +154,11 @@ public abstract class CliAppLoop
                     _currentMenuSetLevel--;
                     break;
                 case EMenuAction.Reload:
-                    SaveRecent();
+                    SaveRecent(menuCommand);
                     StShared.Pause();
                     break;
                 case EMenuAction.ReloadWithoutPause:
-                    SaveRecent();
+                    SaveRecent(menuCommand);
                     break;
                 case EMenuAction.GoToMenuLink:
                     if (!GoToMenu(menuCommand.GetMenuLinkToGo()))
@@ -184,8 +184,14 @@ public abstract class CliAppLoop
         _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).ToDictionary(k => k.Key, v => v.Value);
     }
 
-    private void SaveRecent()
+    private void SaveRecent(CliMenuCommand menuCommand)
     {
+        if (menuCommand is RecentCommandCliMenuCommand)
+        {
+
+        }
+
+
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
 
