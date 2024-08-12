@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CliMenu;
 using LibDataInput;
+using LibMenuInput.CliMenuCommands;
 using SystemToolsShared;
 
 namespace LibMenuInput;
@@ -27,7 +28,7 @@ public sealed class MultipleSelectFromListInput : DataInput
             listSet.AddMenuItem(new CliMenuCommand("(Save and exit)"));
 
             foreach (var listItem in SourceListWithChecks)
-                listSet.AddMenuItem(new CliMenuCommand($"{(listItem.Value ? "√" : "×")} {listItem.Key}"));
+                listSet.AddMenuItem(new MultipleSelectFromListElementCliMenuCommand(listItem));//$"{(listItem.Value ? "√" : "×")} {listItem.Key}")
 
             var key = ConsoleKey.Escape.Value().ToLower();
             listSet.AddMenuItem(key, new CliMenuCommand("(Exit without saving)"), key.Length);
@@ -46,7 +47,8 @@ public sealed class MultipleSelectFromListInput : DataInput
             if (ch.Key == ConsoleKey.Escape)
                 throw new DataInputEscapeException("Escape");
 
-            var text = menuItem.CliMenuCommand.Name;
+            var menuCommand = (MultipleSelectFromListElementCliMenuCommand) menuItem.CliMenuCommand;
+            var text = menuCommand.Key;
             if (!SourceListWithChecks.TryGetValue(text, out var value))
             {
                 Console.WriteLine($"Something is wrong with {_fieldName}.");
