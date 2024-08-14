@@ -8,7 +8,8 @@ public class RecentCommandCliMenuCommand : InfoCliMenuCommand
     private readonly string _menuLinkWithoutMainMenu;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RecentCommandCliMenuCommand(CliAppLoop cliAppLoop, string menuLinkWithoutMainMenu) : base(menuLinkWithoutMainMenu, menuLinkWithoutMainMenu)
+    public RecentCommandCliMenuCommand(CliAppLoop cliAppLoop, string menuLinkWithoutMainMenu) : base(
+        menuLinkWithoutMainMenu, menuLinkWithoutMainMenu)
     {
         _cliAppLoop = cliAppLoop;
         _menuLinkWithoutMainMenu = menuLinkWithoutMainMenu;
@@ -30,7 +31,7 @@ public class RecentCommandCliMenuCommand : InfoCliMenuCommand
             currentMenu = menuItem.CliMenuCommand.GetSubmenu();
         }
 
-        if (menuItem is null) 
+        if (menuItem is null)
             return false;
 
         MenuActionOnBodySuccess = menuItem.CliMenuCommand.MenuActionOnBodySuccess;
@@ -39,6 +40,5 @@ public class RecentCommandCliMenuCommand : InfoCliMenuCommand
         menuItem.CliMenuCommand.Run();
         //MenuAction = menuItem.CliMenuCommand.MenuAction;
         return true;
-
     }
 }

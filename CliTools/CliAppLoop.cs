@@ -1,23 +1,23 @@
-﻿using CliMenu;
-using CliTools.CliMenuCommands;
-using Figgle;
-using LibParameters;
-using LibToolActions.BackgroundTasks;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CliMenu;
+using CliTools.CliMenuCommands;
+using Figgle;
+using LibParameters;
+using LibToolActions.BackgroundTasks;
 using SystemToolsShared;
 
 namespace CliTools;
 
 public abstract class CliAppLoop
 {
-    private readonly IParametersWithRecentData? _par;
     private readonly string? _header;
     private readonly List<CliMenuSet> _menuSetsList = [];
+    private readonly IParametersWithRecentData? _par;
     private readonly IProcesses? _processes;
     private readonly List<CliMenuCommand> _selectedMenuCommandsList = [];
     private int _currentMenuSetLevel;
@@ -32,7 +32,7 @@ public abstract class CliAppLoop
     }
 
     public abstract CliMenuSet BuildMainMenu();
-    
+
     private void ShowMenu(bool inFirstTime)
     {
         _menuSetsList[_currentMenuSetLevel].Show(!inFirstTime);
@@ -81,7 +81,7 @@ public abstract class CliAppLoop
                     StShared.WriteErrorLine("Menu could not loaded", true);
                     return false;
                 }
-                    
+
                 ShowMenu(inFirstTime);
                 inFirstTime = false;
             }
@@ -178,7 +178,7 @@ public abstract class CliAppLoop
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
         var parLoader = new ParametersLoader<RecentCommands>();
-        if (!parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) || parLoader.Par is null) 
+        if (!parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) || parLoader.Par is null)
             return;
         _recentCommands = (RecentCommands)parLoader.Par;
         _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).ToDictionary(k => k.Key, v => v.Value);
@@ -188,7 +188,6 @@ public abstract class CliAppLoop
     {
         if (menuCommand is RecentCommandCliMenuCommand)
         {
-
         }
 
 
@@ -261,7 +260,7 @@ public abstract class CliAppLoop
         }
         else
         {
-            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel-1];
+            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
             if (!AddChangeMenu(selectedMenuCommand.GetSubmenu()))
                 return false;
         }

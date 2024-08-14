@@ -28,7 +28,9 @@ public sealed class MultipleSelectFromListInput : DataInput
             listSet.AddMenuItem(new CliMenuCommand("(Save and exit)"));
 
             foreach (var listItem in SourceListWithChecks)
-                listSet.AddMenuItem(new MultipleSelectFromListElementCliMenuCommand(listItem));//$"{(listItem.Value ? "√" : "×")} {listItem.Key}")
+                listSet.AddMenuItem(
+                    new MultipleSelectFromListElementCliMenuCommand(
+                        listItem)); //$"{(listItem.Value ? "√" : "×")} {listItem.Key}")
 
             var key = ConsoleKey.Escape.Value().ToLower();
             listSet.AddMenuItem(key, new CliMenuCommand("(Exit without saving)"), key.Length);
@@ -47,7 +49,7 @@ public sealed class MultipleSelectFromListInput : DataInput
             if (ch.Key == ConsoleKey.Escape)
                 throw new DataInputEscapeException("Escape");
 
-            var menuCommand = (MultipleSelectFromListElementCliMenuCommand) menuItem.CliMenuCommand;
+            var menuCommand = (MultipleSelectFromListElementCliMenuCommand)menuItem.CliMenuCommand;
             var text = menuCommand.Key;
             if (!SourceListWithChecks.TryGetValue(text, out var value))
             {

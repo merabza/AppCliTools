@@ -7,16 +7,8 @@ namespace CliMenu;
 public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
-    public EMenuAction MenuActionOnBodyFail { get; protected set; }
-    public EMenuAction MenuActionOnBodySuccess { get; protected set; }
 
     protected readonly string? ParentMenuName;
-
-    public EMenuAction MenuAction { get; protected set; }
-    public string Name { get; }
-    public EStatusView StatusView { get; }
-    public string? Status { get; private set; }
-    public bool NameIsStatus { get; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuCommand(string name, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
@@ -32,6 +24,15 @@ public /*open*/ class CliMenuCommand
         StatusView = statusView;
         NameIsStatus = nameIsStatus;
     }
+
+    public EMenuAction MenuActionOnBodyFail { get; protected set; }
+    public EMenuAction MenuActionOnBodySuccess { get; protected set; }
+
+    public EMenuAction MenuAction { get; protected set; }
+    public string Name { get; }
+    public EStatusView StatusView { get; }
+    public string? Status { get; private set; }
+    public bool NameIsStatus { get; }
 
     public void CountStatus()
     {
