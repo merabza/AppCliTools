@@ -186,18 +186,20 @@ public abstract class CliAppLoop
 
     private void SaveRecent(CliMenuCommand menuCommand)
     {
-        if (menuCommand is RecentCommandCliMenuCommand)
-        {
-        }
-
-
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
             return;
 
-        if (_currentMenuSetLevel < 1)
-            return;
+        string commLink;
+        if (menuCommand is RecentCommandCliMenuCommand)
+            commLink = menuCommand.Name;
+        else
+        {
 
-        var commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel + 1).Select(x => x.Name));
+            if (_currentMenuSetLevel < 1)
+                return;
+
+            commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel + 1).Select(x => x.Name));
+        }
 
         _recentCommands.Rc.Add(DateTime.Now, commLink);
 
