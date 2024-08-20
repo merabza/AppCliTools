@@ -6,7 +6,7 @@ namespace CliTools;
 
 public class RecentCommands : IParameters
 {
-    public Dictionary<DateTime, string> Rc = [];
+    public Dictionary<string, DateTime> Rc = [];
 
     public bool CheckBeforeSave()
     {

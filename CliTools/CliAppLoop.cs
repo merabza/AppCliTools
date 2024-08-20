@@ -41,8 +41,8 @@ public abstract class CliAppLoop
 
     protected IEnumerable<RecentCommandCliMenuCommand> GetRecentCommands()
     {
-        return _recentCommands.Rc.OrderByDescending(x => x.Key)
-            .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Value));
+        return _recentCommands.Rc.OrderByDescending(x => x.Value)
+            .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Key));
     }
 
 
@@ -194,20 +194,19 @@ public abstract class CliAppLoop
             commLink = menuCommand.Name;
         else
         {
-
             if (_currentMenuSetLevel < 1)
                 return;
-
             commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel + 1).Select(x => x.Name));
         }
 
-        _recentCommands.Rc.Add(DateTime.Now, commLink);
+        _recentCommands.Rc[commLink] = DateTime.Now;
 
-        _recentCommands.Rc = _recentCommands.Rc.DistinctBy(x => x.Value).ToDictionary(k => k.Key, v => v.Value);
+        _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Value).ToDictionary(k => k.Key, v => v.Value);
 
         if (_recentCommands.Rc.Count > _par.RecentCommandsCount)
-            _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).Take(_par.RecentCommandsCount)
+            _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Value).Take(_par.RecentCommandsCount)
                 .ToDictionary(k => k.Key, v => v.Value);
+
         var parMan = new ParametersManager(_par.RecentCommandsFileName, _recentCommands);
         parMan.Save(_recentCommands);
     }
