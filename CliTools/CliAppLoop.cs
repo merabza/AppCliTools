@@ -191,7 +191,9 @@ public abstract class CliAppLoop
 
         string commLink;
         if (menuCommand is RecentCommandCliMenuCommand)
+        {
             commLink = menuCommand.Name;
+        }
         else
         {
             if (_currentMenuSetLevel < 1)
