@@ -13,7 +13,7 @@ public class OneLineComment : ICodeItem
         CommentText = commentText;
     }
 
-    private string CommentText { get; set; }
+    private string CommentText { get; }
 
     public string Output(int indentLevel)
     {
