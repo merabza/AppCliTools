@@ -267,13 +267,6 @@ public /*open*/ class Cruder : IFieldEditors
         if (newRecord is null)
             return false;
 
-        //if (_fieldKeyFromItem)
-        //{
-        //    newRecordKey = newRecord.GetItemKey();
-        //    if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
-        //        return false;
-        //}
-
         if (newRecordKey is not null && newRecordKey != recordKey)
         {
             if (string.IsNullOrWhiteSpace(newRecordKey))
@@ -313,14 +306,13 @@ public /*open*/ class Cruder : IFieldEditors
         return false;
     }
 
-    public CliMenuSet GetItemMenu(string itemName) //, string? menuNamePrefix = null)
+    public CliMenuSet GetItemMenu(string itemName)
     {
         var substituteName = itemName;
         var item = GetItemByName(itemName);
         if (item is not null)
             substituteName = item.GetItemKey() ?? substituteName;
 
-        //CliMenuSet itemSubMenuSet = new($"{menuNamePrefix ?? string.Empty}{CrudName} => {itemName}:");
         var itemSubMenuSet = new CliMenuSet(substituteName);
 
         DeleteCruderRecordCliMenuCommand deleteCommand = new(this, itemName);
@@ -421,14 +413,4 @@ public /*open*/ class Cruder : IFieldEditors
         return true;
     }
 
-    //public string FixRecordName(string recordKey, ItemData record)
-    //{
-    //    if (!_fieldKeyFromItem)
-    //        return recordKey;
-    //    var newRecordKey = record.GetItemKey();
-    //    if (newRecordKey is null)
-    //        return recordKey;
-    //    ChangeRecordKey(recordKey, newRecordKey);
-    //    return newRecordKey;
-    //}
 }

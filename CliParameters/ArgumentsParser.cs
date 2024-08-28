@@ -40,7 +40,6 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         string? fileName = null;
         if (_argsList.Count > 0)
         {
-            //var useIndex = _argsList.IndexOf("--use");
             var useIndex = Array.FindIndex(_argsList.ToArray(),
                 t => t.Equals("--use", StringComparison.CurrentCultureIgnoreCase));
 
@@ -59,12 +58,6 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
             foreach (var swt in switches.Where(swt =>
                          _possibleSwitches.Contains(swt, StringComparer.CurrentCultureIgnoreCase)))
                 Switches.Add(swt);
-            //if (string.Equals(_argsList[0], "--use", StringComparison.CurrentCultureIgnoreCase))
-            //    if (_argsList.Count > 1)
-            //    {
-            //        fileName = _argsList[1];
-            //        AnalyzeParamFileName(_argsList[1]);
-            //    }
         }
 
         if (Par != null)
@@ -75,11 +68,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
         //გამოვიტანოთ ინფორმაცია კონსოლზე
         Console.WriteLine("Usage:");
-        //Console.WriteLine($"{_appName} --saveSampleJson <file name for saving sample parameters json>");
-        //Console.WriteLine($"{_appName} --create <file name for saving as parameters json>");
         Console.WriteLine($"{_appName} --use <file name for use as parameters json>");
-        //Console.WriteLine();
-        //Console.WriteLine(sampleParamsJsonText);
         Console.WriteLine();
         return EParseResult.Usage;
     }
@@ -154,36 +143,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
             //შევქმნათ ცარელა პარამეტრები
             EmptyParameters sampleParams = new();
 
-            //string? logFolderName = Inputer.InputFolderPath("Enter Folder name for save log files");
-            //if (string.IsNullOrWhiteSpace(logFolderName))
-            //{
-            //    StShared.WriteErrorLine("Cannot create log files. Process for create parameters file stopped",
-            //        true);
-            //    return;
-            //}
-
-            //sampleParams.LogFolder = logFolderName;
-
             var sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
-
-
-            ////შევქმნათ ცარელა პარამეტრები
-            //T sampleParams = new();
-
-            //if (sampleParams is IParametersWithLog parameters)
-            //{
-            //    string logFolderName = Inputer.InputFolderPath("Enter Folder name for save log files");
-            //    if (string.IsNullOrWhiteSpace(logFolderName))
-            //    {
-            //        StShared.WriteErrorLine("Cannot create log files. Process for create parameters file stopped",
-            //            true);
-            //        return;
-            //    }
-
-            //    parameters.LogFolder = logFolderName;
-            //}
-
-            //string sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
 
             if (_encKey != null)
                 sampleParamsJsonText = EncryptDecrypt.EncryptString(sampleParamsJsonText, _encKey);
@@ -197,7 +157,6 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
                 return;
             }
         }
-
 
         if (_parLoader.TryLoadParameters(startFileName))
             return;
