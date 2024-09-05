@@ -1,4 +1,5 @@
 ﻿namespace LibDataInput;
+
 //ListIsEmptyException
 public sealed class DataInputEscapeException : DataInputException
 {

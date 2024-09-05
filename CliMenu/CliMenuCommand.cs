@@ -64,7 +64,7 @@ public /*open*/ class CliMenuCommand
             Console.WriteLine("Escape... ");
             MenuAction = EMenuAction.Reload;
         }
-        catch(ListIsEmptyException lie)
+        catch (ListIsEmptyException lie)
         {
             Console.WriteLine();
             Console.WriteLine(lie.Message);

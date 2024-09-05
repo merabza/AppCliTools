@@ -412,5 +412,4 @@ public /*open*/ class Cruder : IFieldEditors
         AddRecordWithKey(newRecordKey, itemData);
         return true;
     }
-
 }
