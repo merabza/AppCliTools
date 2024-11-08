@@ -4,6 +4,7 @@ namespace CodeTools;
 
 public sealed class CodeCommand : ICodeItem
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CodeCommand(string commandLine)
     {
         CommandLine = commandLine;

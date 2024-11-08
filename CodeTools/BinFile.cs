@@ -2,6 +2,7 @@
 
 public sealed class BinFile
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public BinFile(string fileName)
     {
         FileName = fileName;

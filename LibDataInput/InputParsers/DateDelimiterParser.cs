@@ -4,7 +4,8 @@ namespace LibDataInput.InputParsers;
 
 public sealed class DateDelimiterParser : DelimiterParser
 {
-    public DateDelimiterParser() : base('-', new[] { 1, 1, 1 }, new[] { 9999, 12, 31 })
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public DateDelimiterParser() : base('-', [1, 1, 1], [9999, 12, 31])
     {
     }
 

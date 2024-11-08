@@ -33,7 +33,7 @@ public /*open*/ class CodeBlockBase
         }
     }
 
-    public List<ICodeItem> CodeItems { get; protected init; } = new();
+    public List<ICodeItem> CodeItems { get; protected init; } = [];
 
     public void Add(ICodeItem codeItem)
     {

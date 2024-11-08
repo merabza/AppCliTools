@@ -7,6 +7,7 @@ public sealed class IntFieldEditor : FieldEditor<int>
 {
     private readonly int _defaultValue;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public IntFieldEditor(string propertyName, int defaultValue = default, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)
     {

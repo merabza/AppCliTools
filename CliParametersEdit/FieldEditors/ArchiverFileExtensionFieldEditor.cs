@@ -7,6 +7,7 @@ namespace CliParametersEdit.FieldEditors;
 
 public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ArchiverFileExtensionFieldEditor(string propertyName) : base(propertyName)
     {
     }

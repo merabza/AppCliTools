@@ -2,6 +2,7 @@
 
 public sealed class GetJsonCreatorParameters
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public GetJsonCreatorParameters(string dbContextClassName, string dbContextProjectName, string modelsFolderName,
         string placePath, string projectNamespace)
     {

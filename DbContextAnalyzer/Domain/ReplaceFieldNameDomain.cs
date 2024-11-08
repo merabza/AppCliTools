@@ -2,6 +2,7 @@
 
 public sealed class ReplaceFieldNameDomain
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ReplaceFieldNameDomain(string tableName, string oldFieldName, string newFieldName)
     {
         TableName = tableName;

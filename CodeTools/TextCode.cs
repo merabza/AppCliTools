@@ -4,6 +4,7 @@ namespace CodeTools;
 
 public sealed class TextCode : ICodeItem
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public TextCode(string text)
     {
         Text = text;

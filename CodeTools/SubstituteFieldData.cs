@@ -4,14 +4,8 @@ namespace CodeTools;
 
 public sealed class SubstituteFieldData
 {
-    //public SubstituteFieldData(FieldData parent, string tableName, string primaryKeyFieldName, List<FieldData> fields)
-    //{
-    //    //Parent = parent;
-    //    TableName = tableName;
-    //    //PrimaryKeyFieldName = primaryKeyFieldName;
-    //    Fields = fields;
-    //}
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SubstituteFieldData(string tableName, List<FieldData> fields)
     {
         TableName = tableName;
@@ -21,7 +15,4 @@ public sealed class SubstituteFieldData
     public string TableName { get; set; }
 
     public List<FieldData> Fields { get; set; }
-    //[JsonIgnore]
-    //public FieldData Parent { get; set; }
-    //public string PrimaryKeyFieldName { get; set; }
 }

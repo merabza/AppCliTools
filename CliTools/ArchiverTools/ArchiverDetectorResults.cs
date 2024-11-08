@@ -2,6 +2,7 @@
 
 public sealed class ArchiverDetectorResults
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ArchiverDetectorResults(string compressProgramPatch, string decompressProgramPatch)
     {
         CompressProgramPatch = compressProgramPatch;

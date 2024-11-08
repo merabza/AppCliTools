@@ -2,6 +2,7 @@
 
 public sealed class SeederCodeCreatorParameters
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SeederCodeCreatorParameters(string projectPrefix, string projectPrefixShort, string modelsFolderName,
         string projectSeedersFolderName, string carcassSeedersFolderName, string placePath, string projectNamespace,
         string dataSeederRepositoryInterfaceName, string keyNameIdRepositoryInterfaceName,

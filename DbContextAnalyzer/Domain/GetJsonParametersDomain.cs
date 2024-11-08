@@ -2,6 +2,7 @@
 
 public sealed class GetJsonParametersDomain
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public GetJsonParametersDomain(string jsonFolderName, string logFolder, string connectionStringProd)
     {
         JsonFolderName = jsonFolderName;

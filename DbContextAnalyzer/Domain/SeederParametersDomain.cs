@@ -4,6 +4,7 @@ namespace DbContextAnalyzer.Domain;
 
 public sealed class SeederParametersDomain
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SeederParametersDomain(string jsonFolderName, string secretDataFolder, string logFolder,
         EDataProvider dataProvider, string connectionStringSeed)
     {

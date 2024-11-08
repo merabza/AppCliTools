@@ -6,6 +6,7 @@ public sealed class DateParser : InputParser
 {
     private readonly DateDelimiterParser _ddp = new();
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DateParser() : base(' ')
     {
     }

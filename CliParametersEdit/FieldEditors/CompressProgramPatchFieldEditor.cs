@@ -7,6 +7,7 @@ namespace CliParametersEdit.FieldEditors;
 
 public sealed class CompressProgramPatchFieldEditor : FilePathFieldEditor
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CompressProgramPatchFieldEditor(string propertyName) : base(propertyName)
     {
     }

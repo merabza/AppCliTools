@@ -189,6 +189,7 @@ public sealed class CliMenuSet
     }
 
     //საჭიროა ApAgent პროექტში
+    // ReSharper disable once UnusedMember.Global
     public void InsertMenuItem(int index, CliMenuCommand menuCommand)
     {
         CliMenuItem menuItem = new(menuCommand);

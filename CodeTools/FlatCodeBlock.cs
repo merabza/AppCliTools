@@ -4,6 +4,7 @@ namespace CodeTools;
 
 public sealed class FlatCodeBlock : CodeBlockBase, ICodeItem
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public FlatCodeBlock(params object[] codeList) : base(codeList)
     {
     }
