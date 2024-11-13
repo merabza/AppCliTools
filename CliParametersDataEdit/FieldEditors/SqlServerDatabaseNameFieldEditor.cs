@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using CliMenu;
@@ -12,6 +11,7 @@ using DbTools.Models;
 using DbToolsFabric;
 using LibDataInput;
 using LibMenuInput;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using SqlServerDbTools;
 
