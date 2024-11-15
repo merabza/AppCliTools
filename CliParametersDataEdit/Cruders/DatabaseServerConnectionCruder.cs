@@ -33,6 +33,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.BackupFolderName)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataFolderName)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataLogFolderName)));
+        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -110,6 +111,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
                     var dc = DbClientFabric.GetDbClient(_logger, true, databaseServerConnectionData.DataProvider,
                         databaseServerConnectionData.ServerAddress, dbAuthSettings,
+                        databaseServerConnectionData.TrustServerCertificate,
                         ProgramAttributes.Instance.GetAttribute<string>("AppName"));
 
                     if (dc is null)
