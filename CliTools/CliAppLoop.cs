@@ -54,8 +54,7 @@ public abstract class CliAppLoop
 
         if (_header == null)
         {
-            var header =
-                $"{ProgramAttributes.Instance.GetAttribute<string>("AppName")} {Assembly.GetEntryAssembly()?.GetName().Version}";
+            var header = $"{ProgramAttributes.Instance.AppName} {Assembly.GetEntryAssembly()?.GetName().Version}";
             Console.WriteLine(FiggleFonts.Standard.Render(header));
         }
         else

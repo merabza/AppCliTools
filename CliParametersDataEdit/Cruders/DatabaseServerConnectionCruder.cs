@@ -111,8 +111,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
                     var dc = DbClientFabric.GetDbClient(_logger, true, databaseServerConnectionData.DataProvider,
                         databaseServerConnectionData.ServerAddress, dbAuthSettings,
-                        databaseServerConnectionData.TrustServerCertificate,
-                        ProgramAttributes.Instance.GetAttribute<string>("AppName"));
+                        databaseServerConnectionData.TrustServerCertificate, ProgramAttributes.Instance.AppName);
 
                     if (dc is null)
                     {
