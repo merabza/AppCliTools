@@ -4,7 +4,6 @@ namespace CodeTools;
 
 public sealed class SubstituteFieldData
 {
-
     // ReSharper disable once ConvertToPrimaryConstructor
     public SubstituteFieldData(string tableName, List<FieldData> fields)
     {
