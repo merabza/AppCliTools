@@ -29,7 +29,7 @@ public class PutDbServerFoldersToolAction : ToolAction
     }
 
 
-    protected override async Task<bool> RunAction(CancellationToken cancellationToken)
+    protected override async ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
     {
         var parameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
 
