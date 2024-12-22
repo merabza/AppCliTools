@@ -89,7 +89,7 @@ public abstract class CliAppLoop
             {
                 try
                 {
-                    _processes.WaitForFinishAll().Wait();
+                    _processes.WaitForFinishAll().GetAwaiter();
                 }
                 catch (TaskCanceledException e)
                 {
