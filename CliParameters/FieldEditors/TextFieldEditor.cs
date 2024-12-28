@@ -9,8 +9,8 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
     private readonly char _passwordCharacter;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public TextFieldEditor(string propertyName, string? defaultValue = default,
-        char passwordCharacter = default) : base(propertyName, true)
+    public TextFieldEditor(string propertyName, string? defaultValue = null, char passwordCharacter = '\0') : base(
+        propertyName, true)
     {
         _defaultValue = defaultValue;
         _passwordCharacter = passwordCharacter;
@@ -28,7 +28,7 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record) ?? string.Empty;
-        return _passwordCharacter == default || val == string.Empty ? val : new string(_passwordCharacter, val.Length);
+        return _passwordCharacter == 0 || val == string.Empty ? val : new string(_passwordCharacter, val.Length);
 
         //სტანდარტული ფორმატის გადაყვანა custom ფორმატში
         //DateTime.Now.ToString("G", CultureInfo.InvariantCulture);

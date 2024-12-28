@@ -1,11 +1,12 @@
 ﻿using CliParameters;
 using CliParameters.FieldEditors;
+using CliParametersDataEdit.FieldEditors;
 using CliParametersDataEdit.Models;
 using LibParameters;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace CliParametersDataEdit.ParametersEditors;
 
 public sealed class SqlServerDatabaseConnectionParametersEditor : ParametersEditor
 {

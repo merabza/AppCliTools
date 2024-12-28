@@ -1,50 +1,26 @@
-﻿using CliMenu;
-using CliParameters.FieldEditors;
+﻿using CliParameters.FieldEditors;
 using CliParametersDataEdit.Models;
+using CliParametersDataEdit.ParametersEditors;
 using LibParameters;
 using Microsoft.Extensions.Logging;
 
 namespace CliParametersDataEdit.FieldEditors;
 
-public sealed class DatabaseConnectionParametersFieldEditor : FieldEditor<DatabaseConnectionParameters>
+public sealed class
+    DatabaseConnectionParametersFieldEditor : ParametersFieldEditor<DatabaseConnectionParameters,
+    DatabaseConnectionParametersEditor>
 {
-    private readonly ILogger _logger;
-
-    private readonly ParametersManager _parametersManager;
-
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseConnectionParametersFieldEditor(ILogger logger, string devDatabaseConnectionParametersParameterName,
-        ParametersManager parametersManager, bool enterFieldDataOnCreate = false) : base(
-        devDatabaseConnectionParametersParameterName, enterFieldDataOnCreate, null, true)
+    public DatabaseConnectionParametersFieldEditor(ILogger logger, string propertyName,
+        IParametersManager parametersManager) : base(logger, propertyName, parametersManager)
     {
-        _logger = logger;
-        _parametersManager = parametersManager;
     }
 
-    public override string GetValueStatus(object? record)
+    protected override DatabaseConnectionParametersEditor CreateEditor(DatabaseConnectionParameters currentValue)
     {
-        var val = GetValue(record);
-        if (val is null)
-            return "(empty)";
-        var dataProvider = val.DataProvider;
-        var status = $"Data Provider: {dataProvider}";
-        var dbConnectionParameters =
-            DbConnectionFabric.GetDbConnectionParameters(dataProvider, val.ConnectionString);
-        status +=
-            $", Connection: {(dbConnectionParameters == null ? "(invalid)" : dbConnectionParameters.GetStatus())}";
-        status += $", CommandTimeOut: {val.CommandTimeOut}";
-        return status;
-    }
-
-    public override CliMenuSet GetSubMenu(object record)
-    {
-        var databaseConnectionParameters =
-            GetValue(record) ?? new DatabaseConnectionParameters();
-
         DatabaseConnectionParametersManager memoryParametersManager =
-            new(databaseConnectionParameters, _parametersManager, this, record);
+            new(currentValue, ParametersManager, this, currentValue);
 
-        DatabaseConnectionParametersEditor databaseConnectionParametersEditor = new(_logger, memoryParametersManager);
-        return databaseConnectionParametersEditor.GetParametersMainMenu();
+        return new DatabaseConnectionParametersEditor(Logger, memoryParametersManager);
     }
 }

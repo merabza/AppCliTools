@@ -8,8 +8,8 @@ public sealed class FolderPathFieldEditor : FieldEditor<string>
     private readonly string? _defaultValue;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public FolderPathFieldEditor(string propertyName, string? defaultValue = default,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
+    public FolderPathFieldEditor(string propertyName, string? defaultValue = null, bool enterFieldDataOnCreate = false)
+        : base(propertyName, enterFieldDataOnCreate)
     {
         _defaultValue = defaultValue;
     }

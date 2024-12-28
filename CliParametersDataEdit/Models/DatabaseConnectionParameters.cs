@@ -3,14 +3,21 @@ using LibParameters;
 
 namespace CliParametersDataEdit.Models;
 
-public sealed class DatabaseConnectionParameters : IParameters
+public sealed class DatabaseConnectionParameters : ParametersWithStatus
 {
     public EDataProvider DataProvider { get; set; }
     public string? ConnectionString { get; set; }
     public int CommandTimeOut { get; set; }
 
-    public bool CheckBeforeSave()
+    public override string GetStatus()
     {
-        return true;
+        var dataProvider = DataProvider;
+        var status = $"Data Provider: {dataProvider}";
+        var dbConnectionParameters =
+            DbConnectionFabric.GetDbConnectionParameters(dataProvider, ConnectionString);
+        status +=
+            $", Connection: {(dbConnectionParameters == null ? "(invalid)" : dbConnectionParameters.GetStatus())}";
+        status += $", CommandTimeOut: {CommandTimeOut}";
+        return status;
     }
 }

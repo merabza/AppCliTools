@@ -46,18 +46,15 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     {
         var currentDatabaseName = GetValue(recordForUpdate);
 
-        var databaseServerConnectionName =
-            GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
+        var databaseServerConnectionName = GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
         var databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
         //var databaseServerName = GetValue<string>(recordForUpdate, _databaseServerNameFieldName);
 
         DatabaseServerConnectionCruder databaseServerConnectionCruder = new(_parametersManager, _logger);
 
-        var databaseServerConnectionData =
-            string.IsNullOrWhiteSpace(databaseServerConnectionName)
-                ? null
-                : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(
-                    databaseServerConnectionName);
+        var databaseServerConnectionData = string.IsNullOrWhiteSpace(databaseServerConnectionName)
+            ? null
+            : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(databaseServerConnectionName);
 
         ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
 

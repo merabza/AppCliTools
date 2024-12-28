@@ -31,9 +31,8 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         DatabaseServerConnectionCruder databaseServerConnectionCruder = new(_parametersManager, _logger);
 
         SetValue(recordForUpdate,
-            databaseServerConnectionCruder.GetNameWithPossibleNewName(FieldName,
-                currentDatabaseServerConnectionName, null,
-                _useNone));
+            databaseServerConnectionCruder.GetNameWithPossibleNewName(FieldName, currentDatabaseServerConnectionName,
+                null, _useNone));
     }
 
     public override string GetValueStatus(object? record)

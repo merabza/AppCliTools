@@ -1,39 +1,23 @@
-﻿using CliMenu;
-using CliParameters.FieldEditors;
+﻿using CliParameters.FieldEditors;
+using CliParametersDataEdit.ParametersEditors;
 using LibDatabaseParameters;
 using LibParameters;
+using Microsoft.Extensions.Logging;
 
 namespace CliParametersDataEdit.FieldEditors;
 
-public sealed class DatabaseBackupParametersFieldEditor : FieldEditor<DatabaseBackupParametersModel>
+public sealed class
+    DatabaseBackupParametersFieldEditor : ParametersFieldEditor<DatabaseBackupParametersModel,
+    DatabaseBackupParametersEditor>
 {
-    private readonly IParametersManager _parametersManager;
-
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseBackupParametersFieldEditor(string propertyName, IParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+    public DatabaseBackupParametersFieldEditor(ILogger logger, string propertyName,
+        IParametersManager parametersManager) : base(logger, propertyName, parametersManager)
     {
-        _parametersManager = parametersManager;
     }
 
-    public override string GetValueStatus(object? record)
+    protected override DatabaseBackupParametersEditor CreateEditor(DatabaseBackupParametersModel currentValue)
     {
-        var val = GetValue(record);
-        return val == null ? "(empty)" : "(some parameters)";
-    }
-
-    public override CliMenuSet GetSubMenu(object record)
-    {
-        var currentDatabaseBackupParameters = GetValue(record);
-        if (currentDatabaseBackupParameters == null)
-        {
-            currentDatabaseBackupParameters = new DatabaseBackupParametersModel();
-            SetValue(record, currentDatabaseBackupParameters);
-        }
-
-        DatabaseBackupParametersEditor databaseBackupParametersEditor =
-            new(currentDatabaseBackupParameters, _parametersManager);
-        var foldersSet = databaseBackupParametersEditor.GetParametersMainMenu();
-        return foldersSet;
+        return new DatabaseBackupParametersEditor(Logger, currentValue, ParametersManager);
     }
 }

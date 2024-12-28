@@ -1,6 +1,7 @@
 ﻿using System;
 using CliMenu;
 using CliParameters.FieldEditors;
+using CliParametersDataEdit.ParametersEditors;
 using DbTools;
 using LibParameters;
 using Microsoft.Extensions.Logging;
@@ -32,8 +33,7 @@ public sealed class ConnectionStringFieldEditor : FieldEditor<string>
             return "(Nothing)";
         var val = GetValue(record);
         var dataProvider = GetValue<EDataProvider>(record, _dataProviderParameterName);
-        var dbConnectionParameters =
-            DbConnectionFabric.GetDbConnectionParameters(dataProvider, val);
+        var dbConnectionParameters = DbConnectionFabric.GetDbConnectionParameters(dataProvider, val);
         if (val == null)
             return "(empty)";
         return dbConnectionParameters == null ? "(invalid)" : dbConnectionParameters.GetStatus();
@@ -45,12 +45,11 @@ public sealed class ConnectionStringFieldEditor : FieldEditor<string>
         if (_memoryParametersManager == null)
         {
             var val = GetValue(record);
-            var currentDbConnectionParameters =
-                DbConnectionFabric.GetDbConnectionParameters(dataProvider, val) ?? new DbConnectionParameters();
+            var currentDbConnectionParameters = DbConnectionFabric.GetDbConnectionParameters(dataProvider, val) ??
+                                                new DbConnectionParameters();
 
             _memoryParametersManager =
-                new ConnectionStringParametersManager(currentDbConnectionParameters, _parametersManager, this,
-                    record);
+                new ConnectionStringParametersManager(currentDbConnectionParameters, _parametersManager, this, record);
         }
 
         switch (dataProvider)

@@ -4,7 +4,7 @@ using CliParametersDataEdit.Models;
 using LibParameters;
 using SystemToolsShared;
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace CliParametersDataEdit.ParametersEditors;
 
 public sealed class SqLiteDatabaseConnectionParametersEditor : ParametersEditor
 {
