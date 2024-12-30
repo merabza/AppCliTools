@@ -16,10 +16,11 @@ public sealed class
     {
     }
 
-    protected override DatabaseConnectionParametersEditor CreateEditor(DatabaseConnectionParameters currentValue)
+    protected override DatabaseConnectionParametersEditor CreateEditor(object record,
+        DatabaseConnectionParameters currentValue)
     {
         DatabaseConnectionParametersManager memoryParametersManager =
-            new(currentValue, ParametersManager, this, currentValue);
+            new(currentValue, ParametersManager, this, record);
 
         return new DatabaseConnectionParametersEditor(Logger, memoryParametersManager);
     }

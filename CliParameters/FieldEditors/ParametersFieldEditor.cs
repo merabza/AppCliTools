@@ -33,9 +33,9 @@ public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TMode
             SetValue(record, currentValue);
         }
 
-        var databaseBackupParametersEditor = CreateEditor(currentValue);
+        var databaseBackupParametersEditor = CreateEditor(record, currentValue);
         return databaseBackupParametersEditor.GetParametersMainMenu();
     }
 
-    protected abstract TEditor CreateEditor(TModel currentValue);
+    protected abstract TEditor CreateEditor(object record, TModel currentValue);
 }
