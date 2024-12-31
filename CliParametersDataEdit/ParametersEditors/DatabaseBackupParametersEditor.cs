@@ -3,14 +3,13 @@ using CliParameters.FieldEditors;
 using DbTools;
 using LibDatabaseParameters;
 using LibParameters;
-using Microsoft.Extensions.Logging;
 
 namespace CliParametersDataEdit.ParametersEditors;
 
 public sealed class DatabaseBackupParametersEditor : ParametersEditor
 {
-    public DatabaseBackupParametersEditor(ILogger logger, IParameters parameters, IParametersManager parametersManager)
-        : base("Database Backup ParametersEditor", parameters, parametersManager)
+    public DatabaseBackupParametersEditor(IParameters parameters, IParametersManager parametersManager) : base(
+        "Database Backup ParametersEditor", parameters, parametersManager)
     {
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.BackupNamePrefix)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseBackupParametersModel.DateMask), "yyyyMMddHHmmss"));

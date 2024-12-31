@@ -19,6 +19,6 @@ public sealed class
     protected override DatabaseBackupParametersEditor CreateEditor(object record,
         DatabaseBackupParametersModel currentValue)
     {
-        return new DatabaseBackupParametersEditor(Logger, currentValue, ParametersManager);
+        return new DatabaseBackupParametersEditor(currentValue, ParametersManager);
     }
 }
