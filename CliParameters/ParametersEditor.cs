@@ -14,6 +14,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
 {
     private readonly IParametersManager _parametersManager;
     protected readonly List<FieldEditor> FieldEditors = [];
+    public const char PasswordChar = '*';
 
     protected ParametersEditor(string name, IParameters parameters, IParametersManager parametersManager)
     {

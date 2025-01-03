@@ -2,9 +2,12 @@
 
 public sealed class OleDbConnectionParameters : DbConnectionParameters
 {
+    public const string MsAccessOleDbProviderName = "Microsoft.ACE.OLEDB.12.0";
+
     public string? DatabaseFilePath { get; set; }
-    public string? Provider { get; set; }// = "Microsoft.ACE.OLEDB.12.0";
+    public string? Provider { get; set; } = MsAccessOleDbProviderName;
     public bool PersistSecurityInfo { get; set; } = false;
+    public string? Password { get; set; }
 
     public override string GetStatus()
     {

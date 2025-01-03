@@ -11,6 +11,8 @@ namespace CliParametersDataEdit;
 
 public static class DbConnectionFabric
 {
+    public const string JetOleDbDatabasePasswordKey = "Jet OLEDB:Database Password";
+
     public static DbConnectionParameters? GetDbConnectionParameters(EDataProvider dataProvider,
         string? connectionString)
     {
@@ -48,7 +50,8 @@ public static class DbConnectionFabric
                 {
                     DatabaseFilePath = msaConBuilder.DataSource,
                     Provider = msaConBuilder.Provider,
-                    PersistSecurityInfo = msaConBuilder.PersistSecurityInfo
+                    PersistSecurityInfo = msaConBuilder.PersistSecurityInfo,
+                    Password = msaConBuilder[JetOleDbDatabasePasswordKey].ToString()
                 };
                 return msAccessPar;
 #pragma warning restore CA1416

@@ -12,6 +12,6 @@ public sealed class SqLiteDatabaseConnectionParametersEditor : ParametersEditor
         nameof(SqLiteDatabaseConnectionParametersEditor).SplitWithSpacesCamelParts(), parametersManager)
     {
         FieldEditors.Add(new FilePathFieldEditor(nameof(SqLiteConnectionParameters.DatabaseFilePath)));
-        FieldEditors.Add(new TextFieldEditor(nameof(SqLiteConnectionParameters.Password), null, '*'));
+        FieldEditors.Add(new TextFieldEditor(nameof(SqLiteConnectionParameters.Password), null, PasswordChar));
     }
 }
