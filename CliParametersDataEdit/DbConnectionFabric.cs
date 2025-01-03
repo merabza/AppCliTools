@@ -50,9 +50,12 @@ public static class DbConnectionFabric
                 {
                     DatabaseFilePath = msaConBuilder.DataSource,
                     Provider = msaConBuilder.Provider,
-                    PersistSecurityInfo = msaConBuilder.PersistSecurityInfo,
-                    Password = msaConBuilder[JetOleDbDatabasePasswordKey].ToString()
+                    PersistSecurityInfo = msaConBuilder.PersistSecurityInfo
                 };
+
+                if (msAccessPar.PersistSecurityInfo && msaConBuilder.ContainsKey(JetOleDbDatabasePasswordKey))
+                    msAccessPar.Password = msaConBuilder[JetOleDbDatabasePasswordKey].ToString();
+
                 return msAccessPar;
 #pragma warning restore CA1416
             default:
