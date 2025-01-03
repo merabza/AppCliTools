@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Data.Common;
+using System.Data.OleDb;
 using CliParametersDataEdit.Models;
 using DbTools;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
+using SystemToolsShared;
 
 namespace CliParametersDataEdit;
 
@@ -34,10 +36,22 @@ public static class DbConnectionFabric
                 var sltConBuilder = new SqliteConnectionStringBuilder(connectionString);
                 var sqLitePar = new SqLiteConnectionParameters
                 {
-                    DatabaseFilePath = sltConBuilder.DataSource,
-                    Password = sltConBuilder.Password
+                    DatabaseFilePath = sltConBuilder.DataSource, Password = sltConBuilder.Password
                 };
                 return sqLitePar;
+            case EDataProvider.OleDb:
+                if (!SystemStat.IsWindows())
+                    throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, null);
+#pragma warning disable CA1416
+                var msaConBuilder = new OleDbConnectionStringBuilder(connectionString);
+                var msAccessPar = new OleDbConnectionParameters
+                {
+                    DatabaseFilePath = msaConBuilder.DataSource,
+                    Provider = msaConBuilder.Provider,
+                    PersistSecurityInfo = msaConBuilder.PersistSecurityInfo
+                };
+                return msAccessPar;
+#pragma warning restore CA1416
             default:
                 throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, null);
         }
@@ -49,8 +63,7 @@ public static class DbConnectionFabric
         return dbConnectionStringBuilder?.ConnectionString;
     }
 
-    public static DbConnectionStringBuilder? GetDbConnectionStringBuilder(
-        DbConnectionParameters dbConnectionParameters)
+    public static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DbConnectionParameters dbConnectionParameters)
     {
         if (dbConnectionParameters is SqlServerConnectionParameters par)
         {

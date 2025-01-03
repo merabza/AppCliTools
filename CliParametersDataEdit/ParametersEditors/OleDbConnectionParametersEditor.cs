@@ -6,9 +6,9 @@ using SystemToolsShared;
 
 namespace CliParametersDataEdit.ParametersEditors;
 
-public sealed class SqLiteDatabaseConnectionParametersEditor : ParametersEditor
+public sealed class OleDbConnectionParametersEditor : ParametersEditor
 {
-    public SqLiteDatabaseConnectionParametersEditor(IParametersManager parametersManager) : base(
+    public OleDbConnectionParametersEditor(IParametersManager parametersManager) : base(
         nameof(SqLiteDatabaseConnectionParametersEditor).SplitWithSpacesCamelParts(), parametersManager)
     {
         FieldEditors.Add(new FilePathFieldEditor(nameof(SqLiteConnectionParameters.DatabaseFilePath)));

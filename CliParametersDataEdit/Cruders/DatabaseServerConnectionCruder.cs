@@ -29,7 +29,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), default, '*'));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null, '*'));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.BackupFolderName)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataFolderName)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataLogFolderName)));
@@ -38,42 +38,35 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
     {
-        var parameters =
-            (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
         return parameters.DatabaseServerConnections.ToDictionary(p => p.Key, p => (ItemData)p.Value);
     }
 
     public override bool ContainsRecordWithKey(string recordKey)
     {
-        var parameters =
-            (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        var
-            databaseServerConnections = parameters.DatabaseServerConnections;
+        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+        var databaseServerConnections = parameters.DatabaseServerConnections;
         return databaseServerConnections.ContainsKey(recordKey);
     }
 
     public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
-        var parameters =
-            (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
         parameters.DatabaseServerConnections[recordKey] = newDatabaseServerConnection;
     }
 
     protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
-        var parameters =
-            (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
         parameters.DatabaseServerConnections.Add(recordKey, newDatabaseServerConnection);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
     {
-        var parameters =
-            (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        var
-            databaseServerConnections = parameters.DatabaseServerConnections;
+        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+        var databaseServerConnections = parameters.DatabaseServerConnections;
         databaseServerConnections.Remove(recordKey);
     }
 
@@ -161,13 +154,26 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                         databaseServerConnectionData.DataLogFolderName = dbServerInfo.DefaultLogDirectory;
 
                     return true;
+                case EDataProvider.OleDb:
+                    //რადგან აქსესს სერვერი არ აქვს და აქ მხოლოდ სერვერის არსებობა მოწმდება და არა მონაცემთა ბაზის,
+                    //დავუშვათ, რომ აქსესის სერვერთან კავშირი ყოველთვის გვაქვს
+                    return true;
+                ////აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
+                //StShared.WriteErrorLine("MsAccess Client is not implemented", true);
+                //return false;
                 case EDataProvider.SqLite:
-                    //აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
-                    StShared.WriteErrorLine("SqLite Client is not implemented", true);
+                    //რადგან SqLite-ს სერვერი არ აქვს და აქ მხოლოდ სერვერის არსებობა მოწმდება და არა მონაცემთა ბაზის,
+                    //დავუშვათ, რომ SqLite-ის სერვერთან კავშირი ყოველთვის გვაქვს
+                    return true;
+                ////აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
+                //StShared.WriteErrorLine("SqLite Client is not implemented", true);
+                //return false;
+                case EDataProvider.None:
+                    StShared.WriteErrorLine("EDataProvider.None Client can not be created", true);
                     return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-
-            return false;
         }
         catch (Exception e)
         {

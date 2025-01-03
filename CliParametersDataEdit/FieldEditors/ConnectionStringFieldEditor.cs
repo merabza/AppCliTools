@@ -64,6 +64,10 @@ public sealed class ConnectionStringFieldEditor : FieldEditor<string>
                 SqLiteDatabaseConnectionParametersEditor sqLiteDatabaseConnectionParametersEditor =
                     new(_memoryParametersManager);
                 return sqLiteDatabaseConnectionParametersEditor.GetParametersMainMenu();
+            case EDataProvider.OleDb:
+                OleDbConnectionParametersEditor msAccessDatabaseConnectionParametersEditor =
+                    new(_memoryParametersManager);
+                return msAccessDatabaseConnectionParametersEditor.GetParametersMainMenu();
             default:
                 throw new ArgumentOutOfRangeException();
         }
