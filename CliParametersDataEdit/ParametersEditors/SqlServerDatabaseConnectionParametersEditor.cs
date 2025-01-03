@@ -17,7 +17,7 @@ public sealed class SqlServerDatabaseConnectionParametersEditor : ParametersEdit
         FieldEditors.Add(new BoolFieldEditor(nameof(SqlServerConnectionParameters.WindowsNtIntegratedSecurity),
             false));
         FieldEditors.Add(new TextFieldEditor(nameof(SqlServerConnectionParameters.ServerUser)));
-        FieldEditors.Add(new TextFieldEditor(nameof(SqlServerConnectionParameters.ServerPass), null, '*'));
+        FieldEditors.Add(new TextFieldEditor(nameof(SqlServerConnectionParameters.ServerPass), null, PasswordChar));
         FieldEditors.Add(new SqlServerDatabaseNameFieldEditor(logger,
             nameof(SqlServerConnectionParameters.DatabaseName),
             nameof(SqlServerConnectionParameters.ServerAddress),
