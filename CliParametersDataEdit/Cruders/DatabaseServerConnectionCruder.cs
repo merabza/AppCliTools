@@ -29,12 +29,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
-<<<<<<< HEAD
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null, ParametersEditor.PasswordChar));
-=======
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null,
             ParametersEditor.PasswordChar));
->>>>>>> c4701605018dda898736bd5b229056b967d71624
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.BackupFolderName)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataFolderName)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataLogFolderName)));
@@ -44,7 +40,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
     {
         var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        return parameters.DatabaseServerConnections.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+        return parameters.DatabaseServerConnections.ToDictionary(p => p.Key, ItemData (p) => p.Value);
     }
 
     public override bool ContainsRecordWithKey(string recordKey)
