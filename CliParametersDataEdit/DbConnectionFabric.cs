@@ -11,7 +11,7 @@ namespace CliParametersDataEdit;
 
 public static class DbConnectionFabric
 {
-    public const string JetOleDbDatabasePasswordKey = "Jet OLEDB:Database Password";
+    private const string JetOleDbDatabasePasswordKey = "Jet OLEDB:Database Password";
 
     public static DbConnectionParameters? GetDbConnectionParameters(EDataProvider dataProvider,
         string? connectionString)
