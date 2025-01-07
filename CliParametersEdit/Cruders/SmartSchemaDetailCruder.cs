@@ -23,7 +23,7 @@ public sealed class SmartSchemaDetailCruder : Cruder
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
     {
-        return _currentValuesList.ToDictionary(p => p.PeriodType.ToString(), p => (ItemData)p);
+        return _currentValuesList.ToDictionary(p => p.PeriodType.ToString(), ItemData (p) => p);
     }
 
     public override bool ContainsRecordWithKey(string recordKey)

@@ -60,9 +60,8 @@ public class GetDbServerFoldersToolAction : ToolAction
         var dbInfo = getDatabaseServerInfoResult.AsT0;
 
         var dbCon = parameters.DatabaseServerConnections[_dbServerName];
-        dbCon.BackupFolderName = dbInfo.BackupDirectory;
-        dbCon.DataFolderName = dbInfo.DefaultDataDirectory;
-        dbCon.DataLogFolderName = dbInfo.DefaultLogDirectory;
+
+        dbCon.SetDefaultFolders(dbInfo);
 
         _parametersManager.Save(parameters, "folders Changed and saved");
 

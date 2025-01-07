@@ -32,14 +32,16 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null,
             ParametersEditor.PasswordChar));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.BackupFolderName)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataFolderName)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataLogFolderName)));
+        //FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.BackupFolderName)));
+        //FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataFolderName)));
+        //FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.DataLogFolderName)));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt), false));
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
         FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
             nameof(DatabaseServerConnectionData.FullDbBackupParameters), parametersManager));
+        FieldEditors.Add(new DatabaseFoldersSetFieldEditor(parametersManager,
+            nameof(DatabaseServerConnectionData.DatabaseFoldersSets)));
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -150,14 +152,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     Console.WriteLine($"Default Data Directory is {dbServerInfo.DefaultDataDirectory}");
                     Console.WriteLine($"Default Log Directory is {dbServerInfo.DefaultLogDirectory}");
 
-                    if (string.IsNullOrWhiteSpace(databaseServerConnectionData.BackupFolderName))
-                        databaseServerConnectionData.BackupFolderName = dbServerInfo.BackupDirectory;
-
-                    if (string.IsNullOrWhiteSpace(databaseServerConnectionData.DataFolderName))
-                        databaseServerConnectionData.DataFolderName = dbServerInfo.DefaultDataDirectory;
-
-                    if (string.IsNullOrWhiteSpace(databaseServerConnectionData.DataLogFolderName))
-                        databaseServerConnectionData.DataLogFolderName = dbServerInfo.DefaultLogDirectory;
+                    databaseServerConnectionData.SetDefaultFolders(dbServerInfo);
 
                     return true;
                 case EDataProvider.OleDb:
