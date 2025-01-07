@@ -44,8 +44,14 @@ public /*open*/ class CliMenuCommand
         if (_askRunAction)
         {
             var description = GetActionDescription();
-            if (description is not null)
-                Console.WriteLine(description);
+            if (description is null)
+            {
+                StShared.WriteErrorLine("description is null", true);
+                MenuAction = EMenuAction.Reload;
+                return;
+            }
+
+            Console.WriteLine(description);
 
             if (!Inputer.InputBool("Are you sure, you want to run this action?", true, false))
             {

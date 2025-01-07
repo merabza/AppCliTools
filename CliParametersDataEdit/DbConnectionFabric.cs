@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Data.OleDb;
 using CliParametersDataEdit.Models;
 using DbTools;
+using LibDatabaseParameters;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using SystemToolsShared;
@@ -60,6 +61,97 @@ public static class DbConnectionFabric
 #pragma warning restore CA1416
             default:
                 throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, null);
+        }
+    }
+
+    public static string? GetDbConnectionString(DatabasesParameters databasesParameters,
+        DatabaseServerConnections databaseServerConnections)
+    {
+        var dbConnectionStringBuilder = GetDbConnectionStringBuilder(databasesParameters, databaseServerConnections);
+        return dbConnectionStringBuilder?.ConnectionString;
+    }
+
+    public static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabasesParameters databasesParameters,
+        DatabaseServerConnections databaseServerConnections)
+    {
+        var dataProvider = databasesParameters.DataProvider;
+        switch (dataProvider)
+        {
+            case EDataProvider.None:
+                return null;
+            case EDataProvider.Sql:
+
+                if (string.IsNullOrWhiteSpace(databasesParameters.DbConnectionName))
+                {
+                    StShared.WriteErrorLine("DbConnectionName is not specified", true);
+                    return null;
+                }
+
+                var databaseServerConnection =
+                    databaseServerConnections.GetDatabaseServerConnectionByKey(databasesParameters.DbConnectionName);
+
+                if (databaseServerConnection is null)
+                {
+                    StShared.WriteErrorLine("databaseServerConnection Data is not Created", true);
+                    return null;
+                }
+
+                var sqlConBuilder = new SqlConnectionStringBuilder
+                {
+                    DataSource = databaseServerConnection.ServerAddress,
+                    IntegratedSecurity = databaseServerConnection.WindowsNtIntegratedSecurity,
+                    ConnectTimeout = databaseServerConnection.ConnectionTimeOut,
+                    Encrypt = databaseServerConnection.Encrypt,
+                    TrustServerCertificate = databaseServerConnection.TrustServerCertificate
+                };
+                if (!databaseServerConnection.WindowsNtIntegratedSecurity)
+                {
+                    sqlConBuilder.UserID = databaseServerConnection.ServerUser;
+                    sqlConBuilder.Password = databaseServerConnection.ServerPass;
+                }
+
+                if (databasesParameters.DatabaseName != null)
+                    sqlConBuilder.InitialCatalog = databasesParameters.DatabaseName;
+
+                return sqlConBuilder;
+            case EDataProvider.SqLite:
+                var sltConBuilder = new SqliteConnectionStringBuilder
+                {
+                    DataSource = databasesParameters.DatabaseFilePath
+                };
+                if (!string.IsNullOrWhiteSpace(databasesParameters.DatabasePassword))
+                    sltConBuilder.Password = databasesParameters.DatabasePassword;
+                return sltConBuilder;
+            case EDataProvider.OleDb:
+
+                if (!SystemStat.IsWindows())
+                {
+                    StShared.WriteErrorLine("OleDb Data Provider is not valid for non windows operation systems", true);
+                    return null;
+                }
+
+                if (string.IsNullOrWhiteSpace(databasesParameters.DatabaseFilePath))
+                {
+                    StShared.WriteErrorLine("DatabaseFilePath is not specified for Ole Database", true);
+                    return null;
+                }
+
+#pragma warning disable CA1416
+
+                var oleDbConBuilder = new OleDbConnectionStringBuilder
+                {
+                    DataSource = databasesParameters.DatabaseFilePath, Provider = "Microsoft.ACE.OLEDB.12.0"
+                };
+                if (string.IsNullOrWhiteSpace(databasesParameters.DatabasePassword))
+                    return oleDbConBuilder;
+
+                oleDbConBuilder.PersistSecurityInfo = true;
+                oleDbConBuilder.Add(JetOleDbDatabasePasswordKey, databasesParameters.DatabasePassword);
+                return oleDbConBuilder;
+#pragma warning restore CA1416
+
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 

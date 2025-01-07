@@ -6,6 +6,7 @@ using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.CliMenuCommands;
+using CliParametersDataEdit.FieldEditors;
 using DbTools;
 using DbToolsFabric;
 using LibDatabaseParameters;
@@ -37,6 +38,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt), false));
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
+        FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
+            nameof(DatabaseServerConnectionData.FullDbBackupParameters), parametersManager));
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
