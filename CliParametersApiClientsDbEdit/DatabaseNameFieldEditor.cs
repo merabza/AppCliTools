@@ -65,12 +65,12 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         IDatabaseManager? databaseManager = null;
         if (databaseServerConnectionData != null)
             databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(true, _logger,
-                databaseServerConnectionData, null, null, CancellationToken.None).Result;
+                databaseServerConnectionData, null, null, CancellationToken.None).GetAwaiter().GetResult();
 
 
         if (databaseManager == null && apiClientSettings != null)
             databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(_logger, _httpClientFactory,
-                apiClientSettings, null, null, true, CancellationToken.None).Result;
+                apiClientSettings, null, null, true, CancellationToken.None).GetAwaiter().GetResult();
 
         var databaseInfos = new List<DatabaseInfoModel>();
         if (databaseManager is not null)
