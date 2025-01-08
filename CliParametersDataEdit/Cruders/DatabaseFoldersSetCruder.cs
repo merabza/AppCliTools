@@ -2,7 +2,7 @@
 using System.Linq;
 using CliParameters;
 using CliParameters.FieldEditors;
-using LibDatabaseParameters;
+using DbTools.Models;
 using LibParameters;
 
 namespace CliParametersDataEdit.Cruders;

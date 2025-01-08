@@ -20,9 +20,11 @@ public sealed class SelectFromMenuListInput : DataInput
 
     public int Id { get; private set; }
 
+    public CliMenuItem? SelectedCliMenuItem { get; private set; }
+
     public override bool DoInput()
     {
-        var prompt = $"Select {_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
+        var prompt = $"Select {_fieldName} {(_defaultValue == null ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
         _listSet.Show(false);
 
@@ -32,6 +34,7 @@ public sealed class SelectFromMenuListInput : DataInput
             var menuItem = _listSet.GetMenuItemByKey(ch);
             if (menuItem != null)
             {
+                SelectedCliMenuItem = menuItem;
                 var key = ch.Key.Value();
                 if (menuItem.CountedKey == "-")
                 {
@@ -48,7 +51,7 @@ public sealed class SelectFromMenuListInput : DataInput
 
             switch (ch.Key)
             {
-                case ConsoleKey.Enter when _defaultValue == default:
+                case ConsoleKey.Enter when _defaultValue == null:
                     continue;
                 case ConsoleKey.Enter:
                 {
@@ -57,6 +60,7 @@ public sealed class SelectFromMenuListInput : DataInput
                     if (menuItem == null)
                         continue;
 
+                    SelectedCliMenuItem = menuItem;
                     Id = menuItem.CountedId;
                     Console.WriteLine();
                     Console.WriteLine($"{_fieldName} is: {_defaultValue}");

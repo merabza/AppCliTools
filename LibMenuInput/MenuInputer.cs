@@ -8,12 +8,20 @@ namespace LibMenuInput;
 
 public static class MenuInputer
 {
-    public static int InputIdFromMenuList(string fieldName, CliMenuSet listSet, string? defaultValue = default)
+    public static int InputIdFromMenuList(string fieldName, CliMenuSet listSet, string? defaultValue = null)
     {
         SelectFromMenuListInput selectMenuListInput = new(fieldName, listSet, defaultValue);
         if (!selectMenuListInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return selectMenuListInput.Id;
+    }
+
+    public static string? InputFromMenuList(string fieldName, CliMenuSet listSet, string? defaultValue = null)
+    {
+        SelectFromMenuListInput selectMenuListInput = new(fieldName, listSet, defaultValue);
+        if (!selectMenuListInput.DoInput())
+            throw new DataInputException($"Invalid input of {fieldName}");
+        return selectMenuListInput.SelectedCliMenuItem?.Key;
     }
 
     public static TEnum InputFromEnumList<TEnum>(string fieldName, TEnum defaultValue) where TEnum : struct, Enum

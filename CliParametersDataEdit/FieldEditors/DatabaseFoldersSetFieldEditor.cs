@@ -3,6 +3,7 @@ using System.Linq;
 using CliMenu;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.Cruders;
+using DbTools.Models;
 using LibDatabaseParameters;
 using LibParameters;
 
