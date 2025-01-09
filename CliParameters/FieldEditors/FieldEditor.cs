@@ -53,7 +53,7 @@ public /*open*/ class FieldEditor
         return "Unknown";
     }
 
-    protected static T? GetValue<T>(object record, string propertyName)
+    public static T? GetValue<T>(object record, string propertyName)
     {
         var currentRecordPropertyInfo = record.GetType().GetProperty(propertyName);
         return currentRecordPropertyInfo is null

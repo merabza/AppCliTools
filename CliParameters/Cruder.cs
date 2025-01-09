@@ -169,8 +169,7 @@ public /*open*/ class Cruder : IFieldEditors
         FillListMenuAdditional(cruderSubMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null),
-            key.Length);
+        cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null), key.Length);
 
         return cruderSubMenuSet;
     }
@@ -183,8 +182,7 @@ public /*open*/ class Cruder : IFieldEditors
     {
         if (!ContainsRecordWithKey(recordKey))
         {
-            StShared.WriteErrorLine($"{CrudName} with Name {recordKey} does not exists and cannot be deleted. ",
-                true);
+            StShared.WriteErrorLine($"{CrudName} with Name {recordKey} does not exists and cannot be deleted. ", true);
             return false;
         }
 
@@ -243,8 +241,7 @@ public /*open*/ class Cruder : IFieldEditors
     {
         if (!ContainsRecordWithKey(recordKey))
         {
-            StShared.WriteErrorLine($"{CrudName} with Name {recordKey} does not exists and cannot be edited. ",
-                true);
+            StShared.WriteErrorLine($"{CrudName} with Name {recordKey} does not exists and cannot be edited. ", true);
             return false;
         }
 
@@ -301,8 +298,7 @@ public /*open*/ class Cruder : IFieldEditors
         if (!ContainsRecordWithKey(newRecordKey))
             return true;
         StShared.WriteErrorLine(
-            $"Another {CrudName} with Name {newRecordKey} is already exists. cannot change {CrudName} name. ",
-            true);
+            $"Another {CrudName} with Name {newRecordKey} is already exists. cannot change {CrudName} name. ", true);
         return false;
     }
 

@@ -21,7 +21,7 @@ public static class MenuInputer
         SelectFromMenuListInput selectMenuListInput = new(fieldName, listSet, defaultValue);
         if (!selectMenuListInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
-        return selectMenuListInput.SelectedCliMenuItem?.Key;
+        return selectMenuListInput.SelectedCliMenuItem?.CliMenuCommand.Name;
     }
 
     public static TEnum InputFromEnumList<TEnum>(string fieldName, TEnum defaultValue) where TEnum : struct, Enum

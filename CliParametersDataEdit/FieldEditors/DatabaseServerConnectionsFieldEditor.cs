@@ -42,6 +42,6 @@ public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionar
             return $"{val.Count} Details";
 
         var kvp = val.Single();
-        return $"{kvp.Key} - {kvp.Value.DataProvider} {kvp.Value.ServerAddress}";
+        return $"{kvp.Key} - {kvp.Value.DatabaseServerProvider} {kvp.Value.ServerAddress}";
     }
 }

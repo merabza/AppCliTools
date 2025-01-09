@@ -25,8 +25,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         parametersManager, "Database Server Connection", "Database Server Connections")
     {
         _logger = logger;
-        FieldEditors.Add(new EnumFieldEditor<EDataProvider>(nameof(DatabaseServerConnectionData.DataProvider),
-            EDataProvider.Sql));
+        FieldEditors.Add(new EnumFieldEditor<EDatabaseServerProvider>(
+            nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseServerProvider.SqlServer));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
@@ -81,9 +81,9 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         {
             if (item is not DatabaseServerConnectionData databaseServerConnectionData)
                 return false;
-            switch (databaseServerConnectionData.DataProvider)
+            switch (databaseServerConnectionData.DatabaseServerProvider)
             {
-                case EDataProvider.Sql:
+                case EDatabaseServerProvider.SqlServer:
                     Console.WriteLine($"Try connect to server {databaseServerConnectionData.ServerAddress}...");
 
                     //მოისინჯოს ბაზასთან დაკავშირება.
@@ -107,7 +107,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                         return false;
                     }
 
-                    var dc = DbClientFabric.GetDbClient(_logger, true, databaseServerConnectionData.DataProvider,
+                    var dc = DbClientFabric.GetDbClient(_logger, true, EDataProvider.Sql,
                         databaseServerConnectionData.ServerAddress, dbAuthSettings,
                         databaseServerConnectionData.TrustServerCertificate, ProgramAttributes.Instance.AppName);
 
@@ -152,23 +152,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     databaseServerConnectionData.SetDefaultFolders(dbServerInfo);
 
                     return true;
-                case EDataProvider.OleDb:
-                    //რადგან აქსესს სერვერი არ აქვს და აქ მხოლოდ სერვერის არსებობა მოწმდება და არა მონაცემთა ბაზის,
-                    //დავუშვათ, რომ აქსესის სერვერთან კავშირი ყოველთვის გვაქვს
-                    return true;
-                ////აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
-                //StShared.WriteErrorLine("MsAccess Client is not implemented", true);
-                //return false;
-                case EDataProvider.SqLite:
-                    //რადგან SqLite-ს სერვერი არ აქვს და აქ მხოლოდ სერვერის არსებობა მოწმდება და არა მონაცემთა ბაზის,
-                    //დავუშვათ, რომ SqLite-ის სერვერთან კავშირი ყოველთვის გვაქვს
-                    return true;
-                ////აქ ფაილის შემოწმება არის გასაკეთებელი. ჭეშმარიტი დაბრუნდეს, თუ ფაილი არსებობს და იხსნება
-                //StShared.WriteErrorLine("SqLite Client is not implemented", true);
-                //return false;
-                case EDataProvider.None:
-                    StShared.WriteErrorLine("EDataProvider.None Client can not be created", true);
-                    return false;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -184,7 +167,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
         var enable = databaseServerConnection is
-            { DataProvider: EDataProvider.Sql, WindowsNtIntegratedSecurity: false };
+            { DatabaseServerProvider: EDatabaseServerProvider.SqlServer, WindowsNtIntegratedSecurity: false };
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerUser), enable);
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerPass), enable);
 
@@ -202,7 +185,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     public override string GetStatusFor(string name)
     {
         var databaseServerConnection = (DatabaseServerConnectionData?)GetItemByName(name);
-        return $"{databaseServerConnection?.DataProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
+        return
+            $"{databaseServerConnection?.DatabaseServerProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
     }
 
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)

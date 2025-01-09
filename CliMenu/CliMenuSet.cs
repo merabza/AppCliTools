@@ -135,7 +135,7 @@ public sealed class CliMenuSet
             }
 
             if (key.Length > 3)
-                key = key.Substring(0, 3);
+                key = key[..3];
             string preSpace = new(' ', 4 - key.Length);
             //Console.WriteLine($"{preSpace}{key}. {menuItem.MenuItemName} {menuItem.CliMenuCommand.GetStatus() ?? string.Empty}");
 

@@ -110,7 +110,7 @@ public sealed class DatabaseFoldersSetCruder : Cruder
         if (string.IsNullOrWhiteSpace(name))
             return null;
         var databaseFoldersSet = (DatabaseFoldersSet?)GetItemByName(name);
-        return $"{databaseFoldersSet?.Backup} {databaseFoldersSet?.Data} {databaseFoldersSet?.DataLog}";
+        return databaseFoldersSet?.GetStatus();
     }
 
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)

@@ -1,9 +1,12 @@
-﻿using LibParameters;
+﻿using DbTools;
+using LibParameters;
 
 namespace CliParametersDataEdit.Models;
 
 public sealed class DatabasesParameters : ParametersWithStatus
 {
+    public EDataProvider DataProvider { get; set; }
+
     //შემდეგი 2 პარამეტრიდან გამოიყენება ერთერთი
     //ორივეს ერთდროულად შევსება არ შეიძლება.
     //ორივეს ცარელა დატოვება არ შეიძლება

@@ -64,9 +64,8 @@ public static class DbConnectionFabric
         }
     }
 
-    public static (EDataProvider?, string?) GetDataProviderAndConnectionString(
-        DatabasesParameters? databasesParameters, string projectName,
-        DatabaseServerConnections databaseServerConnections)
+    public static (EDataProvider?, string?) GetDataProviderAndConnectionString(DatabasesParameters? databasesParameters,
+        string projectName, DatabaseServerConnections databaseServerConnections)
     {
         if (databasesParameters is null)
         {
@@ -90,29 +89,27 @@ public static class DbConnectionFabric
             return (null, null);
         }
 
-        var devConnectionString =
-            DbConnectionFabric.GetDbConnectionString(databasesParameters, databaseConnectionData);
+        var devConnectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
 
         if (!string.IsNullOrWhiteSpace(devConnectionString))
-            return (databaseConnectionData.DataProvider, devConnectionString);
+            return (databasesParameters.DataProvider, devConnectionString);
 
         StShared.WriteErrorLine($"could not Created Dev Connection String form Project with name {projectName}", true);
         return (null, null);
     }
 
 
-
-    public static string? GetDbConnectionString(DatabasesParameters databasesParameters,
+    private static string? GetDbConnectionString(DatabasesParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
         var dbConnectionStringBuilder = GetDbConnectionStringBuilder(databasesParameters, databaseServerConnection);
         return dbConnectionStringBuilder?.ConnectionString;
     }
 
-    public static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabasesParameters databasesParameters,
+    private static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabasesParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
-        var dataProvider = databaseServerConnection.DataProvider;
+        var dataProvider = databasesParameters.DataProvider;
         switch (dataProvider)
         {
             case EDataProvider.None:

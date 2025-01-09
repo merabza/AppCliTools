@@ -34,6 +34,7 @@ public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TMode
         }
 
         var databaseBackupParametersEditor = CreateEditor(record, currentValue);
+        databaseBackupParametersEditor.CheckFieldsEnables(currentValue);
         return databaseBackupParametersEditor.GetParametersMainMenu();
     }
 

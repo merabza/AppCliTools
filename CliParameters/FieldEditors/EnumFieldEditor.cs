@@ -18,7 +18,6 @@ public /*open*/ class EnumFieldEditor<TEnum> : FieldEditor<TEnum> where TEnum : 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         var current = GetValue(recordForUpdate, _defaultValue);
-        //var current = GetValue(recordForUpdate, true, _defaultValue);//20220811
         SetValue(recordForUpdate, MenuInputer.InputFromEnumList(FieldName, current));
     }
 

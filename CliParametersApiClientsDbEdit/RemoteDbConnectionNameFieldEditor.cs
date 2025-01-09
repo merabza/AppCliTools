@@ -20,7 +20,7 @@ using SystemToolsShared.Errors;
 
 namespace CliParametersApiClientsDbEdit;
 
-public sealed class RemoteDbConnectionNameNameFieldEditor : FieldEditor<string>
+public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
 {
     //private readonly bool _canUseNewDatabaseName;
     private readonly string _databaseApiClientNameFieldName;
@@ -29,7 +29,7 @@ public sealed class RemoteDbConnectionNameNameFieldEditor : FieldEditor<string>
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    public RemoteDbConnectionNameNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
+    public RemoteDbConnectionNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
         IParametersManager parametersManager, string databaseConnectionNamePropertyName,
         string databaseApiClientNameFieldName) : base(propertyName)
     {
@@ -87,9 +87,9 @@ public sealed class RemoteDbConnectionNameNameFieldEditor : FieldEditor<string>
         //if (_canUseNewDatabaseName)
         //    databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
 
-        var keys = databaseFoldersSets.Keys;
-        foreach (var listItem in keys)
-            databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+        foreach (var listItem in databaseFoldersSets)
+            databasesMenuSet.AddMenuItem(
+                new MenuCommandWithStatusCliMenuCommand(listItem.Key, listItem.Value.GetStatus()));
 
         var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
 

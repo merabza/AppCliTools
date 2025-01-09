@@ -42,8 +42,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
     {
         var currentDatabaseName = GetValue(recordForUpdate);
         var serverAddress = GetValue<string>(recordForUpdate, _serverAddressPropertyName);
-        var windowsNtIntegratedSecurity =
-            GetValue<bool>(recordForUpdate, _windowsNtIntegratedSecurityPropertyName);
+        var windowsNtIntegratedSecurity = GetValue<bool>(recordForUpdate, _windowsNtIntegratedSecurityPropertyName);
         var serverUser = GetValue<string>(recordForUpdate, _serverUserPropertyName);
         var serverPass = GetValue<string>(recordForUpdate, _serverPassPropertyName);
 
@@ -58,13 +57,11 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             ServerPass = serverPass
         };
 
-        var dbConnectionStringBuilder =
-            DbConnectionFabric.GetDbConnectionStringBuilder(sqlSerConPar) ??
-            throw new Exception("dbConnectionStringBuilder is null");
+        var dbConnectionStringBuilder = DbConnectionFabric.GetDbConnectionStringBuilder(sqlSerConPar) ??
+                                        throw new Exception("dbConnectionStringBuilder is null");
 
         var dbKit = ManagerFactory.GetKit(EDataProvider.Sql);
-        DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder,
-            dbKit, true);
+        DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
         var getDatabaseInfosResult = dc.GetDatabaseInfos(CancellationToken.None).Result;
 
         var databaseInfos = new List<DatabaseInfoModel>();
@@ -73,6 +70,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
 
         CliMenuSet databasesMenuSet = new();
         databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
+
 
         var keys = databaseInfos.Select(s => s.Name).ToList();
         foreach (var listItem in keys)

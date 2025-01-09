@@ -40,6 +40,24 @@ public /*open*/ class ParametersEditor : IFieldEditors
             fieldEditor.Enabled = enable;
     }
 
+    protected void EnableAllFieldButOne(string butOneFieldName, bool enable = true)
+    {
+        foreach (var fieldEditor in FieldEditors)
+        {
+            if (fieldEditor.PropertyName == butOneFieldName)
+                fieldEditor.Enabled = true;
+            fieldEditor.Enabled = enable;
+        }
+    }
+
+
+    protected void EnableOffAllFieldButList(List<string> butOneFieldName)
+    {
+        foreach (var fieldEditor in FieldEditors)
+            fieldEditor.Enabled = butOneFieldName.Contains(fieldEditor.PropertyName);
+    }
+
+
     public static string? GetStatus()
     {
         return null;
@@ -76,7 +94,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
         EditParametersInSequenceCliMenuCommand editCommand = new(this);
         parametersEditorMenuSet.AddMenuItem(editCommand);
 
-        foreach (var fieldEditor in FieldEditors) //.Where(w=>w.Enabled)
+        foreach (var fieldEditor in FieldEditors.Where(w => w.Enabled))
             fieldEditor.AddParameterEditMenuItem(parametersEditorMenuSet, this);
     }
 
@@ -131,5 +149,9 @@ public /*open*/ class ParametersEditor : IFieldEditors
     public static string GetSaveMessage()
     {
         return "Parameters Saved";
+    }
+
+    public virtual void CheckFieldsEnables(object record)
+    {
     }
 }
