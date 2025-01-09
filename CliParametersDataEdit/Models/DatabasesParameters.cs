@@ -1,5 +1,4 @@
-﻿using DbTools;
-using LibParameters;
+﻿using LibParameters;
 
 namespace CliParametersDataEdit.Models;
 
@@ -14,34 +13,11 @@ public sealed class DatabasesParameters : ParametersWithStatus
     //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
     public string? DbWebAgentName { get; set; }
 
-    //ბექაპირების პარამეტრები სერვერის მხარეს
-    //public DatabaseBackupParametersModel? DbBackupParameters { get; set; }
-
-    public EDataProvider DataProvider { get; set; }
+    //ვებაგენტის მხარეს მონაცემთა ბაზასთან დამაკავშირებელი სახელი
+    public string? RemoteDbConnectionName { get; set; }
 
     public string? DbServerFoldersSetName { get; set; }
 
-    ////ფოლდერის ნიკი, რომელშიც უნდა მოხდეს ბექაპის შენახვა
-    ////(სერვერზე წინასწარ უნდა იყოს დაკონფიგურებული ფოლდერების ნიკები და შესაძლებელი უნდა იყოს რედაქტირების დროს მოტვირთვა)
-    //public string? DbServerSideBackupPath { get; set; }
-
-    ////ფოლდერის ნიკი, რომელშიც უნდა მოხდეს ბაზის მონაცემების ფაილის აღდგენა
-    ////(სერვერზე წინასწარ უნდა იყოს დაკონფიგურებული ფოლდერების ნიკები და შესაძლებელი უნდა იყოს რედაქტირების დროს მოტვირთვა)
-    //public string? DbServerSideDataFolderPath { get; set; }
-
-    ////ფოლდერის ნიკი, რომელშიც უნდა მოხდეს ბაზის ლოგების ფაილის აღდგენა
-    ////(სერვერზე წინასწარ უნდა იყოს დაკონფიგურებული ფოლდერების ნიკები და შესაძლებელი უნდა იყოს რედაქტირების დროს მოტვირთვა)
-    //public string? DbServerSideLogFolderPath { get; set; }
-
-    //მიმდინარე ბაზის სახელი
-    //ბაზების სახელების მოტვირთვა შესაძლებელი უნდა იყოს რედაქტირების დროს
-    //public string? CurrentBaseName { get; set; }
-
-    //ახალი ბაზის სახელი, რომელიც უნდა შეიქმნას განახლების დროს
-    //თუ განსხვავდება მიმდინარე სახელისგან, ეს ნიშნავს, რომ გვჭირდება მიმდინარე ბაზის შენარჩუნება
-    //ხოლო ახალი ბაზისათვის მზად არის ახალი პროგრამა.
-    //მას მერე, რაც საჭიროება აღარ იქნება, CurrentBaseName და NewBaseName სახელები ერთმანეთს უნდა დაემთხვას.
-    //ბაზების სახელების მოტვირთვა შესაძლებელი უნდა იყოს რედაქტირების დროს
     public string? DatabaseName { get; set; }
 
     //ეს პარამეტრები საჭიროა, როცა ბაზა არის ფაილის ტიპის. მაგალითად, SQLite ან აქსესის ბაზებისთვის

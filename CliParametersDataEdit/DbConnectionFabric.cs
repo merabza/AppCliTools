@@ -64,37 +64,60 @@ public static class DbConnectionFabric
         }
     }
 
-    public static string? GetDbConnectionString(DatabasesParameters databasesParameters,
+    public static (EDataProvider?, string?) GetDataProviderAndConnectionString(
+        DatabasesParameters? databasesParameters, string projectName,
         DatabaseServerConnections databaseServerConnections)
     {
-        var dbConnectionStringBuilder = GetDbConnectionStringBuilder(databasesParameters, databaseServerConnections);
+        if (databasesParameters is null)
+        {
+            StShared.WriteErrorLine($"databasesParameters does not specified for Project {projectName}", true);
+            return (null, null);
+        }
+
+        if (databasesParameters.DbConnectionName is null)
+        {
+            StShared.WriteErrorLine(
+                $"databasesParameters.DbConnectionName does not specified for Project {projectName}", true);
+            return (null, null);
+        }
+
+        var databaseConnectionData =
+            databaseServerConnections.GetDatabaseServerConnectionByKey(databasesParameters.DbConnectionName);
+
+        if (databaseConnectionData is null)
+        {
+            StShared.WriteErrorLine("DatabaseConnectionData Data is not Created", true);
+            return (null, null);
+        }
+
+        var devConnectionString =
+            DbConnectionFabric.GetDbConnectionString(databasesParameters, databaseConnectionData);
+
+        if (!string.IsNullOrWhiteSpace(devConnectionString))
+            return (databaseConnectionData.DataProvider, devConnectionString);
+
+        StShared.WriteErrorLine($"could not Created Dev Connection String form Project with name {projectName}", true);
+        return (null, null);
+    }
+
+
+
+    public static string? GetDbConnectionString(DatabasesParameters databasesParameters,
+        DatabaseServerConnectionData databaseServerConnection)
+    {
+        var dbConnectionStringBuilder = GetDbConnectionStringBuilder(databasesParameters, databaseServerConnection);
         return dbConnectionStringBuilder?.ConnectionString;
     }
 
     public static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabasesParameters databasesParameters,
-        DatabaseServerConnections databaseServerConnections)
+        DatabaseServerConnectionData databaseServerConnection)
     {
-        var dataProvider = databasesParameters.DataProvider;
+        var dataProvider = databaseServerConnection.DataProvider;
         switch (dataProvider)
         {
             case EDataProvider.None:
                 return null;
             case EDataProvider.Sql:
-
-                if (string.IsNullOrWhiteSpace(databasesParameters.DbConnectionName))
-                {
-                    StShared.WriteErrorLine("DbConnectionName is not specified", true);
-                    return null;
-                }
-
-                var databaseServerConnection =
-                    databaseServerConnections.GetDatabaseServerConnectionByKey(databasesParameters.DbConnectionName);
-
-                if (databaseServerConnection is null)
-                {
-                    StShared.WriteErrorLine("databaseServerConnection Data is not Created", true);
-                    return null;
-                }
 
                 var sqlConBuilder = new SqlConnectionStringBuilder
                 {
