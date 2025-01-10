@@ -9,6 +9,7 @@ using CliParametersDataEdit.Models;
 using DbTools;
 using DbTools.Models;
 using DbToolsFabric;
+using LibDatabaseParameters;
 using LibDataInput;
 using LibMenuInput;
 using Microsoft.Data.SqlClient;
@@ -60,7 +61,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         var dbConnectionStringBuilder = DbConnectionFabric.GetDbConnectionStringBuilder(sqlSerConPar) ??
                                         throw new Exception("dbConnectionStringBuilder is null");
 
-        var dbKit = ManagerFactory.GetKit(EDataProvider.Sql);
+        var dbKit = ManagerFactory.GetKit(EDatabaseProvider.SqlServer);
         DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
         var getDatabaseInfosResult = dc.GetDatabaseInfos(CancellationToken.None).Result;
 

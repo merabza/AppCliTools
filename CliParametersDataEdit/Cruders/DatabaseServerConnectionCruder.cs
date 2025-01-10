@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
+using CliParametersApiClientsEdit.FieldEditors;
 using CliParametersDataEdit.CliMenuCommands;
 using CliParametersDataEdit.FieldEditors;
 using DbTools;
@@ -21,16 +23,29 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 {
     private readonly ILogger _logger;
 
-    public DatabaseServerConnectionCruder(IParametersManager parametersManager, ILogger logger) : base(
-        parametersManager, "Database Server Connection", "Database Server Connections")
+    //, IParametersManager listsParametersManager
+    public DatabaseServerConnectionCruder(ILogger logger, IHttpClientFactory httpClientFactory,
+        IParametersManager parametersManager) : base(parametersManager,
+        "Database Server Connection", "Database Server Connections")
     {
         _logger = logger;
-        FieldEditors.Add(new EnumFieldEditor<EDatabaseServerProvider>(
-            nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseServerProvider.SqlServer));
+        FieldEditors.Add(new EnumFieldEditor<EDatabaseProvider>(
+            nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseProvider.None));
+
+        //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
+        FieldEditors.Add(new ApiClientNameFieldEditor(logger, httpClientFactory,
+            nameof(DatabaseServerConnectionData.DbWebAgentName), ParametersManager, true));
+
+        //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
+        FieldEditors.Add(new RemoteDbConnectionNameFieldEditor(logger, httpClientFactory,
+            nameof(DatabaseServerConnectionData.RemoteDbConnectionName), ParametersManager,
+            nameof(DatabaseServerConnectionData.DbWebAgentName)));
+
+
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null,
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.User)));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.Password), null,
             ParametersEditor.PasswordChar));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt), false));
@@ -83,7 +98,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                 return false;
             switch (databaseServerConnectionData.DatabaseServerProvider)
             {
-                case EDatabaseServerProvider.SqlServer:
+                case EDatabaseProvider.SqlServer:
                     Console.WriteLine($"Try connect to server {databaseServerConnectionData.ServerAddress}...");
 
                     //მოისინჯოს ბაზასთან დაკავშირება.
@@ -98,8 +113,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                     }
 
                     var dbAuthSettings = DbAuthSettingsCreator.Create(
-                        databaseServerConnectionData.WindowsNtIntegratedSecurity,
-                        databaseServerConnectionData.ServerUser, databaseServerConnectionData.ServerPass);
+                        databaseServerConnectionData.WindowsNtIntegratedSecurity, databaseServerConnectionData.User,
+                        databaseServerConnectionData.Password);
 
                     if (dbAuthSettings is null)
                     {
@@ -107,7 +122,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                         return false;
                     }
 
-                    var dc = DbClientFabric.GetDbClient(_logger, true, EDataProvider.Sql,
+                    var dc = DbClientFabric.GetDbClient(_logger, true, EDatabaseProvider.SqlServer,
                         databaseServerConnectionData.ServerAddress, dbAuthSettings,
                         databaseServerConnectionData.TrustServerCertificate, ProgramAttributes.Instance.AppName);
 
@@ -167,18 +182,18 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
         var enable = databaseServerConnection is
-            { DatabaseServerProvider: EDatabaseServerProvider.SqlServer, WindowsNtIntegratedSecurity: false };
-        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerUser), enable);
-        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerPass), enable);
+            { DatabaseServerProvider: EDatabaseProvider.SqlServer, WindowsNtIntegratedSecurity: false };
+        EnableFieldByName(nameof(DatabaseServerConnectionData.User), enable);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.Password), enable);
 
-        if (lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerUser) &&
-            lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerPass) &&
+        if (lastEditedFieldName != nameof(DatabaseServerConnectionData.User) &&
+            lastEditedFieldName != nameof(DatabaseServerConnectionData.Password) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerAddress))
             return;
 
         if (!string.IsNullOrWhiteSpace(databaseServerConnection.ServerAddress) &&
-            !string.IsNullOrWhiteSpace(databaseServerConnection.ServerUser) &&
-            !string.IsNullOrWhiteSpace(databaseServerConnection.ServerPass))
+            !string.IsNullOrWhiteSpace(databaseServerConnection.User) &&
+            !string.IsNullOrWhiteSpace(databaseServerConnection.Password))
             CheckValidation(itemData);
     }
 

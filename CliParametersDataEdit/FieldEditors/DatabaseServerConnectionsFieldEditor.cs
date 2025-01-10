@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using CliMenu;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.Cruders;
@@ -11,20 +12,24 @@ namespace CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionary<string, DatabaseServerConnectionData>>
 {
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseServerConnectionsFieldEditor(string propertyName, IParametersManager parametersManager,
-        ILogger logger, bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+    public DatabaseServerConnectionsFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory,
+        IParametersManager parametersManager, string propertyName, bool enterFieldDataOnCreate = false) : base(
+        propertyName, enterFieldDataOnCreate, null, true)
     {
         _parametersManager = parametersManager;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        DatabaseServerConnectionCruder databaseServerConnectionsCruder = new(_parametersManager, _logger);
+        DatabaseServerConnectionCruder databaseServerConnectionsCruder =
+            new(_logger, _httpClientFactory, _parametersManager);
         var menuSet = databaseServerConnectionsCruder.GetListMenu();
 
         return menuSet;

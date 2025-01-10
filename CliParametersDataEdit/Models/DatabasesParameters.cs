@@ -1,11 +1,10 @@
-﻿using DbTools;
-using LibParameters;
+﻿using LibParameters;
 
 namespace CliParametersDataEdit.Models;
 
 public sealed class DatabasesParameters : ParametersWithStatus
 {
-    public EDataProvider DataProvider { get; set; }
+    //public EDataProvider DataProvider { get; set; }
 
     //შემდეგი 2 პარამეტრიდან გამოიყენება ერთერთი
     //ორივეს ერთდროულად შევსება არ შეიძლება.
@@ -13,19 +12,19 @@ public sealed class DatabasesParameters : ParametersWithStatus
     //მონაცემთა ბაზასთან კავშირის სახელი
     public string? DbConnectionName { get; set; }
 
-    //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
-    public string? DbWebAgentName { get; set; }
+    ////მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
+    //public string? DbWebAgentName { get; set; }
 
-    //ვებაგენტის მხარეს მონაცემთა ბაზასთან დამაკავშირებელი სახელი
-    public string? RemoteDbConnectionName { get; set; }
+    ////ვებაგენტის მხარეს მონაცემთა ბაზასთან დამაკავშირებელი სახელი
+    //public string? RemoteDbConnectionName { get; set; }
 
     public string? DbServerFoldersSetName { get; set; }
 
     public string? DatabaseName { get; set; }
 
-    //ეს პარამეტრები საჭიროა, როცა ბაზა არის ფაილის ტიპის. მაგალითად, SQLite ან აქსესის ბაზებისთვის
-    public string? DatabaseFilePath { get; set; }
-    public string? DatabasePassword { get; set; }
+    ////ეს პარამეტრები საჭიროა, როცა ბაზა არის ფაილის ტიპის. მაგალითად, SQLite ან აქსესის ბაზებისთვის
+    //public string? DatabaseFilePath { get; set; }
+    //public string? DatabasePassword { get; set; }
 
     //ჭკვიანი სქემის სახელი. გამოიყენება ძველი დასატოვებელი და წასაშლელი ფაილების განსასაზღვრად. (ბაზის სერვერის მხარეს)
     //ბაზის სერვერის მხარეს არსებული ჭკვიანი სქემის სახელებიუს მოტვირთვა შესაძლებელი უნდა იყოს რედაქტირების დროს

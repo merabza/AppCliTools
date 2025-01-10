@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.OleDb;
+using System.IO;
 using CliParametersDataEdit.Models;
-using DbTools;
 using LibDatabaseParameters;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
@@ -14,14 +14,14 @@ public static class DbConnectionFabric
 {
     private const string JetOleDbDatabasePasswordKey = "Jet OLEDB:Database Password";
 
-    public static DbConnectionParameters? GetDbConnectionParameters(EDataProvider dataProvider,
+    public static DbConnectionParameters? GetDbConnectionParameters(EDatabaseProvider dataProvider,
         string? connectionString)
     {
         switch (dataProvider)
         {
-            case EDataProvider.None:
+            case EDatabaseProvider.None:
                 return null;
-            case EDataProvider.Sql:
+            case EDatabaseProvider.SqlServer:
                 var sqlConBuilder = new SqlConnectionStringBuilder(connectionString);
                 SqlServerConnectionParameters sqlSerPar = new()
                 {
@@ -35,14 +35,14 @@ public static class DbConnectionFabric
                     TrustServerCertificate = sqlConBuilder.TrustServerCertificate
                 };
                 return sqlSerPar;
-            case EDataProvider.SqLite:
+            case EDatabaseProvider.SqLite:
                 var sltConBuilder = new SqliteConnectionStringBuilder(connectionString);
                 var sqLitePar = new SqLiteConnectionParameters
                 {
                     DatabaseFilePath = sltConBuilder.DataSource, Password = sltConBuilder.Password
                 };
                 return sqLitePar;
-            case EDataProvider.OleDb:
+            case EDatabaseProvider.OleDb:
                 if (!SystemStat.IsWindows())
                     throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, null);
 #pragma warning disable CA1416
@@ -64,8 +64,9 @@ public static class DbConnectionFabric
         }
     }
 
-    public static (EDataProvider?, string?) GetDataProviderAndConnectionString(DatabasesParameters? databasesParameters,
-        string projectName, DatabaseServerConnections databaseServerConnections)
+    public static (EDatabaseProvider?, string?) GetDataProviderAndConnectionString(
+        DatabasesParameters? databasesParameters, string projectName,
+        DatabaseServerConnections databaseServerConnections)
     {
         if (databasesParameters is null)
         {
@@ -92,7 +93,7 @@ public static class DbConnectionFabric
         var devConnectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
 
         if (!string.IsNullOrWhiteSpace(devConnectionString))
-            return (databasesParameters.DataProvider, devConnectionString);
+            return (databaseConnectionData.DatabaseServerProvider, devConnectionString);
 
         StShared.WriteErrorLine($"could not Created Dev Connection String form Project with name {projectName}", true);
         return (null, null);
@@ -109,12 +110,12 @@ public static class DbConnectionFabric
     private static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabasesParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
-        var dataProvider = databasesParameters.DataProvider;
+        var dataProvider = databaseServerConnection.DatabaseServerProvider;
         switch (dataProvider)
         {
-            case EDataProvider.None:
+            case EDatabaseProvider.None:
                 return null;
-            case EDataProvider.Sql:
+            case EDatabaseProvider.SqlServer:
 
                 var sqlConBuilder = new SqlConnectionStringBuilder
                 {
@@ -126,23 +127,27 @@ public static class DbConnectionFabric
                 };
                 if (!databaseServerConnection.WindowsNtIntegratedSecurity)
                 {
-                    sqlConBuilder.UserID = databaseServerConnection.ServerUser;
-                    sqlConBuilder.Password = databaseServerConnection.ServerPass;
+                    sqlConBuilder.UserID = databaseServerConnection.User;
+                    sqlConBuilder.Password = databaseServerConnection.Password;
                 }
 
                 if (databasesParameters.DatabaseName != null)
                     sqlConBuilder.InitialCatalog = databasesParameters.DatabaseName;
 
                 return sqlConBuilder;
-            case EDataProvider.SqLite:
-                var sltConBuilder = new SqliteConnectionStringBuilder
-                {
-                    DataSource = databasesParameters.DatabaseFilePath
-                };
-                if (!string.IsNullOrWhiteSpace(databasesParameters.DatabasePassword))
-                    sltConBuilder.Password = databasesParameters.DatabasePassword;
+            case EDatabaseProvider.SqLite:
+
+                var (databaseFilePath, password) =
+                    GetOneFileDbConnectionStringBuilderParameters(databasesParameters, databaseServerConnection);
+
+                if (string.IsNullOrWhiteSpace(databaseFilePath))
+                    return null;
+
+                var sltConBuilder = new SqliteConnectionStringBuilder { DataSource = databaseFilePath };
+                if (!string.IsNullOrWhiteSpace(password))
+                    sltConBuilder.Password = password;
                 return sltConBuilder;
-            case EDataProvider.OleDb:
+            case EDatabaseProvider.OleDb:
 
                 if (!SystemStat.IsWindows())
                 {
@@ -150,29 +155,62 @@ public static class DbConnectionFabric
                     return null;
                 }
 
-                if (string.IsNullOrWhiteSpace(databasesParameters.DatabaseFilePath))
-                {
-                    StShared.WriteErrorLine("DatabaseFilePath is not specified for Ole Database", true);
+                var (oleDatabaseFilePath, olePassword) =
+                    GetOneFileDbConnectionStringBuilderParameters(databasesParameters, databaseServerConnection);
+
+                if (string.IsNullOrWhiteSpace(oleDatabaseFilePath))
                     return null;
-                }
 
 #pragma warning disable CA1416
 
                 var oleDbConBuilder = new OleDbConnectionStringBuilder
                 {
-                    DataSource = databasesParameters.DatabaseFilePath, Provider = "Microsoft.ACE.OLEDB.12.0"
+                    DataSource = oleDatabaseFilePath, Provider = "Microsoft.ACE.OLEDB.12.0"
                 };
-                if (string.IsNullOrWhiteSpace(databasesParameters.DatabasePassword))
+                if (string.IsNullOrWhiteSpace(olePassword))
                     return oleDbConBuilder;
 
                 oleDbConBuilder.PersistSecurityInfo = true;
-                oleDbConBuilder.Add(JetOleDbDatabasePasswordKey, databasesParameters.DatabasePassword);
+                oleDbConBuilder.Add(JetOleDbDatabasePasswordKey, olePassword);
                 return oleDbConBuilder;
 #pragma warning restore CA1416
 
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    private static (string?, string?) GetOneFileDbConnectionStringBuilderParameters(
+        DatabasesParameters databasesParameters, DatabaseServerConnectionData databaseServerConnection)
+    {
+        if (databasesParameters.DbServerFoldersSetName is null ||
+            !databaseServerConnection.DatabaseFoldersSets.TryGetValue(databasesParameters.DbServerFoldersSetName,
+                out var databaseFoldersSet))
+        {
+            StShared.WriteErrorLine(
+                $"DatabaseFoldersSets does not contain key {databasesParameters.DbServerFoldersSetName}", true);
+            return (null, null);
+        }
+
+        var dataPath = databaseFoldersSet.Data;
+
+        if (string.IsNullOrWhiteSpace(dataPath))
+        {
+            StShared.WriteErrorLine("dataPath is not specified", true);
+            return (null, null);
+        }
+
+        var databaseName = databasesParameters.DatabaseName;
+
+        if (string.IsNullOrWhiteSpace(databaseName))
+        {
+            StShared.WriteErrorLine("databaseName is not specified", true);
+            return (null, null);
+        }
+
+        var databaseFilePath = Path.Combine(dataPath, databaseName);
+        var password = databaseServerConnection.Password;
+        return (databaseFilePath, password);
     }
 
     public static string? GetDbConnectionString(DbConnectionParameters dbConnectionParameters)

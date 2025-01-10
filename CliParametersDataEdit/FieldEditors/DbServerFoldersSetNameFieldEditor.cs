@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using CliMenu;
@@ -8,8 +7,6 @@ using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit;
 using CliParametersDataEdit.Cruders;
 using DatabasesManagement;
-using DbTools;
-using DbTools.Models;
 using LibApiClientParameters;
 using LibDatabaseParameters;
 using LibDataInput;
@@ -20,61 +17,59 @@ using SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParametersApiClientsDbEdit;
+namespace CliParametersDataEdit.FieldEditors;
 
 public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
 {
-    //private readonly bool _canUseNewDatabaseName;
-    private readonly string _databaseApiClientNameFieldName;
     private readonly string _databaseConnectionNamePropertyName;
-    private readonly string _dataProviderPropertyName;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     public DbServerFoldersSetNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
-        IParametersManager parametersManager, string dataProviderPropertyName,
-        string databaseConnectionNamePropertyName, string databaseApiClientNameFieldName) : base(propertyName)
+        IParametersManager parametersManager, string databaseConnectionNamePropertyName) : base(propertyName)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _parametersManager = parametersManager;
         _databaseConnectionNamePropertyName = databaseConnectionNamePropertyName;
-        _databaseApiClientNameFieldName = databaseApiClientNameFieldName;
-        _dataProviderPropertyName = dataProviderPropertyName;
         //_canUseNewDatabaseName = canUseNewDatabaseName;
     }
 
     public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var currentFoldersSetName = GetValue(recordForUpdate);
-        var databaseFoldersSets = new Dictionary<string, DatabaseFoldersSet>();
+        var databaseServerConnectionName = GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
 
-        var dataProvider = GetValue<EDataProvider>(recordForUpdate, _dataProviderPropertyName);
+
+        var databaseServerConnectionCruder =
+            new DatabaseServerConnectionCruder(_logger, _httpClientFactory, _parametersManager);
+
+
+        var databaseServerConnectionData = string.IsNullOrWhiteSpace(databaseServerConnectionName)
+            ? null
+            : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(databaseServerConnectionName);
+
+        if (databaseServerConnectionData == null)
+            return;
+
+        var databaseFoldersSets = databaseServerConnectionData.DatabaseFoldersSets;
+
+        //var dataProvider = GetValue<EDatabaseProvider>(recordForUpdate, _dataProviderPropertyName);
         IDatabaseManager? databaseManager = null;
 
-        switch (dataProvider)
+        switch (databaseServerConnectionData.DatabaseServerProvider)
         {
-            case EDataProvider.None:
-            case EDataProvider.SqLite:
-            case EDataProvider.OleDb:
+            case EDatabaseProvider.None:
+            case EDatabaseProvider.SqLite:
+            case EDatabaseProvider.OleDb:
                 return;
-            case EDataProvider.Sql:
-                var databaseServerConnectionName =
-                    GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
-                DatabaseServerConnectionCruder databaseServerConnectionCruder = new(_parametersManager, _logger);
+            case EDatabaseProvider.SqlServer:
 
-                var databaseServerConnectionData = string.IsNullOrWhiteSpace(databaseServerConnectionName)
-                    ? null
-                    : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(
-                        databaseServerConnectionName);
-
-                if (databaseServerConnectionData != null)
-                    databaseFoldersSets = databaseServerConnectionData.DatabaseFoldersSets;
 
                 break;
-            case EDataProvider.WebAgent:
-                var databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
+            case EDatabaseProvider.WebAgent:
+                var databaseApiClientName = databaseServerConnectionData.DbWebAgentName;
                 ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
 
                 var apiClientSettings = string.IsNullOrWhiteSpace(databaseApiClientName)
