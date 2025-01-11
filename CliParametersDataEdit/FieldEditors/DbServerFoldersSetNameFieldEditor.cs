@@ -1,11 +1,8 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
-using CliParametersApiClientsEdit;
-using CliParametersDataEdit.Cruders;
 using DatabasesManagement;
 using LibApiClientParameters;
 using LibDatabaseParameters;
@@ -13,6 +10,7 @@ using LibDataInput;
 using LibMenuInput;
 using LibParameters;
 using Microsoft.Extensions.Logging;
+using SystemToolsShared;
 using SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -40,60 +38,38 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
     {
         var currentFoldersSetName = GetValue(recordForUpdate);
         var databaseServerConnectionName = GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
+        var dscParameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
+        var databaseServerConnections = new DatabaseServerConnections(dscParameters.DatabaseServerConnections);
+        var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
+        var apiClients = new ApiClients(acParameters.ApiClients);
 
+        if (string.IsNullOrWhiteSpace(databaseServerConnectionName))
+        {
+            StShared.WriteErrorLine("databaseServerConnectionName is not specified", true, _logger);
+            return;
+        }
 
-        var databaseServerConnectionCruder =
-            new DatabaseServerConnectionCruder(_logger, _httpClientFactory, _parametersManager);
-
-
-        var databaseServerConnectionData = string.IsNullOrWhiteSpace(databaseServerConnectionName)
-            ? null
-            : (DatabaseServerConnectionData?)databaseServerConnectionCruder.GetItemByName(databaseServerConnectionName);
+        var databaseServerConnectionData =
+            databaseServerConnections.GetDatabaseServerConnectionByKey(databaseServerConnectionName);
 
         if (databaseServerConnectionData == null)
+        {
+            StShared.WriteErrorLine("databaseServerConnectionData is not Created", true, _logger);
             return;
+        }
 
+        var databaseManager = DatabaseManagersFabric
+            .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionData, apiClients, null,
+                null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
         var databaseFoldersSets = databaseServerConnectionData.DatabaseFoldersSets;
 
-        //var dataProvider = GetValue<EDatabaseProvider>(recordForUpdate, _dataProviderPropertyName);
-        IDatabaseManager? databaseManager = null;
-
-        switch (databaseServerConnectionData.DatabaseServerProvider)
+        if (databaseManager is not null)
         {
-            case EDatabaseProvider.None:
-            case EDatabaseProvider.SqLite:
-            case EDatabaseProvider.OleDb:
-                return;
-            case EDatabaseProvider.SqlServer:
-
-
-                break;
-            case EDatabaseProvider.WebAgent:
-                var databaseApiClientName = databaseServerConnectionData.DbWebAgentName;
-                ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
-
-                var apiClientSettings = string.IsNullOrWhiteSpace(databaseApiClientName)
-                    ? null
-                    : (ApiClientSettings?)apiClientCruder.GetItemByName(databaseApiClientName);
-
-                if (databaseManager == null && apiClientSettings != null)
-                    databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(_logger, _httpClientFactory,
-                            apiClientSettings, null, null, true, CancellationToken.None).Preserve().GetAwaiter()
-                        .GetResult();
-
-                if (databaseManager is not null)
-                {
-                    var getDatabaseFoldersSetsResult =
-                        databaseManager.GetDatabaseFoldersSets(CancellationToken.None).Result;
-                    if (getDatabaseFoldersSetsResult.IsT0)
-                        databaseFoldersSets = getDatabaseFoldersSetsResult.AsT0;
-                    else
-                        Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
-                }
-
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            var getDatabaseFoldersSetsResult = databaseManager.GetDatabaseFoldersSets(CancellationToken.None).Result;
+            if (getDatabaseFoldersSetsResult.IsT0)
+                databaseFoldersSets = getDatabaseFoldersSetsResult.AsT0;
+            else
+                Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
         }
 
         CliMenuSet databasesMenuSet = new();

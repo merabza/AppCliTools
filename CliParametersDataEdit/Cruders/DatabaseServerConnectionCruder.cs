@@ -21,14 +21,16 @@ namespace CliParametersDataEdit.Cruders;
 
 public sealed class DatabaseServerConnectionCruder : ParCruder
 {
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
 
     //, IParametersManager listsParametersManager
     public DatabaseServerConnectionCruder(ILogger logger, IHttpClientFactory httpClientFactory,
-        IParametersManager parametersManager) : base(parametersManager,
-        "Database Server Connection", "Database Server Connections")
+        IParametersManager parametersManager) : base(parametersManager, "Database Server Connection",
+        "Database Server Connections")
     {
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
         FieldEditors.Add(new EnumFieldEditor<EDatabaseProvider>(
             nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseProvider.None));
 
@@ -213,7 +215,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     {
         base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
 
-        GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
+        GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand =
+            new(_logger, _httpClientFactory, recordKey, ParametersManager);
         itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
 
         //ამ ვარიანტმა არ იმუშავა

@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters.FieldEditors;
-using CliParametersApiClientsEdit;
 using DatabasesManagement;
 using LibApiClientParameters;
 using LibDataInput;
@@ -30,25 +29,17 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         _httpClientFactory = httpClientFactory;
         _parametersManager = parametersManager;
         _databaseApiClientNameFieldName = databaseApiClientNameFieldName;
-        //_canUseNewDatabaseName = canUseNewDatabaseName;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate)
     {
         var currentRemoteDbConnectionName = GetValue(recordForUpdate);
         var databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
+        var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
+        var apiClients = new ApiClients(acParameters.ApiClients);
 
-        ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
-
-        var apiClientSettings = string.IsNullOrWhiteSpace(databaseApiClientName)
-            ? null
-            : (ApiClientSettings?)apiClientCruder.GetItemByName(databaseApiClientName);
-
-        IDatabaseManager? databaseManager = null;
-
-        if (apiClientSettings != null)
-            databaseManager = DatabaseAgentClientsFabric.CreateDatabaseManager(_logger, _httpClientFactory,
-                apiClientSettings, null, null, true, CancellationToken.None).Preserve().GetAwaiter().GetResult();
+        var databaseManager = DatabaseManagersFabric.CreateRemoteDatabaseManager(_logger, _httpClientFactory, true,
+            databaseApiClientName, apiClients, null, null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
 
         var databaseConnectionNames = new List<string>();
         if (databaseManager is not null)
