@@ -39,6 +39,24 @@ public /*open*/ class Cruder : IFieldEditors
             fieldEditor.Enabled = enable;
     }
 
+    protected void EnableAllFieldButOne(string butOneFieldName, bool enable = true)
+    {
+        foreach (var fieldEditor in FieldEditors)
+        {
+            if (fieldEditor.PropertyName == butOneFieldName)
+                fieldEditor.Enabled = true;
+            fieldEditor.Enabled = enable;
+        }
+    }
+
+
+    protected void EnableOffAllFieldButList(List<string> butOneFieldName)
+    {
+        foreach (var fieldEditor in FieldEditors)
+            fieldEditor.Enabled = butOneFieldName.Contains(fieldEditor.PropertyName);
+    }
+
+
     protected virtual Dictionary<string, ItemData> GetCrudersDictionary()
     {
         return [];

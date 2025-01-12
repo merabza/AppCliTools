@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit.FieldEditors;
 using CliParametersDataEdit.CliMenuCommands;
 using CliParametersDataEdit.FieldEditors;
-using DbTools;
-using DbToolsFabric;
+using DatabasesManagement;
+using LibApiClientParameters;
 using LibDatabaseParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
@@ -44,8 +43,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             nameof(DatabaseServerConnectionData.DbWebAgentName)));
 
 
-        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
+        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.User)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.Password), null,
             ParametersEditor.PasswordChar));
@@ -98,80 +97,118 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         {
             if (item is not DatabaseServerConnectionData databaseServerConnectionData)
                 return false;
-            switch (databaseServerConnectionData.DatabaseServerProvider)
+
+            var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
+            var apiClients = new ApiClients(acParameters.ApiClients);
+
+
+            var dbManager = DatabaseManagersFabric.CreateDatabaseManager(_logger, _httpClientFactory, true,
+                databaseServerConnectionData, apiClients, null, null).Preserve().GetAwaiter().GetResult();
+
+            if (dbManager is null)
             {
-                case EDatabaseProvider.SqlServer:
-                    Console.WriteLine($"Try connect to server {databaseServerConnectionData.ServerAddress}...");
-
-                    //მოისინჯოს ბაზასთან დაკავშირება.
-                    //თუ დაკავშირება ვერ მოხერხდა, გამოვიდეს ამის შესახებ შეტყობინება და შევთავაზოთ მონაცემების შეყვანის გაგრძელება, ან გაჩერება
-                    //აქ გამოიყენება ბაზასთან პირდაპირ დაკავშირება ვებაგენტის გარეშე,
-                    //რადგან სწორედ ასეთი ტიპის კავშირების რედაქტორია ეს.
-
-                    if (string.IsNullOrWhiteSpace(databaseServerConnectionData.ServerAddress))
-                    {
-                        StShared.WriteErrorLine("ServerAddress is not specified", true);
-                        return false;
-                    }
-
-                    var dbAuthSettings = DbAuthSettingsCreator.Create(
-                        databaseServerConnectionData.WindowsNtIntegratedSecurity, databaseServerConnectionData.User,
-                        databaseServerConnectionData.Password);
-
-                    if (dbAuthSettings is null)
-                    {
-                        StShared.WriteErrorLine("Authentication parameters is not valid", true);
-                        return false;
-                    }
-
-                    var dc = DbClientFabric.GetDbClient(_logger, true, EDatabaseProvider.SqlServer,
-                        databaseServerConnectionData.ServerAddress, dbAuthSettings,
-                        databaseServerConnectionData.TrustServerCertificate, ProgramAttributes.Instance.AppName);
-
-                    if (dc is null)
-                    {
-                        StShared.WriteErrorLine("Database Client is not created", true);
-                        return false;
-                    }
-
-                    var testConnectionResult = dc.TestConnection(false, CancellationToken.None).Result;
-                    if (testConnectionResult.IsSome)
-                    {
-                        Err.PrintErrorsOnConsole((Err[])testConnectionResult);
-                        return false;
-                    }
-
-                    //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
-                    //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-                    var getDbServerInfoResult = dc.GetDbServerInfo(CancellationToken.None).Result;
-                    if (getDbServerInfoResult.IsT1)
-                    {
-                        Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
-                        return false;
-                    }
-
-                    var dbServerInfo = getDbServerInfoResult.AsT0;
-
-                    Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
-                    Console.WriteLine(
-                        $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
-                    var isServerLocalResult = dc.IsServerLocal(CancellationToken.None).Result;
-                    Console.WriteLine(isServerLocalResult.IsT0
-                        ? $"Server is {(isServerLocalResult.AsT0 ? string.Empty : "NOT ")} local"
-                        : "Server is local or not is not detected");
-
-                    Console.WriteLine($"Server Product Version is {dbServerInfo.ServerProductVersion}");
-                    Console.WriteLine($"Server Instance Name is {dbServerInfo.ServerInstanceName}");
-                    Console.WriteLine($"Backup Directory is {dbServerInfo.BackupDirectory}");
-                    Console.WriteLine($"Default Data Directory is {dbServerInfo.DefaultDataDirectory}");
-                    Console.WriteLine($"Default Log Directory is {dbServerInfo.DefaultLogDirectory}");
-
-                    databaseServerConnectionData.SetDefaultFolders(dbServerInfo);
-
-                    return true;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                StShared.WriteErrorLine("dbManager could not created", true);
+                return false;
             }
+
+            Console.WriteLine("Try connect to server...");
+
+            var dbmTestConnectionResult = dbManager.TestConnection(null).Result;
+            if (dbmTestConnectionResult.IsSome)
+            {
+                Err.PrintErrorsOnConsole((Err[])dbmTestConnectionResult);
+                return false;
+            }
+
+            //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
+            //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
+            var getDbServerInfoResult = dbManager.GetDatabaseServerInfo().Result;
+            if (getDbServerInfoResult.IsT1)
+            {
+                Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
+                return false;
+            }
+
+            var dbServerInfo = getDbServerInfoResult.AsT0;
+
+            Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
+            Console.WriteLine(
+                $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
+            var isServerLocalResult = dbManager.IsServerLocal().Result;
+            Console.WriteLine(isServerLocalResult.IsT0
+                ? $"Server is {(isServerLocalResult.AsT0 ? string.Empty : "NOT ")} local"
+                : "Server is local or not is not detected");
+
+            Console.WriteLine($"Server Product Version is {dbServerInfo.ServerProductVersion}");
+            Console.WriteLine($"Server Instance Name is {dbServerInfo.ServerInstanceName}");
+            Console.WriteLine($"Backup Directory is {dbServerInfo.BackupDirectory}");
+            Console.WriteLine($"Default Data Directory is {dbServerInfo.DefaultDataDirectory}");
+            Console.WriteLine($"Default Log Directory is {dbServerInfo.DefaultLogDirectory}");
+
+            databaseServerConnectionData.SetDefaultFolders(dbServerInfo);
+
+            return true;
+
+
+            //switch (databaseServerConnectionData.DatabaseServerProvider)
+            //{
+            //    case EDatabaseProvider.SqlServer:
+            //        Console.WriteLine($"Try connect to server {databaseServerConnectionData.ServerAddress}...");
+
+            //        //მოისინჯოს ბაზასთან დაკავშირება.
+            //        //თუ დაკავშირება ვერ მოხერხდა, გამოვიდეს ამის შესახებ შეტყობინება და შევთავაზოთ მონაცემების შეყვანის გაგრძელება, ან გაჩერება
+            //        //აქ გამოიყენება ბაზასთან პირდაპირ დაკავშირება ვებაგენტის გარეშე,
+            //        //რადგან სწორედ ასეთი ტიპის კავშირების რედაქტორია ეს.
+
+            //        if (string.IsNullOrWhiteSpace(databaseServerConnectionData.ServerAddress))
+            //        {
+            //            StShared.WriteErrorLine("ServerAddress is not specified", true);
+            //            return false;
+            //        }
+
+            //        var dbAuthSettings = DbAuthSettingsCreator.Create(
+            //            databaseServerConnectionData.WindowsNtIntegratedSecurity, databaseServerConnectionData.User,
+            //            databaseServerConnectionData.Password);
+
+            //        if (dbAuthSettings is null)
+            //        {
+            //            StShared.WriteErrorLine("Authentication parameters is not valid", true);
+            //            return false;
+            //        }
+
+            //        var dc = DbClientFabric.GetDbClient(_logger, true, EDatabaseProvider.SqlServer,
+            //            databaseServerConnectionData.ServerAddress, dbAuthSettings,
+            //            databaseServerConnectionData.TrustServerCertificate, ProgramAttributes.Instance.AppName);
+
+            //        if (dc is null)
+            //        {
+            //            StShared.WriteErrorLine("Database Client is not created", true);
+            //            return false;
+            //        }
+
+            //        //var testConnectionResult = dc.TestConnection(false, CancellationToken.None).Result;
+            //        //if (testConnectionResult.IsSome)
+            //        //{
+            //        //    Err.PrintErrorsOnConsole((Err[])testConnectionResult);
+            //        //    return false;
+            //        //}
+
+            //        ////თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
+            //        ////ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
+            //        //var getDbServerInfoResult = dc.GetDbServerInfo(CancellationToken.None).Result;
+            //        //if (getDbServerInfoResult.IsT1)
+            //        //{
+            //        //    Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
+            //        //    return false;
+            //        //}
+
+            //        //var dbServerInfo = getDbServerInfoResult.AsT0;
+
+
+            //        return true;
+            //    default:
+            //        throw new ArgumentOutOfRangeException();
+            //}
         }
         catch (Exception e)
         {
@@ -183,10 +220,47 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     protected override void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
-        var enable = databaseServerConnection is
-            { DatabaseServerProvider: EDatabaseProvider.SqlServer, WindowsNtIntegratedSecurity: false };
-        EnableFieldByName(nameof(DatabaseServerConnectionData.User), enable);
-        EnableFieldByName(nameof(DatabaseServerConnectionData.Password), enable);
+        var enableUser = false;
+        var enablePassword = false;
+        var enableSqlServerProps = false;
+        var enableWebAgentProps = false;
+
+        switch (databaseServerConnection.DatabaseServerProvider)
+        {
+            case EDatabaseProvider.None:
+                EnableAllFieldButOne(nameof(DatabaseServerConnectionData.DatabaseServerProvider), false);
+                return;
+            case EDatabaseProvider.SqlServer:
+                enablePassword = enableUser = !databaseServerConnection.WindowsNtIntegratedSecurity;
+                enableSqlServerProps = true;
+                break;
+            case EDatabaseProvider.SqLite:
+            case EDatabaseProvider.OleDb:
+                enablePassword = true;
+                break;
+            case EDatabaseProvider.WebAgent:
+                enableWebAgentProps = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        //EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseServerProvider));
+
+        EnableFieldByName(nameof(DatabaseServerConnectionData.DbWebAgentName), enableWebAgentProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.RemoteDbConnectionName), enableWebAgentProps);
+
+        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerAddress), enableSqlServerProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), enableSqlServerProps);
+
+        EnableFieldByName(nameof(DatabaseServerConnectionData.User), enableUser);
+
+        EnableFieldByName(nameof(DatabaseServerConnectionData.Password), enablePassword);
+
+        EnableFieldByName(nameof(DatabaseServerConnectionData.TrustServerCertificate), enableSqlServerProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.ConnectionTimeOut), enableSqlServerProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.Encrypt), enableSqlServerProps);
+
 
         if (lastEditedFieldName != nameof(DatabaseServerConnectionData.User) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.Password) &&
