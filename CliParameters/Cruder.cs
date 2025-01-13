@@ -42,11 +42,7 @@ public /*open*/ class Cruder : IFieldEditors
     protected void EnableAllFieldButOne(string butOneFieldName, bool enable = true)
     {
         foreach (var fieldEditor in FieldEditors)
-        {
-            if (fieldEditor.PropertyName == butOneFieldName)
-                fieldEditor.Enabled = true;
-            fieldEditor.Enabled = enable;
-        }
+            fieldEditor.Enabled = fieldEditor.PropertyName == butOneFieldName || enable;
     }
 
 

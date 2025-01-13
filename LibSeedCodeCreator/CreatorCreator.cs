@@ -23,22 +23,19 @@ public sealed class CreatorCreator : ToolCommand
 
     private CreatorCreatorParameters? Parameters => Par as CreatorCreatorParameters;
 
-    protected override ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
+    protected override Task<bool> RunAction(CancellationToken cancellationToken = default)
     {
         if (Parameters is null)
             throw new Exception("Parameters is null in CreatorCreator");
-        var createProjectSeederCodeProgramCreator =
-            new CreateProjectSeederCodeProgramCreator(Parameters, _logger);
+        var createProjectSeederCodeProgramCreator = new CreateProjectSeederCodeProgramCreator(Parameters, _logger);
         createProjectSeederCodeProgramCreator.Go();
 
-        var getJsonFromProjectDbProgramCreator =
-            new GetJsonFromProjectDbProgramCreator(Parameters, _logger);
+        var getJsonFromProjectDbProgramCreator = new GetJsonFromProjectDbProgramCreator(Parameters, _logger);
         getJsonFromProjectDbProgramCreator.Go();
 
-        var seedProjectDbProgramCreator =
-            new SeedProjectDbProgramCreator(Parameters, _logger);
+        var seedProjectDbProgramCreator = new SeedProjectDbProgramCreator(Parameters, _logger);
         seedProjectDbProgramCreator.Go();
 
-        return ValueTask.FromResult(true);
+        return Task.FromResult(true);
     }
 }
