@@ -44,8 +44,8 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         var databaseConnectionNames = new List<string>();
         if (databaseManager is not null)
         {
-            var getDatabaseFoldersSetsResult =
-                databaseManager.GetDatabaseConnectionNames(CancellationToken.None).Result;
+            var apiClient = ((RemoteDatabaseManager)databaseManager).ApiClient;
+            var getDatabaseFoldersSetsResult = apiClient.GetDatabaseConnectionNames(CancellationToken.None).Result;
             if (getDatabaseFoldersSetsResult.IsT0)
                 databaseConnectionNames = getDatabaseFoldersSetsResult.AsT0;
             else
