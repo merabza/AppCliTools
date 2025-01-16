@@ -37,11 +37,9 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new ApiClientNameFieldEditor(logger, httpClientFactory,
             nameof(DatabaseServerConnectionData.DbWebAgentName), ParametersManager, true));
 
-        //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
         FieldEditors.Add(new RemoteDbConnectionNameFieldEditor(logger, httpClientFactory,
             nameof(DatabaseServerConnectionData.RemoteDbConnectionName), ParametersManager,
             nameof(DatabaseServerConnectionData.DbWebAgentName)));
-
 
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
