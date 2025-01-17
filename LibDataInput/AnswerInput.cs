@@ -46,8 +46,9 @@ public sealed class AnswerInput : DataInput
             if (ch.Key == ConsoleKey.Escape)
                 throw new DataInputEscapeException("Escape");
 
-            var answerMustBe = Enum.GetValues<EDialogResult>().Aggregate("Answer must be", (current, dialogResult) =>
-                $"{current} '{dialogResult.ToString().First(char.IsUpper).ToString().ToLower()}, ");
+            var answerMustBe = Enum.GetValues<EDialogResult>().Aggregate("Answer must be",
+                (current, dialogResult) =>
+                    $"{current} '{dialogResult.ToString().First(char.IsUpper).ToString().ToLower()}, ");
             Console.WriteLine(answerMustBe);
             Console.Write(prompt);
         }
