@@ -48,7 +48,9 @@ public static class StandardArchiversGenerator
 
         archiver = new ArchiverData
         {
-            Type = archiveType, FileExtension = ".zip", DecompressProgramPatch = decompressProgramPatch,
+            Type = archiveType,
+            FileExtension = ".zip",
+            DecompressProgramPatch = decompressProgramPatch,
             CompressProgramPatch = compressProgramPatch
         };
         parameters.Archivers.Add(archiverName, archiver);

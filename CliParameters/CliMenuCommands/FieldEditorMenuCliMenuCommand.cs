@@ -14,8 +14,8 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public FieldEditorMenuCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate,
-        Cruder cruder,
-        string recordKey) : base(fieldName, EMenuAction.Reload, EMenuAction.Reload, null, false, EStatusView.Table)
+        Cruder cruder, string recordKey) : base(fieldName, EMenuAction.Reload, EMenuAction.Reload, null, false,
+        EStatusView.Table)
     {
         _fieldEditor = fieldEditor;
         _recordForUpdate = recordForUpdate;

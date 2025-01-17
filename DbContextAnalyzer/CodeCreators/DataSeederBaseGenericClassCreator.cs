@@ -18,11 +18,8 @@ public sealed class DataSeederBaseGenericClassCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var block = new CodeBlock(string.Empty,
-            new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDataSeeding",
-            $"namespace {_parameters.ProjectNamespace}",
-            string.Empty,
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            "using CarcassDataSeeding", $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock(
                 $"public /*open*/ class {_parameters.DataSeederBaseClassName}<T> : DataSeeder<T> where T : class",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} {_parameters.ProjectPrefixShort}Repo",

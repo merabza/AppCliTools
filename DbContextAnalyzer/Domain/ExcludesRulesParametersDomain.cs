@@ -23,8 +23,7 @@ public sealed class ExcludesRulesParametersDomain
         if (excludesRulesParameters is null)
             return exclRulParDom;
 
-        foreach (var excludeTable in excludesRulesParameters.ExcludeTables.Where(x =>
-                     !string.IsNullOrWhiteSpace(x)))
+        foreach (var excludeTable in excludesRulesParameters.ExcludeTables.Where(x => !string.IsNullOrWhiteSpace(x)))
             exclRulParDom.ExcludeTables.Add(excludeTable);
 
         foreach (var kvp in excludesRulesParameters.SingularityExceptions.Where(x =>
@@ -33,14 +32,13 @@ public sealed class ExcludesRulesParametersDomain
 
         foreach (var tfm in excludesRulesParameters.ExcludeFields)
             if (!string.IsNullOrWhiteSpace(tfm.TableName) && !string.IsNullOrWhiteSpace(tfm.FieldName))
-                exclRulParDom.ExcludeFields.Add(new TableFieldDomain(tfm.TableName,
-                    tfm.FieldName));
+                exclRulParDom.ExcludeFields.Add(new TableFieldDomain(tfm.TableName, tfm.FieldName));
 
         foreach (var rfn in excludesRulesParameters.ReplaceFieldNames)
             if (!string.IsNullOrWhiteSpace(rfn.TableName) && !string.IsNullOrWhiteSpace(rfn.OldFieldName) &&
                 !string.IsNullOrWhiteSpace(rfn.NewFieldName))
-                exclRulParDom.ReplaceFieldNames.Add(new ReplaceFieldNameDomain(rfn.TableName,
-                    rfn.OldFieldName, rfn.NewFieldName));
+                exclRulParDom.ReplaceFieldNames.Add(new ReplaceFieldNameDomain(rfn.TableName, rfn.OldFieldName,
+                    rfn.NewFieldName));
 
         return exclRulParDom;
     }

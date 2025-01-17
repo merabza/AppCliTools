@@ -18,11 +18,8 @@ public sealed class DataSeederRepositoryInterfaceCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var block = new CodeBlock(string.Empty,
-            new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDataSeeding",
-            $"namespace {_parameters.ProjectNamespace}",
-            string.Empty,
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            "using CarcassDataSeeding", $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock($"public interface {_parameters.DataSeederRepositoryInterfaceName} : IDataSeederRepository"));
         CodeFile.AddRange(block.CodeItems);
         FinishAndSave();

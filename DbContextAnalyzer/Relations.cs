@@ -95,10 +95,8 @@ public sealed class Relations
         var haveOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
-        var needsToCreateTempData =
-            entityData.OptimalIndex == null && entityType.GetReferencingForeignKeys().Any();
-        var usePrimaryKey =
-            haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
+        var needsToCreateTempData = entityData.OptimalIndex == null && entityType.GetReferencingForeignKeys().Any();
+        var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
         var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
             .Select(s => s.FieldName).ToList();
@@ -147,19 +145,16 @@ public sealed class Relations
             return 0;
         //if (fieldData.SubstituteField.Fields != null)
         //  return fieldData.SubstituteField.Fields.Select(GetLevel).DefaultIfEmpty().Max() + 1;
-        var corEnt =
-            Entities.SingleOrDefault(s => s.Key == fieldData.SubstituteField.TableName);
+        var corEnt = Entities.SingleOrDefault(s => s.Key == fieldData.SubstituteField.TableName);
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(IEnumerable<IProperty> fieldsBase, string tableName,
-        FieldData? parent = null)
+    private List<FieldData> GetFieldsData(IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
     {
-        var replaceDict = _excludesRulesParameters.ReplaceFieldNames
-            .Where(w => w.TableName == tableName).ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
+        var replaceDict = _excludesRulesParameters.ReplaceFieldNames.Where(w => w.TableName == tableName)
+            .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
 
-        return fieldsBase
-            .Select(Selector).ToList();
+        return fieldsBase.Select(Selector).ToList();
 
         FieldData Selector(IProperty s)
         {
@@ -252,8 +247,7 @@ public sealed class Relations
         //(არ ვიცი რამდენად საჭიროა იმის შემოწმება, რომ ველები IsNullable არ უნდა იყოს).
         //კიდევ იმასაც ვამოწმებ, რომ უნიკალური ინდექსის ველები ავტოგენერირებადი არ იყოს. (ესეც არ ვიცი რამდენად საჭიროა)
         var uniKeys = entityType.GetIndexes().Where(w =>
-                w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never))
-            .ToList();
+            w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never)).ToList();
 
         //ჯერ გავარკვიოთ საერთოდ უნიკალური ინდექსები გვაქვს თუ არა
         if (uniKeys.Count == 0)

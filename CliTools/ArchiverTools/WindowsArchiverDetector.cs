@@ -18,16 +18,10 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
         {
             case Rar:
                 var programPatchRar = GetProgramPath(WinRar);
-                return programPatchRar is null
-                    ? null
-                    : new ArchiverDetectorResults(programPatchRar,
-                        programPatchRar);
+                return programPatchRar is null ? null : new ArchiverDetectorResults(programPatchRar, programPatchRar);
             case Zip:
                 var programPatchZip = GetProgramPath(WinZip);
-                return programPatchZip is null
-                    ? null
-                    : new ArchiverDetectorResults(programPatchZip,
-                        programPatchZip);
+                return programPatchZip is null ? null : new ArchiverDetectorResults(programPatchZip, programPatchZip);
             default:
                 return null;
         }

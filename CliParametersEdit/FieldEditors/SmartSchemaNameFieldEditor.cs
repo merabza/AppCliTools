@@ -18,7 +18,6 @@ public sealed class SmartSchemaNameFieldEditor : FieldEditor<string>
     public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         SmartSchemaCruder smartSchemaCruder = new(_parametersManager);
-        SetValue(recordForUpdate,
-            smartSchemaCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate)));
+        SetValue(recordForUpdate, smartSchemaCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate)));
     }
 }

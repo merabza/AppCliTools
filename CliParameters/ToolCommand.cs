@@ -8,8 +8,8 @@ public /*open*/ class ToolCommand : ToolAction, IToolCommand
 {
     protected readonly IParametersManager? ParametersManager;
 
-    protected ToolCommand(ILogger logger, string actionName, ParametersManager parametersManager,
-        string description, bool useConsole = false) : base(logger, actionName, null, null, useConsole)
+    protected ToolCommand(ILogger logger, string actionName, ParametersManager parametersManager, string description,
+        bool useConsole = false) : base(logger, actionName, null, null, useConsole)
     {
         ParametersManager = parametersManager;
         Par = parametersManager.Parameters;

@@ -47,8 +47,7 @@ public sealed class SeederCodeCreator
         dataSeederRepositoryInterfaceCreator.CreateFileStructure();
 
         //0.3
-        var dataSeederRepositoryCreator =
-            new DataSeederRepositoryCreator(_logger, _seederCodeCreatorParameters);
+        var dataSeederRepositoryCreator = new DataSeederRepositoryCreator(_logger, _seederCodeCreatorParameters);
         dataSeederRepositoryCreator.CreateFileStructure();
 
         //1.1
@@ -57,8 +56,7 @@ public sealed class SeederCodeCreator
         creatorForJsonFilesCreator.CreateFileStructure();
 
         //1.2
-        var projectDataSeederCreator =
-            new ProjectDataSeederCreator(_logger, _seederCodeCreatorParameters);
+        var projectDataSeederCreator = new ProjectDataSeederCreator(_logger, _seederCodeCreatorParameters);
         projectDataSeederCreator.CreateFileStructure();
 
 
@@ -72,8 +70,7 @@ public sealed class SeederCodeCreator
         //-------------
 
         var isAnyCarcassType = false;
-        foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level)
-                     .ThenBy(tb => tb.Key))
+        foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
         {
             var tableName = relEntity.Key;
 
@@ -91,8 +88,7 @@ public sealed class SeederCodeCreator
         //-------------
 
         var lastLevel = -1;
-        foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level)
-                     .ThenBy(tb => tb.Key))
+        foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
         {
             if (relEntity.Value.Level != lastLevel)
             {
@@ -113,8 +109,7 @@ public sealed class SeederCodeCreator
             if (!isCarcassType)
             {
                 //2.2
-                var seederModelCreator = new SeederModelCreator(_logger,
-                    _seederCodeCreatorParameters.PlacePath,
+                var seederModelCreator = new SeederModelCreator(_logger, _seederCodeCreatorParameters.PlacePath,
                     _seederCodeCreatorParameters.ProjectNamespace, _seederCodeCreatorParameters.ModelsFolderName,
                     _excludesRulesParameters.SingularityExceptions);
                 seederModelCreator.UseEntity(relEntity.Value);

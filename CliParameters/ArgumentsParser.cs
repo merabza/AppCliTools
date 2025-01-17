@@ -136,8 +136,8 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
                 return;
             }
 
-            if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?",
-                    true, false))
+            if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true,
+                    false))
                 return;
 
             //შევქმნათ ცარელა პარამეტრები

@@ -27,35 +27,26 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        _runMethodCodeBlock =
-            new CodeBlock("public bool Run()", $"Console.WriteLine(\"{_parameters.ProjectNamespace} Started\")");
+        _runMethodCodeBlock = new CodeBlock("public bool Run()",
+            $"Console.WriteLine(\"{_parameters.ProjectNamespace} Started\")");
 
-        var block = new CodeBlock(string.Empty,
-            new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using System",
-            "using System.IO",
-            "using System.Linq",
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            "using System", "using System.IO", "using System.Linq",
             $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}",
-            $"using {_parameters.DbContextProjectName}",
-            "using Newtonsoft.Json",
-            "using Microsoft.EntityFrameworkCore",
-            $"namespace {_parameters.ProjectNamespace}",
-            string.Empty,
+            $"using {_parameters.DbContextProjectName}", "using Newtonsoft.Json", "using Microsoft.EntityFrameworkCore",
+            $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public sealed class JsonFilesCreator",
                 $"private readonly {_parameters.DbContextClassName} _context",
-                "private readonly string _seederCreatorJsonFolderName",
-                string.Empty,
+                "private readonly string _seederCreatorJsonFolderName", string.Empty,
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public JsonFilesCreator({_parameters.DbContextClassName} context, string seederCreatorJsonFolderName)",
-                    "_context = context",
-                    "_seederCreatorJsonFolderName = seederCreatorJsonFolderName"),
+                    "_context = context", "_seederCreatorJsonFolderName = seederCreatorJsonFolderName"),
                 new CodeBlock("private void SaveJson(object obj, string name)",
                     "var sampleParamsJsonText = JsonConvert.SerializeObject(obj, Formatting.Indented)",
                     "var fileName = $\"{name}.json\"",
                     "File.WriteAllText(Path.Combine(_seederCreatorJsonFolderName, fileName), sampleParamsJsonText)",
-                    "Console.WriteLine($\"{fileName} created\")"),
-                _runMethodCodeBlock));
+                    "Console.WriteLine($\"{fileName} created\")"), _runMethodCodeBlock));
         CodeFile.AddRange(block.CodeItems);
     }
 
@@ -144,10 +135,8 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
 
         var tableVarName = tableName.UnCapitalize();
-        var block = new CodeBlock(string.Empty,
-            string.Empty,
-            $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")",
-            string.Empty,
+        var block = new CodeBlock(string.Empty, string.Empty,
+            $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")", string.Empty,
             $"var {tableVarName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
             $"SaveJson({tableVarName}, \"{tableNameCapitalCamel}\")");
 

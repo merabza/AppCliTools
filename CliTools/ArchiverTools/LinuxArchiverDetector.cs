@@ -19,17 +19,13 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
         {
             case Rar:
                 var programPatchRar = CheckArchiverRunner(Rar);
-                return programPatchRar is null
-                    ? null
-                    : new ArchiverDetectorResults(
-                        programPatchRar, programPatchRar);
+                return programPatchRar is null ? null : new ArchiverDetectorResults(programPatchRar, programPatchRar);
             case Zip:
                 var programPatchZip = CheckArchiverRunner(Zip);
                 var programPatchUnzip = CheckArchiverRunner(Unzip);
                 if (programPatchZip is null || programPatchUnzip is null)
                     return null;
-                return new ArchiverDetectorResults(programPatchZip,
-                    programPatchUnzip);
+                return new ArchiverDetectorResults(programPatchZip, programPatchUnzip);
             default:
                 return null;
         }

@@ -28,29 +28,19 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         _carcassRegion = new CodeRegion("Carcass");
         _projectRegion = new CodeRegion(_parameters.ProjectPrefix);
 
-        var block = new CodeBlock(string.Empty,
-            new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDataSeeding",
-            "using CarcassDataSeeding.Seeders",
-            "using CarcassMasterDataDom.Models",
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            "using CarcassDataSeeding", "using CarcassDataSeeding.Seeders", "using CarcassMasterDataDom.Models",
             "using Microsoft.AspNetCore.Identity",
             _isAnyCarcassType
                 ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
-                : string.Empty,
-            $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
-            $"namespace {_parameters.ProjectNamespace}",
-            string.Empty,
-            new CodeBlock($"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
-                $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
-                new CodeBlock(
-                    $"""
+                : string.Empty, $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
+            $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
+                $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
+                $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo", new CodeBlock($"""
                      public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
                        string secretDataFolder, string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
                        secretDataFolder, dataSeedFolder, repo)
-                     """,
-                    "Repo = repo"),
-                _carcassRegion,
-                _projectRegion));
+                     """, "Repo = repo"), _carcassRegion, _projectRegion));
         CodeFile.AddRange(block.CodeItems);
     }
 

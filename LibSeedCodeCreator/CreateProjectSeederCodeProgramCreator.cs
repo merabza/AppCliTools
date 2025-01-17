@@ -13,31 +13,18 @@ public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParamete
         var dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
         var dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
-        var fcbAdditionalUsing = new FlatCodeBlock(
-            $"using {dbContextProjectName}",
-            "using DbContextAnalyzer",
+        var fcbAdditionalUsing = new FlatCodeBlock($"using {dbContextProjectName}", "using DbContextAnalyzer",
             "using Microsoft.EntityFrameworkCore");
 
-        var fcbMainCommands = new FlatCodeBlock(
-            string.Empty,
-            "var starter = new SeederCodeCreatorStarter(logger, par)",
-            string.Empty,
-            $"var optionsBuilder = new DbContextOptionsBuilder<{dbContextClassName}>()",
-            string.Empty,
+        var fcbMainCommands = new FlatCodeBlock(string.Empty, "var starter = new SeederCodeCreatorStarter(logger, par)",
+            string.Empty, $"var optionsBuilder = new DbContextOptionsBuilder<{dbContextClassName}>()", string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringProd))",
-                "StShared.WriteErrorLine(\"lConnectionStringProd is empty\", true)",
-                "return 3"),
-            string.Empty,
-            "optionsBuilder.UseSqlServer(par.ConnectionStringProd)",
-            string.Empty,
+                "StShared.WriteErrorLine(\"lConnectionStringProd is empty\", true)", "return 3"), string.Empty,
+            "optionsBuilder.UseSqlServer(par.ConnectionStringProd)", string.Empty,
             new OneLineComment(" ReSharper disable once using"),
             new OneLineComment(" ReSharper disable once DisposableConstructor"),
-            $"using var context = new {dbContextClassName}(optionsBuilder.Options)",
-            string.Empty,
-            "starter.Go(context)",
-            string.Empty,
-            "return 0",
-            string.Empty);
+            $"using var context = new {dbContextClassName}(optionsBuilder.Options)", string.Empty,
+            "starter.Go(context)", string.Empty, "return 0", string.Empty);
 
         var starterCreator = new ConsoleProgramCreator(logger, fcbAdditionalUsing, null, fcbMainCommands,
             "CreateProjectSeederCodeParameters", par.CreateSeederCodeProjectNamespace,

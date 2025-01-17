@@ -21,11 +21,8 @@ public sealed class FakeCreatorForJsonFilesCreator : CodeCreator
         var dbContextClassName = $"{_par.ProjectPrefix.Replace('.', '_')}DbScContext";
         var dbContextProjectName = $"{_par.ProjectPrefix}ScaffoldSeederDbSc";
 
-        var block = new CodeBlock(string.Empty,
-            new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            $"using {dbContextProjectName}",
-            $"namespace {_par.GetJsonProjectNamespace}",
-            string.Empty,
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            $"using {dbContextProjectName}", $"namespace {_par.GetJsonProjectNamespace}", string.Empty,
             new CodeBlock("public sealed class JsonFilesCreator",
                 new CodeBlock(
                     $"public JsonFilesCreator({dbContextClassName} context, string seederCreatorJsonFolderName)"),

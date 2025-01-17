@@ -41,8 +41,10 @@ public static class StandardSmartSchemas
 
         var smartSchema = new SmartSchema { LastPreserveCount = 1 };
         for (var ep = EPeriodType.Year; ep < EPeriodType.Hour; ep++)
-            smartSchema.Details.Add(
-                new SmartSchemaDetail { PeriodType = ep, PreserveCount = ep == EPeriodType.Day ? 2 : 1 });
+            smartSchema.Details.Add(new SmartSchemaDetail
+            {
+                PeriodType = ep, PreserveCount = ep == EPeriodType.Day ? 2 : 1
+            });
 
         parameters.SmartSchemas.Add(ReduceSmartSchemaName, smartSchema);
     }

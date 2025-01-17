@@ -29,8 +29,7 @@ public sealed class SeederCodeCreatorStarter
         var excludesRulesParameters =
             ExcludesRulesParametersDomain.CreateInstance(_par.ExcludesRulesParametersFilePath);
 
-        var carcassOptionsBuilder =
-            new DbContextOptionsBuilder<CarcassDbContext>();
+        var carcassOptionsBuilder = new DbContextOptionsBuilder<CarcassDbContext>();
 
         if (string.IsNullOrWhiteSpace(_par.ConnectionStringProd))
         {
@@ -102,8 +101,8 @@ public sealed class SeederCodeCreatorStarter
             _par.MainDatabaseProjectName, _par.ProjectDbContextClassName, "Models",
             _par.ProjectPrefixShort + "DataSeeder");
 
-        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, context,
-            getJsonCreatorParameters, seederCodeCreatorParameters, excludesRulesParameters);
+        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, context, getJsonCreatorParameters,
+            seederCodeCreatorParameters, excludesRulesParameters);
         dataExtractor.Go();
     }
 }
