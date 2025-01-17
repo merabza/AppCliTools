@@ -63,19 +63,16 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
         var databaseFoldersSets = databaseServerConnectionData.DatabaseFoldersSets;
 
-        if (createDatabaseManagerResult.IsT1)
-        {
-            Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
-        }
-        else
-        {
-            var getDatabaseFoldersSetsResult =
-                createDatabaseManagerResult.AsT0.GetDatabaseFoldersSets(CancellationToken.None).Result;
-            if (getDatabaseFoldersSetsResult.IsT0)
-                databaseFoldersSets = getDatabaseFoldersSetsResult.AsT0;
-            else
-                Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
-        }
+        if (createDatabaseManagerResult.IsT1) Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+        //else
+        //{
+        //    var getDatabaseFoldersSetsResult =
+        //        createDatabaseManagerResult.AsT0.GetDatabaseFoldersSetNames(CancellationToken.None).Result;
+        //    if (getDatabaseFoldersSetsResult.IsT0)
+        //        databaseFoldersSets = getDatabaseFoldersSetsResult.AsT0;
+        //    else
+        //        Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+        //}
 
         CliMenuSet databasesMenuSet = new();
 
