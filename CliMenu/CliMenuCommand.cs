@@ -46,7 +46,7 @@ public /*open*/ class CliMenuCommand
             var description = GetActionDescription();
             if (description is null)
             {
-                StShared.WriteErrorLine("description is null", true);
+                StShared.WriteErrorLine("description is null", true, null, false);
                 MenuAction = EMenuAction.Reload;
                 return;
             }

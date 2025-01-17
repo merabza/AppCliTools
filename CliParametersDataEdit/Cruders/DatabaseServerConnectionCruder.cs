@@ -118,6 +118,9 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
                 return false;
             }
 
+            if (dbManager is RemoteDatabaseManager)
+                return true;
+
             //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
             //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
             var getDbServerInfoResult = dbManager.GetDatabaseServerInfo().Result;
@@ -146,67 +149,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             databaseServerConnectionData.SetDefaultFolders(dbServerInfo);
 
             return true;
-
-
-            //switch (databaseServerConnectionData.DatabaseServerProvider)
-            //{
-            //    case EDatabaseProvider.SqlServer:
-            //        Console.WriteLine($"Try connect to server {databaseServerConnectionData.ServerAddress}...");
-
-            //        //მოისინჯოს ბაზასთან დაკავშირება.
-            //        //თუ დაკავშირება ვერ მოხერხდა, გამოვიდეს ამის შესახებ შეტყობინება და შევთავაზოთ მონაცემების შეყვანის გაგრძელება, ან გაჩერება
-            //        //აქ გამოიყენება ბაზასთან პირდაპირ დაკავშირება ვებაგენტის გარეშე,
-            //        //რადგან სწორედ ასეთი ტიპის კავშირების რედაქტორია ეს.
-
-            //        if (string.IsNullOrWhiteSpace(databaseServerConnectionData.ServerAddress))
-            //        {
-            //            StShared.WriteErrorLine("ServerAddress is not specified", true);
-            //            return false;
-            //        }
-
-            //        var dbAuthSettings = DbAuthSettingsCreator.Create(
-            //            databaseServerConnectionData.WindowsNtIntegratedSecurity, databaseServerConnectionData.User,
-            //            databaseServerConnectionData.Password);
-
-            //        if (dbAuthSettings is null)
-            //        {
-            //            StShared.WriteErrorLine("Authentication parameters is not valid", true);
-            //            return false;
-            //        }
-
-            //        var dc = DbClientFabric.GetDbClient(_logger, true, EDatabaseProvider.SqlServer,
-            //            databaseServerConnectionData.ServerAddress, dbAuthSettings,
-            //            databaseServerConnectionData.TrustServerCertificate, ProgramAttributes.Instance.AppName);
-
-            //        if (dc is null)
-            //        {
-            //            StShared.WriteErrorLine("Database Client is not created", true);
-            //            return false;
-            //        }
-
-            //        //var testConnectionResult = dc.TestConnection(false, CancellationToken.None).Result;
-            //        //if (testConnectionResult.IsSome)
-            //        //{
-            //        //    Err.PrintErrorsOnConsole((Err[])testConnectionResult);
-            //        //    return false;
-            //        //}
-
-            //        ////თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
-            //        ////ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-            //        //var getDbServerInfoResult = dc.GetDbServerInfo(CancellationToken.None).Result;
-            //        //if (getDbServerInfoResult.IsT1)
-            //        //{
-            //        //    Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
-            //        //    return false;
-            //        //}
-
-            //        //var dbServerInfo = getDbServerInfoResult.AsT0;
-
-
-            //        return true;
-            //    default:
-            //        throw new ArgumentOutOfRangeException();
-            //}
         }
         catch (Exception e)
         {
@@ -247,6 +189,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.DbWebAgentName), enableWebAgentProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.RemoteDbConnectionName), enableWebAgentProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.FullDbBackupParameters), !enableWebAgentProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseFoldersSets), !enableWebAgentProps);
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerAddress), enableSqlServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), enableSqlServerProps);
@@ -287,12 +231,15 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     {
         base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
 
+
+        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+        var databaseServerConnectionDataByKey = parameters.DatabaseServerConnections[recordKey];
+
+        if (databaseServerConnectionDataByKey.DatabaseServerProvider == EDatabaseProvider.WebAgent)
+            return;
+
         GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand =
             new(_logger, _httpClientFactory, recordKey, ParametersManager);
         itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
-
-        //ამ ვარიანტმა არ იმუშავა
-        //PutDbServerFoldersCliMenuCommand putDbServerFoldersCliMenuCommand = new(_logger, recordKey, ParametersManager);
-        //itemSubMenuSet.AddMenuItem(putDbServerFoldersCliMenuCommand, "Put Database Server Folders from parameters to server");
     }
 }

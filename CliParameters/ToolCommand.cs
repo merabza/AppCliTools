@@ -9,7 +9,7 @@ public /*open*/ class ToolCommand : ToolAction, IToolCommand
     protected readonly IParametersManager? ParametersManager;
 
     protected ToolCommand(ILogger logger, string actionName, ParametersManager parametersManager,
-        string? description = null, bool useConsole = false) : base(logger, actionName, null, null, useConsole)
+        string description, bool useConsole = false) : base(logger, actionName, null, null, useConsole)
     {
         ParametersManager = parametersManager;
         Par = parametersManager.Parameters;
@@ -17,7 +17,7 @@ public /*open*/ class ToolCommand : ToolAction, IToolCommand
     }
 
     protected ToolCommand(ILogger logger, string actionName, IParameters par, IParametersManager? parametersManager,
-        string? description = null, bool useConsole = false) : base(logger, actionName, null, null, useConsole)
+        string description, bool useConsole = false) : base(logger, actionName, null, null, useConsole)
     {
         Par = par;
         ParametersManager = parametersManager;
@@ -25,5 +25,5 @@ public /*open*/ class ToolCommand : ToolAction, IToolCommand
     }
 
     public IParameters Par { get; }
-    public string? Description { get; }
+    public string Description { get; }
 }
