@@ -46,16 +46,19 @@ public class GetDbServerFoldersToolAction : ToolAction
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
 
-        var databaseManagementClient = await DatabaseManagersFabric.CreateDatabaseManager(_logger, _httpClientFactory,
-            true, _dbServerName, databaseServerConnections, apiClients, null, null, CancellationToken.None);
+        var createDatabaseManagerResult = await DatabaseManagersFabric.CreateDatabaseManager(_logger,
+            _httpClientFactory, true, _dbServerName, databaseServerConnections, apiClients, null, null,
+            CancellationToken.None);
 
-        if (databaseManagementClient is null)
+        if (createDatabaseManagerResult.IsT1)
         {
+            Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
             StShared.WriteErrorLine("Database Management Clients could not created", true, _logger);
             return false;
         }
 
-        var getDatabaseServerInfoResult = await databaseManagementClient.GetDatabaseServerInfo(cancellationToken);
+        var getDatabaseServerInfoResult =
+            await createDatabaseManagerResult.AsT0.GetDatabaseServerInfo(cancellationToken);
         if (getDatabaseServerInfoResult.IsT1)
         {
             Err.PrintErrorsOnConsole(getDatabaseServerInfoResult.AsT1);

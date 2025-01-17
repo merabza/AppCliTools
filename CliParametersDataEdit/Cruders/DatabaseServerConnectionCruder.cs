@@ -100,16 +100,20 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             var apiClients = new ApiClients(acParameters.ApiClients);
 
 
-            var dbManager = DatabaseManagersFabric.CreateDatabaseManager(_logger, _httpClientFactory, true,
-                databaseServerConnectionData, apiClients, null, null).Preserve().GetAwaiter().GetResult();
+            var createDatabaseManagerResult = DatabaseManagersFabric
+                .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionData, apiClients,
+                    null, null).Preserve().GetAwaiter().GetResult();
 
-            if (dbManager is null)
+            if (createDatabaseManagerResult.IsT1)
             {
+                Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
                 StShared.WriteErrorLine("dbManager could not created", true);
                 return false;
             }
 
             Console.WriteLine("Try connect to server...");
+
+            var dbManager = createDatabaseManagerResult.AsT0;
 
             var dbmTestConnectionResult = dbManager.TestConnection(null).Result;
             if (dbmTestConnectionResult.IsSome)

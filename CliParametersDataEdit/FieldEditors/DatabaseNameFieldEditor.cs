@@ -45,21 +45,24 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         var databaseServerConnections = new DatabaseServerConnections(dscParameters.DatabaseServerConnections);
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
+        var databaseInfos = new List<DatabaseInfoModel>();
 
-        var databaseManager = DatabaseManagersFabric
+        var createDatabaseManagerResult = DatabaseManagersFabric
             .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionName,
                 databaseServerConnections, apiClients, null, null, CancellationToken.None).Preserve().GetAwaiter()
             .GetResult();
 
-        var databaseInfos = new List<DatabaseInfoModel>();
-        if (databaseManager is not null)
+        if (createDatabaseManagerResult.IsT1)
         {
-            var getDatabaseNamesResult = databaseManager.GetDatabaseNames(CancellationToken.None).Result;
-            if (getDatabaseNamesResult.IsT0)
-                databaseInfos = getDatabaseNamesResult.AsT0;
-            else
-                Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+            Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            return;
         }
+
+        var getDatabaseNamesResult = createDatabaseManagerResult.AsT0.GetDatabaseNames(CancellationToken.None).Result;
+        if (getDatabaseNamesResult.IsT0)
+            databaseInfos = getDatabaseNamesResult.AsT0;
+        else
+            Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
 
         CliMenuSet databasesMenuSet = new();
         if (_canUseNewDatabaseName)

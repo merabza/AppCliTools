@@ -58,14 +58,19 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             return;
         }
 
-        var databaseManager = DatabaseManagersFabric
+        var createDatabaseManagerResult = DatabaseManagersFabric
             .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionData, apiClients, null,
                 null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
         var databaseFoldersSets = databaseServerConnectionData.DatabaseFoldersSets;
 
-        if (databaseManager is not null)
+        if (createDatabaseManagerResult.IsT1)
         {
-            var getDatabaseFoldersSetsResult = databaseManager.GetDatabaseFoldersSets(CancellationToken.None).Result;
+            Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+        }
+        else
+        {
+            var getDatabaseFoldersSetsResult =
+                createDatabaseManagerResult.AsT0.GetDatabaseFoldersSets(CancellationToken.None).Result;
             if (getDatabaseFoldersSetsResult.IsT0)
                 databaseFoldersSets = getDatabaseFoldersSetsResult.AsT0;
             else

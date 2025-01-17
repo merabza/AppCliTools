@@ -25,7 +25,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
     public override void CreateFileStructure()
     {
         _seedProjectSpecificDataMethodCodeBlock = new CodeBlock(
-            "protected override Option<Err[]> SeedProjectSpecificData()",
+            "protected override Option<IEnumerable<Err>> SeedProjectSpecificData()",
             $"{_parameters.ProjectDataSeedersFabricClassName} seederFabric = ({_parameters.ProjectDataSeedersFabricClassName}) DataSeedersFabric",
             string.Empty,
             "Logger.LogInformation(\"Seed Project Data Started\")"

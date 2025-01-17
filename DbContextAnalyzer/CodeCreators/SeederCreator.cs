@@ -84,7 +84,7 @@ public sealed class SeederCreator(
 
         if (!isCarcassType)
         {
-            createByJsonFile = new CodeBlock("protected override Option<Err[]> CreateByJsonFile()");
+            createByJsonFile = new CodeBlock("protected override Option<IEnumerable<Err>> CreateByJsonFile()");
             if (entityData.NeedsToCreateTempData)
             {
                 FlatCodeBlock fcb;
