@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters.CliMenuCommands;
@@ -61,24 +62,25 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
         var createDatabaseManagerResult = DatabaseManagersFabric
             .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionData, apiClients, null,
                 null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
-        var databaseFoldersSets = databaseServerConnectionData.DatabaseFoldersSets;
+        var databaseFoldersSetNames = databaseServerConnectionData.DatabaseFoldersSets.Keys.ToList();
 
-        if (createDatabaseManagerResult.IsT1) Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
-        //else
-        //{
-        //    var getDatabaseFoldersSetsResult =
-        //        createDatabaseManagerResult.AsT0.GetDatabaseFoldersSetNames(CancellationToken.None).Result;
-        //    if (getDatabaseFoldersSetsResult.IsT0)
-        //        databaseFoldersSets = getDatabaseFoldersSetsResult.AsT0;
-        //    else
-        //        Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
-        //}
+        if (createDatabaseManagerResult.IsT1) 
+            Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+        else
+        {
+            var getDatabaseFoldersSetsResult =
+                createDatabaseManagerResult.AsT0.GetDatabaseFoldersSetNames(CancellationToken.None).Result;
+            if (getDatabaseFoldersSetsResult.IsT0)
+                databaseFoldersSetNames = getDatabaseFoldersSetsResult.AsT0;
+            else
+                Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+        }
 
         CliMenuSet databasesMenuSet = new();
 
-        foreach (var listItem in databaseFoldersSets)
+        foreach (var listItem in databaseFoldersSetNames)
             databasesMenuSet.AddMenuItem(
-                new MenuCommandWithStatusCliMenuCommand(listItem.Key, listItem.Value.GetStatus()));
+                new MenuCommandWithStatusCliMenuCommand(listItem));
 
         var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentFoldersSetName);
 
