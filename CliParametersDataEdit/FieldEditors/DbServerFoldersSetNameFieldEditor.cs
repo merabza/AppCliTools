@@ -64,12 +64,14 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
         var databaseFoldersSetNames = databaseServerConnectionData.DatabaseFoldersSets.Keys.ToList();
 
-        if (createDatabaseManagerResult.IsT1) 
+        if (createDatabaseManagerResult.IsT1)
+        {
             Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+        }
         else
         {
-            var getDatabaseFoldersSetsResult =
-                createDatabaseManagerResult.AsT0.GetDatabaseFoldersSetNames(CancellationToken.None).Result;
+            var getDatabaseFoldersSetsResult = createDatabaseManagerResult.AsT0
+                .GetDatabaseFoldersSetNames(CancellationToken.None).Result;
             if (getDatabaseFoldersSetsResult.IsT0)
                 databaseFoldersSetNames = getDatabaseFoldersSetsResult.AsT0;
             else
@@ -79,8 +81,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
         CliMenuSet databasesMenuSet = new();
 
         foreach (var listItem in databaseFoldersSetNames)
-            databasesMenuSet.AddMenuItem(
-                new MenuCommandWithStatusCliMenuCommand(listItem));
+            databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
 
         var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentFoldersSetName);
 
