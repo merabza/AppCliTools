@@ -65,19 +65,17 @@ public static class DbConnectionFabric
     }
 
     public static (EDatabaseProvider?, string?) GetDataProviderAndConnectionString(
-        DatabasesParameters? databasesParameters, string projectName,
-        DatabaseServerConnections databaseServerConnections)
+        DatabaseParameters? databasesParameters, DatabaseServerConnections databaseServerConnections)
     {
         if (databasesParameters is null)
         {
-            StShared.WriteErrorLine($"databasesParameters does not specified for Project {projectName}", true);
+            StShared.WriteErrorLine("databasesParameters does not specified", true);
             return (null, null);
         }
 
         if (databasesParameters.DbConnectionName is null)
         {
-            StShared.WriteErrorLine(
-                $"databasesParameters.DbConnectionName does not specified for Project {projectName}", true);
+            StShared.WriteErrorLine("databasesParameters.DbConnectionName does not specified", true);
             return (null, null);
         }
 
@@ -90,24 +88,24 @@ public static class DbConnectionFabric
             return (null, null);
         }
 
-        var devConnectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
+        var connectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
 
-        if (!string.IsNullOrWhiteSpace(devConnectionString))
-            return (databaseConnectionData.DatabaseServerProvider, devConnectionString);
+        if (!string.IsNullOrWhiteSpace(connectionString))
+            return (databaseConnectionData.DatabaseServerProvider, connectionString);
 
-        StShared.WriteErrorLine($"could not Created Dev Connection String form Project with name {projectName}", true);
+        StShared.WriteErrorLine("could not Created Connection String", true);
         return (null, null);
     }
 
 
-    private static string? GetDbConnectionString(DatabasesParameters databasesParameters,
+    private static string? GetDbConnectionString(DatabaseParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
         var dbConnectionStringBuilder = GetDbConnectionStringBuilder(databasesParameters, databaseServerConnection);
         return dbConnectionStringBuilder?.ConnectionString;
     }
 
-    private static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabasesParameters databasesParameters,
+    private static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabaseParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
         var dataProvider = databaseServerConnection.DatabaseServerProvider;
@@ -181,7 +179,7 @@ public static class DbConnectionFabric
     }
 
     private static (string?, string?) GetOneFileDbConnectionStringBuilderParameters(
-        DatabasesParameters databasesParameters, DatabaseServerConnectionData databaseServerConnection)
+        DatabaseParameters databasesParameters, DatabaseServerConnectionData databaseServerConnection)
     {
         if (databasesParameters.DbServerFoldersSetName is null ||
             !databaseServerConnection.DatabaseFoldersSets.TryGetValue(databasesParameters.DbServerFoldersSetName,
