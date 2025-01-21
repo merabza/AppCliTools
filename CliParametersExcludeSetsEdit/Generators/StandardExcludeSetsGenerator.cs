@@ -41,13 +41,7 @@ public sealed class StandardExcludeSetsGenerator
 
         var upDownTempExcludeSet = new ExcludeSet
         {
-            FolderFileMasks = new List<string>
-            {
-                "*.up!",
-                "*.down!",
-                "*.go!",
-                "*.crdownload"
-            }
+            FolderFileMasks = new List<string> { "*.up!", "*.down!", "*.go!", "*.crdownload" }
         };
 
         //თუ არ არსებობს შეიქმნას UpDownTemp სტანდარტული სიმრავლე
