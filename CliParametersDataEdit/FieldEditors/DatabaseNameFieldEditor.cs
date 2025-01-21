@@ -48,9 +48,8 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         var databaseInfos = new List<DatabaseInfoModel>();
 
         var createDatabaseManagerResult = DatabaseManagersFabric
-            .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionName,
-                databaseServerConnections, apiClients, null, null, CancellationToken.None).Preserve().GetAwaiter()
-            .GetResult();
+            .CreateDatabaseManager(_logger, true, databaseServerConnectionName, databaseServerConnections, apiClients,
+                _httpClientFactory, null, null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
 
         if (createDatabaseManagerResult.IsT1)
         {

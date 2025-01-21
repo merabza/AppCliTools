@@ -18,13 +18,13 @@ public class GetDbServerFoldersToolAction : ToolAction
 
     //public const string ActionDescription = "Get Database Server Folders and save in parameters";
     private readonly string _dbServerName;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
 
-    public GetDbServerFoldersToolAction(ILogger logger, IHttpClientFactory httpClientFactory, string dbServerName,
+    public GetDbServerFoldersToolAction(ILogger logger, IHttpClientFactory? httpClientFactory, string dbServerName,
         IParametersManager parametersManager) : base(logger, ActionName, null, null, true)
     {
         _logger = logger;
@@ -46,8 +46,8 @@ public class GetDbServerFoldersToolAction : ToolAction
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
 
-        var createDatabaseManagerResult = await DatabaseManagersFabric.CreateDatabaseManager(_logger,
-            _httpClientFactory, true, _dbServerName, databaseServerConnections, apiClients, null, null,
+        var createDatabaseManagerResult = await DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
+            _dbServerName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
             CancellationToken.None);
 
         if (createDatabaseManagerResult.IsT1)

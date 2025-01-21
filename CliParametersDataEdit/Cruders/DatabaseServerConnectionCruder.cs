@@ -20,11 +20,11 @@ namespace CliParametersDataEdit.Cruders;
 
 public sealed class DatabaseServerConnectionCruder : ParCruder
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
 
     //, IParametersManager listsParametersManager
-    public DatabaseServerConnectionCruder(ILogger logger, IHttpClientFactory httpClientFactory,
+    public DatabaseServerConnectionCruder(ILogger logger, IHttpClientFactory? httpClientFactory,
         IParametersManager parametersManager) : base(parametersManager, "Database Server Connection",
         "Database Server Connections")
     {
@@ -34,12 +34,15 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseProvider.None));
 
         //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
-        FieldEditors.Add(new ApiClientNameFieldEditor(logger, httpClientFactory,
-            nameof(DatabaseServerConnectionData.DbWebAgentName), ParametersManager, true));
+        if (httpClientFactory is not null)
+        {
+            FieldEditors.Add(new ApiClientNameFieldEditor(logger, httpClientFactory,
+                nameof(DatabaseServerConnectionData.DbWebAgentName), ParametersManager, true));
 
-        FieldEditors.Add(new RemoteDbConnectionNameFieldEditor(logger, httpClientFactory,
-            nameof(DatabaseServerConnectionData.RemoteDbConnectionName), ParametersManager,
-            nameof(DatabaseServerConnectionData.DbWebAgentName)));
+            FieldEditors.Add(new RemoteDbConnectionNameFieldEditor(logger, httpClientFactory,
+                nameof(DatabaseServerConnectionData.RemoteDbConnectionName), ParametersManager,
+                nameof(DatabaseServerConnectionData.DbWebAgentName)));
+        }
 
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
@@ -49,8 +52,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt), false));
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
-        FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
-            nameof(DatabaseServerConnectionData.FullDbBackupParameters), parametersManager));
+        //FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
+        //    nameof(DatabaseServerConnectionData.FullDbBackupParameters), parametersManager));
         FieldEditors.Add(new DatabaseFoldersSetFieldEditor(parametersManager,
             nameof(DatabaseServerConnectionData.DatabaseFoldersSets)));
     }
@@ -100,9 +103,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             var apiClients = new ApiClients(acParameters.ApiClients);
 
 
-            var createDatabaseManagerResult = DatabaseManagersFabric
-                .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionData, apiClients,
-                    null, null).Preserve().GetAwaiter().GetResult();
+            var createDatabaseManagerResult = DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
+                databaseServerConnectionData, apiClients, _httpClientFactory, null, null).Preserve().Result;
 
             if (createDatabaseManagerResult.IsT1)
             {
@@ -193,7 +195,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.DbWebAgentName), enableWebAgentProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.RemoteDbConnectionName), enableWebAgentProps);
-        EnableFieldByName(nameof(DatabaseServerConnectionData.FullDbBackupParameters), !enableWebAgentProps);
+        //EnableFieldByName(nameof(DatabaseServerConnectionData.FullDbBackupParameters), !enableWebAgentProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseFoldersSets), !enableWebAgentProps);
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerAddress), enableSqlServerProps);
@@ -242,8 +244,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         if (databaseServerConnectionDataByKey.DatabaseServerProvider == EDatabaseProvider.WebAgent)
             return;
 
-        GetDbServerFoldersCliMenuCommand getDbServerFoldersCliMenuCommand =
-            new(_logger, _httpClientFactory, recordKey, ParametersManager);
+        var getDbServerFoldersCliMenuCommand =
+            new GetDbServerFoldersCliMenuCommand(_logger, _httpClientFactory, recordKey, ParametersManager);
         itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
     }
 }

@@ -10,12 +10,12 @@ namespace CliParametersDataEdit.CliMenuCommands;
 public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
 {
     private readonly string _dbServerName;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GetDbServerFoldersCliMenuCommand(ILogger logger, IHttpClientFactory httpClientFactory, string dbServerName,
+    public GetDbServerFoldersCliMenuCommand(ILogger logger, IHttpClientFactory? httpClientFactory, string dbServerName,
         IParametersManager parametersManager) : base("Get Database Server Folders and save in parameters",
         EMenuAction.Reload)
     {

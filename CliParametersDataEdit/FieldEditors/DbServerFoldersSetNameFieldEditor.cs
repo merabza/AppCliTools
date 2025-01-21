@@ -59,9 +59,10 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             return;
         }
 
-        var createDatabaseManagerResult = DatabaseManagersFabric
-            .CreateDatabaseManager(_logger, _httpClientFactory, true, databaseServerConnectionData, apiClients, null,
-                null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
+        var createDatabaseManagerResult = DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
+                databaseServerConnectionData, apiClients, _httpClientFactory, null, null, CancellationToken.None)
+            .Preserve()
+            .Result;
         var databaseFoldersSetNames = databaseServerConnectionData.DatabaseFoldersSets.Keys.ToList();
 
         if (createDatabaseManagerResult.IsT1)
