@@ -23,7 +23,7 @@ public sealed class CreatorCreator : ToolCommand
 
     private CreatorCreatorParameters? Parameters => Par as CreatorCreatorParameters;
 
-    protected override Task<bool> RunAction(CancellationToken cancellationToken = default)
+    protected override ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
     {
         if (Parameters is null)
             throw new Exception("Parameters is null in CreatorCreator");
@@ -36,6 +36,6 @@ public sealed class CreatorCreator : ToolCommand
         var seedProjectDbProgramCreator = new SeedProjectDbProgramCreator(Parameters, _logger);
         seedProjectDbProgramCreator.Go();
 
-        return Task.FromResult(true);
+        return ValueTask.FromResult(true);
     }
 }
