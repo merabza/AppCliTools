@@ -82,6 +82,9 @@ public sealed class DatabaseParametersEditor : ParametersEditor
 
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseParameters.CommandTimeOut), 10000));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseParameters.SkipBackupBeforeRestore), false));
+        FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger, nameof(DatabaseParameters.DatabaseBackupParameters), parametersManager));
+        
+        
     }
 
 
