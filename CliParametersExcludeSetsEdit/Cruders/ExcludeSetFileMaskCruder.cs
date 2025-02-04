@@ -12,7 +12,7 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ExcludeSetFileMaskCruder(IParametersManager parametersManager, string excludeSetName) : base(
-        parametersManager, "File Mask", "File Masks", true)
+        parametersManager, "File Mask", "File Masks")
     {
         _excludeSetName = excludeSetName;
     }
