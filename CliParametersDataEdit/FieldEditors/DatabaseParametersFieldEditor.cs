@@ -25,6 +25,6 @@ public sealed class DatabaseParametersFieldEditor : ParametersFieldEditor<Databa
             new SubParametersManager<DatabaseParameters>(currentValue, ParametersManager, this, record);
 
         return new DatabaseParametersEditor(Logger, _httpClientFactory, serverDatabasesExchangeParametersManager,
-            ParametersManager);
+            ParametersManager, PropertyName);
     }
 }
