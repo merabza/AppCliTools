@@ -125,8 +125,8 @@ public static class DbConnectionFabric
                 };
                 if (!databaseServerConnection.WindowsNtIntegratedSecurity)
                 {
-                    sqlConBuilder.UserID = databaseServerConnection.User;
-                    sqlConBuilder.Password = databaseServerConnection.Password;
+                    sqlConBuilder.UserID = databaseServerConnection.ServerUser;
+                    sqlConBuilder.Password = databaseServerConnection.ServerPass;
                 }
 
                 if (databasesParameters.DatabaseName != null)
@@ -207,7 +207,7 @@ public static class DbConnectionFabric
         }
 
         var databaseFilePath = Path.Combine(dataPath, databaseName);
-        var password = databaseServerConnection.Password;
+        var password = databaseServerConnection.ServerPass;
         return (databaseFilePath, password);
     }
 

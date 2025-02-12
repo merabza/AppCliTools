@@ -46,8 +46,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
 
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.User)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.Password), null,
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null,
             ParametersEditor.PasswordChar));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt), false));
@@ -201,23 +201,23 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerAddress), enableSqlServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), enableSqlServerProps);
 
-        EnableFieldByName(nameof(DatabaseServerConnectionData.User), enableUser);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerUser), enableUser);
 
-        EnableFieldByName(nameof(DatabaseServerConnectionData.Password), enablePassword);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerPass), enablePassword);
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.TrustServerCertificate), enableSqlServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.ConnectionTimeOut), enableSqlServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.Encrypt), enableSqlServerProps);
 
 
-        if (lastEditedFieldName != nameof(DatabaseServerConnectionData.User) &&
-            lastEditedFieldName != nameof(DatabaseServerConnectionData.Password) &&
+        if (lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerUser) &&
+            lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerPass) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerAddress))
             return;
 
         if (!string.IsNullOrWhiteSpace(databaseServerConnection.ServerAddress) &&
-            !string.IsNullOrWhiteSpace(databaseServerConnection.User) &&
-            !string.IsNullOrWhiteSpace(databaseServerConnection.Password))
+            !string.IsNullOrWhiteSpace(databaseServerConnection.ServerUser) &&
+            !string.IsNullOrWhiteSpace(databaseServerConnection.ServerPass))
             CheckValidation(itemData);
     }
 
