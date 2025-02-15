@@ -109,11 +109,11 @@ public sealed class Relations
         entityData.FieldsData = GetFieldsData(fieldsBase, tableName);
         entityData.Level = GetMaxLevel(entityData);
 
-        var rec = entityData.FieldsData.SingleOrDefault(w =>
-            w.SubstituteField != null && w.SubstituteField.TableName == tableName);
+        var substituteFields = entityData.FieldsData.Where(w =>
+            w.SubstituteField != null && w.SubstituteField.TableName == tableName).ToList();
 
-        if (rec != null)
-            entityData.SelfRecursiveField = rec;
+        if (substituteFields.Count == 1)
+            entityData.SelfRecursiveField = substituteFields[0];
 
         if (entityData.OptimalIndex == null)
             return;
