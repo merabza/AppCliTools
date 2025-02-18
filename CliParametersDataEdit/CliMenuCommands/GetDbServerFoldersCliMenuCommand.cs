@@ -29,6 +29,6 @@ public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
     {
         var getDbServerFoldersToolAction =
             new GetDbServerFoldersToolAction(_logger, _httpClientFactory, _dbServerName, _parametersManager);
-        return getDbServerFoldersToolAction.Run(CancellationToken.None).Preserve().GetAwaiter().GetResult();
+        return getDbServerFoldersToolAction.Run(CancellationToken.None).Result;
     }
 }
