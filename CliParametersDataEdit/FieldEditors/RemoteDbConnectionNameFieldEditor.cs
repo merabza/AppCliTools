@@ -38,9 +38,8 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
 
-        var createDatabaseManagerResult = DatabaseManagersFabric
-            .CreateRemoteDatabaseManager(_logger, _httpClientFactory, true, databaseApiClientName, apiClients, null,
-                null, CancellationToken.None).Preserve().GetAwaiter().GetResult();
+        var createDatabaseManagerResult = DatabaseManagersFabric.CreateRemoteDatabaseManager(_logger,
+            _httpClientFactory, true, databaseApiClientName, apiClients, null, null, CancellationToken.None).Result;
 
         var databaseConnectionNames = new List<string>();
         if (createDatabaseManagerResult.IsT1)
