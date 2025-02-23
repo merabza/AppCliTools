@@ -19,13 +19,15 @@ public sealed class GetJsonFromProjectDbProgramCreator(CreatorCreatorParameters 
         var fcbGetJsonMainCommands = new FlatCodeBlock(string.Empty,
             $"var optionsBuilder = new DbContextOptionsBuilder<{dbContextClassName}>()", string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringProd))",
-                "StShared.WriteErrorLine(\"lConnectionStringProd is empty\", true)", "return 3"), string.Empty,
+                "StShared.WriteErrorLine(\"lConnectionStringProd is empty\", true)", "return 6"), string.Empty,
             "optionsBuilder.UseSqlServer(par.ConnectionStringProd)", string.Empty,
             new OneLineComment(" ReSharper disable once using"),
             new OneLineComment(" ReSharper disable once DisposableConstructor"),
             $"using var context = new {dbContextClassName}(optionsBuilder.Options)", string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
-                "StShared.WriteErrorLine(\"JsonFolderName is empty\", true)", "return 3"), string.Empty,
+                "StShared.WriteErrorLine(\"JsonFolderName is empty\", true)", "return 7"), string.Empty,
+            new CodeBlock("if ( FileStat.CreateFolderIfNotExists(par.JsonFolderName, true) is null )",
+                "StShared.WriteErrorLine(\"JsonFolderName does not created\", true)", "return 8"), string.Empty,
             "var dataExtractor = new JsonFilesCreator(context, par.JsonFolderName)", "dataExtractor.Run()",
             string.Empty, "return 0", string.Empty);
 

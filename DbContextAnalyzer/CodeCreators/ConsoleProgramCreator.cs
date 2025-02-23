@@ -48,7 +48,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
             "using Microsoft.Extensions.DependencyInjection", "using Microsoft.Extensions.Logging", string.Empty,
             _fcbAdditionalUsing, string.Empty, "ILogger<Program>? logger = null",
             new CodeBlock("try", $"Console.WriteLine(\"{_projectDescription}\")",
-                $"IArgumentsParser argParser = new ArgumentsParser<{_parametersClassName}>(args, \"{_projectNamespace}\", null{strPossibleSwitches})",
+                $"var argParser = new ArgumentsParser<{_parametersClassName}>(args, \"{_projectNamespace}\", null{strPossibleSwitches})",
                 new CodeBlock("switch (argParser.Analysis())", "case EParseResult.Ok: break",
                     "case EParseResult.Usage: return 1", "case EParseResult.Error: return 2",
                     "default: throw new ArgumentOutOfRangeException()"), string.Empty,
