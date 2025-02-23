@@ -85,6 +85,13 @@ public sealed class SeederCodeCreatorStarter
             return;
         }
 
+        var modelFullPath = Path.Combine(_par.DataSeedingProjectPlacePath, _par.DataSeedingProjectNamespace, "Models");
+        if (FileStat.CreateFolderIfNotExists(modelFullPath, true) is null)
+        {
+            StShared.WriteErrorLine("modelFullPath does not created", true);
+            return;
+        }
+
         carcassOptionsBuilder.UseSqlServer(_par.ConnectionStringProd);
         // ReSharper disable once using
         // ReSharper disable once DisposableConstructor
