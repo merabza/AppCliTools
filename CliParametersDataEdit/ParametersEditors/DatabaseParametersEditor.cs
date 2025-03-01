@@ -26,6 +26,9 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             nameof(DatabaseParameters.DbServerFoldersSetName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName)));
 
+        FieldEditors.Add(new EnumFieldEditor<EDatabaseRecoveryModel>(
+            nameof(DatabaseParameters.DatabaseRecoveryModel), EDatabaseRecoveryModel.Full));
+
         //ბაზის სახელის არჩევა ხდება სერვერზე არსებული ბაზების სახელებიდან.
         //შესაძლებელია ახალი სახელის მითითება, თუ ბაზა ჯერ არ არსებობს
         //NewBaseName არის ბაზის სახელი, რომელიც უნდა შეიქმნას განახლების დროს
