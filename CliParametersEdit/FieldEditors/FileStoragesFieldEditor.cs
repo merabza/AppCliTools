@@ -16,7 +16,7 @@ public sealed class FileStoragesFieldEditor : FieldEditor<Dictionary<string, Fil
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public FileStoragesFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         _logger = logger;
         _parametersManager = parametersManager;

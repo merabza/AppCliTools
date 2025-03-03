@@ -1,5 +1,4 @@
 ﻿using LibMenuInput;
-using LibParameters;
 
 namespace CliParameters.FieldEditors;
 
@@ -19,8 +18,8 @@ public sealed class FolderPathFieldEditor : FieldEditor<string>
         SetValue(recordForUpdate, MenuInputer.InputFolderPath(FieldName, GetValue(recordForUpdate, _defaultValue)));
     }
 
-    public override void SetDefault(ItemData currentItem)
-    {
-        SetValue(currentItem, _defaultValue);
-    }
+    //public override void SetDefault(ItemData currentItem)
+    //{
+    //    SetValue(currentItem, _defaultValue);
+    //}
 }

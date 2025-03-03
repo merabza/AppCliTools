@@ -14,7 +14,7 @@ public sealed class ArchiversFieldEditor : FieldEditor<Dictionary<string, Archiv
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ArchiversFieldEditor(string propertyName, ParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         _parametersManager = parametersManager;
     }

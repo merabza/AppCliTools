@@ -14,7 +14,7 @@ public sealed class SmartSchemasFieldEditor : FieldEditor<Dictionary<string, Sma
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public SmartSchemasFieldEditor(string propertyName, IParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         _parametersManager = parametersManager;
     }

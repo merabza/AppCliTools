@@ -47,8 +47,7 @@ public class GetDbServerFoldersToolAction : ToolAction
         var apiClients = new ApiClients(acParameters.ApiClients);
 
         var createDatabaseManagerResult = await DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
-            _dbServerName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
-            CancellationToken.None);
+            _dbServerName, databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
 
         if (createDatabaseManagerResult.IsT1)
         {

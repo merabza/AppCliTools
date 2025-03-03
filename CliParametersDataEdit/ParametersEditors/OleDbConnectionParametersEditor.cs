@@ -14,7 +14,7 @@ public sealed class OleDbConnectionParametersEditor : ParametersEditor
         FieldEditors.Add(new FilePathFieldEditor(nameof(OleDbConnectionParameters.DatabaseFilePath)));
         FieldEditors.Add(new TextFieldEditor(nameof(OleDbConnectionParameters.Provider),
             OleDbConnectionParameters.MsAccessOleDbProviderName));
-        FieldEditors.Add(new BoolFieldEditor(nameof(OleDbConnectionParameters.PersistSecurityInfo), false));
-        FieldEditors.Add(new TextFieldEditor(nameof(OleDbConnectionParameters.Password), null, PasswordChar));
+        FieldEditors.Add(new BoolFieldEditor(nameof(OleDbConnectionParameters.PersistSecurityInfo)));
+        FieldEditors.Add(new TextFieldEditor(nameof(OleDbConnectionParameters.Password), null, false, PasswordChar));
     }
 }

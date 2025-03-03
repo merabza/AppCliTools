@@ -10,7 +10,7 @@ public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchema
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public SmartSchemaDetailsFieldEditor(string propertyName, bool enterFieldDataOnCreate = false) : base(propertyName,
-        enterFieldDataOnCreate, null, true)
+        enterFieldDataOnCreate, null, false, null, true)
     {
     }
 

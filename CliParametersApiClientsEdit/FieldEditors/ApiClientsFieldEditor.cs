@@ -18,7 +18,7 @@ public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiCl
     // ReSharper disable once ConvertToPrimaryConstructor
     public ApiClientsFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
         IParametersManager parametersManager, bool enterFieldDataOnCreate = false) : base(propertyName,
-        enterFieldDataOnCreate, null, true)
+        enterFieldDataOnCreate, null, false, null, true)
     {
         _parametersManager = parametersManager;
         _logger = logger;

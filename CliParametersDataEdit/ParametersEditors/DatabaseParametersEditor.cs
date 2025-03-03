@@ -1,8 +1,10 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.FieldEditors;
 using CliParametersEdit.FieldEditors;
+using DbTools;
 using LibDatabaseParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
@@ -26,8 +28,8 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             nameof(DatabaseParameters.DbServerFoldersSetName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName)));
 
-        FieldEditors.Add(new EnumFieldEditor<EDatabaseRecoveryModel>(
-            nameof(DatabaseParameters.DatabaseRecoveryModel), EDatabaseRecoveryModel.Full));
+        FieldEditors.Add(new EnumFieldEditor<EDatabaseRecoveryModel>(nameof(DatabaseParameters.DatabaseRecoveryModel),
+            DatabaseParameters.DefaultDatabaseRecoveryModel, true));
 
         //ბაზის სახელის არჩევა ხდება სერვერზე არსებული ბაზების სახელებიდან.
         //შესაძლებელია ახალი სახელის მითითება, თუ ბაზა ჯერ არ არსებობს
@@ -46,8 +48,21 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             listsParametersManager));
 
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseParameters.CommandTimeOut), 10000));
-        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseParameters.SkipBackupBeforeRestore), false));
-        FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
-            nameof(DatabaseParameters.DatabaseBackupParameters), parametersManager));
+        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseParameters.SkipBackupBeforeRestore)));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseParameters.BackupNamePrefix), $"{Environment.MachineName}_",
+            true));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseParameters.DateMask), DatabaseParameters.DefaultDateMask,
+            true));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseParameters.BackupFileExtension),
+            DatabaseParameters.DefaultBackupFileExtension, true));
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseParameters.BackupNameMiddlePart),
+            DatabaseParameters.DefaultBackupNameMiddlePart, true));
+        //FIXME აქ სასურველია დადგინდეს შეუძლია თუ არა სერვერს კომპრესია და ისე განისაზღვროს ძირითადი მნიშვნელობა
+        FieldEditors.Add(new BoolNullableFieldEditor(nameof(DatabaseParameters.Compress),
+            DatabaseParameters.DefaultCompress, true));
+        FieldEditors.Add(new BoolNullableFieldEditor(nameof(DatabaseParameters.Verify),
+            DatabaseParameters.DefaultVerify, true));
+        FieldEditors.Add(new EnumFieldEditor<EBackupType>(nameof(DatabaseParameters.BackupType),
+            DatabaseParameters.DefaultBackupType, true));
     }
 }

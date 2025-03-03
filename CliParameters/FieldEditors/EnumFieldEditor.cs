@@ -1,6 +1,5 @@
 ﻿using System;
 using LibMenuInput;
-using LibParameters;
 
 namespace CliParameters.FieldEditors;
 
@@ -19,10 +18,5 @@ public /*open*/ class EnumFieldEditor<TEnum> : FieldEditor<TEnum> where TEnum : 
     {
         var current = GetValue(recordForUpdate, _defaultValue);
         SetValue(recordForUpdate, MenuInputer.InputFromEnumList(FieldName, current));
-    }
-
-    public override void SetDefault(ItemData currentItem)
-    {
-        SetValue(currentItem, _defaultValue);
     }
 }

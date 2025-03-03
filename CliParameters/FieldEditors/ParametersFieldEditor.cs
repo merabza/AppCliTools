@@ -12,7 +12,7 @@ public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TMode
 
     // ReSharper disable once ConvertToPrimaryConstructor
     protected ParametersFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         Logger = logger;
         ParametersManager = parametersManager;

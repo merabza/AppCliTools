@@ -1,5 +1,4 @@
 ﻿using LibDataInput;
-using LibParameters;
 
 namespace CliParameters.FieldEditors;
 
@@ -20,8 +19,8 @@ public sealed class IntFieldEditor : FieldEditor<int>
         //SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, true, _defaultValue)));//20220811
     }
 
-    public override void SetDefault(ItemData currentItem)
-    {
-        SetValue(currentItem, _defaultValue);
-    }
+    //public override void SetDefault(ItemData currentItem)
+    //{
+    //    SetValue(currentItem, _defaultValue);
+    //}
 }

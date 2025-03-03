@@ -9,7 +9,10 @@ namespace CliParameters.FieldEditors;
 public /*open*/ class FieldEditor
 {
     private readonly bool _isSubObject;
-    public readonly bool EnterFieldDataOnCreate;
+
+    public readonly bool
+        EnterFieldDataOnCreate; //ეს ველი მიუთითებს გამოიტანოს თუ არა შექმნისას შეთავაზება ამ ველის მნიშვნელობის შესავსებად
+
     protected readonly string FieldName;
     public readonly string PropertyName;
     public bool Enabled = true;
@@ -53,7 +56,7 @@ public /*open*/ class FieldEditor
         return "Unknown";
     }
 
-    public static T? GetValue<T>(object record, string propertyName)
+    protected static T? GetValue<T>(object record, string propertyName)
     {
         var currentRecordPropertyInfo = record.GetType().GetProperty(propertyName);
         return currentRecordPropertyInfo is null
@@ -68,9 +71,15 @@ public /*open*/ class FieldEditor
 
 public /*open*/ class FieldEditor<T> : FieldEditor
 {
-    protected FieldEditor(string propertyName, bool enterFieldDataOnCreate = false, string? propertyDescriptor = null,
-        bool isSubObject = false) : base(propertyName, propertyDescriptor, isSubObject, enterFieldDataOnCreate)
+    protected readonly bool AutoUsageOfDefaultValue;
+    protected readonly T? DefaultValue;
+
+    protected FieldEditor(string propertyName, bool enterFieldDataOnCreate = false, T? defaultValue = default,
+        bool autoUsageOfDefaultValue = false, string? propertyDescriptor = null, bool isSubObject = false) : base(
+        propertyName, propertyDescriptor, isSubObject, enterFieldDataOnCreate)
     {
+        DefaultValue = defaultValue;
+        AutoUsageOfDefaultValue = autoUsageOfDefaultValue;
     }
 
     //აქ public საჭიროა CliParametersDataEdit.ConnectionStringParametersManager.Save მეთოდისათვის
@@ -85,9 +94,25 @@ public /*open*/ class FieldEditor<T> : FieldEditor
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
-        return val is null ? string.Empty : val.ToString() ?? string.Empty;
+        var val = GetValueOrDefault(record);
+        return val?.ToString() ?? string.Empty;
     }
+
+    protected T? GetValueOrDefault(object? record)
+    {
+        T? val;
+        if (AutoUsageOfDefaultValue && DefaultValue is not null)
+            val = GetValue(record, (T?)DefaultValue);
+        else
+            val = GetValue(record);
+        return val;
+    }
+
+    //public override string GetValueStatus(object? record)
+    //{
+    //    var val = GetValue(record);
+    //    return val is null ? string.Empty : val.ToString() ?? string.Empty;
+    //}
 
     protected T? GetValue(object? record, T? defaultValue = default)
     {
@@ -95,9 +120,15 @@ public /*open*/ class FieldEditor<T> : FieldEditor
             return defaultValue;
         var currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName) ??
                                         throw new DataInputException($"property {PropertyName} not found");
+
         var toRet = currentRecordPropertyInfo.GetValue(record);
         if (toRet is null)
             return defaultValue;
         return (T?)toRet ?? defaultValue;
+    }
+
+    public override void SetDefault(ItemData currentItem)
+    {
+        SetValue(currentItem, DefaultValue);
     }
 }

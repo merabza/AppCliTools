@@ -45,12 +45,12 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         }
 
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerAddress)));
-        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), false));
+        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity)));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerUser)));
-        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null,
+        FieldEditors.Add(new TextFieldEditor(nameof(DatabaseServerConnectionData.ServerPass), null, false,
             ParametersEditor.PasswordChar));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
-        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt), false));
+        FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt)));
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
         //FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
         //    nameof(DatabaseServerConnectionData.FullDbBackupParameters), parametersManager));

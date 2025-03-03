@@ -19,7 +19,7 @@ public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionar
     // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseServerConnectionsFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory,
         IParametersManager parametersManager, string propertyName, bool enterFieldDataOnCreate = false) : base(
-        propertyName, enterFieldDataOnCreate, null, true)
+        propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         _parametersManager = parametersManager;
         _logger = logger;
