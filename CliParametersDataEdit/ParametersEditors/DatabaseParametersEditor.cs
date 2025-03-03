@@ -28,7 +28,7 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             nameof(DatabaseParameters.DbServerFoldersSetName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName)));
 
-        FieldEditors.Add(new EnumFieldEditor<EDatabaseRecoveryModel>(nameof(DatabaseParameters.DatabaseRecoveryModel),
+        FieldEditors.Add(new EnumNullableFieldEditor<EDatabaseRecoveryModel>(nameof(DatabaseParameters.DatabaseRecoveryModel),
             DatabaseParameters.DefaultDatabaseRecoveryModel, true));
 
         //ბაზის სახელის არჩევა ხდება სერვერზე არსებული ბაზების სახელებიდან.
@@ -62,7 +62,7 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             DatabaseParameters.DefaultCompress, true));
         FieldEditors.Add(new BoolNullableFieldEditor(nameof(DatabaseParameters.Verify),
             DatabaseParameters.DefaultVerify, true));
-        FieldEditors.Add(new EnumFieldEditor<EBackupType>(nameof(DatabaseParameters.BackupType),
+        FieldEditors.Add(new EnumNullableFieldEditor<EBackupType>(nameof(DatabaseParameters.BackupType),
             DatabaseParameters.DefaultBackupType, true));
     }
 }

@@ -24,6 +24,26 @@ public static class MenuInputer
         return selectMenuListInput.SelectedCliMenuItem?.CliMenuCommand.Name;
     }
 
+    public static TEnum? InputFromEnumNullableList<TEnum>(string fieldName, TEnum? defaultValue) where TEnum : struct, Enum
+    {
+        const string none = "__None__";
+        var names = new List<string> { none };
+        names.AddRange(Enum.GetNames<TEnum>());
+
+        SelectFromListInput selectInput = new(fieldName, names, defaultValue.ToString());
+        if (!selectInput.DoInput())
+            throw new DataInputException($"Input {fieldName} Escaped");
+        var key = selectInput.Text;
+
+        if (key == none)
+            return null;
+
+        if (!Enum.TryParse(key, out TEnum dataProvider))
+            throw new DataInputException($"Invalid selection of {fieldName}");
+
+        return dataProvider;
+    }
+
     public static TEnum InputFromEnumList<TEnum>(string fieldName, TEnum defaultValue) where TEnum : struct, Enum
     {
         SelectFromListInput selectInput = new(fieldName, [.. Enum.GetNames<TEnum>()], defaultValue.ToString());
