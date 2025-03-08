@@ -28,8 +28,8 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             nameof(DatabaseParameters.DbServerFoldersSetName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName)));
 
-        FieldEditors.Add(new EnumNullableFieldEditor<EDatabaseRecoveryModel>(nameof(DatabaseParameters.DatabaseRecoveryModel),
-            DatabaseParameters.DefaultDatabaseRecoveryModel, true));
+        FieldEditors.Add(new EnumNullableFieldEditor<EDatabaseRecoveryModel>(
+            nameof(DatabaseParameters.DatabaseRecoveryModel), DatabaseParameters.DefaultDatabaseRecoveryModel, true));
 
         //ბაზის სახელის არჩევა ხდება სერვერზე არსებული ბაზების სახელებიდან.
         //შესაძლებელია ახალი სახელის მითითება, თუ ბაზა ჯერ არ არსებობს

@@ -24,7 +24,8 @@ public static class MenuInputer
         return selectMenuListInput.SelectedCliMenuItem?.CliMenuCommand.Name;
     }
 
-    public static TEnum? InputFromEnumNullableList<TEnum>(string fieldName, TEnum? defaultValue) where TEnum : struct, Enum
+    public static TEnum? InputFromEnumNullableList<TEnum>(string fieldName, TEnum? defaultValue)
+        where TEnum : struct, Enum
     {
         const string none = "__None__";
         var names = new List<string> { none };

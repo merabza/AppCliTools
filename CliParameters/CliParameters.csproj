@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="FieldEditors\BoolNullableFieldEditorTemp.cs" />
+        <None Include="FieldEditors\BoolNullableFieldEditorTemp.cs" />
     </ItemGroup>
 
     <ItemGroup>
