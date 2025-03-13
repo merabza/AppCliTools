@@ -11,6 +11,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     private readonly bool _isAnyCarcassType;
 
     private readonly SeederCodeCreatorParameters _parameters;
+
     //private CodeRegion? _carcassRegion;
     //private CodeRegion? _projectRegion;
     private FlatCodeBlock? _carcassCodeBlock;
@@ -37,8 +38,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
             "using Microsoft.AspNetCore.Identity",
             _isAnyCarcassType
                 ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
-                : string.Empty,
-            $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
+                : string.Empty, $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo", new CodeBlock($"""
