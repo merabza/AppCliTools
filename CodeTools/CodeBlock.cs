@@ -75,14 +75,14 @@ public sealed class CodeBlock : CodeBlockBase, ICodeItem
                 sb.Append($", {Initializer.Quotas()}");
             sb.Append(", true");
             sb.Append(CodeItems.Cast<CodeCommand>().Select(s => s.CommandLine.Quotas()));
-            sb.Append(")");
         }
         else
         {
             sb.Append($"new CodeBlock({BlockHeader.Quotas()}");
             sb.Append(base.OutputCreator(indentLevel, additionalIndentLevel));
-            sb.Append(")");
         }
+
+        sb.Append(')');
 
         return sb.ToString();
     }
