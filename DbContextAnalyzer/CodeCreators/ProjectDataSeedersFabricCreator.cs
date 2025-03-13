@@ -12,10 +12,10 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
     private readonly SeederCodeCreatorParameters _parameters;
 
-    //private CodeRegion? _carcassRegion;
-    //private CodeRegion? _projectRegion;
-    private FlatCodeBlock? _carcassCodeBlock;
-    private FlatCodeBlock? _projectCodeBlock;
+    private CodeRegion? _carcassRegion;
+    private CodeRegion? _projectRegion;
+    //private FlatCodeBlock? _carcassCodeBlock;
+    //private FlatCodeBlock? _projectCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
@@ -28,10 +28,10 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        //_carcassRegion = new CodeRegion("Carcass");
-        //_projectRegion = new CodeRegion(_parameters.ProjectPrefix);
-        _carcassCodeBlock = new FlatCodeBlock(new OneLineComment("Carcass"));
-        _projectCodeBlock = new FlatCodeBlock(new OneLineComment(_parameters.ProjectPrefix));
+        _carcassRegion = new CodeRegion("Carcass");
+        _projectRegion = new CodeRegion(_parameters.ProjectPrefix);
+        //_carcassCodeBlock = new FlatCodeBlock(new OneLineComment("Carcass"));
+        //_projectCodeBlock = new FlatCodeBlock(new OneLineComment(_parameters.ProjectPrefix));
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", "using CarcassDataSeeding.Seeders", "using CarcassMasterDataDom.Models",
@@ -45,7 +45,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
                      public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
                        string secretDataFolder, string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
                        secretDataFolder, dataSeedFolder, repo)
-                     """, "Repo = repo"), _carcassCodeBlock, _projectCodeBlock));
+                     """, "Repo = repo"), _carcassRegion, _projectRegion));
         CodeFile.AddRange(block.CodeItems);
     }
 
@@ -70,15 +70,15 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
         if (isCarcassType)
         {
-            if (_carcassCodeBlock is null)
+            if (_carcassRegion is null)
                 throw new Exception("_carcassCodeBlock is null");
-            _carcassCodeBlock.Add(block);
+            _carcassRegion.Add(block);
         }
         else
         {
-            if (_projectCodeBlock is null)
+            if (_projectRegion is null)
                 throw new Exception("_projectCodeBlock is null");
-            _projectCodeBlock.Add(block);
+            _projectRegion.Add(block);
         }
     }
 }
