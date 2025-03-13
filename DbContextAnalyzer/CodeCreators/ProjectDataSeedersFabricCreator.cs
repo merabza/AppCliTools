@@ -71,13 +71,13 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         if (isCarcassType)
         {
             if (_carcassCodeBlock is null)
-                throw new Exception("_carcassRegion is null");
+                throw new Exception("_carcassCodeBlock is null");
             _carcassCodeBlock.Add(block);
         }
         else
         {
             if (_projectCodeBlock is null)
-                throw new Exception("_projectRegion is null");
+                throw new Exception("_projectCodeBlock is null");
             _projectCodeBlock.Add(block);
         }
     }

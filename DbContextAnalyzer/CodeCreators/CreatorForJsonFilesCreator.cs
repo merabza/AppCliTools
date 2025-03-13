@@ -32,7 +32,7 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using System", "using System.IO", "using System.Linq",
-            //$"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}",
+            $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}",
             $"using {_parameters.DbContextProjectName}", "using Newtonsoft.Json", "using Microsoft.EntityFrameworkCore",
             $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public sealed class JsonFilesCreator",
