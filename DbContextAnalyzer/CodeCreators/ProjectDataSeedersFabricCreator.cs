@@ -66,7 +66,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         };
 
         var block = new CodeBlock(
-            $"public {(isCarcassType ? "override " : "virtual ")}{seederClassName} Create{seederClassName}()",
+            $"public {(isCarcassType ? "override " : "virtual ")}IDataSeeder Create{seederClassName}()",
             $"return new {newClassName}({additionalParameters}DataSeedFolder, Repo)");
 
         if (isCarcassType)
