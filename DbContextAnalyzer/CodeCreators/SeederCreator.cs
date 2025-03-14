@@ -204,7 +204,8 @@ public sealed class SeederCreator(
                                                  entityData.SelfRecursiveField != null))
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {parameters.ProjectNamespace}.{parameters.ModelsFolderName}" : null,
-            isCarcassType ? "using CarcassDataSeeding.Seeders" : null, isCarcassType
+            isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
+            isCarcassType
                 ? "using CarcassDb.Models"
                 : $"using {parameters.DbProjectNamespace}.{parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
