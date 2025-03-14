@@ -205,7 +205,7 @@ public sealed class SeederCreator(
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {parameters.ProjectNamespace}.{parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null, isCarcassType
-                ? null // "using CarcassDb.Models"
+                ? "using CarcassDb.Models"
                 : $"using {parameters.DbProjectNamespace}.{parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using LanguageExt",
