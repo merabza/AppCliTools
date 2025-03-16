@@ -3,9 +3,9 @@ using System.Linq;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
+using LibJetBrainsResharperGlobalToolsWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
 
 namespace DbContextAnalyzer;
 
@@ -148,6 +148,7 @@ public sealed class SeederCodeCreator
         if (solutionDir is null)
             return;
 
-        StShared.RunProcess(true, _logger, "jb", $"cleanupcode --exclude=\"**.json\" {solutionDir.FullName}");
+        var processor = new JetBrainsResharperGlobalToolsProcessor(_logger, true);
+        processor.Cleanupcode(solutionDir.FullName);
     }
 }

@@ -13,6 +13,7 @@
         <ProjectReference Include="..\..\BackendCarcass\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibDatabaseParameters\LibDatabaseParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibParameters\LibParameters.csproj" />
+        <ProjectReference Include="..\..\SupportTools\LibJetBrainsResharperGlobalToolsWork\LibJetBrainsResharperGlobalToolsWork.csproj" />
         <ProjectReference Include="..\CodeTools\CodeTools.csproj" />
     </ItemGroup>
 
