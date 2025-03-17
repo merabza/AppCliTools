@@ -3,7 +3,7 @@ using System.Linq;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
-using LibJetBrainsResharperGlobalToolsWork;
+using JetBrainsResharperGlobalToolsWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
