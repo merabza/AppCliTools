@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Domain;
@@ -75,7 +76,7 @@ public sealed class SeederCodeCreator
             var tableName = relEntity.Key;
 
             var isCarcassType = carcassEntityTypes.Any(a =>
-                string.Equals(Relations.GetTableName(a)?.ToLower(), tableName.ToLower()));
+                string.Equals(Relations.GetTableName(a)?.ToLower(), tableName.ToLower(), StringComparison.OrdinalIgnoreCase));
             if (isCarcassType)
                 isAnyCarcassType = true;
         }
@@ -100,7 +101,8 @@ public sealed class SeederCodeCreator
             var tableName = relEntity.Key;
             _logger.LogInformation("TableName = {tableName}", tableName);
 
-            var isCarcassType = carcassEntityTypes.Any(a => Relations.GetTableName(a) == tableName);
+            var isCarcassType = carcassEntityTypes.Any(a =>
+                string.Equals(Relations.GetTableName(a), tableName, StringComparison.OrdinalIgnoreCase));
             //2.1
             var seederModelCreatorForJsonCreatorProject = new SeederModelCreator(_logger,
                 _getJsonCreatorParameters.PlacePath, _getJsonCreatorParameters.ProjectNamespace,
