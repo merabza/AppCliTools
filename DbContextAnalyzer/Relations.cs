@@ -125,7 +125,7 @@ public sealed class Relations
 
     public static string? GetTableName(IEntityType entityType)
     {
-        return entityType.GetTableName()?.ToLower();
+        return entityType.GetTableName();
     }
 
     private int GetMaxLevel(EntityData entityData)
