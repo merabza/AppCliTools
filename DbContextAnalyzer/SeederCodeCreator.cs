@@ -75,8 +75,8 @@ public sealed class SeederCodeCreator
         {
             var tableName = relEntity.Key;
 
-            var isCarcassType = carcassEntityTypes.Any(a =>
-                string.Equals(Relations.GetTableName(a)?.ToLower(), tableName.ToLower(), StringComparison.OrdinalIgnoreCase));
+            var isCarcassType = carcassEntityTypes.Any(a => string.Equals(Relations.GetTableName(a)?.ToLower(),
+                tableName.ToLower(), StringComparison.OrdinalIgnoreCase));
             if (isCarcassType)
                 isAnyCarcassType = true;
         }
