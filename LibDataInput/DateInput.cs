@@ -20,7 +20,6 @@ public sealed class DateInput : DataInput
     //public string Text { get; private set; }
     public DateTime Value { get; private set; }
 
-
     public override bool DoInput()
     {
         var prompt =

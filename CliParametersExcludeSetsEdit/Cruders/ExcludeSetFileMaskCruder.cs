@@ -34,7 +34,6 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
         return new TextItemData { Text = string.Empty };
     }
 
-
     public override bool ContainsRecordWithKey(string recordKey)
     {
         var fileMasks = GetFileMasks();

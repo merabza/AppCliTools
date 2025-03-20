@@ -26,7 +26,6 @@ public sealed class ExcludeSetsFieldEditor : FieldEditor<Dictionary<string, Excl
         return menuSet;
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);

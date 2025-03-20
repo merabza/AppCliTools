@@ -64,7 +64,6 @@ public sealed class SeederModelCreator : CodeCreator
         FinishAndSave();
     }
 
-
     private static string ValidateIdentifier(string identifier)
     {
         // ReSharper disable once using

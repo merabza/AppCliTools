@@ -55,7 +55,6 @@ public class ParseTree
         Branches.Add(new ParseTree(atom, this));
     }
 
-
     public bool IsEqual(ParseTree parseTree)
     {
         if (Branches.Count != parseTree.Branches.Count)
@@ -64,7 +63,6 @@ public class ParseTree
             return !Branches.Where((t, i) => !t.IsEqual(parseTree.Branches[i])).Any();
         return Atom == parseTree.Atom;
     }
-
 
     public string ToString(int indent = 0)
     {

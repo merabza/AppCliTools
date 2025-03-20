@@ -35,7 +35,6 @@ public sealed class DatabaseServerConnectionsFieldEditor : FieldEditor<Dictionar
         return menuSet;
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);

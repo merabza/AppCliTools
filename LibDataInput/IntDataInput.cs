@@ -17,7 +17,6 @@ public sealed class IntDataInput : DataInput
 
     public int Value { get; private set; }
 
-
     public override bool DoInput()
     {
         var prompt = $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";

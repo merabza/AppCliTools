@@ -19,7 +19,6 @@ public sealed class ItemSubMenuCliMenuCommand : CliMenuCommand
         return _cruder.GetItemMenu(Name);
     }
 
-
     protected override string? GetStatus()
     {
         return _cruder.GetStatusFor(Name);

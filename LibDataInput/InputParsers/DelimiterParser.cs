@@ -25,7 +25,6 @@ public /*open*/ class DelimiterParser : InputParser
         return Maxes[digs.Length - 1];
     }
 
-
     public override bool CanAddDelimiter(string current)
     {
         var digs = current.Split(Delimiter);
@@ -44,12 +43,10 @@ public /*open*/ class DelimiterParser : InputParser
         return number * 10 > GetMax(digs.Select(int.Parse).ToArray());
     }
 
-
     public override bool IsValidNextChar(string current, char nextChar)
     {
         if (!char.IsDigit(nextChar) && nextChar != Delimiter)
             return false;
-
 
         var checkString = $"{current}{nextChar}";
 

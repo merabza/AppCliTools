@@ -28,7 +28,6 @@
 //        _parametersManager = parametersManager;
 //    }
 
-
 //    protected override async ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
 //    {
 //        var parameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;

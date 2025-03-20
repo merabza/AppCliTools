@@ -26,7 +26,6 @@ public /*open*/ class CodeCreator
     {
     }
 
-
     //public virtual void UseEntity(EntityData entityData, bool isCarcassType)
     //{
     //}

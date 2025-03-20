@@ -19,7 +19,6 @@ public sealed class DateTimeInput : DataInput
 
     public DateTime Value { get; private set; }
 
-
     public override bool DoInput()
     {
         var prompt =

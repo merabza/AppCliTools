@@ -35,7 +35,6 @@ public sealed class Relations
         //Console.WriteLine($"{fileName} created");
     }
 
-
     public void DbContextAnalysis()
     {
         foreach (var entityType in _dbContext.Model.GetEntityTypes())
@@ -52,7 +51,6 @@ public sealed class Relations
             EntityAnalysis(entityType);
         }
     }
-
 
     private void EntityAnalysis(IEntityType entityType)
     {
@@ -138,7 +136,6 @@ public sealed class Relations
         //return maxByPrincipalTables > maxByFields ? maxByPrincipalTables : maxByFields;
     }
 
-
     private int GetLevel(FieldData fieldData)
     {
         if (fieldData.SubstituteField == null)
@@ -214,7 +211,6 @@ public sealed class Relations
         }
     }
 
-
     private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
     {
         var realTypeCandidate = clrTypeName switch
@@ -237,7 +233,6 @@ public sealed class Relations
 
         return $"{realTypeCandidate}{(isNullable ? "?" : string.Empty)}";
     }
-
 
     private static IIndex? GetOptimalUniIndex(IEntityType entityType)
     {
@@ -298,14 +293,12 @@ public sealed class Relations
                 //ოპტიმალურად უნდა ჩავთვალოთ პირველ რიგში ის ინდექსი, რომელსაც ყველაზე ნაკლები რაოდენობის დამოკიდებული ველები აქვს,
                 //ხოლო შემდეგ იმის მიხედვით დანარჩენი ველების რაოდენობა, რომ ყველაზე ნაკლები ჰქონდეს.
 
-
                 return uniKeys.OrderBy(o => o.Properties.Count(c => c.GetContainingForeignKeys().Any()))
                     .ThenBy(o => o.Properties.Count(c => !c.GetContainingForeignKeys().Any())).ToList()[0];
 
             //ოპტიმალური ინდექსის მოსაძებნად რეკურსია აღარ გამოვიყენე,
             //რადგან მაშინ საჭირო გახდებოდა სხვადასხვა ცხრილებიდან მოსული ინდექსების რანჟირება
             //რაც არაინტუიტიურია და თანაც არ მგონია კოდმა აქამდე მოაღწიოს, რადგან, მანამდე ბევრჯერ იყო დაანგარიშების შანსი
-
 
             //var optCandidates = uniKeys.Select(s=> new { s, count = s.Properties.Count(c => c.GetContainingForeignKeys().Any()) }).OrderBy(o=>o.count).ToList();
             ////დავადგინოთ რამდენია დამოკიდებული ველების მინიმალური რაოდენობა 
@@ -317,7 +310,6 @@ public sealed class Relations
             //{
             //  return optCandidateUniKeys[0];
             //}
-
 
             //foreach (var optCandidate in optCandidates.Where(w=>w.count == minCount))
             //{

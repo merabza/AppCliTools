@@ -15,7 +15,6 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
         var repositoryObjectName = $"{par.ProjectPrefixShort.ToLower()}DataSeederRepository"; //gmDataSeederRepository
         var projectNewDataSeedersFabric = $"{par.ProjectPrefixShort}NewDataSeedersFabric"; //GmNewDataSeedersFabric
 
-
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models", "using Microsoft.AspNetCore.Identity",
             "using SystemToolsShared.Errors", $"using Seed{par.DbProjectNamespace}",

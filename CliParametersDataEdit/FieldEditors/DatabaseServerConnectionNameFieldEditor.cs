@@ -53,7 +53,6 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
 
         var val = GetValue(record);
 
-
         if (val is null)
             return string.Empty;
 

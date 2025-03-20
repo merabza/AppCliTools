@@ -24,7 +24,6 @@ public /*open*/ class BinFileCreator
     {
     }
 
-
     public virtual void FinishAndSave()
     {
         CreateFile();

@@ -32,7 +32,6 @@ public sealed class ApiClientsFieldEditor : FieldEditor<Dictionary<string, ApiCl
         return menuSet;
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);

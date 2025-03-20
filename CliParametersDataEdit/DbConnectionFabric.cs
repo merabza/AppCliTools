@@ -97,7 +97,6 @@ public static class DbConnectionFabric
         return (null, null);
     }
 
-
     private static string? GetDbConnectionString(DatabaseParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {

@@ -4,7 +4,6 @@ public class Token
 {
     protected readonly object? PVal;
 
-
     protected Token()
     {
         Tok = null;

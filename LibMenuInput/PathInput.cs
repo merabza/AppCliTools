@@ -149,7 +149,6 @@ public /*open*/ class PathInput : DataInput
         //names.AddRange(fileNames);
     }
 
-
     private static void ClearCurrentLine()
     {
         var currentLine = Console.CursorTop;

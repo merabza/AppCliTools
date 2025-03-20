@@ -17,7 +17,6 @@ public sealed class AnswerInput : DataInput
 
     public EDialogResult Value { get; private set; }
 
-
     public override bool DoInput()
     {
         var defaultAnswer = _defaultValue.ToString().Take(1).ToString();
@@ -26,7 +25,6 @@ public sealed class AnswerInput : DataInput
                              $"{current}/{dialogResult.ToString().First(char.IsUpper).ToString().ToLower()}{dialogResult}") +
                      $")[{defaultAnswer}]: ";
         Console.Write(prompt);
-
 
         var mainLetters = Enum.GetValues<EDialogResult>()
             .ToDictionary(k => k.ToString().First(char.IsUpper).ToString(), v => v);

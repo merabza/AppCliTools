@@ -41,7 +41,6 @@ public sealed class ConsoleProgramCreator : CodeCreator
         var finalServiceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
             $"var servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\")");
 
-
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             string.Empty, "using System", "using Serilog.Events", "using CliParameters",
             "using DbContextAnalyzer.Models", "using SystemToolsShared",

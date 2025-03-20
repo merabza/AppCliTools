@@ -110,7 +110,6 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         TryUseFile(Path.Combine(pathToExeRoot, _jsonFileName));
     }
 
-
     private void TryUseFile(string? startFileName)
     {
         _parLoader.ParametersFileName = startFileName;

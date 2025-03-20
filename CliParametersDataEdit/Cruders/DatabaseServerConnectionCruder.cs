@@ -102,7 +102,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
-
             var createDatabaseManagerResult = DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
                 databaseServerConnectionData, apiClients, _httpClientFactory, null, null).Preserve().Result;
 
@@ -209,7 +208,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         EnableFieldByName(nameof(DatabaseServerConnectionData.ConnectionTimeOut), enableSqlServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.Encrypt), enableSqlServerProps);
 
-
         if (lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerUser) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerPass) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerAddress))
@@ -236,7 +234,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
     public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordKey)
     {
         base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
-
 
         var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
         var databaseServerConnectionDataByKey = parameters.DatabaseServerConnections[recordKey];

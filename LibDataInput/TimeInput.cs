@@ -18,7 +18,6 @@ public sealed class TimeInput : DataInput
     private string? Text { get; set; }
     public DateTime Value { get; private set; }
 
-
     public override bool DoInput()
     {
         var prompt = $"Enter {_fieldName} [{_defaultValue.ToString("T", CultureInfo.InvariantCulture)}]: ";

@@ -87,7 +87,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
         return res.Aggregate(string.Empty, (current, includeString) => current + includeString);
     }
 
-
     private static Dictionary<string, FieldData[]> GetFields(FieldData fieldData)
     {
         if (fieldData.SubstituteField?.Fields is null || !(fieldData.SubstituteField?.Fields.Count > 0))
@@ -133,7 +132,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             atLeastOneAdded = true;
         }
 
-
         var tableVarName = tableName.UnCapitalize();
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")", string.Empty,
@@ -144,7 +142,6 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
             throw new Exception("_runMethodCodeBlock is null");
         _runMethodCodeBlock.AddRange(block.CodeItems);
     }
-
 
     private static string FieldName(FieldData[] list, int levelCount)
     {

@@ -14,17 +14,14 @@ public sealed class FolderPathInput : PathInput
 
     public string? FolderPath => EnteredPath;
 
-
     protected override void AddFiles(DirectoryInfo dir, string fileName, List<string> names)
     {
     }
-
 
     protected override bool CheckExists()
     {
         return !IsFileSchema(EnteredPath) || Directory.Exists(EnteredPath);
     }
-
 
     private static bool IsFileSchema(string? path)
     {

@@ -22,7 +22,6 @@ public sealed class OptionalTextFieldEditor : FieldEditor<string?>
         SetValue(recordForUpdate, Inputer.InputText(FieldName, curValue, _passwordCharacter));
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record) ?? string.Empty;

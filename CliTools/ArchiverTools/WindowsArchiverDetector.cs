@@ -27,7 +27,6 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
         }
     }
 
-
     private string? GetProgramPath(string fileType)
     {
         char[] separators = [','];

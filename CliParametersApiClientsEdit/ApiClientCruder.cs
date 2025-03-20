@@ -86,7 +86,6 @@ public sealed class ApiClientCruder : ParCruder
 
             var version = getVersionResult.AsT0;
 
-
             if (string.IsNullOrWhiteSpace(version))
                 return false;
 

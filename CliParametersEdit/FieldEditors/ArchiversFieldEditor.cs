@@ -26,7 +26,6 @@ public sealed class ArchiversFieldEditor : FieldEditor<Dictionary<string, Archiv
         return menuSet;
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);

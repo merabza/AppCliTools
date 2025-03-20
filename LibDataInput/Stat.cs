@@ -33,7 +33,6 @@ public static class Stat
         return value;
     }
 
-
     public static bool CheckRequiredFolder(bool useConsole, string path, bool askQuestion = true)
     {
         var dir = new DirectoryInfo(path);

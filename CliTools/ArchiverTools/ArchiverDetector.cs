@@ -10,7 +10,6 @@ public /*open*/ class ArchiverDetector
 
     protected readonly bool UseConsole;
 
-
     protected ArchiverDetector(bool useConsole, string fileExtension)
     {
         UseConsole = useConsole;

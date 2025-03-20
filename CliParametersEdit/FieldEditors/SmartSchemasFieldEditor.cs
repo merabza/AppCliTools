@@ -26,7 +26,6 @@ public sealed class SmartSchemasFieldEditor : FieldEditor<Dictionary<string, Sma
         return menuSet;
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);

@@ -82,7 +82,6 @@ public /*open*/ class CliMenuCommand
         }
     }
 
-
     //protected virtual void RunAction()
     //{
     //    MenuAction = RunBody() ? _menuActionOnBodySuccess : _menuActionOnBodyFail;

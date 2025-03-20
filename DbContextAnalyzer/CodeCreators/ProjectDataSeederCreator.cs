@@ -10,7 +10,6 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 {
     private readonly SeederCodeCreatorParameters _parameters;
 
-
     private int _counter;
     private CodeBlock? _seedProjectSpecificDataMethodCodeBlock;
 

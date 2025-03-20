@@ -16,7 +16,6 @@ public sealed class CompressProgramPatchFieldEditor : FilePathFieldEditor
     {
         var fileExtension = GetValue<string>(recordForUpdate, nameof(ArchiverData.FileExtension));
 
-
         string? def = null;
         ArchiverDetector? archiverDetector = null;
         if (fileExtension is not null) archiverDetector = ArchiverDetectorFabric.Create(true, fileExtension);

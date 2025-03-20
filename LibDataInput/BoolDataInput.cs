@@ -16,7 +16,6 @@ public sealed class BoolDataInput : DataInput
 
     public bool Value { get; private set; }
 
-
     public override bool DoInput()
     {
         Console.Write($"{_fieldName} (y/n)[{(_defaultValue ? "y" : "n")}]: ");

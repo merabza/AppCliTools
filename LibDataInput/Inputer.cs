@@ -69,7 +69,6 @@ public static class Inputer
         return dateInput.Value;
     }
 
-
     public static DateTime InputTime(string fieldName, DateTime defaultValue = default)
     {
         TimeInput startAtDateTimeInput = new(fieldName, defaultValue);

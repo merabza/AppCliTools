@@ -34,7 +34,6 @@ public sealed class SeederCodeCreator
         _excludesRulesParameters = excludesRulesParameters;
     }
 
-
     public void Go()
     {
         //0.1
@@ -60,13 +59,11 @@ public sealed class SeederCodeCreator
         var projectDataSeederCreator = new ProjectDataSeederCreator(_logger, _seederCodeCreatorParameters);
         projectDataSeederCreator.CreateFileStructure();
 
-
         //----
         var carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
         var relations = new Relations(_dbContext, _excludesRulesParameters);
         relations.DbContextAnalysis();
         //-----
-
 
         //-------------
 

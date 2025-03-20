@@ -38,19 +38,16 @@ public abstract class CliAppLoop
         _menuSetsList[_currentMenuSetLevel].Show(!inFirstTime);
     }
 
-
     protected IEnumerable<RecentCommandCliMenuCommand> GetRecentCommands()
     {
         return _recentCommands.Rc.OrderByDescending(x => x.Value)
             .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Key));
     }
 
-
     public bool Run()
     {
         Console.Clear();
         Console.CancelKeyPress += Console_CancelKeyPress;
-
 
         if (_header == null)
         {
@@ -63,7 +60,6 @@ public abstract class CliAppLoop
         }
 
         Console.WriteLine();
-
 
         var refreshList = true;
         _currentMenuSetLevel = 0;
@@ -274,7 +270,6 @@ public abstract class CliAppLoop
     {
         Console.WriteLine("Console_CancelKeyPress start");
         e.Cancel = true;
-
 
         if (_processes != null && _processes.IsBusy())
         {

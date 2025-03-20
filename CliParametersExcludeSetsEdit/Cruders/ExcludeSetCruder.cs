@@ -41,7 +41,6 @@ public sealed class ExcludeSetCruder : ParCruder
             itemSubMenuSet.AddMenuItem(detailListCommand);
     }
 
-
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
     {
         var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;

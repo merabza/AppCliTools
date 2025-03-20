@@ -17,7 +17,6 @@ public sealed class ParameterSubObjectFieldEditorCliMenuCommand : CliMenuCommand
         _parametersEditor = parametersEditor;
     }
 
-
     public override CliMenuSet? GetSubmenu()
     {
         return _fieldEditor.GetSubMenu(_parametersEditor.Parameters);

@@ -21,7 +21,6 @@ public sealed class FileOrFolderPathInput : PathInput
         names.AddRange(fileNames);
     }
 
-
     protected override bool CheckExists()
     {
         return File.Exists(EnteredPath) || !IsFileSchema(EnteredPath) || Directory.Exists(EnteredPath);

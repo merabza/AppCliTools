@@ -9,7 +9,6 @@ public /*open*/ class DataInput
         return false;
     }
 
-
     protected static void ClearCurrentInput(int column)
     {
         var currentLine = Console.CursorTop;

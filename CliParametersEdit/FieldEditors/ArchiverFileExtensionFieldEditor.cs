@@ -12,7 +12,6 @@ public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
     {
     }
 
-
     public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var archiveType = GetValue<EArchiveType>(recordForUpdate, nameof(ArchiverData.Type));

@@ -99,7 +99,6 @@ public sealed class CliMenuSet
         foreach (var menuItem in MenuItems)
             menuItem.CliMenuCommand.CountStatus();
 
-
         var width = Console.WindowWidth - 6;
         var max1 = 0;
         var max2 = 0;
@@ -116,7 +115,6 @@ public sealed class CliMenuSet
                 max2 = (int)(max2 / k);
             }
         }
-
 
         var menuId = 0;
         foreach (var menuItem in MenuItems)
@@ -208,7 +206,6 @@ public sealed class CliMenuSet
             _ => null
         };
     }
-
 
     public void AddMenuItem(string key, CliMenuCommand menuCommand, int checkKeyLength, int useId = -1)
     {

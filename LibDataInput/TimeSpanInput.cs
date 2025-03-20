@@ -9,7 +9,6 @@ public sealed class TimeSpanInput : DataInput
     private readonly TimeSpan _defaultValue;
     private readonly string _fieldName;
 
-
     // ReSharper disable once ConvertToPrimaryConstructor
     public TimeSpanInput(string fieldName, TimeSpan defaultValue = default)
     {
@@ -19,12 +18,10 @@ public sealed class TimeSpanInput : DataInput
 
     public TimeSpan Value { get; private set; }
 
-
     public override bool DoInput()
     {
         var prompt = $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
-
 
         var promptLength = prompt.Length;
         StringBuilder sb = new();
@@ -61,7 +58,6 @@ public sealed class TimeSpanInput : DataInput
 
                     break;
             }
-
 
             TimeDelimiterParser timeDelimiterParser = new();
             var res = timeDelimiterParser.TryAddNextChar(sb.ToString(), ch.KeyChar);

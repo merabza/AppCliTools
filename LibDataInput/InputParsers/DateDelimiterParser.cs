@@ -9,7 +9,6 @@ public sealed class DateDelimiterParser : DelimiterParser
     {
     }
 
-
     protected override int GetMax(int[] digs)
     {
         var i = digs.Length - 1;

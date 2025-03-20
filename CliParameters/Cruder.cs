@@ -45,19 +45,16 @@ public /*open*/ class Cruder : IFieldEditors
             fieldEditor.Enabled = fieldEditor.PropertyName == butOneFieldName || enable;
     }
 
-
     protected void EnableOffAllFieldButList(List<string> butOneFieldName)
     {
         foreach (var fieldEditor in FieldEditors)
             fieldEditor.Enabled = butOneFieldName.Contains(fieldEditor.PropertyName);
     }
 
-
     protected virtual Dictionary<string, ItemData> GetCrudersDictionary()
     {
         return [];
     }
-
 
     //public საჭიროა ApAgent პროექტისათვის
     // ReSharper disable once MemberCanBeProtected.Global
@@ -167,7 +164,6 @@ public /*open*/ class Cruder : IFieldEditors
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
     }
 
-
     public CliMenuSet GetListMenu()
     {
         CliMenuSet cruderSubMenuSet = new(CrudNamePlural);
@@ -249,7 +245,6 @@ public /*open*/ class Cruder : IFieldEditors
         //ყველაფერი კარგად დასრულდა
         return newRecordKey;
     }
-
 
     public bool EditItemAllFieldsInSequence(string recordKey)
     {
@@ -381,7 +376,6 @@ public /*open*/ class Cruder : IFieldEditors
 
         var selectedId = MenuInputer.InputIdFromMenuList(fieldName.Pluralize(), listSet, currentName);
 
-
         if (useNone && selectedId == -1)
             return null;
 
@@ -400,12 +394,10 @@ public /*open*/ class Cruder : IFieldEditors
         throw new DataInputException("Selected invalid ID. ");
     }
 
-
     public virtual string? GetStatusFor(string name)
     {
         return null;
     }
-
 
     public bool ChangeRecordKey(string recordKey, string newRecordKey)
     {

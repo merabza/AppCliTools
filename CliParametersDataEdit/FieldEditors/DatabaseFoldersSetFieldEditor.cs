@@ -28,7 +28,6 @@ public sealed class DatabaseFoldersSetFieldEditor : FieldEditor<Dictionary<strin
         return menuSet;
     }
 
-
     public override string GetValueStatus(object? record)
     {
         var val = GetValue(record);

@@ -63,7 +63,6 @@ public sealed class SeederCreator(
             _ => string.Empty
         };
 
-
         var additionalParameters2 = tableName switch
         {
             "manyToManyJoins" => "secretDataFolder, ",

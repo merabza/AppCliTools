@@ -90,7 +90,6 @@ public sealed class DatabaseFoldersSetCruder : Cruder
 
     //        var version = getVersionResult.AsT0;
 
-
     //        if (string.IsNullOrWhiteSpace(version))
     //            return false;
 

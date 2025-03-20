@@ -37,7 +37,6 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
     public string MainDatabaseProjectName { get; }
     public string ProjectDbContextClassName { get; }
 
-
     public bool CheckBeforeSave()
     {
         return true;

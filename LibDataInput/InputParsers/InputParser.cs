@@ -12,7 +12,6 @@ public /*open*/ class InputParser
         Delimiter = delimiter;
     }
 
-
     public virtual string? TryAddNextChar(string current, char nextChar)
     {
         var sb = new StringBuilder(current);
@@ -31,7 +30,6 @@ public /*open*/ class InputParser
         sb.Append(Delimiter);
         Console.Write(Delimiter);
     }
-
 
     public virtual bool IsValidNextChar(string current, char nextChar)
     {

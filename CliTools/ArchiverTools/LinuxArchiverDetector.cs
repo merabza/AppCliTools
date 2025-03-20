@@ -7,7 +7,6 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 {
     private const string Unzip = "unzip";
 
-
     // ReSharper disable once ConvertToPrimaryConstructor
     public LinuxArchiverDetector(bool useConsole, string fileExtension) : base(useConsole, fileExtension)
     {
@@ -30,7 +29,6 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
                 return null;
         }
     }
-
 
     private string? CheckArchiverRunner(string archiverName)
     {
