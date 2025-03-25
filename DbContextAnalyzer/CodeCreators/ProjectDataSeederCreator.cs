@@ -24,7 +24,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
     public override void CreateFileStructure()
     {
         _seedProjectSpecificDataMethodCodeBlock = new CodeBlock(
-            "protected override Option<IEnumerable<Err>> SeedProjectSpecificData()",
+            "protected override bool SeedProjectSpecificData()",
             $"var seederFabric = ({_parameters.ProjectDataSeedersFabricClassName}) DataSeedersFabric", string.Empty,
             "Logger.LogInformation(\"Seed Project Data Started\")");
 
@@ -53,8 +53,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Logger.LogInformation(\"Seeding {tableNameCapitalCamel}\")", string.Empty,
             new OneLineComment($"{_counter} {tableNameCapitalCamel}"),
-            $"var result{_counter} = Use(seederFabric.Create{tableNameCapitalCamel}Seeder())",
-            new CodeBlock($"if (result{_counter}.IsSome)", $"return (Err[])result{_counter}"));
+            new CodeBlock($"if (Use(seederFabric.Create{tableNameCapitalCamel}Seeder()))", "return false"));
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");

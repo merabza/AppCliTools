@@ -17,7 +17,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
 
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models", "using Microsoft.AspNetCore.Identity",
-            "using SystemToolsShared.Errors", $"using Seed{par.DbProjectNamespace}",
+            $"using Seed{par.DbProjectNamespace}",
             $"using {par.DbProjectNamespace}DataSeeding", $"using {par.DbProjectNamespace}NewDataSeeding");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(string.Empty,
@@ -43,10 +43,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)", "return 13"), string.Empty,
             "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
             $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository, checkOnly)",
-            string.Empty, "var seedDataResult = seeder.SeedData()", string.Empty,
-            new CodeBlock("if (seedDataResult.IsSome)",
-                new CodeBlock("foreach (var err in (Err[])seedDataResult)", "logger.LogError(err.ErrorMessage)"),
-                "return 1"), string.Empty, "return 0", string.Empty);
+            string.Empty, "return seeder.SeedData() ? 0 : 1", string.Empty);
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringSeed))",
