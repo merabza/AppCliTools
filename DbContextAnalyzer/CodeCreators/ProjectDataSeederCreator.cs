@@ -30,11 +30,8 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using System", //
-            "using System.Collections.Generic", //
             "using CarcassDataSeeding", //
-            "using LanguageExt", //
             "using Microsoft.Extensions.Logging", //
-            "using SystemToolsShared.Errors", //
             $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(
@@ -53,7 +50,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Logger.LogInformation(\"Seeding {tableNameCapitalCamel}\")", string.Empty,
             new OneLineComment($"{_counter} {tableNameCapitalCamel}"),
-            new CodeBlock($"if (Use(seederFabric.Create{tableNameCapitalCamel}Seeder()))", "return false"));
+            new CodeBlock($"if (!Use(seederFabric.Create{tableNameCapitalCamel}Seeder()))", "return false"));
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
@@ -64,7 +61,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
     public override void FinishAndSave()
     {
         var block = new CodeBlock(string.Empty, string.Empty, "Console.WriteLine(\"DataSeederCreator.Run Finished\")",
-            "return null");
+            "return true");
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
