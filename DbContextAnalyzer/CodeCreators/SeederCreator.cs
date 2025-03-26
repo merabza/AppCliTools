@@ -82,7 +82,7 @@ public sealed class SeederCreator(
         if (!isCarcassType)
         {
             additionalCheckMethod =
-                new CodeBlock("protected override bool AdditionalCheck(List<seederModelClassName> jMos)");
+                new CodeBlock($"protected override bool AdditionalCheck(List<{seederModelClassName}> seedData)");
             if (entityData.NeedsToCreateTempData)
             {
                 FlatCodeBlock fcb;
@@ -131,13 +131,12 @@ public sealed class SeederCreator(
                         //$"var {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
                         //$"var {tableNameCamel}List = Create{tableNameCapitalCamel}List({seedDataObjectName})",
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
-                            //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
-                            //"return false"),
+                        //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
+                        //"return false"),
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))",
                             //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetParents\", ErrorMessage = \"{seederModelClassName} cannot Set Parents\" }} }}",
-                            "return false"),
-                        "return true");
+                            "return false"), "return true");
                     var seederModelObjectName = seederModelClassName.UnCapitalize();
                     var keyFieldName = entityData.OptimalIndexFieldsData[0].Name;
 
@@ -154,11 +153,9 @@ public sealed class SeederCreator(
                             $"{tableNameSingular} oneRec = {tableNameCamel}List.SingleOrDefault(s => s.{keyFieldName} == {seederModelObjectName}.{keyFieldName})",
                             new CodeBlock("if (oneRec == null)", "continue"),
                             $"oneRec.{entityData.SelfRecursiveField.Name} = tempData.GetIntIdByKey<{tableNameSingular}>({seederModelObjectName}.{entityData.SelfRecursiveField.SubstituteField.Fields[0].FullName})",
-                            "forUpdate.Add(oneRec)"),
-                        new CodeBlock($"if (!{prPref}Repo.SetUpdates(forUpdate))",
+                            "forUpdate.Add(oneRec)"), new CodeBlock($"if (!{prPref}Repo.SetUpdates(forUpdate))",
                             //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetUpdates\", ErrorMessage = \"{seederModelClassName} cannot Set Updates\" }} }}",
-                            "return false"),
-                        "return true");
+                            "return false"), "return true");
                 }
                 else
                 {
@@ -175,12 +172,10 @@ public sealed class SeederCreator(
             }
             else
             {
-                additionalCheckMethod.Add(new FlatCodeBlock(
-                    new CodeBlock(
-                        $"if (!{prPref}Repo.CreateEntities(Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())))",
-                        //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
-                        "return false"),
-                    "return true"));
+                additionalCheckMethod.Add(new FlatCodeBlock(new CodeBlock(
+                    $"if (!{prPref}Repo.CreateEntities(Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())))",
+                    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
+                    "return false"), "return true"));
             }
 
             var fieldsListStr = string.Join(", ",
