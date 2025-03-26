@@ -166,6 +166,7 @@ public sealed class SeederCreator(
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
                         //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //    "return false"),
+                        $"var dataList = Repo.GetAll<{tableNameSingular}>()",
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         "return true");
                 }
