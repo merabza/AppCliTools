@@ -17,8 +17,8 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
 
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models", "using Microsoft.AspNetCore.Identity",
-            $"using Seed{par.DbProjectNamespace}",
-            $"using {par.DbProjectNamespace}DataSeeding", $"using {par.DbProjectNamespace}NewDataSeeding");
+            $"using Seed{par.DbProjectNamespace}", $"using {par.DbProjectNamespace}DataSeeding",
+            $"using {par.DbProjectNamespace}NewDataSeeding");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(string.Empty,
             new OneLineComment(" ReSharper disable once using"),
