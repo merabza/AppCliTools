@@ -135,7 +135,7 @@ public sealed class SeederCreator(
                         //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //"return false"),
                         $"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
+                        $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(dataList.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))",
                             //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetParents\", ErrorMessage = \"{seederModelClassName} cannot Set Parents\" }} }}",
                             "return false"), "return true");
@@ -167,7 +167,7 @@ public sealed class SeederCreator(
                         //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //    "return false"),
                         $"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
+                        $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(dataList.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         "return true");
                 }
 
