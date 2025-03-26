@@ -73,7 +73,8 @@ public sealed class SeederCreator(
 
         CodeBlock? setParentsMethod = null;
         CodeBlock? additionalCheckMethod = null;
-        CodeBlock additionalCheckMethodHeader = new CodeBlock($"protected override bool AdditionalCheck(List<{seederModelClassName}> seedData)");
+        var additionalCheckMethodHeader =
+            new CodeBlock($"protected override bool AdditionalCheck(List<{seederModelClassName}> seedData)");
         CodeBlock? createMethod = null;
 
         var atLeastOneSubstitute = entityData.FieldsData
@@ -133,6 +134,7 @@ public sealed class SeederCreator(
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
                         //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //"return false"),
+                        $"var dataList = Repo.GetAll<{tableNameSingular}>()",
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))",
                             //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetParents\", ErrorMessage = \"{seederModelClassName} cannot Set Parents\" }} }}",
@@ -167,6 +169,7 @@ public sealed class SeederCreator(
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>({tableNameCamel}List.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         "return true");
                 }
+
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
