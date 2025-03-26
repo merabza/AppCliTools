@@ -21,7 +21,7 @@ public sealed class DataSeederBaseGenericClassCreator : CodeCreator
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock(
-                $"public /*open*/ class {_parameters.DataSeederBaseClassName}<T> : DataSeeder<T> where T : class",
+                $"public /*open*/ class {_parameters.DataSeederBaseClassName}<TDst, TJMo> : DataSeeder<TDst, TJMo> where TDst : class where TJMo : class",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} {_parameters.ProjectPrefixShort}Repo",
                 new CodeBlock(
                     $"protected {_parameters.DataSeederBaseClassName}(string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(dataSeedFolder, repo)",
@@ -30,3 +30,4 @@ public sealed class DataSeederBaseGenericClassCreator : CodeCreator
         FinishAndSave();
     }
 }
+
