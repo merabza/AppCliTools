@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CodeTools;
 
@@ -30,5 +33,40 @@ public sealed class FieldData
         if (SubstituteField == null)
             return 0;
         return SubstituteField.Fields.Select(m => m.GetLevel()).DefaultIfEmpty().Max() + 1;
+    }
+
+    public static FieldData Create(IProperty s, string preferredName, FieldData? parent)
+    {
+        var clrType = s.ClrType;
+        var isNullable = clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        if (isNullable) clrType = clrType.GetGenericArguments()[0];
+        var isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
+        var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable);
+        return new FieldData(preferredName, s.Name, realTypeName,
+            (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
+    }
+
+    private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
+    {
+        var realTypeCandidate = clrTypeName switch
+        {
+            "Int32" => "int",
+            "String" => "string",
+            "Byte[]" => "byte[]",
+            "Boolean" => "bool",
+            "Int16" => "short",
+            "DateTime" => "DateTime",
+            _ => null
+        } ?? typeName switch
+        {
+            "smallint" => "short",
+            "int" => "int",
+            "bit" => "bool",
+            "datetime2" => "DateTime",
+            "date" => "DateTime",
+            _ => typeName
+        };
+
+        return $"{realTypeCandidate}{(isNullable ? "?" : string.Empty)}";
     }
 }

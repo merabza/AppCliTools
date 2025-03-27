@@ -155,21 +155,21 @@ public sealed class Relations
 
         FieldData Selector(IProperty s)
         {
-            var name = replaceDict.TryGetValue(s.Name, out var value) ? value : s.Name;
+            var preferredName = replaceDict.TryGetValue(s.Name, out var value) ? value : s.Name;
+
+            //var isNullable = s.IsNullable;
+            //var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
+            //var fieldData = new FieldData(preferredName, s.Name, GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents), (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
+
+            var fieldData = FieldData.Create(s, preferredName, parent);
 
             var forKeys = s.GetContainingForeignKeys().ToList();
-            var isNullable = s.IsNullable;
-            var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
-            var fieldData = new FieldData(name, s.Name,
-                GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents),
-                (parent == null ? string.Empty : parent.FullName) + name, isNullable, isNullableByParents);
-
             switch (forKeys.Count)
             {
                 case 0:
                     return fieldData;
                 case > 1:
-                    throw new Exception($"Multiple Foreign Keys in table {tableName} for field {name}");
+                    throw new Exception($"Multiple Foreign Keys in table {tableName} for field {preferredName}");
             }
 
             //fieldData.SubstituteForeignKey = forKeys[0];
