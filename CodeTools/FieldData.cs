@@ -55,6 +55,9 @@ public sealed class FieldData
             "Byte[]" => "byte[]",
             "Boolean" => "bool",
             "Float" => "float",
+            "Single" => "single",
+            "Double" => "double",
+            "Decimal" => "decimal",
             "Int16" => "short",
             "DateTime" => "DateTime",
             _ => null
