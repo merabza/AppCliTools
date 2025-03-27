@@ -50,7 +50,9 @@ public sealed class SeederModelCreator : CodeCreator
         var classCodeBlock = new CodeBlock("public sealed class " + className, string.Empty,
             new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), constructorCodeBlock);
 
-        var usingSystem = fieldDataList.Any(a => a.RealTypeName is "DateTime" or "DateTime?") ? new CodeCommand("using System") : null;
+        var usingSystem = fieldDataList.Any(a => a.RealTypeName is "DateTime" or "DateTime?")
+            ? new CodeCommand("using System")
+            : null;
 
         classCodeBlock.AddRange(fieldDataList.Select(fd =>
             new CodeBlock($"public {fd.RealTypeName} {fd.FullName}", true, "get", "set")));
