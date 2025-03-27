@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CodeTools;
 using DbContextAnalyzer.Domain;
@@ -8,12 +9,21 @@ using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class SeederCreator(
-    ILogger logger,
-    SeederCodeCreatorParameters parameters,
-    ExcludesRulesParametersDomain excludesRulesParameters,
-    string placePath) : CodeCreator(logger, placePath)
+public sealed class SeederCreator : CodeCreator
 {
+    private readonly SeederCodeCreatorParameters _parameters;
+    private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public SeederCreator(ILogger logger,
+        SeederCodeCreatorParameters parameters,
+        ExcludesRulesParametersDomain excludesRulesParameters,
+        string placePath) : base(logger, placePath)
+    {
+        _parameters = parameters;
+        _excludesRulesParameters = excludesRulesParameters;
+    }
+
     public override void CreateFileStructure()
     {
     }
@@ -24,7 +34,7 @@ public sealed class SeederCreator(
             return $"s.{fieldData.FullName}";
 
         var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(
-            excludesRulesParameters.SingularityExceptions, fieldData.SubstituteField.TableName);
+            _excludesRulesParameters.SingularityExceptions, fieldData.SubstituteField.TableName);
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
                 ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})"
@@ -39,19 +49,22 @@ public sealed class SeederCreator(
     {
         var usedList = false;
         var tableName = entityData.TableName;
+
+        var replaceFieldsDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
+
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
         var tableNameCamel = tableName.Camelize();
 
         var tableNameSingular =
-            GetTableNameSingularCapitalizeCamel(excludesRulesParameters.SingularityExceptions, tableName);
-        var className = (isCarcassType ? parameters.ProjectPrefixShort : string.Empty) + tableNameCapitalCamel +
+            GetTableNameSingularCapitalizeCamel(_excludesRulesParameters.SingularityExceptions, tableName);
+        var className = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + tableNameCapitalCamel +
                         "Seeder";
         var seederModelClassName = tableNameSingular + "SeederModel";
         var baseClassName = isCarcassType
             ? tableNameCapitalCamel + "Seeder"
-            : $"{parameters.DataSeederBaseClassName}<{tableNameSingular}, {seederModelClassName}>";
+            : $"{_parameters.DataSeederBaseClassName}<{tableNameSingular}, {seederModelClassName}>";
         var seedDataObjectName = tableName.UnCapitalize() + "SeedData";
-        var prPref = isCarcassType ? string.Empty : parameters.ProjectPrefixShort;
+        var prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
 
         var isIdentity = tableName is "roles" or "users";
 
@@ -125,7 +138,7 @@ public sealed class SeederCreator(
                 var tupTypeList = string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => s.RealTypeName));
                 var keyFieldsList = string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => $"k.{s.Name}"));
                 var keyFields = entityData.OptimalIndex.Properties.Count == 1
-                    ? $"k.{entityData.OptimalIndexFieldsData[0].Name}"
+                    ? $"k.{GetPreferredFieldName(replaceFieldsDict, entityData.OptimalIndexFieldsData[0].Name)}"
                     : $" new Tuple<{tupTypeList}>({keyFieldsList})";
                 FlatCodeBlock fcb;
                 if (entityData.SelfRecursiveField != null)
@@ -213,24 +226,31 @@ public sealed class SeederCreator(
                                                  entityData.OptimalIndex != null ||
                                                  entityData.SelfRecursiveField != null))
                 ? "using CarcassDataSeeding"
-                : null, !isCarcassType ? $"using {parameters.ProjectNamespace}.{parameters.ModelsFolderName}" : null,
+                : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
             isCarcassType
                 ? "using CarcassDb.Models"
-                : $"using {parameters.DbProjectNamespace}.{parameters.DbProjectModelsFolderName}",
+                : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using LanguageExt",
             "using SystemToolsShared.Errors",
-            $"namespace {parameters.ProjectNamespace}.{(isCarcassType ? parameters.CarcassSeedersFolderName : parameters.ProjectSeedersFolderName)}",
+            $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
                 additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
 
         FinishAndSave();
     }
+
+    private static string GetPreferredFieldName(Dictionary<string, string> replaceDict, string oldName)
+    {
+        return replaceDict.GetValueOrDefault(oldName, oldName);
+    }
+
+
 }

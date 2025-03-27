@@ -42,4 +42,10 @@ public sealed class ExcludesRulesParametersDomain
 
         return exclRulParDom;
     }
+
+    public Dictionary<string, string> GetReplaceFieldsDictByTableName(string tableName)
+    {
+        return ReplaceFieldNames.Where(w => w.TableName == tableName)
+            .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
+    }
 }
