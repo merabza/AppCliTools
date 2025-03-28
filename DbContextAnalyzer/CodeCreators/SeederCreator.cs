@@ -15,10 +15,8 @@ public sealed class SeederCreator : CodeCreator
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SeederCreator(ILogger logger,
-        SeederCodeCreatorParameters parameters,
-        ExcludesRulesParametersDomain excludesRulesParameters,
-        string placePath) : base(logger, placePath)
+    public SeederCreator(ILogger logger, SeederCodeCreatorParameters parameters,
+        ExcludesRulesParametersDomain excludesRulesParameters, string placePath) : base(logger, placePath)
     {
         _parameters = parameters;
         _excludesRulesParameters = excludesRulesParameters;
@@ -251,6 +249,4 @@ public sealed class SeederCreator : CodeCreator
     {
         return replaceDict.GetValueOrDefault(oldName, oldName);
     }
-
-
 }
