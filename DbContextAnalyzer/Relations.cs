@@ -210,28 +210,6 @@ public sealed class Relations
         }
     }
 
-    private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
-    {
-        var realTypeCandidate = clrTypeName switch
-        {
-            "Int32" => "int",
-            "String" => "string",
-            "Byte[]" => "byte[]",
-            "Boolean" => "bool",
-            "Int16" => "short",
-            _ => null
-        } ?? typeName switch
-        {
-            "smallint" => "short",
-            "int" => "int",
-            "bit" => "bool",
-            "datetime2" => "DateTime",
-            "date" => "DateTime",
-            _ => typeName
-        };
-
-        return $"{realTypeCandidate}{(isNullable ? "?" : string.Empty)}";
-    }
 
     private static IIndex? GetOptimalUniIndex(IEntityType entityType)
     {
