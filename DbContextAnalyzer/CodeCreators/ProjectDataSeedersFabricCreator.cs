@@ -14,8 +14,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
     //private CodeRegion? _carcassRegion;
     //private CodeRegion? _projectRegion;
-    private FlatCodeBlock? _carcassCodeBlock;
-    private FlatCodeBlock? _projectCodeBlock;
+    private readonly FlatCodeBlock _carcassCodeBlock;
+    private readonly FlatCodeBlock _projectCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
@@ -24,19 +24,18 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     {
         _parameters = parameters;
         _isAnyCarcassType = isAnyCarcassType;
+        _carcassCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
+        _projectCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
+
     }
 
     public override void CreateFileStructure()
     {
         //_carcassRegion = new CodeRegion("Carcass");
         //_projectRegion = new CodeRegion(_parameters.ProjectPrefix);
-        //_carcassCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
-        //_projectCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDataSeeding", 
-            "using CarcassMasterDataDom.Models", 
-            "using DatabaseToolsShared",
+            "using CarcassDataSeeding", "using CarcassMasterDataDom.Models", "using DatabaseToolsShared",
             "using Microsoft.AspNetCore.Identity",
             _isAnyCarcassType
                 ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
@@ -71,14 +70,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
             $"return new {newClassName}({additionalParameters}DataSeedFolder, Repo)");
 
         if (isCarcassType)
-        {
-            _carcassCodeBlock ??= new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
             _carcassCodeBlock.Add(block);
-        }
         else
-        {
-            _projectCodeBlock ??= new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
             _projectCodeBlock.Add(block);
-        }
     }
 }
