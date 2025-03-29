@@ -123,8 +123,8 @@ public sealed class SeederCreator : CodeCreator
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
                         //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //    "return false"),
-                        $"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(dataList.ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
+                        //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
+                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(seedData).ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
                         "return true");
                 }
 
