@@ -14,8 +14,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
     //private CodeRegion? _carcassRegion;
     //private CodeRegion? _projectRegion;
-    private CodeBlock? _carcassCodeBlock;
-    private CodeBlock? _projectCodeBlock;
+    private FlatCodeBlock? _carcassCodeBlock;
+    private FlatCodeBlock? _projectCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
@@ -30,19 +30,19 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     {
         //_carcassRegion = new CodeRegion("Carcass");
         //_projectRegion = new CodeRegion(_parameters.ProjectPrefix);
-        _carcassCodeBlock = new CodeBlock(string.Empty, new OneLineComment("Carcass"));
-        _projectCodeBlock = new CodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
+        //_carcassCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
+        //_projectCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", 
-            "using CarcassMasterDataDom.Models",
+            "using CarcassMasterDataDom.Models", 
             "using DatabaseToolsShared",
             "using Microsoft.AspNetCore.Identity",
             _isAnyCarcassType
                 ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
                 : string.Empty, $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
-                $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
+                $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : CarcassDataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo", new CodeBlock($"""
                      public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
                        string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
@@ -72,14 +72,12 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
         if (isCarcassType)
         {
-            if (_carcassCodeBlock is null)
-                throw new Exception("_carcassCodeBlock is null");
+            _carcassCodeBlock ??= new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
             _carcassCodeBlock.Add(block);
         }
         else
         {
-            if (_projectCodeBlock is null)
-                throw new Exception("_projectCodeBlock is null");
+            _projectCodeBlock ??= new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
             _projectCodeBlock.Add(block);
         }
     }
