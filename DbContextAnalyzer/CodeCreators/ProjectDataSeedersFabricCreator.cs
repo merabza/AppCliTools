@@ -26,7 +26,6 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         _isAnyCarcassType = isAnyCarcassType;
         _carcassCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
         _projectCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
-
     }
 
     public override void CreateFileStructure()

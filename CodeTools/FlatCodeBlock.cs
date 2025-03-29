@@ -12,7 +12,8 @@ public sealed class FlatCodeBlock : CodeBlockBase, ICodeItem
     public override string Output(int indentLevel)
     {
         var sb = new StringBuilder();
-        foreach (var codeItem in CodeItems) sb.Append(codeItem.Output(indentLevel));
+        foreach (var codeItem in CodeItems)
+            sb.Append(codeItem.Output(indentLevel - 1));
 
         return sb.ToString();
     }

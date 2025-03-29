@@ -23,9 +23,9 @@ public /*open*/ class CodeBlockBase
                     else
                         CodeItems.Add(new CodeCommand(s));
                     break;
-                case FlatCodeBlock fcb:
-                    CodeItems.AddRange(fcb.CodeItems);
-                    break;
+                //case FlatCodeBlock fcb:
+                //    CodeItems.AddRange(fcb.CodeItems);
+                //    break;
                 case ICodeItem ici:
                     CodeItems.Add(ici);
                     break;
