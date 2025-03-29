@@ -210,7 +210,6 @@ public sealed class Relations
         }
     }
 
-
     private static IIndex? GetOptimalUniIndex(IEntityType entityType)
     {
         //თავიდან დავუშვათ, რომ ოპტიმალური ინდექსი არ მოიძებნა
