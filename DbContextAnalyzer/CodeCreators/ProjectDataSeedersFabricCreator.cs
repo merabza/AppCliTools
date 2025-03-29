@@ -34,7 +34,9 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         _projectCodeBlock = new CodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDataSeeding", "using CarcassDataSeeding.Seeders", "using CarcassMasterDataDom.Models",
+            "using CarcassDataSeeding", 
+            "using CarcassMasterDataDom.Models",
+            "using DatabaseToolsShared",
             "using Microsoft.AspNetCore.Identity",
             _isAnyCarcassType
                 ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
@@ -43,8 +45,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : DataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo", new CodeBlock($"""
                      public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
-                       string secretDataFolder, string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
-                       secretDataFolder, dataSeedFolder, repo)
+                       string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
+                       secretDataFolder, dataSeedFolder, carcassRepo, repo)
                      """, "Repo = repo"), _carcassCodeBlock, _projectCodeBlock));
         CodeFile.AddRange(block.CodeItems);
     }

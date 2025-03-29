@@ -34,7 +34,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(
-                    "protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric, bool checkOnly) : base(logger, dataSeedersFabric, checkOnly)"),
+                    "protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric, bool checkOnly) : base(logger, dataSeedersFabric, checkOnly)"),
                 _seedProjectSpecificDataMethodCodeBlock));
         CodeFile.AddRange(block.CodeItems);
     }
