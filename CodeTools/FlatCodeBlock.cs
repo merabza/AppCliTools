@@ -13,7 +13,7 @@ public sealed class FlatCodeBlock : CodeBlockBase, ICodeItem
     {
         var sb = new StringBuilder();
         foreach (var codeItem in CodeItems)
-            sb.Append(codeItem.Output(indentLevel - 1));
+            sb.Append(codeItem.Output(indentLevel));
 
         return sb.ToString();
     }
