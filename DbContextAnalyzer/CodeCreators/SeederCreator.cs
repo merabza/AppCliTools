@@ -11,8 +11,8 @@ namespace DbContextAnalyzer.CodeCreators;
 
 public sealed class SeederCreator : CodeCreator
 {
-    private readonly SeederCodeCreatorParameters _parameters;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
+    private readonly SeederCodeCreatorParameters _parameters;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public SeederCreator(ILogger logger, SeederCodeCreatorParameters parameters,
@@ -237,7 +237,7 @@ public sealed class SeederCreator : CodeCreator
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, {_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, carcassRepo, repo)"),
+                    $"public {className}({additionalParameters}string dataSeedFolder, {(isCarcassType ? "ICarcassDataSeederRepository carcassRepo, " : "")}{_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, carcassRepo, {(isCarcassType ? "carcassRepo, " : "")}repo)"),
                 additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
