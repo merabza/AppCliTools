@@ -48,6 +48,8 @@ public sealed class SeederCreator : CodeCreator
         var usedList = false;
         var tableName = entityData.TableName;
 
+        Console.WriteLine("UseEntity tableName = {0}", tableName);
+
         var replaceFieldsDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
