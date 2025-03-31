@@ -8,7 +8,7 @@ namespace CodeTools;
 public sealed class FieldData
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public FieldData(string name, string oldName, string realTypeName, string fullName, bool isNullable,
+    private FieldData(string name, string oldName, string realTypeName, string fullName, bool isNullable,
         bool isNullableByParents)
     {
         Name = name;
@@ -41,12 +41,13 @@ public sealed class FieldData
         var isNullable = clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>);
         if (isNullable) clrType = clrType.GetGenericArguments()[0];
         var isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
-        var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable);
+        var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable, isNullableByParents);
         return new FieldData(preferredName, s.Name, realTypeName,
             (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
     }
 
-    private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
+    private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable,
+        bool isNullableByParents)
     {
         var realTypeCandidate = clrTypeName switch
         {
@@ -70,6 +71,6 @@ public sealed class FieldData
             _ => typeName
         };
 
-        return $"{realTypeCandidate}{(isNullable ? "?" : string.Empty)}";
+        return $"{realTypeCandidate}{(isNullable || isNullableByParents ? "?" : string.Empty)}";
     }
 }
