@@ -67,6 +67,7 @@ public sealed class SeederCreator : CodeCreator
         var prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
 
         var isIdentity = tableName is "roles" or "users";
+        var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
 
         var additionalParameters = tableName switch
         {
@@ -218,6 +219,7 @@ public sealed class SeederCreator : CodeCreator
         }
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            new OneLineComment($"tableName is {tableName}"),
             !isCarcassType && entityData.OptimalIndex is not null && entityData.OptimalIndexFieldsData.Count > 1
                 ? "using System"
                 : null, usedList ? "using System.Collections.Generic" : null,
@@ -239,7 +241,7 @@ public sealed class SeederCreator : CodeCreator
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {(isCarcassType ? "ICarcassDataSeederRepository carcassRepo, " : "")}{_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, carcassRepo, {(isCarcassType ? "carcassRepo, " : "")}repo)"),
+                    $"public {className}({additionalParameters}string dataSeedFolder, {(isDataTypesOrManyToManyJoins ? "ICarcassDataSeederRepository carcassRepo, " : "")}{_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, {(isDataTypesOrManyToManyJoins ? "carcassRepo, " : "")}repo)"),
                 additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
