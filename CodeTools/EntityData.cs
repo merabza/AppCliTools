@@ -34,7 +34,8 @@ public sealed class EntityData
             if (fieldData.SubstituteField is null || fieldData.SubstituteField.Fields.Count == 0)
                 AddOneWithCheckOnDuplicates(flat, fieldData);
             else
-                foreach (var fd in GetFlatFieldData(fieldData.SubstituteField.Fields, allNullable || fieldData.IsNullable))
+                foreach (var fd in GetFlatFieldData(fieldData.SubstituteField.Fields,
+                             allNullable || fieldData.IsNullable))
                     AddOneWithCheckOnDuplicates(flat, fd);
         return flat;
     }
