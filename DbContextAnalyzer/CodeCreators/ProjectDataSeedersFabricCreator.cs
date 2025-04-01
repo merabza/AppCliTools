@@ -12,10 +12,10 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
     private readonly SeederCodeCreatorParameters _parameters;
 
-    //private CodeRegion? _carcassRegion;
-    //private CodeRegion? _projectRegion;
-    private readonly FlatCodeBlock _carcassCodeBlock;
-    private readonly FlatCodeBlock _projectCodeBlock;
+    private readonly CodeRegion _carcassRegion;
+    private readonly CodeRegion _projectRegion;
+    //private readonly FlatCodeBlock _carcassCodeBlock;
+    //private readonly FlatCodeBlock _projectCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
@@ -24,8 +24,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     {
         _parameters = parameters;
         _isAnyCarcassType = isAnyCarcassType;
-        _carcassCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment("Carcass"));
-        _projectCodeBlock = new FlatCodeBlock(string.Empty, new OneLineComment(_parameters.ProjectPrefix));
+        _carcassRegion = new CodeRegion("Carcass");
+        _projectRegion = new CodeRegion(_parameters.ProjectPrefix);
     }
 
     public override void CreateFileStructure()
@@ -45,7 +45,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
                      public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
                        string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
                        secretDataFolder, dataSeedFolder, carcassRepo, repo)
-                     """, "Repo = repo"), _carcassCodeBlock, _projectCodeBlock));
+                     """, "Repo = repo"), _carcassRegion, _projectRegion));
         CodeFile.AddRange(block.CodeItems);
     }
 
@@ -69,8 +69,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
             $"return new {newClassName}({additionalParameters}DataSeedFolder, Repo)");
 
         if (isCarcassType)
-            _carcassCodeBlock.Add(block);
+            _carcassRegion.Add(block);
         else
-            _projectCodeBlock.Add(block);
+            _projectRegion.Add(block);
     }
 }
