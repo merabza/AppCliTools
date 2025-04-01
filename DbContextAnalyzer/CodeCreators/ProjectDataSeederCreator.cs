@@ -23,7 +23,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        _seedProjectSpecificDataMethodCodeBlock = new CodeBlock("protected override bool SeedProjectSpecificData()",
+        _seedProjectSpecificDataMethodCodeBlock = new CodeBlock("protected bool SeedProjectData()",
             $"var seederFabric = ({_parameters.ProjectDataSeedersFabricClassName}) DataSeedersFabric", string.Empty,
             "Logger.LogInformation(\"Seed Project Data Started\")");
 
@@ -35,6 +35,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(
                     "protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric, bool checkOnly) : base(logger, dataSeedersFabric, checkOnly)"),
+                new CodeBlock("public override bool SeedData()","return base.SeedData() && SeedProjectData()"),
                 _seedProjectSpecificDataMethodCodeBlock));
         CodeFile.AddRange(block.CodeItems);
     }

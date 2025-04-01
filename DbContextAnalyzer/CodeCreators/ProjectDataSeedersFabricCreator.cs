@@ -13,6 +13,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     private readonly SeederCodeCreatorParameters _parameters;
 
     private readonly CodeRegion _carcassRegion;
+
     private readonly CodeRegion _projectRegion;
     //private readonly FlatCodeBlock _carcassCodeBlock;
     //private readonly FlatCodeBlock _projectCodeBlock;
