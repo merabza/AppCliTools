@@ -67,11 +67,12 @@ public sealed class SeederCreator : CodeCreator
         var prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
 
         var isIdentity = tableName is "roles" or "users";
-        var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
+        //var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
 
         var additionalParameters = tableName switch
         {
-            "manyToManyJoins" => "string secretDataFolder, ",
+            "dataTypes" => "ICarcassDataSeederRepository carcassRepo, ",
+            "manyToManyJoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
             "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
             "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
             _ => string.Empty
@@ -79,13 +80,15 @@ public sealed class SeederCreator : CodeCreator
 
         var additionalParameters2 = tableName switch
         {
-            "manyToManyJoins" => "secretDataFolder, ",
+            "dataTypes" => "carcassRepo, ",
+            "manyToManyJoins" => "secretDataFolder, carcassRepo, ",
             "roles" => "roleManager, secretDataFolder, ",
             "users" => "userManager, secretDataFolder, ",
             _ => string.Empty
         };
 
         CodeBlock? setParentsMethod = null;
+        CodeBlock? adaptMethod = null;
         CodeBlock? additionalCheckMethod = null;
         var additionalCheckMethodHeader =
             new CodeBlock($"protected override bool AdditionalCheck(List<{seederModelClassName}> seedData)");
@@ -108,16 +111,21 @@ public sealed class SeederCreator : CodeCreator
                         //$"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List({seedDataObjectName})",
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
                         //    $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
+                        $"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(seedData)",
                         $"var idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
-                        $"var dataList = Repo.GetAll<{tableNameSingular}>()",
+                        //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
                         $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
                         new CodeBlock(
-                            $"foreach ({seederModelClassName} {seederModelObjectName} in {seedDataObjectName}.Where(w => w.{entityData.SelfRecursiveField.Name} != null))",
+                            $"foreach (var {seederModelObjectName} in seedData.Where(w => w.{entityData.SelfRecursiveField.Name} != null))",
                             $"{tableNameCamel}Dict[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{entityData.SelfRecursiveField.Name} = idsDict[{seederModelObjectName}.{entityData.SelfRecursiveField.Name}!.Value]"),
                         "return true");
                     //new CodeBlock($"if (!{prPref}Repo.SaveChanges() )",
                     //    $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotBeSaved\", ErrorMessage = \"{seederModelClassName} entities cannot be saved\" }} }}"),
                     //"return null");
+                    adaptMethod =
+                        new CodeBlock(
+                            $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
+                            $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
                 }
                 else
                 {
@@ -234,15 +242,14 @@ public sealed class SeederCreator : CodeCreator
                 ? "using CarcassDb.Models"
                 : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
-            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using LanguageExt",
-            "using SystemToolsShared.Errors",
+            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty,
             $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {(isDataTypesOrManyToManyJoins ? "ICarcassDataSeederRepository carcassRepo, " : "")}{_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, {(isDataTypesOrManyToManyJoins ? "carcassRepo, " : "")}repo)"),
-                additionalCheckMethod, createMethod, setParentsMethod));
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
+                adaptMethod, additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
 
