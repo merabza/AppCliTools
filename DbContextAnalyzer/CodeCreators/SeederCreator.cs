@@ -237,8 +237,10 @@ public sealed class SeederCreator : CodeCreator
             //                                     entityData.SelfRecursiveField != null))
             //    ? "using CarcassDataSeeding"
             //    : null, 
-            isDataTypesOrManyToManyJoins || entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
-            entityData.OptimalIndex != null || entityData.SelfRecursiveField != null
+            isDataTypesOrManyToManyJoins || (!isCarcassType && (entityData.NeedsToCreateTempData ||
+                                                                atLeastOneSubstitute ||
+                                                                entityData.OptimalIndex != null ||
+                                                                entityData.SelfRecursiveField != null))
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null,

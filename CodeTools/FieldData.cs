@@ -39,7 +39,8 @@ public sealed class FieldData
     {
         var clrType = s.ClrType;
         var isNullable = clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>);
-        if (isNullable) clrType = clrType.GetGenericArguments()[0];
+        if (isNullable) 
+            clrType = clrType.GetGenericArguments()[0];
         var isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
         var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable, isNullableByParents);
         return new FieldData(preferredName, s.Name, realTypeName,
