@@ -8,11 +8,10 @@ namespace DbContextAnalyzer.CodeCreators;
 
 public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 {
+    private readonly CodeRegion _carcassRegion;
     private readonly bool _isAnyCarcassType;
 
     private readonly SeederCodeCreatorParameters _parameters;
-
-    private readonly CodeRegion _carcassRegion;
 
     private readonly CodeRegion _projectRegion;
     //private readonly FlatCodeBlock _carcassCodeBlock;
@@ -42,10 +41,12 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
                 : string.Empty, $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : CarcassDataSeedersFabric",
-                $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo", new CodeBlock($"""
-                     public {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
-                       string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, 
-                       secretDataFolder, dataSeedFolder, carcassRepo, repo)
+                $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), new CodeBlock($"""
+                     protected {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
+                       string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, 
+                       {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, secretDataFolder, dataSeedFolder, carcassRepo, 
+                       repo)
                      """, "Repo = repo"), _carcassRegion, _projectRegion));
         CodeFile.AddRange(block.CodeItems);
     }
@@ -61,7 +62,8 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         {
             "roles" => "MyRoleManager, SecretDataFolder, ",
             "users" => "MyUserManager, SecretDataFolder, ",
-            "manyToManyJoins" => "SecretDataFolder, ",
+            "manyToManyJoins" => "SecretDataFolder, CarcassRepo, ",
+            "dataTypes" => "CarcassRepo, ",
             _ => string.Empty
         };
 

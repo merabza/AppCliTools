@@ -71,7 +71,8 @@ public sealed class SeederCreator : CodeCreator
 
         var additionalParameters = tableName switch
         {
-            "manyToManyJoins" => "string secretDataFolder, ",
+            "dataTypes" => "ICarcassDataSeederRepository carcassRepo, ",
+            "manyToManyJoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
             "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
             "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
             _ => string.Empty
@@ -79,7 +80,8 @@ public sealed class SeederCreator : CodeCreator
 
         var additionalParameters2 = tableName switch
         {
-            "manyToManyJoins" => "secretDataFolder, ",
+            "dataTypes" => "carcassRepo, ",
+            "manyToManyJoins" => "secretDataFolder, carcassRepo, ",
             "roles" => "roleManager, secretDataFolder, ",
             "users" => "userManager, secretDataFolder, ",
             _ => string.Empty
@@ -241,7 +243,7 @@ public sealed class SeederCreator : CodeCreator
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {(isDataTypesOrManyToManyJoins ? "ICarcassDataSeederRepository carcassRepo, " : "")}{_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, {(isDataTypesOrManyToManyJoins ? "carcassRepo, " : "")}repo)"),
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
                 additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
