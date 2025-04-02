@@ -14,7 +14,8 @@ public sealed class GetJsonFromProjectDbProgramCreator(CreatorCreatorParameters 
         var dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
         var fcbGetJsonAdditionalUsing = new FlatCodeBlock($"using {dbContextProjectName}",
-            "using Microsoft.EntityFrameworkCore", $"using GetJsonFromScaffold{par.ProjectPrefix}Db");
+            "using Microsoft.EntityFrameworkCore", "using DbContextAnalyzer.Models",
+            $"using GetJsonFromScaffold{par.ProjectPrefix}Db");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(string.Empty,
             $"var optionsBuilder = new DbContextOptionsBuilder<{dbContextClassName}>()", string.Empty,
