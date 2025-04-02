@@ -26,12 +26,12 @@ public sealed class ServiceCreatorCreator : CodeCreator
         var projectDbContextClassName = _par.ProjectDbContextClassName; // + "DbContext"; //GeoModelDbContext
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDb", "using CarcassIdentity", "using CarcassMasterDataDom.Models", string.Empty,
-            $"using {dataSeedingProjectName}", $"using {projectDbProjectName}", $"using {newDataSeedingProjectName}",
-            string.Empty, "using Microsoft.AspNetCore.Identity", "using Microsoft.EntityFrameworkCore",
-            "using Microsoft.Extensions.DependencyInjection", "using SystemToolsShared", string.Empty,
-            $"namespace {_par.SeedProjectNamespace}", string.Empty, new CodeBlock(
-                "public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
+            "using CarcassDataSeeding", "using CarcassDb", "using CarcassIdentity", "using CarcassMasterDataDom.Models",
+            string.Empty, $"using {dataSeedingProjectName}", $"using {projectDbProjectName}",
+            $"using {newDataSeedingProjectName}", string.Empty, "using Microsoft.AspNetCore.Identity",
+            "using Microsoft.EntityFrameworkCore", "using Microsoft.Extensions.DependencyInjection",
+            "using SystemToolsShared", string.Empty, $"namespace {_par.SeedProjectNamespace}", string.Empty,
+            new CodeBlock("public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
                 "private readonly string _connectionString", string.Empty,
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
@@ -45,6 +45,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
                     "services.AddScoped<IUserRoleStore<AppUser>, MyUserStore>()",
                     "services.AddScoped<IRoleStore<AppRole>, MyUserStore>()", string.Empty,
                     "services.AddScoped<IIdentityRepository, IdentityRepository>()", string.Empty,
+                    "services.AddScoped<ICarcassDataSeederRepository, CarcassDataSeederRepository>()", string.Empty,
                     $"services.AddScoped<{repositoryInterfaceName}, {repositoryClassName}>()", string.Empty,
                     "services.AddScoped<IDataFixRepository, DataFixRepository>()", string.Empty,
                     "services.AddDbContext<CarcassDbContext>(options => options.UseSqlServer(_connectionString))",

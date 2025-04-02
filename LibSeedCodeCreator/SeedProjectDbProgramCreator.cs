@@ -28,7 +28,10 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             "var roleManager = serviceProvider.GetService<RoleManager<AppRole>>()", string.Empty,
             new CodeBlock("if (roleManager is null)", "StShared.WriteErrorLine(\"roleManager is null\", true)",
                 "return 8"), string.Empty,
-            $"var {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()", string.Empty,
+            "var carcassRepo = serviceProvider.GetService<ICarcassDataSeederRepository>()",
+            new CodeBlock("if (carcassRepo is null)", "StShared.WriteErrorLine(\"carcassRepo is null\", true)"),
+            string.Empty, $"var {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()",
+            string.Empty,
             new CodeBlock($"if ({repositoryObjectName} is null)",
                 $"StShared.WriteErrorLine(\"{repositoryObjectName} is null\", true)", "return 9"), string.Empty,
             "var dataFixRepository =  serviceProvider.GetService<IDataFixRepository>()", string.Empty,
@@ -42,7 +45,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)", "return 13"), string.Empty,
             "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
-            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, {repositoryObjectName}), dataFixRepository, checkOnly)",
+            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
             string.Empty, "return seeder.SeedData() ? 0 : 1", string.Empty);
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,
