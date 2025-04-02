@@ -42,8 +42,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
             $"var servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\")");
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            string.Empty, "using System", "using Serilog.Events", "using CliParameters",
-            "using SystemToolsShared",
+            string.Empty, "using System", "using Serilog.Events", "using CliParameters", "using SystemToolsShared",
             "using Microsoft.Extensions.DependencyInjection", "using Microsoft.Extensions.Logging", string.Empty,
             _fcbAdditionalUsing, string.Empty, "ILogger<Program>? logger = null",
             new CodeBlock("try", $"Console.WriteLine(\"{_projectDescription}\")",
