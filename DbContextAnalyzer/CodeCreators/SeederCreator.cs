@@ -237,11 +237,10 @@ public sealed class SeederCreator : CodeCreator
             //                                     entityData.SelfRecursiveField != null))
             //    ? "using CarcassDataSeeding"
             //    : null, 
+            isDataTypesOrManyToManyJoins ? "using CarcassDataSeeding" : null,
             !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
-            isCarcassType
-                ? null
-                : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
+            isCarcassType ? null : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty,
             $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
