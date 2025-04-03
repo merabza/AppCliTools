@@ -67,7 +67,7 @@ public sealed class SeederCreator : CodeCreator
         var prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
 
         var isIdentity = tableName is "roles" or "users";
-        //var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
+        var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
 
         var additionalParameters = tableName switch
         {
@@ -232,15 +232,19 @@ public sealed class SeederCreator : CodeCreator
                 ? "using System"
                 : null, usedList ? "using System.Collections.Generic" : null,
             !isCarcassType ? "using System.Linq" : null,
-            isCarcassType || (!isCarcassType && (entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
-                                                 entityData.OptimalIndex != null ||
-                                                 entityData.SelfRecursiveField != null))
+            //isCarcassType || (!isCarcassType && (entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
+            //                                     entityData.OptimalIndex != null ||
+            //                                     entityData.SelfRecursiveField != null))
+            //    ? "using CarcassDataSeeding"
+            //    : null, 
+            isDataTypesOrManyToManyJoins || (!isCarcassType && (entityData.NeedsToCreateTempData ||
+                                                                atLeastOneSubstitute ||
+                                                                entityData.OptimalIndex != null ||
+                                                                entityData.SelfRecursiveField != null))
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
-            isCarcassType
-                ? "using CarcassDb.Models"
-                : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
+            isCarcassType ? null : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty,
             $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
