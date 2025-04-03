@@ -190,8 +190,8 @@ public sealed class SeederCreator : CodeCreator
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
                         //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //    "return false"),
-                        $"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(dataList.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
+                        $"var dataList = Create{tableNameCapitalCamel}List(seedData)",
+                        $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(dataList.ToDictionary(k=>{keyFields}, v=>v.{GetPreferredFieldName(replaceFieldsDict, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 

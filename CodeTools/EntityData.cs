@@ -14,7 +14,7 @@ public sealed class EntityData
         TableName = tableName;
     }
 
-    public string? PrimaryKeyFieldName { get; set; }
+    public required string PrimaryKeyFieldName { get; set; }
 
     [JsonIgnore] public string TableName { get; }
 
