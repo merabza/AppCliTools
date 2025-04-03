@@ -64,9 +64,6 @@ public sealed class Relations
             return;
 
         //entityType, 
-        var entityData = new EntityData(tableName);
-
-        Entities.Add(tableName, entityData);
 
         //დავადგინოთ ცხრილს აქვს თუ არა გასაღები
         var primaryKeys = entityType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
@@ -81,7 +78,10 @@ public sealed class Relations
         //მთავარი გასაღები ერთი ველისაგან უნდა შედგებოდეს. სხვანაირ ბაზას ჯერ არ განვიხილავ
         if (primaryKey.Properties.Count > 1)
             throw new Exception($"Multiple fields primary key in table {tableName}");
-        entityData.PrimaryKeyFieldName = primaryKey.Properties[0].Name;
+
+        var entityData = new EntityData(tableName) { PrimaryKeyFieldName = primaryKey.Properties[0].Name };
+
+        Entities.Add(tableName, entityData);
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
         if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never &&
