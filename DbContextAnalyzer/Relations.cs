@@ -6,8 +6,6 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 
 namespace DbContextAnalyzer;
@@ -160,7 +158,8 @@ public sealed class Relations
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
+    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName,
+        FieldData? parent = null)
     {
         var replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 

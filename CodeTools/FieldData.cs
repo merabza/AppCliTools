@@ -42,15 +42,14 @@ public sealed class FieldData
         if (isNullable)
             clrType = clrType.GetGenericArguments()[0];
         else
-            isNullable = IsAdvanceNullable(tableClrType, clrType.Name);
-        
+            isNullable = IsAdvanceNullable(tableClrType, s.Name);
+
         var isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
         var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable, isNullableByParents);
         return new FieldData(preferredName, s.Name, realTypeName,
             (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
     }
 
-    
     private static bool IsAdvanceNullable(Type? clrType, string fieldName)
     {
         if (clrType == null)
@@ -62,7 +61,7 @@ public sealed class FieldData
         //    if (fieldData.IsNullable)
         //        continue;
 
-        var prop = clrProperties?.SingleOrDefault(x => x.Name == fieldName);
+        var prop = clrProperties.SingleOrDefault(x => x.Name == fieldName);
 
         var attr = prop?.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
         if (attr is null)
@@ -78,7 +77,6 @@ public sealed class FieldData
 
         return b == 2;
     }
-
 
     private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable,
         bool isNullableByParents)
