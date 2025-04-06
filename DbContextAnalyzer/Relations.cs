@@ -6,6 +6,8 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 
 namespace DbContextAnalyzer;
@@ -104,32 +106,8 @@ public sealed class Relations
             (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
         entityData.NeedsToCreateTempData = needsToCreateTempData;
         entityData.UsePrimaryKey = usePrimaryKey;
-        entityData.FieldsData = GetFieldsData(fieldsBase, tableName);
+        entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
         entityData.Level = GetMaxLevel(entityData);
-
-        var clrProperties = entityType.ClrType.GetProperties();
-        foreach (var fieldData in entityData.FieldsData)
-        {
-            if (fieldData.IsNullable)
-                continue;
-
-            var prop = clrProperties?.SingleOrDefault(x => x.Name == fieldData.Name);
-
-            var attr = prop?.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
-            if (attr is null)
-                continue;
-
-            if (attr.ConstructorArguments.Count < 1)
-                continue;
-
-            if (attr.ConstructorArguments[0].Value is not byte)
-                continue;
-
-            var b = (byte)(attr.ConstructorArguments[0].Value ?? 0);
-
-            if (b == 2)
-                fieldData.IsNullable = true;
-        }
 
         var substituteFields = entityData.FieldsData.Where(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName).ToList();
@@ -182,7 +160,7 @@ public sealed class Relations
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
+    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
     {
         var replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 
@@ -196,7 +174,7 @@ public sealed class Relations
             //var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
             //var fieldData = new FieldData(preferredName, s.Name, GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents), (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
 
-            var fieldData = FieldData.Create(s, preferredName, parent);
+            var fieldData = FieldData.Create(tableClrType, s, preferredName, parent);
 
             var forKeys = s.GetContainingForeignKeys().ToList();
             switch (forKeys.Count)
@@ -237,7 +215,7 @@ public sealed class Relations
 
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
                 optIndex is not null
-                    ? GetFieldsData(optIndex.Properties.AsEnumerable(), substTableName, fieldData)
+                    ? GetFieldsData(null, optIndex.Properties.AsEnumerable(), substTableName, fieldData)
                     : []);
             var nav = forKeys[0].DependentToPrincipal ??
                       throw new Exception($"Foreign Keys nam in table {tableName} is empty");
