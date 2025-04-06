@@ -107,6 +107,30 @@ public sealed class Relations
         entityData.FieldsData = GetFieldsData(fieldsBase, tableName);
         entityData.Level = GetMaxLevel(entityData);
 
+        var clrProperties = entityType.ClrType.GetProperties();
+        foreach (var fieldData in entityData.FieldsData)
+        {
+            if (fieldData.IsNullable)
+                continue;
+
+            var prop = clrProperties?.SingleOrDefault(x => x.Name == fieldData.Name);
+
+            var attr = prop?.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
+            if (attr is null)
+                continue;
+
+            if (attr.ConstructorArguments.Count < 1)
+                continue;
+
+            if (attr.ConstructorArguments[0].Value is not byte)
+                continue;
+
+            var b = (byte)(attr.ConstructorArguments[0].Value ?? 0);
+
+            if (b == 2)
+                fieldData.IsNullable = true;
+        }
+
         var substituteFields = entityData.FieldsData.Where(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName).ToList();
 
