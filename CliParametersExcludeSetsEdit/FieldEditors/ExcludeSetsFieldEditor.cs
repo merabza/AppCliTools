@@ -14,7 +14,7 @@ public sealed class ExcludeSetsFieldEditor : FieldEditor<Dictionary<string, Excl
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ExcludeSetsFieldEditor(string propertyName, ParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, true)
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         _parametersManager = parametersManager;
     }
