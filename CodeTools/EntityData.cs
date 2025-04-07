@@ -27,15 +27,14 @@ public sealed class EntityData
     public bool NeedsToCreateTempData { get; set; }
     public bool UsePrimaryKey { get; set; }
 
-    public List<FieldData> GetFlatFieldData(List<FieldData>? fieldsData = null, bool allNullable = false)
+    public List<FieldData> GetFlatFieldData(List<FieldData>? fieldsData = null)
     {
         var flat = new List<FieldData>();
         foreach (var fieldData in fieldsData ?? FieldsData)
             if (fieldData.SubstituteField is null || fieldData.SubstituteField.Fields.Count == 0)
                 AddOneWithCheckOnDuplicates(flat, fieldData);
             else
-                foreach (var fd in GetFlatFieldData(fieldData.SubstituteField.Fields,
-                             allNullable || fieldData.IsNullable))
+                foreach (var fd in GetFlatFieldData(fieldData.SubstituteField.Fields))
                     AddOneWithCheckOnDuplicates(flat, fd);
         return flat;
     }
