@@ -64,6 +64,10 @@ public sealed class FieldData
         var prop = clrProperties.SingleOrDefault(x => x.Name == fieldName);
 
         var attr = prop?.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
+
+        attr = attr ??
+               prop?.PropertyType.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
+
         if (attr is null)
             return false;
 
