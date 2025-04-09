@@ -104,7 +104,7 @@ public sealed class Relations
             (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
         entityData.NeedsToCreateTempData = needsToCreateTempData;
         entityData.UsePrimaryKey = usePrimaryKey;
-        entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
+        entityData.FieldsData = GetFieldsData(fieldsBase, tableName);//entityType.ClrType, 
         entityData.Level = GetMaxLevel(entityData);
 
         var substituteFields = entityData.FieldsData.Where(w =>
@@ -158,7 +158,7 @@ public sealed class Relations
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName,
+    private List<FieldData> GetFieldsData(IEnumerable<IProperty> fieldsBase, string tableName,
         FieldData? parent = null)
     {
         var replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
@@ -173,7 +173,7 @@ public sealed class Relations
             //var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
             //var fieldData = new FieldData(preferredName, s.Name, GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents), (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
 
-            var fieldData = FieldData.Create(tableClrType, s, preferredName, parent);
+            var fieldData = FieldData.Create(s, preferredName, parent);
 
             var forKeys = s.GetContainingForeignKeys().ToList();
             switch (forKeys.Count)
@@ -214,7 +214,7 @@ public sealed class Relations
 
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
                 optIndex is not null
-                    ? GetFieldsData(null, optIndex.Properties.AsEnumerable(), substTableName, fieldData)
+                    ? GetFieldsData(optIndex.Properties.AsEnumerable(), substTableName, fieldData)
                     : []);
             var nav = forKeys[0].DependentToPrincipal ??
                       throw new Exception($"Foreign Keys nam in table {tableName} is empty");
