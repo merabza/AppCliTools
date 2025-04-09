@@ -158,7 +158,8 @@ public sealed class Relations
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
+    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName,
+        FieldData? parent = null)
     {
         var replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 
