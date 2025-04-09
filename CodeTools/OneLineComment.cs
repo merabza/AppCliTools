@@ -2,7 +2,7 @@
 
 namespace CodeTools;
 
-public class OneLineComment : ICodeItem
+public sealed class OneLineComment : ICodeItem
 {
     private readonly string _commentSign;
 

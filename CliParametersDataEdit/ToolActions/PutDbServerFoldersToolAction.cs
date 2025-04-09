@@ -10,7 +10,7 @@
 
 //namespace CliParametersDataEdit.ToolActions;
 
-//public class PutDbServerFoldersToolAction : ToolAction
+//public sealed class PutDbServerFoldersToolAction : ToolAction
 //{
 //    private const string ActionName = "Put Database Server Folders and save in parameters";
 

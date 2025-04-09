@@ -2,7 +2,7 @@
 
 namespace CliTools.CliMenuCommands;
 
-public class RecentCommandCliMenuCommand : InfoCliMenuCommand
+public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
 {
     private readonly CliAppLoop _cliAppLoop;
     private readonly string _menuLinkWithoutMainMenu;

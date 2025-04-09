@@ -12,7 +12,7 @@ using SystemToolsShared.Errors;
 
 namespace CliParametersDataEdit.ToolActions;
 
-public class GetDbServerFoldersToolAction : ToolAction
+public sealed class GetDbServerFoldersToolAction : ToolAction
 {
     private const string ActionName = "Get Database Server Folders and save in parameters";
 

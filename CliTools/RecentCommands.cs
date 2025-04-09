@@ -4,7 +4,7 @@ using LibParameters;
 
 namespace CliTools;
 
-public class RecentCommands : IParameters
+public sealed class RecentCommands : IParameters
 {
     public Dictionary<string, DateTime> Rc = [];
 

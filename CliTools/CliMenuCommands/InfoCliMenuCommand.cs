@@ -2,7 +2,7 @@
 
 namespace CliTools.CliMenuCommands;
 
-public class InfoCliMenuCommand : CliMenuCommand
+public /*open*/ class InfoCliMenuCommand : CliMenuCommand
 {
     private readonly string _menuLink;
 

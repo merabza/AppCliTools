@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 
 namespace LibSeedCodeCreator;
 
-public sealed class CreatorCreator : ToolCommand
+public sealed class CreatorCreatorToolCommand : ToolCommand
 {
     private const string ActionName = "Create seeder Projects code";
 
     private readonly ILogger _logger;
 
-    public CreatorCreator(ILogger logger, CreatorCreatorParameters parametersManager) : base(logger, ActionName,
+    public CreatorCreatorToolCommand(ILogger logger, CreatorCreatorParameters parametersManager) : base(logger, ActionName,
         parametersManager, null, ActionName)
     {
         _logger = logger;

@@ -6,7 +6,7 @@
 
 //namespace CliParametersDataEdit.CliMenuCommands;
 
-//public class PutDbServerFoldersCliMenuCommand : CliMenuCommand
+//public sealed class PutDbServerFoldersCliMenuCommand : CliMenuCommand
 //{
 //    private readonly string _dbServerName;
 //    private readonly ILogger _logger;

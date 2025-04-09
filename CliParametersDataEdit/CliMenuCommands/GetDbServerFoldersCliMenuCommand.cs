@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CliParametersDataEdit.CliMenuCommands;
 
-public class GetDbServerFoldersCliMenuCommand : CliMenuCommand
+public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
 {
     private readonly string _dbServerName;
     private readonly IHttpClientFactory? _httpClientFactory;
