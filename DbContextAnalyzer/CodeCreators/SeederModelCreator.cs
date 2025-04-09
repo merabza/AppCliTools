@@ -39,8 +39,7 @@ public sealed class SeederModelCreator : CodeCreator
         var fieldDataList = entityData.GetFlatFieldData();
 
         var constructorParameters = string.Join(", ",
-            fieldDataList.Select(fd => $"{fd.RealTypeName} {ValidateIdentifier(fd.FullName)}")
-                .ToArray());
+            fieldDataList.Select(fd => $"{fd.RealTypeName} {ValidateIdentifier(fd.FullName.UnCapitalize())}").ToArray());
 
         var constructorCodeBlock = new CodeBlock($"public {className}({constructorParameters})");
 
