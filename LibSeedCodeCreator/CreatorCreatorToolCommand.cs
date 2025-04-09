@@ -15,8 +15,8 @@ public sealed class CreatorCreatorToolCommand : ToolCommand
 
     private readonly ILogger _logger;
 
-    public CreatorCreatorToolCommand(ILogger logger, CreatorCreatorParameters parametersManager) : base(logger, ActionName,
-        parametersManager, null, ActionName)
+    public CreatorCreatorToolCommand(ILogger logger, CreatorCreatorParameters parametersManager) : base(logger,
+        ActionName, parametersManager, null, ActionName)
     {
         _logger = logger;
     }
