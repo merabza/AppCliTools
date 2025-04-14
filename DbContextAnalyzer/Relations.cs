@@ -57,19 +57,22 @@ public sealed class Relations
         //დავადგინოთ ცხრილის სახელი.
         var tableName = GetTableName(entityType);
 
-        Console.WriteLine("EntityAnalysis tableName: {0}",tableName);
+        Console.WriteLine("EntityAnalysis tableName: {0}", tableName);
         Console.WriteLine("GetReferencingForeignKeys");
         var referencingForeignKeys = entityType.GetReferencingForeignKeys().ToList();
         foreach (var referencingForeignKey in referencingForeignKeys)
         {
-            Console.WriteLine("EntityAnalysis referencingForeignKey ConstraintName: {0}",referencingForeignKey.GetConstraintName());
-            Console.WriteLine("EntityAnalysis referencingForeignKey DefaultName: {0}",referencingForeignKey.GetDefaultName());
+            Console.WriteLine("EntityAnalysis referencingForeignKey ConstraintName: {0}",
+                referencingForeignKey.GetConstraintName());
+            Console.WriteLine("EntityAnalysis referencingForeignKey DefaultName: {0}",
+                referencingForeignKey.GetDefaultName());
         }
+
         Console.WriteLine("GetForeignKeys");
         foreach (var foreignKey in entityType.GetForeignKeys())
         {
-            Console.WriteLine("EntityAnalysis foreignKey ConstraintName: {0}",foreignKey.GetConstraintName());
-            Console.WriteLine("EntityAnalysis foreignKey DefaultName: {0}",foreignKey.GetDefaultName());
+            Console.WriteLine("EntityAnalysis foreignKey ConstraintName: {0}", foreignKey.GetConstraintName());
+            Console.WriteLine("EntityAnalysis foreignKey DefaultName: {0}", foreignKey.GetDefaultName());
         }
 
         if (tableName is null || Entities.ContainsKey(tableName))
