@@ -12,15 +12,15 @@ namespace DbContextAnalyzer;
 
 public sealed class Relations
 {
-    private readonly DbContext _dbContext;
+    private readonly DbContext _dbScContext;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly Stack<string> _preventLoopList = new();
     public readonly Dictionary<string, EntityData> Entities = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)
+    public Relations(DbContext dbScContext, ExcludesRulesParametersDomain excludesRulesParameters)
     {
-        _dbContext = dbContext;
+        _dbScContext = dbScContext;
         _excludesRulesParameters = excludesRulesParameters;
     }
 
@@ -37,7 +37,7 @@ public sealed class Relations
 
     public void DbContextAnalysis()
     {
-        foreach (var entityType in _dbContext.Model.GetEntityTypes())
+        foreach (var entityType in _dbScContext.Model.GetEntityTypes())
         {
             if (entityType.GetKeys().Count(w => w.IsPrimaryKey()) != 1)
                 continue;

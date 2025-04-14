@@ -122,10 +122,6 @@ public sealed class SeederCreator : CodeCreator
                     //new CodeBlock($"if (!{prPref}Repo.SaveChanges() )",
                     //    $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotBeSaved\", ErrorMessage = \"{seederModelClassName} entities cannot be saved\" }} }}"),
                     //"return null");
-                    adaptMethod =
-                        new CodeBlock(
-                            $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
-                            $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
                 }
                 else
                 {
@@ -139,6 +135,10 @@ public sealed class SeederCreator : CodeCreator
                         "return true");
                 }
 
+                adaptMethod =
+                    new CodeBlock(
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
+                        $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }

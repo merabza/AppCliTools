@@ -21,7 +21,7 @@ public sealed class SeederCodeCreatorStarter
         _par = par;
     }
 
-    public void Go(DbContext context)
+    public void Go(DbContext contextDbSc)
     {
         var pathToContentRoot = Directory.GetCurrentDirectory();
         Console.WriteLine("pathToContentRoot=" + pathToContentRoot);
@@ -108,7 +108,7 @@ public sealed class SeederCodeCreatorStarter
             _par.MainDatabaseProjectName, _par.ProjectDbContextClassName, "Models",
             _par.ProjectPrefixShort + "DataSeeder");
 
-        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, context, getJsonCreatorParameters,
+        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, contextDbSc, getJsonCreatorParameters,
             seederCodeCreatorParameters, excludesRulesParameters);
         dataExtractor.Go();
     }

@@ -13,7 +13,7 @@ namespace DbContextAnalyzer;
 public sealed class SeederCodeCreator
 {
     private readonly DbContext _carcassContext;
-    private readonly DbContext _dbContext;
+    private readonly DbContext _dbScContext;
 
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly GetJsonCreatorParameters _getJsonCreatorParameters;
@@ -22,13 +22,13 @@ public sealed class SeederCodeCreator
     private readonly SeederCodeCreatorParameters _seederCodeCreatorParameters;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SeederCodeCreator(ILogger logger, DbContext carcassContext, DbContext dbContext,
+    public SeederCodeCreator(ILogger logger, DbContext carcassContext, DbContext dbScContext,
         GetJsonCreatorParameters getJsonCreatorParameters, SeederCodeCreatorParameters seederCodeCreatorParameters,
         ExcludesRulesParametersDomain excludesRulesParameters)
     {
         _logger = logger;
         _carcassContext = carcassContext;
-        _dbContext = dbContext;
+        _dbScContext = dbScContext;
         _getJsonCreatorParameters = getJsonCreatorParameters;
         _seederCodeCreatorParameters = seederCodeCreatorParameters;
         _excludesRulesParameters = excludesRulesParameters;
@@ -61,7 +61,7 @@ public sealed class SeederCodeCreator
 
         //----
         var carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
-        var relations = new Relations(_dbContext, _excludesRulesParameters);
+        var relations = new Relations(_dbScContext, _excludesRulesParameters);
         relations.DbContextAnalysis();
         //-----
 
