@@ -135,6 +135,11 @@ public sealed class SeederCreator : CodeCreator
                         "return true");
                 }
 
+                adaptMethod =
+                    new CodeBlock(
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
+                        $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
+
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
@@ -191,15 +196,14 @@ public sealed class SeederCreator : CodeCreator
                         "return true");
                 }
 
+                adaptMethod =
+                    new CodeBlock(
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
+                        $"return Create{tableNameCapitalCamel}List(seedData)");
+
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
-
-            adaptMethod =
-                new CodeBlock(
-                    $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
-                    $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
-
             //else
             //{
             //    additionalCheckMethod.Add(new FlatCodeBlock(new CodeBlock(
