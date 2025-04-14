@@ -56,6 +56,22 @@ public sealed class Relations
     {
         //დავადგინოთ ცხრილის სახელი.
         var tableName = GetTableName(entityType);
+
+        Console.WriteLine("EntityAnalysis tableName: {0}",tableName);
+        Console.WriteLine("GetReferencingForeignKeys");
+        var referencingForeignKeys = entityType.GetReferencingForeignKeys().ToList();
+        foreach (var referencingForeignKey in referencingForeignKeys)
+        {
+            Console.WriteLine("EntityAnalysis referencingForeignKey ConstraintName: {0}",referencingForeignKey.GetConstraintName());
+            Console.WriteLine("EntityAnalysis referencingForeignKey DefaultName: {0}",referencingForeignKey.GetDefaultName());
+        }
+        Console.WriteLine("GetForeignKeys");
+        foreach (var foreignKey in entityType.GetForeignKeys())
+        {
+            Console.WriteLine("EntityAnalysis foreignKey ConstraintName: {0}",foreignKey.GetConstraintName());
+            Console.WriteLine("EntityAnalysis foreignKey DefaultName: {0}",foreignKey.GetDefaultName());
+        }
+
         if (tableName is null || Entities.ContainsKey(tableName))
             //თუ ეს ცხრილი უკვე ყოფილა გაანალიზებულების სიაში, მაშინ აქ აღარაფერი გვესაქმება
             return;
@@ -84,8 +100,8 @@ public sealed class Relations
         Entities.Add(tableName, entityData);
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
-        if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never &&
-            entityType.GetReferencingForeignKeys().Any())
+        if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never)
+            //&&referencingForeignKeys.Any())
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
             entityData.OptimalIndex = GetOptimalUniIndex(entityType);
@@ -93,7 +109,7 @@ public sealed class Relations
         var haveOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
-        var needsToCreateTempData = entityData.OptimalIndex == null && entityType.GetReferencingForeignKeys().Any();
+        var needsToCreateTempData = entityData.OptimalIndex == null && referencingForeignKeys.Any();
         var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
         var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
