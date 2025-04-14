@@ -134,11 +134,6 @@ public sealed class SeederCreator : CodeCreator
                         $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(seedData).ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
                         "return true");
                 }
-
-                adaptMethod =
-                    new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
-                        $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
@@ -198,6 +193,13 @@ public sealed class SeederCreator : CodeCreator
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
+
+            
+            adaptMethod =
+                new CodeBlock(
+                    $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
+                    $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
+
             //else
             //{
             //    additionalCheckMethod.Add(new FlatCodeBlock(new CodeBlock(
