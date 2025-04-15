@@ -91,7 +91,8 @@ public sealed class SeederCreator : CodeCreator
         CodeBlock? adaptMethod = null;
         CodeBlock? additionalCheckMethod = null;
         var additionalCheckMethodHeader =
-            new CodeBlock($"protected override bool AdditionalCheck(List<{seederModelClassName}> seedData, List<{tableNameSingular}> savedData)");
+            new CodeBlock(
+                $"protected override bool AdditionalCheck(List<{seederModelClassName}> jsonData, List<{tableNameSingular}> savedData)");
         CodeBlock? createMethod = null;
 
         var atLeastOneSubstitute = entityData.FieldsData
