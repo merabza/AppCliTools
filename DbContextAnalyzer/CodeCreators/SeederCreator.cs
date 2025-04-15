@@ -112,12 +112,12 @@ public sealed class SeederCreator : CodeCreator
                         //$"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List({seedDataObjectName})",
                         //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
                         //    $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
-                        $"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(seedData)",
+                        $"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(jsonData)",
                         $"var idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
                         //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
                         $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
                         new CodeBlock(
-                            $"foreach (var {seederModelObjectName} in seedData.Where(w => w.{entityData.SelfRecursiveField.Name} != null))",
+                            $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{entityData.SelfRecursiveField.Name} != null))",
                             $"{tableNameCamel}Dict[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{entityData.SelfRecursiveField.Name} = idsDict[{seederModelObjectName}.{entityData.SelfRecursiveField.Name}!.Value]"),
                         "return true");
                     //new CodeBlock($"if (!{prPref}Repo.SaveChanges() )",
@@ -132,14 +132,14 @@ public sealed class SeederCreator : CodeCreator
                         //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //    "return false"),
                         //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(seedData).ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
+                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(jsonData).ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
                         "return true");
                 }
 
                 adaptMethod =
                     new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
-                        $"return Create{tableNameCapitalCamel}List(seedData).Values.ToList()");
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                        $"return Create{tableNameCapitalCamel}List(jsonData).Values.ToList()");
 
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
@@ -199,8 +199,8 @@ public sealed class SeederCreator : CodeCreator
 
                 adaptMethod =
                     new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> seedData)",
-                        $"return Create{tableNameCapitalCamel}List(seedData)");
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                        $"return Create{tableNameCapitalCamel}List(jsonData)");
 
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
