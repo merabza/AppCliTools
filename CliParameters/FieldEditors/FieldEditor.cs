@@ -8,13 +8,12 @@ namespace CliParameters.FieldEditors;
 
 public /*open*/ class FieldEditor
 {
-    private readonly bool _isSubObject;
-
     public readonly bool
         EnterFieldDataOnCreate; //ეს ველი მიუთითებს გამოიტანოს თუ არა შექმნისას შეთავაზება ამ ველის მნიშვნელობის შესავსებად
 
     protected readonly string FieldName;
     public readonly string PropertyName;
+    private readonly bool _isSubObject;
     public bool Enabled = true;
 
     protected FieldEditor(string propertyName, string? propertyDescriptor, bool isSubObject,
