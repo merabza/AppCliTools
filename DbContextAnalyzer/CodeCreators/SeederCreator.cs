@@ -259,7 +259,7 @@ public sealed class SeederCreator : CodeCreator
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo) : base({additionalParameters2}dataSeedFolder, repo)"),
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)"),
                 adaptMethod, additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
