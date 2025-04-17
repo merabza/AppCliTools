@@ -13,13 +13,12 @@ namespace CliParameters;
 
 public /*open*/ class Cruder : IFieldEditors
 {
-    private readonly bool _canEditFieldsInSequence;
-
-    private readonly bool _fieldKeyFromItem;
-
     public readonly string CrudName;
     public readonly string CrudNamePlural;
     protected readonly List<FieldEditor> FieldEditors = [];
+    private readonly bool _canEditFieldsInSequence;
+
+    private readonly bool _fieldKeyFromItem;
 
     protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
