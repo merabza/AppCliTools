@@ -224,7 +224,7 @@ public sealed class SeederCreator : CodeCreator
                 createMethod = new CodeBlock(
                     $"protected virtual Dictionary<int, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
-                    $"return {seedDataObjectName}.ToDictionary(k => k.{entityData.PrimaryKeyFieldName}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
+                    $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
             else
                 createMethod = new CodeBlock(
                     $"protected virtual List<{tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
