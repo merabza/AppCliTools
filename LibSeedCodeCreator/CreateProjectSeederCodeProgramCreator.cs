@@ -26,6 +26,18 @@ public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParamete
             $"using var context = new {dbContextClassName}(optionsBuilder.Options)", string.Empty,
             "starter.Go(context)", string.Empty, "return 0", string.Empty);
 
+
+        /*
+         *
+           // ReSharper disable once using
+           using var context = DbContextCreator.Create<MimosiGeDbScContext>(par.ConnectionStringProd);
+
+           if (context is null)
+               return 6;
+
+
+         */
+
         var starterCreator = new ConsoleProgramCreator(logger, fcbAdditionalUsing, null, fcbMainCommands,
             "CreateProjectSeederCodeParameters", par.CreateSeederCodeProjectNamespace,
             "Creates Code for app CreateProjectSeederCode", par.CreateSeederCodeProjectPlacePath, new List<string>(),
