@@ -132,7 +132,7 @@ public sealed class SeederCreator : CodeCreator
                         //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
                         //    "return false"),
                         //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(jsonData).ToDictionary(k=>k.Key, v=>v.Value.{entityData.PrimaryKeyFieldName}))",
+                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(jsonData).ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 
@@ -224,7 +224,7 @@ public sealed class SeederCreator : CodeCreator
                 createMethod = new CodeBlock(
                     $"protected virtual Dictionary<int, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
-                    $"return {seedDataObjectName}.ToDictionary(k => k.{entityData.PrimaryKeyFieldName}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
+                    $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
             else
                 createMethod = new CodeBlock(
                     $"protected virtual List<{tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",

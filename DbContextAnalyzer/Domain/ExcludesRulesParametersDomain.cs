@@ -48,4 +48,11 @@ public sealed class ExcludesRulesParametersDomain
         return ReplaceFieldNames.Where(w => w.TableName == tableName)
             .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
     }
+
+    public string GetNewFieldName(string tableName, string oldFieldName)
+    {
+        var repField =
+            ReplaceFieldNames.SingleOrDefault(x => x.TableName == tableName && x.OldFieldName == oldFieldName);
+        return repField is null ? oldFieldName : repField.NewFieldName;
+    }
 }

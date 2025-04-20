@@ -139,18 +139,20 @@ public sealed class Relations
             string.Join(", ", entityData.OptimalIndex.Properties.Select(s => s.Name)));
         Console.WriteLine("entityData.FieldsData: {0}", string.Join(", ", entityData.FieldsData.Select(s => s.Name)));
         entityData.OptimalIndexFieldsData = entityData.OptimalIndex.Properties.Select(s =>
-            entityData.FieldsData.Single(ss => ss.Name == GetNewFieldName(tableName, s.Name))).ToList();
+                entityData.FieldsData.Single(ss =>
+                    ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s.Name)))
+            .ToList();
         //if (entityData.OptimalIndex.Properties.Count != 1)
         //    return;
     }
 
-    private string GetNewFieldName(string tableName, string oldFieldName)
-    {
-        var repField =
-            _excludesRulesParameters.ReplaceFieldNames.SingleOrDefault(x =>
-                x.TableName == tableName && x.OldFieldName == oldFieldName);
-        return repField is null ? oldFieldName : repField.NewFieldName;
-    }
+    //private string GetNewFieldName(string tableName, string oldFieldName)
+    //{
+    //    var repField =
+    //        _excludesRulesParameters.ReplaceFieldNames.SingleOrDefault(x =>
+    //            x.TableName == tableName && x.OldFieldName == oldFieldName);
+    //    return repField is null ? oldFieldName : repField.NewFieldName;
+    //}
 
     public static string? GetTableName(IEntityType entityType)
     {
