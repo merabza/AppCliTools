@@ -13,12 +13,12 @@ namespace CliParameters;
 
 public /*open*/ class Cruder : IFieldEditors
 {
-    public readonly string CrudName;
-    public readonly string CrudNamePlural;
-    protected readonly List<FieldEditor> FieldEditors = [];
     private readonly bool _canEditFieldsInSequence;
 
     private readonly bool _fieldKeyFromItem;
+    public readonly string CrudName;
+    public readonly string CrudNamePlural;
+    protected readonly List<FieldEditor> FieldEditors = [];
 
     protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
@@ -165,9 +165,9 @@ public /*open*/ class Cruder : IFieldEditors
 
     public CliMenuSet GetListMenu()
     {
-        CliMenuSet cruderSubMenuSet = new(CrudNamePlural);
+        var cruderSubMenuSet = new CliMenuSet(CrudNamePlural);
 
-        NewItemCliMenuCommand newItemCommand = new(this, CrudNamePlural, $"New {CrudName}");
+        var newItemCommand = new NewItemCliMenuCommand(this, CrudNamePlural, $"New {CrudName}");
         cruderSubMenuSet.AddMenuItem(newItemCommand);
 
         var itemDataDict = GetCrudersDictionary();
