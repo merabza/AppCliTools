@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using System.Collections.Generic;
 
 namespace CodeTools;
 
@@ -8,19 +7,15 @@ public sealed class EntityData
 {
     public FieldData? SelfRecursiveField;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public EntityData(string tableName)
-    {
-        TableName = tableName;
-    }
-
     public required string PrimaryKeyFieldName { get; set; }
 
-    [JsonIgnore] public string TableName { get; }
+    public required string TableName { get; set; }
+    public required IEntityType EntityType { get; set; }
 
     public int Level { get; set; }
 
-    [JsonIgnore] public IIndex? OptimalIndex { get; set; }
+    //[JsonIgnore] public IIndex? OptimalIndex { get; set; }
+    //public List<string> OptimalIndexFields { get; set; } = [];
 
     public List<FieldData> OptimalIndexFieldsData { get; set; } = [];
     public List<FieldData> FieldsData { get; set; } = [];

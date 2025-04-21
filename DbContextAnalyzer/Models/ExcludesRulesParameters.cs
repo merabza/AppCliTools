@@ -11,4 +11,5 @@ public sealed class ExcludesRulesParameters
     public Dictionary<string, string> SingularityExceptions { get; init; } = new();
     public List<TableFieldModel> ExcludeFields { get; init; } = [];
     public List<ReplaceFieldName> ReplaceFieldNames { get; init; } = [];
+    public List<KeyFieldNamesModel> KeyFieldNames { get; } = [];
 }

@@ -144,11 +144,11 @@ public sealed class SeederCreator : CodeCreator
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
-            else if (entityData.OptimalIndex != null)
+            else if (entityData.OptimalIndexFieldsData.Count > 0)
             {
                 var tupTypeList = string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => s.RealTypeName));
                 var keyFieldsList = string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => $"k.{s.Name}"));
-                var keyFields = entityData.OptimalIndex.Properties.Count == 1
+                var keyFields = entityData.OptimalIndexFieldsData.Count == 1
                     ? $"k.{GetPreferredFieldName(replaceFieldsDict, entityData.OptimalIndexFieldsData[0].Name)}"
                     : $" new Tuple<{tupTypeList}>({keyFieldsList})";
                 FlatCodeBlock fcb;
@@ -235,10 +235,8 @@ public sealed class SeederCreator : CodeCreator
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            !isCarcassType && entityData.OptimalIndex is not null && entityData.OptimalIndexFieldsData.Count > 1
-                ? "using System"
-                : null, usedList ? "using System.Collections.Generic" : null,
-            !isCarcassType ? "using System.Linq" : null,
+            !isCarcassType && entityData.OptimalIndexFieldsData.Count > 1 ? "using System" : null,
+            usedList ? "using System.Collections.Generic" : null, !isCarcassType ? "using System.Linq" : null,
             //isCarcassType || (!isCarcassType && (entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
             //                                     entityData.OptimalIndex != null ||
             //                                     entityData.SelfRecursiveField != null))
@@ -246,7 +244,7 @@ public sealed class SeederCreator : CodeCreator
             //    : null, 
             isDataTypesOrManyToManyJoins || (!isCarcassType && (entityData.NeedsToCreateTempData ||
                                                                 atLeastOneSubstitute ||
-                                                                entityData.OptimalIndex != null ||
+                                                                entityData.OptimalIndexFieldsData.Count > 0 ||
                                                                 entityData.SelfRecursiveField != null))
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,

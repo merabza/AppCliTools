@@ -10,7 +10,8 @@ public sealed class ExcludesRulesParametersDomain
     public List<string> ExcludeTables { get; } = [];
     public Dictionary<string, string> SingularityExceptions { get; } = [];
     public List<TableFieldDomain> ExcludeFields { get; } = [];
-    public List<ReplaceFieldNameDomain> ReplaceFieldNames { get; } = [];
+    private List<ReplaceFieldNameDomain> ReplaceFieldNames { get; } = [];
+    public List<KeyFieldNamesDomain> KeyFieldNames { get; } = [];
 
     public static ExcludesRulesParametersDomain CreateInstance(string? excludesRulesParametersFilePath)
     {
@@ -30,15 +31,30 @@ public sealed class ExcludesRulesParametersDomain
                      !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value)))
             exclRulParDom.SingularityExceptions.Add(kvp.Key, kvp.Value);
 
-        foreach (var tfm in excludesRulesParameters.ExcludeFields)
-            if (!string.IsNullOrWhiteSpace(tfm.TableName) && !string.IsNullOrWhiteSpace(tfm.FieldName))
-                exclRulParDom.ExcludeFields.Add(new TableFieldDomain(tfm.TableName, tfm.FieldName));
+        foreach (var tfm in excludesRulesParameters.ExcludeFields.Where(tfm =>
+                     !string.IsNullOrWhiteSpace(tfm.TableName) && !string.IsNullOrWhiteSpace(tfm.FieldName)))
+            exclRulParDom.ExcludeFields.Add(new TableFieldDomain
+            {
+                TableName = tfm.TableName!, FieldName = tfm.FieldName!
+            });
 
-        foreach (var rfn in excludesRulesParameters.ReplaceFieldNames)
-            if (!string.IsNullOrWhiteSpace(rfn.TableName) && !string.IsNullOrWhiteSpace(rfn.OldFieldName) &&
-                !string.IsNullOrWhiteSpace(rfn.NewFieldName))
-                exclRulParDom.ReplaceFieldNames.Add(new ReplaceFieldNameDomain(rfn.TableName, rfn.OldFieldName,
-                    rfn.NewFieldName));
+        foreach (var rfn in excludesRulesParameters.ReplaceFieldNames.Where(rfn =>
+                     !string.IsNullOrWhiteSpace(rfn.TableName) && !string.IsNullOrWhiteSpace(rfn.OldFieldName) &&
+                     !string.IsNullOrWhiteSpace(rfn.NewFieldName)))
+            exclRulParDom.ReplaceFieldNames.Add(new ReplaceFieldNameDomain
+            {
+                TableName = rfn.TableName!, OldFieldName = rfn.OldFieldName!, NewFieldName = rfn.NewFieldName!
+            });
+
+        foreach (var kfn in excludesRulesParameters.KeyFieldNames)
+        {
+            if (string.IsNullOrWhiteSpace(kfn.TableName))
+                continue;
+            var keys = kfn.Keys.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            if (keys.Count == 0)
+                continue;
+            exclRulParDom.KeyFieldNames.Add(new KeyFieldNamesDomain { TableName = kfn.TableName, Keys = keys });
+        }
 
         return exclRulParDom;
     }

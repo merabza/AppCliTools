@@ -98,21 +98,40 @@ public sealed class Relations
         if (primaryKey.Properties.Count > 1)
             throw new Exception($"Multiple fields primary key in table {tableName}");
 
-        var entityData = new EntityData(tableName) { PrimaryKeyFieldName = primaryKey.Properties[0].Name };
+        var entityData = new EntityData
+        {
+            TableName = tableName, PrimaryKeyFieldName = primaryKey.Properties[0].Name, EntityType = entityType
+        };
 
         Entities.Add(tableName, entityData);
 
+        //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
+        var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s => s.TableName == tableName);
+        if (exKeyFieldNames is not null)
+        {
+            var exKeyFields = exKeyFieldNames.Keys;
+            entityData.OptimalIndexFieldsData = exKeyFields.Select(s =>
+                    entityData.FieldsData.Single(ss =>
+                        ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s)))
+                .ToList();
+        }
+
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
         if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never)
-            //&&referencingForeignKeys.Any())
+        {
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
-            entityData.OptimalIndex = GetOptimalUniIndex(entityType);
+            var optimalIndex = GetOptimalUniIndex(entityType);
+            if (optimalIndex is not null)
+                entityData.OptimalIndexFieldsData = optimalIndex.Properties.Select(s =>
+                    entityData.FieldsData.Single(ss =>
+                        ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s.Name))).ToList();
+        }
 
         var haveOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
-        var needsToCreateTempData = entityData.OptimalIndex == null && referencingForeignKeys.Any();
+        var needsToCreateTempData = entityData.OptimalIndexFieldsData.Count == 0 && referencingForeignKeys.Count > 0;
         var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
         var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
@@ -132,27 +151,13 @@ public sealed class Relations
         if (substituteFields.Count == 1)
             entityData.SelfRecursiveField = substituteFields[0];
 
-        if (entityData.OptimalIndex == null)
+        if (entityData.OptimalIndexFieldsData.Count == 0)
             return;
 
         Console.WriteLine("entityData.OptimalIndex.Properties: {0}",
-            string.Join(", ", entityData.OptimalIndex.Properties.Select(s => s.Name)));
+            string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => s.Name)));
         Console.WriteLine("entityData.FieldsData: {0}", string.Join(", ", entityData.FieldsData.Select(s => s.Name)));
-        entityData.OptimalIndexFieldsData = entityData.OptimalIndex.Properties.Select(s =>
-                entityData.FieldsData.Single(ss =>
-                    ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s.Name)))
-            .ToList();
-        //if (entityData.OptimalIndex.Properties.Count != 1)
-        //    return;
     }
-
-    //private string GetNewFieldName(string tableName, string oldFieldName)
-    //{
-    //    var repField =
-    //        _excludesRulesParameters.ReplaceFieldNames.SingleOrDefault(x =>
-    //            x.TableName == tableName && x.OldFieldName == oldFieldName);
-    //    return repField is null ? oldFieldName : repField.NewFieldName;
-    //}
 
     public static string? GetTableName(IEntityType entityType)
     {
@@ -161,20 +166,13 @@ public sealed class Relations
 
     private int GetMaxLevel(EntityData entityData)
     {
-        //List<string> principals = _excludesRulesParameters.TableRelationships
-        //  .Where(w => w.Dependent == entityData.TableName).Select(s => s.Principal).ToList();
-        //List<KeyValuePair<string, EntityData>> principalsFiltered = Entities.Where(w => principals.Contains(w.Key)).ToList();
-        //int maxByPrincipalTables = principalsFiltered.Count == 0 ? 0 : principalsFiltered.Max(m => m.Value.Level) + 1;
         return entityData.FieldsData.Count == 0 ? 0 : entityData.FieldsData.Max(GetLevel) + 1;
-        //return maxByPrincipalTables > maxByFields ? maxByPrincipalTables : maxByFields;
     }
 
     private int GetLevel(FieldData fieldData)
     {
         if (fieldData.SubstituteField == null)
             return 0;
-        //if (fieldData.SubstituteField.Fields != null)
-        //  return fieldData.SubstituteField.Fields.Select(GetLevel).DefaultIfEmpty().Max() + 1;
         var corEnt = Entities.SingleOrDefault(s => s.Key == fieldData.SubstituteField.TableName);
         return corEnt.Value.Level;
     }
@@ -190,10 +188,6 @@ public sealed class Relations
         {
             var preferredName = replaceDict.TryGetValue(s.Name, out var value) ? value : s.Name;
 
-            //var isNullable = s.IsNullable;
-            //var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
-            //var fieldData = new FieldData(preferredName, s.Name, GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents), (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
-
             var fieldData = FieldData.Create(tableClrType, s, preferredName, parent);
 
             var forKeys = s.GetContainingForeignKeys().ToList();
@@ -204,8 +198,6 @@ public sealed class Relations
                 case > 1:
                     throw new Exception($"Multiple Foreign Keys in table {tableName} for field {preferredName}");
             }
-
-            //fieldData.SubstituteForeignKey = forKeys[0];
 
             if (_preventLoopList.Contains(tableName))
                 throw new Exception($"table {tableName} loops for indexes");
@@ -224,18 +216,14 @@ public sealed class Relations
             if (!Entities.TryGetValue(substTableName, out var entity))
                 throw new Exception($"substitute table {substTableName} Not analyzed for table {tableName}");
 
-            //fieldData.SubstituteField = new SubstituteFieldData(parent: fieldData, tableName: substTableName,
-            //    primaryKeyFieldName: Entities[substTableName].PrimaryKeyFieldName,
-            //    fields: Entities[substTableName].OptimalIndex != null
-            //        ? GetFieldsData(Entities[substTableName].OptimalIndex.Properties.AsEnumerable(), substTableName,
-            //            fieldData)
-            //        : null);
-
-            var optIndex = entity.OptimalIndex;
+            var optimalIndexFieldsData = entity.OptimalIndexFieldsData;
+            var optimalIndexFieldNames = optimalIndexFieldsData.Select(data => data.Name).ToList();
 
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
-                optIndex is not null
-                    ? GetFieldsData(tableClrType, optIndex.Properties.AsEnumerable(), substTableName, fieldData)
+                optimalIndexFieldsData.Count > 0
+                    ? GetFieldsData(tableClrType,
+                        entity.EntityType.GetProperties().Where(x => optimalIndexFieldNames.Contains(x.Name)),
+                        substTableName, fieldData)
                     : []);
             var nav = forKeys[0].DependentToPrincipal ??
                       throw new Exception($"Foreign Keys nam in table {tableName} is empty");
