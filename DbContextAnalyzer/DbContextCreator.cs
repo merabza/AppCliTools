@@ -14,15 +14,15 @@ public static class DbContextCreator
             StShared.WriteErrorLine("connectionString is empty", true);
             return null;
         }
+
         optionsBuilder.UseSqlServer(connectionString);
 
         // Use Activator.CreateInstance with nullability check
         // ReSharper disable once using
         var context = Activator.CreateInstance(typeof(T), optionsBuilder.Options) as T;
-        if (context != null) 
+        if (context != null)
             return context;
         StShared.WriteErrorLine($"Failed to create an instance of {typeof(T).Name}", true);
         return null;
-
     }
 }

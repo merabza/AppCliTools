@@ -26,7 +26,6 @@ public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParamete
             $"using var context = new {dbContextClassName}(optionsBuilder.Options)", string.Empty,
             "starter.Go(context)", string.Empty, "return 0", string.Empty);
 
-
         /*
          *
            // ReSharper disable once using
