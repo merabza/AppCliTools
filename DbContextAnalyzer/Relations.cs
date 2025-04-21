@@ -110,10 +110,11 @@ public sealed class Relations
         if (exKeyFieldNames is not null)
         {
             var exKeyFields = exKeyFieldNames.Keys;
-            entityData.OptimalIndexFieldsData = exKeyFields.Select(s =>
-                    entityData.FieldsData.Single(ss =>
-                        ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s)))
+            var optimalIndexFieldsData = exKeyFields
+                .Select(keyField => entityData.FieldsData.SingleOrDefault(ss =>
+                    ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, keyField))).OfType<FieldData>()
                 .ToList();
+            entityData.OptimalIndexFieldsData = optimalIndexFieldsData;
         }
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
