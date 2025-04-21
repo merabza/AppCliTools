@@ -12,32 +12,27 @@ namespace DbContextAnalyzer;
 
 public sealed class Relations
 {
-    private readonly DbContext _dbScContext;
+    private readonly DbContext _dbContext;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly Stack<string> _preventLoopList = new();
     public readonly Dictionary<string, EntityData> Entities = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public Relations(DbContext dbScContext, ExcludesRulesParametersDomain excludesRulesParameters)
+    public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)
     {
-        _dbScContext = dbScContext;
+        _dbContext = dbContext;
         _excludesRulesParameters = excludesRulesParameters;
     }
 
     public void SaveJson(string fileFullName)
     {
         var sampleParamsJsonText = JsonConvert.SerializeObject(Entities, Formatting.Indented);
-        //  new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
-
-        //string fileName = $"{name}.json";
-        //File.WriteAllText(Path.Combine(_getJsonCreatorParameters.ModelsFolderName, fileName), sampleParamsJsonText);
         File.WriteAllText(fileFullName, sampleParamsJsonText);
-        //Console.WriteLine($"{fileName} created");
     }
 
     public void DbContextAnalysis()
     {
-        foreach (var entityType in _dbScContext.Model.GetEntityTypes())
+        foreach (var entityType in _dbContext.Model.GetEntityTypes())
         {
             if (entityType.GetKeys().Count(w => w.IsPrimaryKey()) != 1)
                 continue;
@@ -56,70 +51,35 @@ public sealed class Relations
     {
         //დავადგინოთ ცხრილის სახელი.
         var tableName = GetTableName(entityType);
-
-        Console.WriteLine("EntityAnalysis tableName: {0}", tableName);
-        Console.WriteLine("GetReferencingForeignKeys");
-        var referencingForeignKeys = entityType.GetReferencingForeignKeys().ToList();
-        foreach (var referencingForeignKey in referencingForeignKeys)
-        {
-            Console.WriteLine("EntityAnalysis referencingForeignKey ConstraintName: {0}",
-                referencingForeignKey.GetConstraintName());
-            Console.WriteLine("EntityAnalysis referencingForeignKey DefaultName: {0}",
-                referencingForeignKey.GetDefaultName());
-        }
-
-        Console.WriteLine("GetForeignKeys");
-        foreach (var foreignKey in entityType.GetForeignKeys())
-        {
-            Console.WriteLine("EntityAnalysis foreignKey ConstraintName: {0}", foreignKey.GetConstraintName());
-            Console.WriteLine("EntityAnalysis foreignKey DefaultName: {0}", foreignKey.GetDefaultName());
-        }
-
         if (tableName is null || Entities.ContainsKey(tableName))
             //თუ ეს ცხრილი უკვე ყოფილა გაანალიზებულების სიაში, მაშინ აქ აღარაფერი გვესაქმება
             return;
 
         if (_excludesRulesParameters.ExcludeTables.Contains(tableName))
             return;
-
-        //entityType, 
-
         //დავადგინოთ ცხრილს აქვს თუ არა გასაღები
         var primaryKeys = entityType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
-        //ასეთი რამე სავარაუდოდ არ მოხდება, მაგრამ მაინც ვამოწმებ. ანუ ერთ ცხრილში არ შეიძლება ერთზე მეტი მთავარი გასაღები იყოს.
-        if (primaryKeys.Count > 1)
-            throw new Exception($"Multiple primary keys in table {tableName}");
-        //თუ აღმოჩნდა, რომ რომელიღაც ცხრილს მთავარი გასაღები არ აქვს, მაშინ ასეთ ბაზას ჯერჯერობით არ განვიხილავ
-        if (primaryKeys.Count < 1)
-            throw new Exception($"No primary key in table {tableName}");
+        switch (primaryKeys.Count)
+        {
+            //ასეთი რამე სავარაუდოდ არ მოხდება, მაგრამ მაინც ვამოწმებ. ანუ ერთ ცხრილში არ შეიძლება ერთზე მეტი მთავარი გასაღები იყოს.
+            case > 1:
+                throw new Exception($"Multiple primary keys in table {tableName}");
+            //თუ აღმოჩნდა, რომ რომელიღაც ცხრილს მთავარი გასაღები არ აქვს, მაშინ ასეთ ბაზას ჯერჯერობით არ განვიხილავ
+            case < 1:
+                throw new Exception($"No primary key in table {tableName}");
+        }
+
         //გასაღები უნდა იყოს აუცილებლად 1 ცალი, ჯერჯერობით სხვა ვერსიებს არ განვიხილავთ
         var primaryKey = primaryKeys[0];
         //მთავარი გასაღები ერთი ველისაგან უნდა შედგებოდეს. სხვანაირ ბაზას ჯერ არ განვიხილავ
         if (primaryKey.Properties.Count > 1)
             throw new Exception($"Multiple fields primary key in table {tableName}");
+
+        //entityType, 
         var entityData = new EntityData
         {
             TableName = tableName, PrimaryKeyFieldName = primaryKey.Properties[0].Name, EntityType = entityType
         };
-
-        var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
-            .Select(s => s.FieldName).ToList();
-
-        var haveOneToOneReference = entityType.GetForeignKeys()
-            .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
-
-        var needsToCreateTempData = entityData.OptimalIndexFieldsData.Count == 0 && referencingForeignKeys.Count > 0;
-        var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
-
-        var fieldsBase = entityType.GetProperties().Where(w =>
-            ((needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey()) ||
-            (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
-
-        entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
-        entityData.NeedsToCreateTempData = needsToCreateTempData;
-        entityData.UsePrimaryKey = usePrimaryKey;
-        entityData.Level = GetMaxLevel(entityData);
-
 
         Entities.Add(tableName, entityData);
 
@@ -128,37 +88,42 @@ public sealed class Relations
         if (exKeyFieldNames is not null)
         {
             var exKeyFields = exKeyFieldNames.Keys;
-            var optimalIndexFieldsData = exKeyFields
-                .Select(keyField => entityData.FieldsData.SingleOrDefault(ss =>
-                    ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, keyField))).OfType<FieldData>()
+            entityData.OptimalIndexProperties = exKeyFields
+                .Select(keyField => entityType.GetProperties().SingleOrDefault(ss =>
+                    ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, keyField))).OfType<IProperty>()
                 .ToList();
-            entityData.OptimalIndexFieldsData = optimalIndexFieldsData;
         }
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
-        if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never)
-        {
+        if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never &&
+            entityType.GetReferencingForeignKeys().Any())
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
-            var optimalIndex = GetOptimalUniIndex(entityType);
-            if (optimalIndex is not null)
-                entityData.OptimalIndexFieldsData = optimalIndex.Properties.Select(s =>
-                    entityData.FieldsData.Single(ss =>
-                        ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s.Name))).ToList();
-        }
+            entityData.OptimalIndexProperties = GetOptimalUniIndex(entityType)?.Properties.ToList() ?? [];
 
-        var substituteFields = entityData.FieldsData.Where(w =>
-            w.SubstituteField != null && w.SubstituteField.TableName == tableName).ToList();
+        var haveOneToOneReference = entityType.GetForeignKeys()
+            .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
-        if (substituteFields.Count == 1)
-            entityData.SelfRecursiveField = substituteFields[0];
+        var needsToCreateTempData =
+            entityData.OptimalIndexProperties.Count == 0 && entityType.GetReferencingForeignKeys().Any();
+        var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
-        if (entityData.OptimalIndexFieldsData.Count == 0)
-            return;
+        var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
+            .Select(s => s.FieldName).ToList();
 
-        Console.WriteLine("entityData.OptimalIndex.Properties: {0}",
-            string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => s.Name)));
-        Console.WriteLine("entityData.FieldsData: {0}", string.Join(", ", entityData.FieldsData.Select(s => s.Name)));
+        var fieldsBase = entityType.GetProperties().Where(w =>
+            ((needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey()) ||
+            (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
+        entityData.NeedsToCreateTempData = needsToCreateTempData;
+        entityData.UsePrimaryKey = usePrimaryKey;
+        entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
+        entityData.Level = GetMaxLevel(entityData);
+
+        var rec = entityData.FieldsData.SingleOrDefault(w =>
+            w.SubstituteField != null && w.SubstituteField.TableName == tableName);
+
+        if (rec != null)
+            entityData.SelfRecursiveField = rec;
     }
 
     public static string? GetTableName(IEntityType entityType)
@@ -179,10 +144,10 @@ public sealed class Relations
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName,
-        FieldData? parent = null)
+    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
     {
-        var replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
+        var replaceDict = _excludesRulesParameters.ReplaceFieldNames.Where(w => w.TableName == tableName)
+            .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
 
         return fieldsBase.Select(Selector).ToList();
 
@@ -192,7 +157,20 @@ public sealed class Relations
 
             var fieldData = FieldData.Create(tableClrType, s, preferredName, parent);
 
+
             var forKeys = s.GetContainingForeignKeys().ToList();
+            //var isNullable = s.IsNullable;
+            //var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
+            //var fieldData = new FieldData
+            //{
+            //    Name = name,
+            //    OldName = s.Name,
+            //    RealTypeName = GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents),
+            //    FullName = (parent == null ? string.Empty : parent.FullName) + name,
+            //    IsNullable = isNullable,
+            //    IsNullableByParents = isNullableByParents
+            //};
+
             switch (forKeys.Count)
             {
                 case 0:
@@ -218,20 +196,40 @@ public sealed class Relations
             if (!Entities.TryGetValue(substTableName, out var entity))
                 throw new Exception($"substitute table {substTableName} Not analyzed for table {tableName}");
 
-            var optimalIndexFieldsData = entity.OptimalIndexFieldsData;
-            var optimalIndexFieldNames = optimalIndexFieldsData.Select(data => data.Name).ToList();
+            //var optIndex = entity.OptimalIndex;
 
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
-                optimalIndexFieldsData.Count > 0
-                    ? GetFieldsData(tableClrType,
-                        entity.EntityType.GetProperties().Where(x => optimalIndexFieldNames.Contains(x.Name)),
-                        substTableName, fieldData)
+                entity.OptimalIndexProperties.Count > 0
+                    ? GetFieldsData(tableClrType, entity.OptimalIndexProperties, substTableName, fieldData)
                     : []);
             var nav = forKeys[0].DependentToPrincipal ??
                       throw new Exception($"Foreign Keys nam in table {tableName} is empty");
             fieldData.NavigationFieldName = nav.Name;
             return fieldData;
         }
+    }
+
+    private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable)
+    {
+        var realTypeCandidate = clrTypeName switch
+        {
+            "Int32" => "int",
+            "String" => "string",
+            "Byte[]" => "byte[]",
+            "Boolean" => "bool",
+            "Int16" => "short",
+            _ => null
+        } ?? typeName switch
+        {
+            "smallint" => "short",
+            "int" => "int",
+            "bit" => "bool",
+            "datetime2" => "DateTime",
+            "date" => "DateTime",
+            _ => typeName
+        };
+
+        return $"{realTypeCandidate}{(isNullable ? "?" : string.Empty)}";
     }
 
     private static IIndex? GetOptimalUniIndex(IEntityType entityType)
@@ -264,7 +262,7 @@ public sealed class Relations
                 //დამოუკიდებელი ინდექსი ერთზე მეტია
                 //გავფილტროთ ისე, რომ დაგვრჩეს ისეთი ინდექსები, რომელთაც მხოლოდ ერთი ველი აქვთ და ისიც სტრიქონი
                 var oneFieldStringUniKeys = independentUniKeys.FindAll(w =>
-                    w.IsUnique && w.Properties.Count == 1 && w.Properties[0].ClrType.Name == "String");
+                    w is { IsUnique: true, Properties.Count: 1 } && w.Properties[0].ClrType.Name == "String");
                 switch (oneFieldStringUniKeys.Count)
                 {
                     case 1:
@@ -299,22 +297,6 @@ public sealed class Relations
             //ოპტიმალური ინდექსის მოსაძებნად რეკურსია აღარ გამოვიყენე,
             //რადგან მაშინ საჭირო გახდებოდა სხვადასხვა ცხრილებიდან მოსული ინდექსების რანჟირება
             //რაც არაინტუიტიურია და თანაც არ მგონია კოდმა აქამდე მოაღწიოს, რადგან, მანამდე ბევრჯერ იყო დაანგარიშების შანსი
-
-            //var optCandidates = uniKeys.Select(s=> new { s, count = s.Properties.Count(c => c.GetContainingForeignKeys().Any()) }).OrderBy(o=>o.count).ToList();
-            ////დავადგინოთ რამდენია დამოკიდებული ველების მინიმალური რაოდენობა 
-            //int minCount = optCandidates[0].count;
-            ////ამოვკრიბოთ ყველა მინიმალური რაოდენობის დამოკიდებულ ველებიანი
-            //List<IIndex> optCandidateUniKeys = optCandidates.Where(w => w.count == minCount).Select(s => s.s).ToList();
-            ////თუ ასეთი მხოლოდ ერთი მოიძებნა, ის არის ოპტიმალური
-            //if (optCandidateUniKeys.Count == 1)
-            //{
-            //  return optCandidateUniKeys[0];
-            //}
-
-            //foreach (var optCandidate in optCandidates.Where(w=>w.count == minCount))
-            //{
-
-            //}      
         }
     }
 }

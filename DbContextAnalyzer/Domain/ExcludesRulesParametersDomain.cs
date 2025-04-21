@@ -10,7 +10,7 @@ public sealed class ExcludesRulesParametersDomain
     public List<string> ExcludeTables { get; } = [];
     public Dictionary<string, string> SingularityExceptions { get; } = [];
     public List<TableFieldDomain> ExcludeFields { get; } = [];
-    private List<ReplaceFieldNameDomain> ReplaceFieldNames { get; } = [];
+    public List<ReplaceFieldNameDomain> ReplaceFieldNames { get; } = [];
     public List<KeyFieldNamesDomain> KeyFieldNames { get; } = [];
 
     public static ExcludesRulesParametersDomain CreateInstance(string? excludesRulesParametersFilePath)

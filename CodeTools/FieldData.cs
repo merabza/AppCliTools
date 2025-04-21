@@ -8,25 +8,25 @@ namespace CodeTools;
 public sealed class FieldData
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    private FieldData(string name, string oldName, string realTypeName, string fullName, bool isNullable,
-        bool isNullableByParents)
-    {
-        Name = name;
-        OldName = oldName;
-        RealTypeName = realTypeName;
-        FullName = fullName;
-        IsNullable = isNullable;
-        IsNullableByParents = isNullableByParents;
-    }
+    //private FieldData(string name, string oldName, string realTypeName, string fullName, bool isNullable,
+    //    bool isNullableByParents)
+    //{
+    //    Name = name;
+    //    OldName = oldName;
+    //    RealTypeName = realTypeName;
+    //    FullName = fullName;
+    //    IsNullable = isNullable;
+    //    IsNullableByParents = isNullableByParents;
+    //}
 
-    public string Name { get; set; }
-    public string FullName { get; set; }
+    public required string Name { get; set; }
+    public required string FullName { get; set; }
     public SubstituteFieldData? SubstituteField { get; set; }
-    public string RealTypeName { get; set; }
+    public required string RealTypeName { get; set; }
     public bool IsNullable { get; set; }
-    public bool IsNullableByParents { get; }
+    public bool IsNullableByParents { get; set; }
     public string? NavigationFieldName { get; set; }
-    public string OldName { get; set; }
+    public required string OldName { get; set; }
 
     public int GetLevel()
     {
@@ -46,8 +46,16 @@ public sealed class FieldData
 
         var isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
         var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable, isNullableByParents);
-        return new FieldData(preferredName, s.Name, realTypeName,
-            (parent == null ? string.Empty : parent.FullName) + preferredName, isNullable, isNullableByParents);
+
+        return new FieldData
+        {
+            Name = preferredName,
+            OldName = s.Name,
+            RealTypeName = realTypeName,
+            FullName = (parent == null ? string.Empty : parent.FullName) + preferredName,
+            IsNullable = isNullable,
+            IsNullableByParents = isNullableByParents
+        };
     }
 
     private static bool IsAdvanceNullable(Type? clrType, string fieldName)

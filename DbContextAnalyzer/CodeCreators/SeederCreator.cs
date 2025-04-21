@@ -144,12 +144,18 @@ public sealed class SeederCreator : CodeCreator
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
-            else if (entityData.OptimalIndexFieldsData.Count > 0)
+            else if (entityData.OptimalIndexProperties.Count > 0)
             {
-                var tupTypeList = string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => s.RealTypeName));
-                var keyFieldsList = string.Join(", ", entityData.OptimalIndexFieldsData.Select(s => $"k.{s.Name}"));
-                var keyFields = entityData.OptimalIndexFieldsData.Count == 1
-                    ? $"k.{GetPreferredFieldName(replaceFieldsDict, entityData.OptimalIndexFieldsData[0].Name)}"
+                var optimalIndexFieldsData = entityData.OptimalIndexProperties
+                    .Select(prop => entityData.FieldsData.SingleOrDefault(ss =>
+                        ss.OldName == prop.Name)).OfType<FieldData>()
+                    .ToList();
+
+
+                var tupTypeList = string.Join(", ", optimalIndexFieldsData.Select(s => s.RealTypeName));
+                var keyFieldsList = string.Join(", ", optimalIndexFieldsData.Select(s => $"k.{s.Name}"));
+                var keyFields = optimalIndexFieldsData.Count == 1
+                    ? $"k.{GetPreferredFieldName(replaceFieldsDict, optimalIndexFieldsData[0].Name)}"
                     : $" new Tuple<{tupTypeList}>({keyFieldsList})";
                 FlatCodeBlock fcb;
                 if (entityData.SelfRecursiveField != null)
@@ -166,7 +172,7 @@ public sealed class SeederCreator : CodeCreator
                             //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetParents\", ErrorMessage = \"{seederModelClassName} cannot Set Parents\" }} }}",
                             "return false"), "return true");
                     var seederModelObjectName = seederModelClassName.UnCapitalize();
-                    var keyFieldName = entityData.OptimalIndexFieldsData[0].Name;
+                    var keyFieldName = optimalIndexFieldsData[0].Name;
 
                     if (entityData.SelfRecursiveField.SubstituteField is null ||
                         entityData.SelfRecursiveField.SubstituteField.Fields.Count == 0)
@@ -235,7 +241,7 @@ public sealed class SeederCreator : CodeCreator
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            !isCarcassType && entityData.OptimalIndexFieldsData.Count > 1 ? "using System" : null,
+            !isCarcassType && entityData.OptimalIndexProperties.Count > 1 ? "using System" : null,
             usedList ? "using System.Collections.Generic" : null, !isCarcassType ? "using System.Linq" : null,
             //isCarcassType || (!isCarcassType && (entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
             //                                     entityData.OptimalIndex != null ||
@@ -244,7 +250,7 @@ public sealed class SeederCreator : CodeCreator
             //    : null, 
             isDataTypesOrManyToManyJoins || (!isCarcassType && (entityData.NeedsToCreateTempData ||
                                                                 atLeastOneSubstitute ||
-                                                                entityData.OptimalIndexFieldsData.Count > 0 ||
+                                                                entityData.OptimalIndexProperties.Count > 0 ||
                                                                 entityData.SelfRecursiveField != null))
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,

@@ -6,18 +6,16 @@ namespace CodeTools;
 public sealed class EntityData
 {
     public FieldData? SelfRecursiveField;
-
     public required string PrimaryKeyFieldName { get; set; }
-
     public required string TableName { get; set; }
     public required IEntityType EntityType { get; set; }
-
     public int Level { get; set; }
 
     //[JsonIgnore] public IIndex? OptimalIndex { get; set; }
     //public List<string> OptimalIndexFields { get; set; } = [];
 
-    public List<FieldData> OptimalIndexFieldsData { get; set; } = [];
+    //public List<FieldData> OptimalIndexFieldsData { get; set; } = [];
+    public List<IProperty> OptimalIndexProperties { get; set; } = [];
     public List<FieldData> FieldsData { get; set; } = [];
     public bool NeedsToCreateTempData { get; set; }
     public bool UsePrimaryKey { get; set; }
