@@ -97,11 +97,29 @@ public sealed class Relations
         //მთავარი გასაღები ერთი ველისაგან უნდა შედგებოდეს. სხვანაირ ბაზას ჯერ არ განვიხილავ
         if (primaryKey.Properties.Count > 1)
             throw new Exception($"Multiple fields primary key in table {tableName}");
-
         var entityData = new EntityData
         {
             TableName = tableName, PrimaryKeyFieldName = primaryKey.Properties[0].Name, EntityType = entityType
         };
+
+        var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
+            .Select(s => s.FieldName).ToList();
+
+        var haveOneToOneReference = entityType.GetForeignKeys()
+            .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
+
+        var needsToCreateTempData = entityData.OptimalIndexFieldsData.Count == 0 && referencingForeignKeys.Count > 0;
+        var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
+
+        var fieldsBase = entityType.GetProperties().Where(w =>
+            ((needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey()) ||
+            (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
+
+        entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
+        entityData.NeedsToCreateTempData = needsToCreateTempData;
+        entityData.UsePrimaryKey = usePrimaryKey;
+        entityData.Level = GetMaxLevel(entityData);
+
 
         Entities.Add(tableName, entityData);
 
@@ -128,23 +146,6 @@ public sealed class Relations
                     entityData.FieldsData.Single(ss =>
                         ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, s.Name))).ToList();
         }
-
-        var haveOneToOneReference = entityType.GetForeignKeys()
-            .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
-
-        var needsToCreateTempData = entityData.OptimalIndexFieldsData.Count == 0 && referencingForeignKeys.Count > 0;
-        var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
-
-        var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
-            .Select(s => s.FieldName).ToList();
-
-        var fieldsBase = entityType.GetProperties().Where(w =>
-            ((needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey()) ||
-            (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
-        entityData.NeedsToCreateTempData = needsToCreateTempData;
-        entityData.UsePrimaryKey = usePrimaryKey;
-        entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
-        entityData.Level = GetMaxLevel(entityData);
 
         var substituteFields = entityData.FieldsData.Where(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName).ToList();
