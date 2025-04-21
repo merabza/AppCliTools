@@ -144,7 +144,8 @@ public sealed class Relations
         return corEnt.Value.Level;
     }
 
-    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName, FieldData? parent = null)
+    private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName,
+        FieldData? parent = null)
     {
         var replaceDict = _excludesRulesParameters.ReplaceFieldNames.Where(w => w.TableName == tableName)
             .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
@@ -157,19 +158,7 @@ public sealed class Relations
 
             var fieldData = FieldData.Create(tableClrType, s, preferredName, parent);
 
-
             var forKeys = s.GetContainingForeignKeys().ToList();
-            //var isNullable = s.IsNullable;
-            //var isNullableByParents = parent == null ? s.IsNullable : parent.IsNullableByParents || s.IsNullable;
-            //var fieldData = new FieldData
-            //{
-            //    Name = name,
-            //    OldName = s.Name,
-            //    RealTypeName = GetRealTypeName(s.ClrType.Name, s.GetColumnType(), isNullableByParents),
-            //    FullName = (parent == null ? string.Empty : parent.FullName) + name,
-            //    IsNullable = isNullable,
-            //    IsNullableByParents = isNullableByParents
-            //};
 
             switch (forKeys.Count)
             {

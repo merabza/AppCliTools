@@ -136,21 +136,14 @@ public sealed class SeederCreator : CodeCreator
                         "return true");
                 }
 
-                adaptMethod =
-                    new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
-                        $"return Create{tableNameCapitalCamel}List(jsonData).Values.ToList()");
-
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
             else if (entityData.OptimalIndexProperties.Count > 0)
             {
                 var optimalIndexFieldsData = entityData.OptimalIndexProperties
-                    .Select(prop => entityData.FieldsData.SingleOrDefault(ss =>
-                        ss.OldName == prop.Name)).OfType<FieldData>()
-                    .ToList();
-
+                    .Select(prop => entityData.FieldsData.SingleOrDefault(ss => ss.OldName == prop.Name))
+                    .OfType<FieldData>().ToList();
 
                 var tupTypeList = string.Join(", ", optimalIndexFieldsData.Select(s => s.RealTypeName));
                 var keyFieldsList = string.Join(", ", optimalIndexFieldsData.Select(s => $"k.{s.Name}"));
@@ -202,12 +195,6 @@ public sealed class SeederCreator : CodeCreator
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{GetPreferredFieldName(replaceFieldsDict, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
-
-                adaptMethod =
-                    new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
-                        $"return Create{tableNameCapitalCamel}List(jsonData)");
-
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
@@ -238,6 +225,16 @@ public sealed class SeederCreator : CodeCreator
                     $"return {seedDataObjectName}.Select(s => new {tableNameSingular}{{ {fieldsListStr} }}).ToList()");
             usedList = true;
         }
+
+        if (createMethod is not null)
+            adaptMethod =
+                new CodeBlock(
+                    $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                    $"return Create{tableNameCapitalCamel}List(jsonData)");
+
+
+
+
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
