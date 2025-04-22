@@ -195,6 +195,7 @@ public sealed class SeederCreator : CodeCreator
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{GetPreferredFieldName(replaceFieldsDict, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
+
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
@@ -214,27 +215,29 @@ public sealed class SeederCreator : CodeCreator
                     .Select(p => $"{p.Name} = {GetRightValue(p)}"));
 
             if (entityData.NeedsToCreateTempData)
+            {
                 createMethod = new CodeBlock(
                     $"protected virtual Dictionary<int, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
                     $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
+                adaptMethod =
+                    new CodeBlock(
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                        $"return Create{tableNameCapitalCamel}List(jsonData).Values.ToList()");
+            }
             else
+            {
                 createMethod = new CodeBlock(
                     $"protected virtual List<{tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
                     $"return {seedDataObjectName}.Select(s => new {tableNameSingular}{{ {fieldsListStr} }}).ToList()");
+                adaptMethod =
+                    new CodeBlock(
+                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                        $"return Create{tableNameCapitalCamel}List(jsonData)");
+            }
             usedList = true;
         }
-
-        if (createMethod is not null)
-            adaptMethod =
-                new CodeBlock(
-                    $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
-                    $"return Create{tableNameCapitalCamel}List(jsonData)");
-
-
-
-
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
