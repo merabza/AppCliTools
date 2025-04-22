@@ -236,6 +236,7 @@ public sealed class SeederCreator : CodeCreator
                         $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
                         $"return Create{tableNameCapitalCamel}List(jsonData)");
             }
+
             usedList = true;
         }
 
