@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using JetBrainsResharperGlobalToolsWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 
 namespace DbContextAnalyzer;
@@ -65,6 +68,10 @@ public sealed class SeederCodeCreator
         relations.DbContextAnalysis();
         //-----
 
+
+        var usedCarcassEntityTypes = new List<string>();
+
+
         //-------------
 
         var isAnyCarcassType = false;
@@ -123,7 +130,9 @@ public sealed class SeederCodeCreator
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
-            seederCreator.UseEntity(relEntity.Value, isCarcassType);
+            var usedTableName = seederCreator.UseEntity(relEntity.Value, isCarcassType);
+            if ( isCarcassType ) 
+                usedCarcassEntityTypes.Add(usedTableName);
 
             //1.1
             creatorForJsonFilesCreator.UseEntity(relEntity.Value);
@@ -136,8 +145,30 @@ public sealed class SeederCodeCreator
         }
         //-------------
 
-        //1.1
-        creatorForJsonFilesCreator.FinishAndSave();
+        var notUsedCarcassTypes = (from carcassEntityType in carcassEntityTypes
+            let tableName = Relations.GetTableName(carcassEntityType)
+            where !string.IsNullOrEmpty(tableName)
+            let isUsed =
+                usedCarcassEntityTypes.Any(a => string.Equals(a, tableName, StringComparison.OrdinalIgnoreCase))
+            where !isUsed
+            select carcassEntityType).ToList();
+
+        foreach (var carcassEntityType in notUsedCarcassTypes)
+        {
+            
+            //2.3
+            var placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
+                _seederCodeCreatorParameters.ProjectSeedersFolderName);
+
+            var seederCreator =
+                new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
+            seederCreator.UseCarcassEntity(carcassEntityType);
+        }
+
+
+
+            //1.1
+            creatorForJsonFilesCreator.FinishAndSave();
         //1.2
         projectDataSeederCreator.FinishAndSave();
         //1.3

@@ -4,6 +4,7 @@ using System.Linq;
 using CodeTools;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
@@ -43,7 +44,7 @@ public sealed class SeederCreator : CodeCreator
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
-    public void UseEntity(EntityData entityData, bool isCarcassType)
+    public string UseEntity(EntityData entityData, bool isCarcassType)
     {
         var usedList = false;
         var tableName = entityData.TableName;
@@ -271,10 +272,61 @@ public sealed class SeederCreator : CodeCreator
         CodeFile.AddRange(block.CodeItems);
 
         FinishAndSave();
+
+        return tableName;
     }
 
     private static string GetPreferredFieldName(Dictionary<string, string> replaceDict, string oldName)
     {
         return replaceDict.GetValueOrDefault(oldName, oldName);
+    }
+
+    public void UseCarcassEntity(IEntityType carcassEntityType)
+    {
+        var tableName = Relations.GetTableName(carcassEntityType);
+
+        Console.WriteLine("UseEntity tableName = {0}", tableName);
+
+        var tableNameCapitalCamel = tableName?.CapitalizeCamel();
+
+        var className = _parameters.ProjectPrefixShort + tableNameCapitalCamel + "Seeder";
+        var baseClassName = tableNameCapitalCamel + "Seeder";
+
+        var isIdentity = tableName is "roles" or "users";
+        var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
+
+        var additionalParameters = tableName switch
+        {
+            "dataTypes" => "ICarcassDataSeederRepository carcassRepo, ",
+            "manyToManyJoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
+            "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
+            "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
+            _ => string.Empty
+        };
+
+        var additionalParameters2 = tableName switch
+        {
+            "dataTypes" => "carcassRepo, ",
+            "manyToManyJoins" => "secretDataFolder, carcassRepo, ",
+            "roles" => "roleManager, secretDataFolder, ",
+            "users" => "userManager, secretDataFolder, ",
+            _ => string.Empty
+        };
+
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+            new OneLineComment($"tableName is {tableName}"),
+            isDataTypesOrManyToManyJoins ? "using CarcassDataSeeding" : null, "using CarcassDataSeeding.Seeders",
+            isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
+            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using DatabaseToolsShared",
+            "using System.Collections.Generic",
+            $"namespace {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}", string.Empty,
+            new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
+                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
+                new CodeBlock(
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)")));
+        CodeFile.FileName = className + ".cs";
+        CodeFile.AddRange(block.CodeItems);
+
+        FinishAndSave();
     }
 }
