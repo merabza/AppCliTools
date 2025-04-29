@@ -67,22 +67,22 @@ public sealed class SeederCreator : CodeCreator
         var seedDataObjectName = tableName.UnCapitalize() + "SeedData";
         var prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
 
-        var isIdentity = tableName is "roles" or "users";
-        var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
+        var isIdentity = tableName.ToLower() is "roles" or "users";
+        var isDataTypesOrManyToManyJoins = tableName.ToLower() is "datatypes" or "manytomanyjoins";
 
-        var additionalParameters = tableName switch
+        var additionalParameters = tableName.ToLower() switch
         {
-            "dataTypes" => "ICarcassDataSeederRepository carcassRepo, ",
-            "manyToManyJoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
+            "datatypes" => "ICarcassDataSeederRepository carcassRepo, ",
+            "manytomanyjoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
             "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
             "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
             _ => string.Empty
         };
 
-        var additionalParameters2 = tableName switch
+        var additionalParameters2 = tableName.ToLower() switch
         {
-            "dataTypes" => "carcassRepo, ",
-            "manyToManyJoins" => "secretDataFolder, carcassRepo, ",
+            "datatypes" => "carcassRepo, ",
+            "manytomanyjoins" => "secretDataFolder, carcassRepo, ",
             "roles" => "roleManager, secretDataFolder, ",
             "users" => "userManager, secretDataFolder, ",
             _ => string.Empty
@@ -284,30 +284,32 @@ public sealed class SeederCreator : CodeCreator
     public void UseCarcassEntity(IEntityType carcassEntityType)
     {
         var tableName = Relations.GetTableName(carcassEntityType);
+        if (string.IsNullOrWhiteSpace(tableName))
+            return;
 
         Console.WriteLine("UseEntity tableName = {0}", tableName);
 
-        var tableNameCapitalCamel = tableName?.CapitalizeCamel();
+        var tableNameCapitalCamel = tableName.CapitalizeCamel();
 
         var className = _parameters.ProjectPrefixShort + tableNameCapitalCamel + "Seeder";
         var baseClassName = tableNameCapitalCamel + "Seeder";
 
-        var isIdentity = tableName is "roles" or "users";
-        var isDataTypesOrManyToManyJoins = tableName is "dataTypes" or "manyToManyJoins";
+        var isIdentity = tableName.ToLower() is "roles" or "users";
+        var isDataTypesOrManyToManyJoins = tableName.ToLower() is "datatypes" or "manytomanyjoins";
 
-        var additionalParameters = tableName switch
+        var additionalParameters = tableName.ToLower() switch
         {
-            "dataTypes" => "ICarcassDataSeederRepository carcassRepo, ",
-            "manyToManyJoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
+            "datatypes" => "ICarcassDataSeederRepository carcassRepo, ",
+            "manytomanyjoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
             "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
             "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
             _ => string.Empty
         };
 
-        var additionalParameters2 = tableName switch
+        var additionalParameters2 = tableName.ToLower() switch
         {
-            "dataTypes" => "carcassRepo, ",
-            "manyToManyJoins" => "secretDataFolder, carcassRepo, ",
+            "datatypes" => "carcassRepo, ",
+            "manytomanyjoins" => "secretDataFolder, carcassRepo, ",
             "roles" => "roleManager, secretDataFolder, ",
             "users" => "userManager, secretDataFolder, ",
             _ => string.Empty
