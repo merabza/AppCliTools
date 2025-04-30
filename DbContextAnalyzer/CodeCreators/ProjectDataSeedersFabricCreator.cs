@@ -9,7 +9,7 @@ namespace DbContextAnalyzer.CodeCreators;
 public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 {
     private readonly CodeRegion _carcassRegion;
-    private readonly bool _isAnyCarcassType;
+    //private readonly bool _isAnyCarcassType;
 
     private readonly SeederCodeCreatorParameters _parameters;
 
@@ -18,12 +18,13 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
     //private readonly FlatCodeBlock _projectCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
-        bool isAnyCarcassType) : base(logger, parameters.PlacePath,
-        $"{parameters.ProjectDataSeedersFabricClassName}.cs")
+    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters
+        //,
+        //bool isAnyCarcassType
+    ) : base(logger, parameters.PlacePath, $"{parameters.ProjectDataSeedersFabricClassName}.cs")
     {
         _parameters = parameters;
-        _isAnyCarcassType = isAnyCarcassType;
+        //_isAnyCarcassType = isAnyCarcassType;
         _carcassRegion = new CodeRegion("Carcass");
         _projectRegion = new CodeRegion(_parameters.ProjectPrefix);
     }
@@ -36,9 +37,11 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", "using CarcassMasterDataDom.Models", "using DatabaseToolsShared",
             "using Microsoft.AspNetCore.Identity",
-            _isAnyCarcassType
-                ? $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
-                : string.Empty, $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
+            //_isAnyCarcassType
+            //    ? 
+            $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
+            //: string.Empty
+            , $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : CarcassDataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DbContextAnalyzer.CodeCreators;
@@ -65,23 +66,25 @@ public sealed class SeederCodeCreator
         relations.DbContextAnalysis();
         //-----
 
+        var usedCarcassEntityTypes = new List<string>();
+
         //-------------
 
-        var isAnyCarcassType = false;
-        foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
-        {
-            var tableName = relEntity.Key;
+        //var isAnyCarcassType = false;
+        //foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
+        //{
+        //    var tableName = relEntity.Key;
 
-            var isCarcassType = carcassEntityTypes.Any(a => string.Equals(Relations.GetTableName(a)?.ToLower(),
-                tableName.ToLower(), StringComparison.OrdinalIgnoreCase));
-            if (isCarcassType)
-                isAnyCarcassType = true;
-        }
+        //    var isCarcassType = carcassEntityTypes.Any(a => string.Equals(Relations.GetTableName(a)?.ToLower(),
+        //        tableName.ToLower(), StringComparison.OrdinalIgnoreCase));
+        //    if (isCarcassType)
+        //        isAnyCarcassType = true;
+        //}
         //-------------
 
         //1.3
         var projectDataSeedersFabricCreator =
-            new ProjectDataSeedersFabricCreator(_logger, _seederCodeCreatorParameters, isAnyCarcassType);
+            new ProjectDataSeedersFabricCreator(_logger, _seederCodeCreatorParameters);
         projectDataSeedersFabricCreator.CreateFileStructure();
 
         //-------------
@@ -123,7 +126,9 @@ public sealed class SeederCodeCreator
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
-            seederCreator.UseEntity(relEntity.Value, isCarcassType);
+            var usedTableName = seederCreator.UseEntity(relEntity.Value, isCarcassType);
+            if (isCarcassType)
+                usedCarcassEntityTypes.Add(usedTableName);
 
             //1.1
             creatorForJsonFilesCreator.UseEntity(relEntity.Value);
@@ -135,6 +140,25 @@ public sealed class SeederCodeCreator
             projectDataSeedersFabricCreator.UseEntity(relEntity.Value, isCarcassType);
         }
         //-------------
+
+        var notUsedCarcassTypes = (from carcassEntityType in carcassEntityTypes
+            let tableName = Relations.GetTableName(carcassEntityType)
+            where !string.IsNullOrEmpty(tableName)
+            let isUsed =
+                usedCarcassEntityTypes.Any(a => string.Equals(a, tableName, StringComparison.OrdinalIgnoreCase))
+            where !isUsed
+            select carcassEntityType).ToList();
+
+        foreach (var carcassEntityType in notUsedCarcassTypes)
+        {
+            //2.3
+            var placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
+                _seederCodeCreatorParameters.ProjectSeedersFolderName);
+
+            var seederCreator =
+                new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
+            seederCreator.UseCarcassEntity(carcassEntityType);
+        }
 
         //1.1
         creatorForJsonFilesCreator.FinishAndSave();
