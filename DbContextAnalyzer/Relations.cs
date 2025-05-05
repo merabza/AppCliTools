@@ -84,14 +84,15 @@ public sealed class Relations
         Entities.Add(tableName, entityData);
 
         //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
-        var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s => s.TableName == tableName);
+        var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s =>
+            string.Equals(s.TableName, tableName, StringComparison.CurrentCultureIgnoreCase));
         if (exKeyFieldNames is not null)
         {
             var exKeyFields = exKeyFieldNames.Keys;
-            entityData.OptimalIndexProperties = exKeyFields
-                .Select(keyField => entityType.GetProperties().SingleOrDefault(ss =>
-                    ss.Name == _excludesRulesParameters.GetNewFieldName(tableName, keyField))).OfType<IProperty>()
-                .ToList();
+            entityData.OptimalIndexProperties = exKeyFields.Select(keyField =>
+                entityType.GetProperties().SingleOrDefault(ss => string.Equals(ss.Name,
+                    _excludesRulesParameters.GetNewFieldName(tableName, keyField),
+                    StringComparison.CurrentCultureIgnoreCase))).OfType<IProperty>().ToList();
         }
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
