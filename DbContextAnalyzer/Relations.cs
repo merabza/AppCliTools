@@ -83,24 +83,28 @@ public sealed class Relations
 
         Entities.Add(tableName, entityData);
 
-        //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
-        var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s =>
-            string.Equals(s.TableName, tableName, StringComparison.CurrentCultureIgnoreCase));
-        if (exKeyFieldNames is not null)
-        {
-            var exKeyFields = exKeyFieldNames.Keys;
-            entityData.OptimalIndexProperties = exKeyFields.Select(keyField =>
-                entityType.GetProperties().SingleOrDefault(ss => string.Equals(ss.Name,
-                    _excludesRulesParameters.GetNewFieldName(tableName, keyField),
-                    StringComparison.CurrentCultureIgnoreCase))).OfType<IProperty>().ToList();
-        }
-
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
         if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never &&
             entityType.GetReferencingForeignKeys().Any())
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
-            entityData.OptimalIndexProperties = GetOptimalUniIndex(entityType)?.Properties.ToList() ?? [];
+        {
+            //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
+            var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s =>
+                string.Equals(s.TableName, tableName, StringComparison.CurrentCultureIgnoreCase));
+            if (exKeyFieldNames is not null)
+            {
+                var exKeyFields = exKeyFieldNames.Keys;
+                entityData.OptimalIndexProperties = exKeyFields.Select(keyField =>
+                    entityType.GetProperties().SingleOrDefault(ss => string.Equals(ss.Name,
+                        _excludesRulesParameters.GetNewFieldName(tableName, keyField),
+                        StringComparison.CurrentCultureIgnoreCase))).OfType<IProperty>().ToList();
+            }
+            else
+            {
+                entityData.OptimalIndexProperties = GetOptimalUniIndex(entityType)?.Properties.ToList() ?? [];
+            }
+        }
 
         var haveOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
