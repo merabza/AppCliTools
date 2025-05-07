@@ -29,7 +29,7 @@ public sealed class SeederModelCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = GetTableName(entityData.TableName);
+        var tableName = entityData.TableName;
 
         var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
         var className = tableNameSingular + "SeederModel";
