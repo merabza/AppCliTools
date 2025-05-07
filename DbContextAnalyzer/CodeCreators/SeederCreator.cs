@@ -30,7 +30,8 @@ public sealed class SeederCreator : CodeCreator
     private string GetRightValue(FieldData fieldData)
     {
         if (fieldData.SubstituteField == null)
-            return $"s.{fieldData.FullName}";
+            return
+                $"s.{fieldData.FullName}{(fieldData is { IsNullable: true, IsValueType: true } ? ".Value" : string.Empty)}";
 
         var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(
             _excludesRulesParameters.SingularityExceptions, fieldData.SubstituteField.TableName);

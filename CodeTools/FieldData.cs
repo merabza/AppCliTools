@@ -25,6 +25,7 @@ public sealed class FieldData
     public required string RealTypeName { get; set; }
     public bool IsNullable { get; set; }
     public bool IsNullableByParents { get; set; }
+    public bool IsValueType { get; set; }
     public string? NavigationFieldName { get; set; }
     public required string OldName { get; set; }
 
@@ -54,7 +55,8 @@ public sealed class FieldData
             RealTypeName = realTypeName,
             FullName = (parent == null ? string.Empty : parent.FullName) + preferredName,
             IsNullable = isNullable,
-            IsNullableByParents = isNullableByParents
+            IsNullableByParents = isNullableByParents,
+            IsValueType = clrType.IsValueType
         };
     }
 
