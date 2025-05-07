@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
@@ -74,38 +71,5 @@ public /*open*/ class CodeCreator
         var forCreateFileName = Path.Combine(placePath, CodeFile.FileName);
         File.WriteAllText(forCreateFileName, strCode);
         _logger.LogInformation("Code file created: {forCreateFileName}", forCreateFileName);
-    }
-
-    private static string GetTableNameSingular(IReadOnlyDictionary<string, string> singularityExceptions,
-        string tableName)
-    {
-        if (singularityExceptions.TryGetValue(tableName, out var singular))
-            return singular;
-        var unCapTableName = tableName.UnCapitalize();
-        return singularityExceptions.TryGetValue(unCapTableName, out var exception)
-            ? exception
-            : tableName.Singularize();
-    }
-
-    protected static string GetTableNameSingularCapitalizeCamel(Dictionary<string, string> singularityExceptions,
-        string tableName)
-    {
-        return GetTableNameSingular(singularityExceptions, tableName).CapitalizeCamel();
-    }
-
-    protected static (bool, List<IProperty>) GetFieldsProperties(IEntityType entityType, List<string> ignoreFields)
-    {
-        var props = entityType.GetProperties()
-            .Where(p => p.ValueGenerated == ValueGenerated.Never && !ignoreFields.Contains(p.Name)).ToList();
-
-        if (props.Count > 0)
-            return (false, props);
-
-        //თუ ცხრილის ველები ყველა ავტომატურად გენერირდება, მაშინ ავიღოთ მხოლოდ ძირითადი გასაღების ველები და ის გავიტანოთ json-ში
-        //და ის დაგვჭირდება SeederModel-ში
-        props = entityType.GetKeys().SelectMany(s => s.Properties).ToList();
-        if (props.Count != 1) throw new Exception("გასაღები ზუსტად ერთი უნდა იყოს. სხვა ვარიანტები ჯერ არ განიხილება");
-
-        return (true, props);
     }
 }

@@ -1,46 +1,33 @@
 ﻿using System;
 using CodeTools;
+using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class ProjectDataSeedersFabricCreator : CodeCreator
+public sealed class ProjectDataSeedersFabricCreator : SeederCodeCreatorBase
 {
     private readonly CodeRegion _carcassRegion;
-    //private readonly bool _isAnyCarcassType;
-
     private readonly SeederCodeCreatorParameters _parameters;
-
     private readonly CodeRegion _projectRegion;
-    //private readonly FlatCodeBlock _carcassCodeBlock;
-    //private readonly FlatCodeBlock _projectCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters
-        //,
-        //bool isAnyCarcassType
-    ) : base(logger, parameters.PlacePath, $"{parameters.ProjectDataSeedersFabricClassName}.cs")
+    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters, ExcludesRulesParametersDomain excludesRulesParameters
+    ) : base(logger, excludesRulesParameters, parameters.PlacePath, $"{parameters.ProjectDataSeedersFabricClassName}.cs")
     {
         _parameters = parameters;
-        //_isAnyCarcassType = isAnyCarcassType;
         _carcassRegion = new CodeRegion("Carcass");
         _projectRegion = new CodeRegion(_parameters.ProjectPrefix);
     }
 
     public override void CreateFileStructure()
     {
-        //_carcassRegion = new CodeRegion("Carcass");
-        //_projectRegion = new CodeRegion(_parameters.ProjectPrefix);
-
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", "using CarcassMasterDataDom.Models", "using DatabaseToolsShared",
             "using Microsoft.AspNetCore.Identity",
-            //_isAnyCarcassType
-            //    ? 
             $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
-            //: string.Empty
             , $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : CarcassDataSeedersFabric",
@@ -56,7 +43,7 @@ public sealed class ProjectDataSeedersFabricCreator : CodeCreator
 
     public void UseEntity(EntityData entityData, bool isCarcassType)
     {
-        var tableName = entityData.TableName;
+        var tableName = GetTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
         var seederClassName = tableNameCapitalCamel + "Seeder";
         var newClassName = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + seederClassName;

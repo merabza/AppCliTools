@@ -7,9 +7,10 @@ namespace DbContextAnalyzer.Models;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ExcludesRulesParameters
 {
-    public List<string> ExcludeTables { get; init; } = [];
-    public Dictionary<string, string> SingularityExceptions { get; init; } = new();
-    public List<TableFieldModel> ExcludeFields { get; init; } = [];
-    public List<ReplaceFieldName> ReplaceFieldNames { get; init; } = [];
+    public List<string> ExcludeTables { get; } = [];
+    public List<SingularityException> SingularityExceptions { get; } = [];
+    public List<TableFieldModel> ExcludeFields { get; } = [];
+    public List<ReplaceFieldName> ReplaceFieldNames { get; } = [];
+    public List<ReplaceTableName> ReplaceTableNames { get; } = [];
     public List<KeyFieldNamesModel> KeyFieldNames { get; } = [];
 }

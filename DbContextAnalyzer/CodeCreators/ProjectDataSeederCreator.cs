@@ -1,12 +1,13 @@
 ﻿using System;
 using CodeTools;
+using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class ProjectDataSeederCreator : CodeCreator
+public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
 {
     private readonly SeederCodeCreatorParameters _parameters;
 
@@ -14,7 +15,8 @@ public sealed class ProjectDataSeederCreator : CodeCreator
     private CodeBlock? _seedProjectSpecificDataMethodCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ProjectDataSeederCreator(ILogger logger, SeederCodeCreatorParameters parameters) : base(logger,
+    public ProjectDataSeederCreator(ILogger logger, SeederCodeCreatorParameters parameters,
+        ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, excludesRulesParameters,
         parameters.PlacePath, "ProjectDataSeeder.cs")
     {
         _parameters = parameters;
@@ -42,7 +44,7 @@ public sealed class ProjectDataSeederCreator : CodeCreator
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = entityData.TableName;
+        var tableName = GetTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
 
         _counter++;

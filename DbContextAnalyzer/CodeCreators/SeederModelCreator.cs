@@ -1,28 +1,26 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CodeTools;
+using DbContextAnalyzer.Domain;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class SeederModelCreator : CodeCreator
+public sealed class SeederModelCreator : SeederCodeCreatorBase
 {
     private readonly string _modelsFolderName;
     private readonly string _projectNamespace;
 
-    private readonly Dictionary<string, string> _singularityExceptions;
-
     // ReSharper disable once ConvertToPrimaryConstructor
     public SeederModelCreator(ILogger logger, string placePath, string projectNamespace, string modelsFolderName,
-        Dictionary<string, string> singularityExceptions) : base(logger, Path.Combine(placePath, modelsFolderName))
+        ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, excludesRulesParameters,
+        Path.Combine(placePath, modelsFolderName))
     {
         _projectNamespace = projectNamespace;
         _modelsFolderName = modelsFolderName;
-        _singularityExceptions = singularityExceptions;
     }
 
     public override void CreateFileStructure()
@@ -31,9 +29,9 @@ public sealed class SeederModelCreator : CodeCreator
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = entityData.TableName;
+        var tableName = GetTableName(entityData.TableName);
 
-        var tableNameSingular = GetTableNameSingularCapitalizeCamel(_singularityExceptions, tableName);
+        var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
         var className = tableNameSingular + "SeederModel";
 
         var fieldDataList = entityData.GetFlatFieldData();

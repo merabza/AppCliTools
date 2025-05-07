@@ -152,8 +152,7 @@ public sealed class Relations
     private List<FieldData> GetFieldsData(Type? tableClrType, IEnumerable<IProperty> fieldsBase, string tableName,
         FieldData? parent = null)
     {
-        var replaceDict = _excludesRulesParameters.ReplaceFieldNames.Where(w => w.TableName == tableName)
-            .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
+        var replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 
         return fieldsBase.Select(Selector).ToList();
 

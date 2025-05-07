@@ -9,20 +9,17 @@ using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class CreatorForJsonFilesCreator : CodeCreator
+public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
 {
-    private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
-
     private readonly GetJsonCreatorParameters _parameters;
     private CodeBlock? _runMethodCodeBlock;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CreatorForJsonFilesCreator(ILogger logger, GetJsonCreatorParameters getJsonCreatorParameters,
-        ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, getJsonCreatorParameters.PlacePath,
-        "JsonFilesCreator.cs")
+        ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, excludesRulesParameters,
+        getJsonCreatorParameters.PlacePath, "JsonFilesCreator.cs")
     {
         _parameters = getJsonCreatorParameters;
-        _excludesRulesParameters = excludesRulesParameters;
     }
 
     public override void CreateFileStructure()
@@ -105,10 +102,9 @@ public sealed class CreatorForJsonFilesCreator : CodeCreator
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = entityData.TableName;
+        var tableName = GetTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
-        var tableNameSingular =
-            GetTableNameSingularCapitalizeCamel(_excludesRulesParameters.SingularityExceptions, tableName);
+        var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
         var seederModelClassName = tableNameSingular + "SeederModel";
 
         var includes = entityData.FieldsData.Aggregate(string.Empty, (current, field) => current + GetIncludes(field));

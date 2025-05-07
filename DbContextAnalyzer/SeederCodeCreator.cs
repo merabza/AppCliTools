@@ -57,7 +57,8 @@ public sealed class SeederCodeCreator
         creatorForJsonFilesCreator.CreateFileStructure();
 
         //1.2
-        var projectDataSeederCreator = new ProjectDataSeederCreator(_logger, _seederCodeCreatorParameters);
+        var projectDataSeederCreator =
+            new ProjectDataSeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters);
         projectDataSeederCreator.CreateFileStructure();
 
         //----
@@ -84,7 +85,7 @@ public sealed class SeederCodeCreator
 
         //1.3
         var projectDataSeedersFabricCreator =
-            new ProjectDataSeedersFabricCreator(_logger, _seederCodeCreatorParameters);
+            new ProjectDataSeedersFabricCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters);
         projectDataSeedersFabricCreator.CreateFileStructure();
 
         //-------------
@@ -106,7 +107,7 @@ public sealed class SeederCodeCreator
             //2.1
             var seederModelCreatorForJsonCreatorProject = new SeederModelCreator(_logger,
                 _getJsonCreatorParameters.PlacePath, _getJsonCreatorParameters.ProjectNamespace,
-                _getJsonCreatorParameters.ModelsFolderName, _excludesRulesParameters.SingularityExceptions);
+                _getJsonCreatorParameters.ModelsFolderName, _excludesRulesParameters);
             seederModelCreatorForJsonCreatorProject.UseEntity(relEntity.Value);
 
             if (!isCarcassType)
@@ -114,7 +115,7 @@ public sealed class SeederCodeCreator
                 //2.2
                 var seederModelCreator = new SeederModelCreator(_logger, _seederCodeCreatorParameters.PlacePath,
                     _seederCodeCreatorParameters.ProjectNamespace, _seederCodeCreatorParameters.ModelsFolderName,
-                    _excludesRulesParameters.SingularityExceptions);
+                    _excludesRulesParameters);
                 seederModelCreator.UseEntity(relEntity.Value);
             }
 

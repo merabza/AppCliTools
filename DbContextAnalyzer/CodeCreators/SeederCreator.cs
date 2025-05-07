@@ -10,14 +10,15 @@ using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class SeederCreator : CodeCreator
+public sealed class SeederCreator : SeederCodeCreatorBase
 {
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly SeederCodeCreatorParameters _parameters;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public SeederCreator(ILogger logger, SeederCodeCreatorParameters parameters,
-        ExcludesRulesParametersDomain excludesRulesParameters, string placePath) : base(logger, placePath)
+        ExcludesRulesParametersDomain excludesRulesParameters, string placePath) : base(logger, excludesRulesParameters,
+        placePath)
     {
         _parameters = parameters;
         _excludesRulesParameters = excludesRulesParameters;
@@ -33,8 +34,7 @@ public sealed class SeederCreator : CodeCreator
             return
                 $"s.{fieldData.FullName}{(fieldData is { IsNullable: true, IsValueType: true } ? ".Value" : string.Empty)}";
 
-        var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(
-            _excludesRulesParameters.SingularityExceptions, fieldData.SubstituteField.TableName);
+        var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(fieldData.SubstituteField.TableName);
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
                 ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})"
@@ -48,7 +48,7 @@ public sealed class SeederCreator : CodeCreator
     public string UseEntity(EntityData entityData, bool isCarcassType)
     {
         var usedList = false;
-        var tableName = entityData.TableName;
+        var tableName = GetTableName(entityData.TableName);
 
         Console.WriteLine("UseEntity tableName = {0}", tableName);
 
@@ -57,8 +57,7 @@ public sealed class SeederCreator : CodeCreator
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
         var tableNameCamel = tableName.Camelize();
 
-        var tableNameSingular =
-            GetTableNameSingularCapitalizeCamel(_excludesRulesParameters.SingularityExceptions, tableName);
+        var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
         var className = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + tableNameCapitalCamel +
                         "Seeder";
         var seederModelClassName = tableNameSingular + "SeederModel";
