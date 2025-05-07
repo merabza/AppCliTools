@@ -14,8 +14,9 @@ public sealed class ProjectDataSeedersFabricCreator : SeederCodeCreatorBase
     private readonly CodeRegion _projectRegion;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters, ExcludesRulesParametersDomain excludesRulesParameters
-    ) : base(logger, excludesRulesParameters, parameters.PlacePath, $"{parameters.ProjectDataSeedersFabricClassName}.cs")
+    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
+        ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, excludesRulesParameters,
+        parameters.PlacePath, $"{parameters.ProjectDataSeedersFabricClassName}.cs")
     {
         _parameters = parameters;
         _carcassRegion = new CodeRegion("Carcass");
@@ -27,8 +28,8 @@ public sealed class ProjectDataSeedersFabricCreator : SeederCodeCreatorBase
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", "using CarcassMasterDataDom.Models", "using DatabaseToolsShared",
             "using Microsoft.AspNetCore.Identity",
-            $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}"
-            , $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
+            $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}",
+            $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : CarcassDataSeedersFabric",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
