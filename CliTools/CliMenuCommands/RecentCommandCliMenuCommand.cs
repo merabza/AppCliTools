@@ -28,7 +28,7 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
             if (menuItem is null)
                 return false;
 
-            currentMenu = menuItem.CliMenuCommand.GetSubmenu();
+            currentMenu = menuItem.CliMenuCommand.GetSubMenu();
         }
 
         if (menuItem is null)

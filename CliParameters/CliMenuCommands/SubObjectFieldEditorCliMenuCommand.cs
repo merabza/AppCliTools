@@ -18,7 +18,7 @@ public sealed class SubObjectFieldEditorCliMenuCommand : CliMenuCommand
         _recordForUpdate = recordForUpdate;
     }
 
-    public override CliMenuSet? GetSubmenu()
+    public override CliMenuSet? GetSubMenu()
     {
         return _fieldEditor.GetSubMenu(_recordForUpdate);
     }

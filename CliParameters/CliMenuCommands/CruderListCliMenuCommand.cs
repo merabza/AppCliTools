@@ -14,7 +14,7 @@ public sealed class CruderListCliMenuCommand : CliMenuCommand
         _cruder = cruder;
     }
 
-    public override CliMenuSet GetSubmenu()
+    public override CliMenuSet GetSubMenu()
     {
         return _cruder.GetListMenu();
     }

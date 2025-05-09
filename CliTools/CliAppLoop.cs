@@ -140,7 +140,7 @@ public abstract class CliAppLoop
                 case EMenuAction.Exit:
                     return true;
                 case EMenuAction.LoadSubMenu:
-                    if (!AddSubMenu(menuCommand.GetSubmenu()))
+                    if (!AddSubMenu(menuCommand.GetSubMenu()))
                         return false;
                     break;
                 case EMenuAction.LevelUp when _currentMenuSetLevel <= 0:
@@ -243,7 +243,7 @@ public abstract class CliAppLoop
 
             //AddSelectedCommand(menuItem.CliMenuCommand);
 
-            if (!AddSubMenu(menuItem.CliMenuCommand.GetSubmenu()))
+            if (!AddSubMenu(menuItem.CliMenuCommand.GetSubMenu()))
                 return false;
         }
 
@@ -256,12 +256,12 @@ public abstract class CliAppLoop
         {
             AddChangeMenu(BuildMainMenu());
         }
-        else
-        {
-            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
-            if (!AddChangeMenu(selectedMenuCommand.GetSubmenu()))
-                return false;
-        }
+        //else
+        //{
+        //    var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
+        //    //if (!AddChangeMenu(selectedMenuCommand.GetSubMenu()))
+        //    //    return false;
+        //}
 
         return true;
     }

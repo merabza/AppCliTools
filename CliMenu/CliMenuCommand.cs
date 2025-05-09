@@ -99,7 +99,7 @@ public /*open*/ class CliMenuCommand
         return Name;
     }
 
-    public virtual CliMenuSet? GetSubmenu()
+    public virtual CliMenuSet? GetSubMenu()
     {
         return null;
     }

@@ -14,7 +14,7 @@ public sealed class ParametersEditorListCliMenuCommand : CliMenuCommand
         _parametersEditor = parametersEditor;
     }
 
-    public override CliMenuSet GetSubmenu()
+    public override CliMenuSet GetSubMenu()
     {
         return _parametersEditor.GetParametersMainMenu();
     }
