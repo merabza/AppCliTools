@@ -213,7 +213,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     .Where(w =>
                         (entityData.SelfRecursiveField == null || w.Name != entityData.SelfRecursiveField.Name) &&
                         (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name))
-                    .Select(p => $"{p.Name} = {GetRightValue(p)}"));
+                    .Select(p => $"{p.OldName} = {GetRightValue(p)}"));
 
             if (entityData.NeedsToCreateTempData)
             {
