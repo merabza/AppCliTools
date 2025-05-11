@@ -21,7 +21,7 @@ public sealed class SeederCodeCreatorStarter
         _par = par;
     }
 
-    public void Go(DbContext contextDbSc)
+    public void Go(DbContext contextDbSc, DbContext devContext)
     {
         var pathToContentRoot = Directory.GetCurrentDirectory();
         Console.WriteLine("pathToContentRoot=" + pathToContentRoot);

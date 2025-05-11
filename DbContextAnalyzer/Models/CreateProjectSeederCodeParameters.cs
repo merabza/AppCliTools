@@ -8,6 +8,7 @@ public sealed class CreateProjectSeederCodeParameters : IParameters
     public string? ProjectPrefixShort { get; set; }
     public string? LogFolder { get; set; }
     public string? ConnectionStringProd { get; set; }
+    public string? ConnectionStringDev { get; set; }
     public string? GetJsonProjectPlacePath { get; set; }
     public string? GetJsonProjectNamespace { get; set; }
     public string? DataSeedingProjectPlacePath { get; set; }
