@@ -21,7 +21,7 @@ public sealed class SeederCodeCreatorStarter
         _par = par;
     }
 
-    public void Go(DbContext contextDbSc)
+    public void Go(DbContext contextDbSc, DbContext devContext)
     {
         var pathToContentRoot = Directory.GetCurrentDirectory();
         Console.WriteLine("pathToContentRoot=" + pathToContentRoot);
@@ -36,6 +36,12 @@ public sealed class SeederCodeCreatorStarter
             StShared.WriteErrorLine("ConnectionStringProd is empty", true);
             return;
         }
+
+        //if (string.IsNullOrWhiteSpace(_par.ConnectionStringDev))
+        //{
+        //    StShared.WriteErrorLine("ConnectionStringDev is empty", true);
+        //    return;
+        //}
 
         if (string.IsNullOrWhiteSpace(_par.ProjectPrefix))
         {

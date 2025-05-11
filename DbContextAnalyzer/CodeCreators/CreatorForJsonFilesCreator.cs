@@ -102,8 +102,10 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = entityData.TableName;
+        var oldTableName = entityData.TableName;
+        var tableName = GetTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
+        var oldTableNameCapitalCamel = oldTableName.CapitalizeCamel();
         var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
         var seederModelClassName = tableNameSingular + "SeederModel";
 
@@ -131,7 +133,7 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
         var tableVarName = tableName.UnCapitalize();
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")", string.Empty,
-            $"var {tableVarName} = _context.{tableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
+            $"var {tableVarName} = _context.{oldTableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
             $"SaveJson({tableVarName}, \"{tableNameCapitalCamel}\")");
 
         if (_runMethodCodeBlock is null)
