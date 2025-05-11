@@ -45,10 +45,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
-    public string UseEntity(EntityData entityData, bool isCarcassType)
+    public string UseEntity(EntityData entityData, EntityData entityDataForDev, bool isCarcassType)
     {
         var usedList = false;
-        var tableName = GetTableName(entityData.TableName);
+        var tableName = GetNewTableName(entityData.TableName);
 
         Console.WriteLine("UseEntity tableName = {0}", tableName);
 
@@ -213,7 +213,18 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     .Where(w =>
                         (entityData.SelfRecursiveField == null || w.Name != entityData.SelfRecursiveField.Name) &&
                         (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name))
-                    .Select(p => $"{p.Name} = {GetRightValue(p)}"));
+                    .Select(p =>
+                    {
+                        var result = $"{p.Name} = {GetRightValue(p)}";
+                        var fieldData = entityDataForDev.FieldsData.SingleOrDefault(x => x.Name == p.Name);
+                        if (fieldData is null)
+                            return result;
+
+                        if (fieldData.IsValueType && p.IsNullable)
+                            return $"{result}.Value";
+
+                        return result;
+                    }));
 
             if (entityData.NeedsToCreateTempData)
             {

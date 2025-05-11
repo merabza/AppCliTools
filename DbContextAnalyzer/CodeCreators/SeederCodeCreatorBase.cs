@@ -19,7 +19,7 @@ public class SeederCodeCreatorBase : CodeCreator
         _excludesRulesParameters = excludesRulesParameters;
     }
 
-    protected string GetTableName(string tableName)
+    protected string GetNewTableName(string tableName)
     {
         return _excludesRulesParameters.GetReplaceTablesName(tableName);
     }

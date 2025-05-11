@@ -15,6 +15,7 @@ public sealed class SeederCodeCreator
 {
     private readonly DbContext _carcassContext;
     private readonly DbContext _dbScContext;
+    private readonly DbContext _devContext;
 
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly GetJsonCreatorParameters _getJsonCreatorParameters;
@@ -23,13 +24,14 @@ public sealed class SeederCodeCreator
     private readonly SeederCodeCreatorParameters _seederCodeCreatorParameters;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SeederCodeCreator(ILogger logger, DbContext carcassContext, DbContext dbScContext,
+    public SeederCodeCreator(ILogger logger, DbContext carcassContext, DbContext dbScContext, DbContext devContext,
         GetJsonCreatorParameters getJsonCreatorParameters, SeederCodeCreatorParameters seederCodeCreatorParameters,
         ExcludesRulesParametersDomain excludesRulesParameters)
     {
         _logger = logger;
         _carcassContext = carcassContext;
         _dbScContext = dbScContext;
+        _devContext = devContext;
         _getJsonCreatorParameters = getJsonCreatorParameters;
         _seederCodeCreatorParameters = seederCodeCreatorParameters;
         _excludesRulesParameters = excludesRulesParameters;
@@ -63,8 +65,12 @@ public sealed class SeederCodeCreator
 
         //----
         var carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
+
         var relations = new Relations(_dbScContext, _excludesRulesParameters);
         relations.DbContextAnalysis();
+
+        var relationsDev = new Relations(_devContext, _excludesRulesParameters);
+        relationsDev.DbContextAnalysis();
         //-----
 
         var usedCarcassEntityTypes = new List<string>();
@@ -100,6 +106,10 @@ public sealed class SeederCodeCreator
             }
 
             var tableName = relEntity.Key;
+            var newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
+            var devTableEntity = relationsDev.Entities.SingleOrDefault(x=>x.Value.TableName == newTableName)
+
+
             _logger.LogInformation("TableName = {tableName}", tableName);
 
             var isCarcassType = carcassEntityTypes.Any(a =>
@@ -127,7 +137,7 @@ public sealed class SeederCodeCreator
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
-            var usedTableName = seederCreator.UseEntity(relEntity.Value, isCarcassType);
+            var usedTableName = seederCreator.UseEntity(relEntity.Value, devTableEntity.Value, isCarcassType);
             if (isCarcassType)
                 usedCarcassEntityTypes.Add(usedTableName);
 

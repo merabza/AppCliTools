@@ -44,7 +44,7 @@ public sealed class ProjectDataSeedersFabricCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData, bool isCarcassType)
     {
-        var tableName = GetTableName(entityData.TableName);
+        var tableName = GetNewTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
         var seederClassName = tableNameCapitalCamel + "Seeder";
         var newClassName = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + seederClassName;

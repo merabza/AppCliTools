@@ -103,7 +103,7 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
     public void UseEntity(EntityData entityData)
     {
         var oldTableName = entityData.TableName;
-        var tableName = GetTableName(entityData.TableName);
+        var tableName = GetNewTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
         var oldTableNameCapitalCamel = oldTableName.CapitalizeCamel();
         var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);

@@ -44,7 +44,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = GetTableName(entityData.TableName);
+        var tableName = GetNewTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
 
         _counter++;
