@@ -37,6 +37,12 @@ public sealed class SeederCodeCreatorStarter
             return;
         }
 
+        //if (string.IsNullOrWhiteSpace(_par.ConnectionStringDev))
+        //{
+        //    StShared.WriteErrorLine("ConnectionStringDev is empty", true);
+        //    return;
+        //}
+
         if (string.IsNullOrWhiteSpace(_par.ProjectPrefix))
         {
             StShared.WriteErrorLine("ProjectPrefix is empty", true);
