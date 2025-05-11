@@ -6,7 +6,7 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public CreateProjectSeederCodeParametersDomain(string projectPrefix, string projectPrefixShort, string logFolder,
-        string connectionStringProd, string getJsonProjectPlacePath, string getJsonProjectNamespace,
+        string connectionStringProd, string connectionStringDev, string getJsonProjectPlacePath, string getJsonProjectNamespace,
         string dataSeedingProjectPlacePath, string dataSeedingProjectNamespace, string excludesRulesParametersFilePath,
         string mainDatabaseProjectName, string projectDbContextClassName)
     {
@@ -14,6 +14,7 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
         ProjectPrefixShort = projectPrefixShort;
         LogFolder = logFolder;
         ConnectionStringProd = connectionStringProd;
+        ConnectionStringDev = connectionStringDev;
         GetJsonProjectPlacePath = getJsonProjectPlacePath;
         GetJsonProjectNamespace = getJsonProjectNamespace;
         DataSeedingProjectPlacePath = dataSeedingProjectPlacePath;
@@ -24,11 +25,10 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
     }
 
     public string ProjectPrefix { get; }
-
     public string ProjectPrefixShort { get; }
-
     public string LogFolder { get; }
     public string ConnectionStringProd { get; }
+    public string ConnectionStringDev { get; }
     public string GetJsonProjectPlacePath { get; }
     public string GetJsonProjectNamespace { get; }
     public string DataSeedingProjectPlacePath { get; }

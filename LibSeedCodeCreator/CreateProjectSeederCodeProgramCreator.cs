@@ -10,32 +10,32 @@ public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParamete
 {
     public void Go()
     {
-        var dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
-        var dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
+        var scaffoldSeederDbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
+        var dbScContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
-        var fcbAdditionalUsing = new FlatCodeBlock($"using {dbContextProjectName}", "using DbContextAnalyzer",
-            "using Microsoft.EntityFrameworkCore", "using DbContextAnalyzer.Models");
+        var dbContextProjectName = par.DbContextProjectName;
+        var dbContextClassName = par.DbContextClassName;
+
+        var fcbAdditionalUsing = new FlatCodeBlock($"using {scaffoldSeederDbContextProjectName}",
+            $"using {dbContextProjectName}", "using DbContextAnalyzer", "using Microsoft.EntityFrameworkCore",
+            "using DbContextAnalyzer.Models");
 
         var fcbMainCommands = new FlatCodeBlock(string.Empty, "var starter = new SeederCodeCreatorStarter(logger, par)",
-            string.Empty, $"var optionsBuilder = new DbContextOptionsBuilder<{dbContextClassName}>()", string.Empty,
+            string.Empty, $"var optionsBuilder = new DbContextOptionsBuilder<{dbScContextClassName}>()", string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringProd))",
-                "StShared.WriteErrorLine(\"lConnectionStringProd is empty\", true)", "return 3"), string.Empty,
+                "StShared.WriteErrorLine(\"ConnectionStringProd is empty\", true)", "return 3"), string.Empty,
             "optionsBuilder.UseSqlServer(par.ConnectionStringProd)", string.Empty,
             new OneLineComment(" ReSharper disable once using"),
             new OneLineComment(" ReSharper disable once DisposableConstructor"),
-            $"using var context = new {dbContextClassName}(optionsBuilder.Options)", string.Empty,
-            "starter.Go(context)", string.Empty, "return 0", string.Empty);
-
-        /*
-         *
-           // ReSharper disable once using
-           using var context = DbContextCreator.Create<MimosiGeDbScContext>(par.ConnectionStringProd);
-
-           if (context is null)
-               return 6;
-
-
-         */
+            $"using var context = new {dbScContextClassName}(optionsBuilder.Options)", string.Empty, string.Empty,
+            $"var optionsBuilderDev = new DbContextOptionsBuilder<{dbContextClassName}>()", string.Empty,
+            new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringDev))",
+                "StShared.WriteErrorLine(\"ConnectionStringDev is empty\", true)", "return 3"), string.Empty,
+            "optionsBuilderDev.UseSqlServer(par.ConnectionStringDev)", string.Empty,
+            new OneLineComment(" ReSharper disable once using"),
+            new OneLineComment(" ReSharper disable once DisposableConstructor"),
+            $"using var contextDev = new {dbContextClassName}(optionsBuilderDev.Options)", string.Empty,
+            "starter.Go(context, contextDev)", string.Empty, "return 0", string.Empty);
 
         var starterCreator = new ConsoleProgramCreator(logger, fcbAdditionalUsing, null, fcbMainCommands,
             "CreateProjectSeederCodeParameters", par.CreateSeederCodeProjectNamespace,

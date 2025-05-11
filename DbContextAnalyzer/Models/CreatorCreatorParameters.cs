@@ -8,7 +8,8 @@ public sealed class CreatorCreatorParameters : IParameters
     public CreatorCreatorParameters(string projectPrefix, string dbProjectNamespace, string projectDbContextClassName,
         string projectPrefixShort, string createSeederCodeProjectNamespace, string createSeederCodeProjectPlacePath,
         string getJsonProjectNamespace, string getJsonProjectPlacePath, string seedProjectNamespace,
-        string seedProjectPlacePath, string seedConnectionStringParameterName, string seedParametersFileName)
+        string seedProjectPlacePath, string seedConnectionStringParameterName, string seedParametersFileName,
+        string dbContextProjectName, string dbContextClassName)
     {
         ProjectPrefix = projectPrefix;
         DbProjectNamespace = dbProjectNamespace;
@@ -22,6 +23,8 @@ public sealed class CreatorCreatorParameters : IParameters
         SeedProjectPlacePath = seedProjectPlacePath;
         SeedConnectionStringParameterName = seedConnectionStringParameterName;
         SeedParametersFileName = seedParametersFileName;
+        DbContextProjectName = dbContextProjectName;
+        DbContextClassName = dbContextClassName;
     }
 
     public string DbProjectNamespace { get; }
@@ -36,6 +39,8 @@ public sealed class CreatorCreatorParameters : IParameters
     public string SeedProjectPlacePath { get; }
     public string SeedConnectionStringParameterName { get; }
     public string SeedParametersFileName { get; }
+    public string DbContextProjectName { get; }
+    public string DbContextClassName { get; }
 
     public bool CheckBeforeSave()
     {
