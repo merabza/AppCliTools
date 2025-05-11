@@ -114,8 +114,8 @@ public sealed class SeederCodeCreatorStarter
             _par.MainDatabaseProjectName, _par.ProjectDbContextClassName, "Models",
             _par.ProjectPrefixShort + "DataSeeder");
 
-        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, contextDbSc, getJsonCreatorParameters,
-            seederCodeCreatorParameters, excludesRulesParameters);
+        var dataExtractor = new SeederCodeCreator(_logger, carcassContext, contextDbSc, devContext,
+            getJsonCreatorParameters, seederCodeCreatorParameters, excludesRulesParameters);
         dataExtractor.Go();
     }
 }
