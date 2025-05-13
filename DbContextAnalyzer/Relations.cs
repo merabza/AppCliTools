@@ -126,7 +126,7 @@ public sealed class Relations
 
         //Console.WriteLine("EntityAnalysis {tableName}=", tableName);
 
-        var rec = entityData.FieldsData.FirstOrDefault(w =>
+        var rec = entityData.FieldsData.SingleOrDefault(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName);
 
         if (rec != null)
