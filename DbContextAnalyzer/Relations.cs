@@ -124,13 +124,13 @@ public sealed class Relations
         entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
         entityData.Level = GetMaxLevel(entityData);
 
-        //Console.WriteLine("EntityAnalysis {tableName}=", tableName);
+        Console.WriteLine("EntityAnalysis tableName={0}", tableName);
 
         var rec = entityData.FieldsData.SingleOrDefault(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName);
 
         if (rec != null)
-            entityData.SelfRecursiveField = rec;
+            entityData.SelfRecursiveFields.Add(rec);
     }
 
     public static string? GetTableName(IEntityType entityType)

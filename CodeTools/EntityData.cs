@@ -5,7 +5,7 @@ namespace CodeTools;
 
 public sealed class EntityData
 {
-    public FieldData? SelfRecursiveField;
+    public readonly List<FieldData> SelfRecursiveFields = [];
     public required string PrimaryKeyFieldName { get; set; }
     public required string TableName { get; set; }
     public required IEntityType EntityType { get; set; }

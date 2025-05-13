@@ -96,43 +96,43 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 $"protected override bool AdditionalCheck(List<{seederModelClassName}> jsonData, List<{tableNameSingular}> savedData)");
         CodeBlock? createMethod = null;
 
-        var atLeastOneSubstitute = entityData.FieldsData
-            .Where(w => entityData.SelfRecursiveField == null || w.Name != entityData.SelfRecursiveField.Name)
-            .Any(w => w.SubstituteField != null);
+        var atLeastOneSubstitute = false;
+        foreach (var w in entityData.FieldsData.Where(w => entityData.SelfRecursiveFields.Count == 0 ||
+                                                           !entityData.SelfRecursiveFields.Select(x => x.Name)
+                                                               .Contains(w.Name)))
+        {
+            if (w.SubstituteField == null)
+                continue;
+            atLeastOneSubstitute = true;
+            break;
+        }
 
         if (!isCarcassType)
         {
             if (entityData.NeedsToCreateTempData)
             {
                 FlatCodeBlock fcb;
-                if (entityData.SelfRecursiveField != null)
+                if (entityData.SelfRecursiveFields.Count > 0)
                 {
                     var seederModelObjectName = seederModelClassName.UnCapitalize();
-                    fcb = new FlatCodeBlock(
-                        //$"var {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
-                        //$"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List({seedDataObjectName})",
-                        //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
-                        //    $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}"),
-                        $"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(jsonData)",
-                        $"var idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
-                        //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
-                        new CodeBlock(
-                            $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{entityData.SelfRecursiveField.Name} != null))",
-                            $"{tableNameCamel}Dict[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{entityData.SelfRecursiveField.Name} = idsDict[{seederModelObjectName}.{entityData.SelfRecursiveField.Name}!.Value]"),
-                        "return true");
-                    //new CodeBlock($"if (!{prPref}Repo.SaveChanges() )",
-                    //    $"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotBeSaved\", ErrorMessage = \"{seederModelClassName} entities cannot be saved\" }} }}"),
-                    //"return null");
+
+                    var flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
+                            new FlatCodeBlock($"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(jsonData)",
+                                $"var idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
+                                $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
+                                new CodeBlock(
+                                    $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{s.Name} != null))",
+                                    $"{tableNameCamel}Dict[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
+                        .ToList();
+
+                    fcb = flatCodeBlocks[0];
+                    for (var i = 1; i < flatCodeBlocks.Count; i++)
+                        fcb.Add(flatCodeBlocks[i]);
+                    fcb.Add(new FlatCodeBlock("return true"));
                 }
                 else
                 {
                     fcb = new FlatCodeBlock(
-                        //$"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())",
-                        //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}Dict.Values.ToList()))",
-                        //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
-                        //    "return false"),
-                        //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
                         $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(jsonData).ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
@@ -152,47 +152,41 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     ? $"k.{GetPreferredFieldName(replaceFieldsDict, optimalIndexFieldsData[0].Name)}"
                     : $" new Tuple<{tupTypeList}>({keyFieldsList})";
                 FlatCodeBlock fcb;
-                if (entityData.SelfRecursiveField != null)
+                if (entityData.SelfRecursiveFields.Count > 0)
                 {
                     fcb = new FlatCodeBlock(
-                        //$"var {seedDataObjectName} = LoadFromJsonFile<{seederModelClassName}>()",
-                        //$"var {tableNameCamel}List = Create{tableNameCapitalCamel}List({seedDataObjectName})",
-                        //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
-                        //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
-                        //"return false"),
-                        //$"var dataList = Repo.GetAll<{tableNameSingular}>()",
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
-                        new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))",
-                            //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetParents\", ErrorMessage = \"{seederModelClassName} cannot Set Parents\" }} }}",
-                            "return false"), "return true");
+                        new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))", "return false"),
+                        "return true");
                     var seederModelObjectName = seederModelClassName.UnCapitalize();
                     var keyFieldName = optimalIndexFieldsData[0].Name;
-
-                    if (entityData.SelfRecursiveField.SubstituteField is null ||
-                        entityData.SelfRecursiveField.SubstituteField.Fields.Count == 0)
-                        throw new Exception("entityData.SelfRecursiveField.SubstituteField is null or without fields");
 
                     setParentsMethod = new CodeBlock(
                         $"private bool SetParents(List<{seederModelClassName}> {seedDataObjectName}, List<{tableNameSingular}> {tableNameCamel}List)",
                         "var tempData = DataSeederTempData.Instance",
-                        $"var forUpdate = new List<{tableNameSingular}>()",
-                        new CodeBlock(
-                            $"foreach ({seederModelClassName} {seederModelObjectName} in {seedDataObjectName}.Where(w => w.{entityData.SelfRecursiveField.SubstituteField.Fields[0].FullName} != null))",
+                        $"var forUpdate = new List<{tableNameSingular}>()");
+
+                    foreach (var entityDataSelfRecursiveField in entityData.SelfRecursiveFields)
+                    {
+                        if (entityDataSelfRecursiveField.SubstituteField is null ||
+                            entityDataSelfRecursiveField.SubstituteField.Fields.Count == 0)
+                            throw new Exception(
+                                "entityData.SelfRecursiveField.SubstituteField is null or without fields");
+
+                        setParentsMethod.Add(new CodeBlock(
+                            $"foreach ({seederModelClassName} {seederModelObjectName} in {seedDataObjectName}.Where(w => w.{entityDataSelfRecursiveField.SubstituteField.Fields[0].FullName} != null))",
                             $"{tableNameSingular} oneRec = {tableNameCamel}List.SingleOrDefault(s => s.{keyFieldName} == {seederModelObjectName}.{keyFieldName})",
                             new CodeBlock("if (oneRec == null)", "continue"),
-                            $"oneRec.{entityData.SelfRecursiveField.Name} = tempData.GetIntIdByKey<{tableNameSingular}>({seederModelObjectName}.{entityData.SelfRecursiveField.SubstituteField.Fields[0].FullName})",
-                            "forUpdate.Add(oneRec)"), new CodeBlock($"if (!{prPref}Repo.SetUpdates(forUpdate))",
-                            //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}CannotSetUpdates\", ErrorMessage = \"{seederModelClassName} cannot Set Updates\" }} }}",
-                            "return false"), "return true");
+                            $"oneRec.{entityDataSelfRecursiveField.Name} = tempData.GetIntIdByKey<{tableNameSingular}>({seederModelObjectName}.{entityDataSelfRecursiveField.SubstituteField.Fields[0].FullName})",
+                            "forUpdate.Add(oneRec)"));
+                    }
+
+                    setParentsMethod.Add(new CodeBlock($"if (!{prPref}Repo.SetUpdates(forUpdate))", "return false"));
+                    setParentsMethod.Add(new FlatCodeBlock("return true"));
                 }
                 else
                 {
                     fcb = new FlatCodeBlock(
-                        //$"var {tableNameCamel}List = Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())",
-                        //new CodeBlock($"if (!{prPref}Repo.CreateEntities({tableNameCamel}List))",
-                        //    //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
-                        //    "return false"),
-                        //$"var dataList = Create{tableNameCapitalCamel}List(seedData)",
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{GetPreferredFieldName(replaceFieldsDict, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
@@ -200,31 +194,22 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 additionalCheckMethod = additionalCheckMethodHeader;
                 additionalCheckMethod.AddRange(fcb.CodeItems);
             }
-            //else
-            //{
-            //    additionalCheckMethod.Add(new FlatCodeBlock(new CodeBlock(
-            //        $"if (!{prPref}Repo.CreateEntities(Create{tableNameCapitalCamel}List(LoadFromJsonFile<{seederModelClassName}>())))",
-            //        //$"return new Err[] {{ new() {{ ErrorCode = \"{seederModelClassName}EntitiesCannotBeCreated\", ErrorMessage = \"{seederModelClassName} entities cannot be created\" }} }}",
-            //        "return false"), "return true"));
-            //}
 
-            var fieldsListStr = string.Join(", ",
-                entityData.FieldsData
-                    .Where(w =>
-                        (entityData.SelfRecursiveField == null || w.Name != entityData.SelfRecursiveField.Name) &&
-                        (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name))
-                    .Select(p =>
-                    {
-                        var result = $"{p.Name} = {GetRightValue(p)}";
-                        var fieldData = entityDataForDev.FieldsData.SingleOrDefault(x => x.Name == p.Name);
-                        if (fieldData is null)
-                            return result;
+            var fieldsListStr = string.Join(", ", entityData.FieldsData.Where(w =>
+                (entityData.SelfRecursiveFields.Count == 0 ||
+                 !entityData.SelfRecursiveFields.Select(s => s.Name).Contains(w.Name)) &&
+                (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name)).Select(p =>
+            {
+                var result = $"{p.Name} = {GetRightValue(p)}";
+                var fieldData = entityDataForDev.FieldsData.SingleOrDefault(x => x.Name == p.Name);
+                if (fieldData is null)
+                    return result;
 
-                        if (fieldData.IsValueType && p.IsNullable)
-                            return $"{result}.Value";
+                if (fieldData.IsValueType && p.IsNullable)
+                    return $"{result}.Value";
 
-                        return result;
-                    }));
+                return result;
+            }));
 
             if (entityData.NeedsToCreateTempData)
             {
@@ -264,7 +249,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             isDataTypesOrManyToManyJoins || (!isCarcassType && (entityData.NeedsToCreateTempData ||
                                                                 atLeastOneSubstitute ||
                                                                 entityData.OptimalIndexProperties.Count > 0 ||
-                                                                entityData.SelfRecursiveField != null))
+                                                                entityData.SelfRecursiveFields.Count > 0))
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
