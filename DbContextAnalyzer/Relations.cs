@@ -124,9 +124,9 @@ public sealed class Relations
         entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
         entityData.Level = GetMaxLevel(entityData);
 
-        Console.WriteLine("EntityAnalysis {tableName}=", tableName);
+        //Console.WriteLine("EntityAnalysis {tableName}=", tableName);
 
-        var rec = entityData.FieldsData.SingleOrDefault(w =>
+        var rec = entityData.FieldsData.FirstOrDefault(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName);
 
         if (rec != null)
