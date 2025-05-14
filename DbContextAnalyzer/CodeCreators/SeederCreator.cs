@@ -28,18 +28,18 @@ public sealed class SeederCreator : SeederCodeCreatorBase
     {
     }
 
-    private string GetRightValue(FieldData fieldData)
+    private string GetRightValue(FieldData fieldData, FieldData? devFieldData)
     {
         if (fieldData.SubstituteField == null)
             return
-                $"s.{fieldData.FullName}{(fieldData is { IsNullable: true, IsValueType: true } ? ".Value" : string.Empty)}";
+                $"s.{fieldData.FullName}{(!(devFieldData?.IsNullable ?? false) && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
 
         var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(fieldData.SubstituteField.TableName);
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
                 ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})"
                 : $"tempData.GetIntIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
-        var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(GetRightValue));
+        var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
             ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})"
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
@@ -200,12 +200,12 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                  !entityData.SelfRecursiveFields.Select(s => s.Name).Contains(w.Name)) &&
                 (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name)).Select(p =>
             {
-                var result = $"{p.Name} = {GetRightValue(p)}";
-                var fieldData = entityDataForDev?.FieldsData.SingleOrDefault(x => x.Name == p.Name);
-                if (fieldData is null)
+                var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x => x.Name == p.Name);
+                var result = $"{p.Name} = {GetRightValue(p, devFieldData)}";
+                if (devFieldData is null)
                     return result;
 
-                if (fieldData.IsValueType && p.IsNullable)
+                if (devFieldData.IsValueType && p.IsNullable)
                     return $"{result}.Value";
 
                 return result;
