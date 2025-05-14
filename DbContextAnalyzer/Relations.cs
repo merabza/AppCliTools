@@ -126,11 +126,8 @@ public sealed class Relations
 
         Console.WriteLine("EntityAnalysis tableName={0}", tableName);
 
-        var rec = entityData.FieldsData.SingleOrDefault(w =>
-            w.SubstituteField != null && w.SubstituteField.TableName == tableName);
-
-        if (rec != null)
-            entityData.SelfRecursiveFields.Add(rec);
+        entityData.SelfRecursiveFields.AddRange(entityData.FieldsData.Where(w =>
+            w.SubstituteField != null && w.SubstituteField.TableName == tableName));
     }
 
     public static string? GetTableName(IEntityType entityType)

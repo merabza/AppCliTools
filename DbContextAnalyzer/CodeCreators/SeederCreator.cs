@@ -45,7 +45,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
-    public string UseEntity(EntityData entityData, EntityData entityDataForDev, bool isCarcassType)
+    public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
     {
         var usedList = false;
         var tableName = GetNewTableName(entityData.TableName);
@@ -201,7 +201,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name)).Select(p =>
             {
                 var result = $"{p.Name} = {GetRightValue(p)}";
-                var fieldData = entityDataForDev.FieldsData.SingleOrDefault(x => x.Name == p.Name);
+                var fieldData = entityDataForDev?.FieldsData.SingleOrDefault(x => x.Name == p.Name);
                 if (fieldData is null)
                     return result;
 
