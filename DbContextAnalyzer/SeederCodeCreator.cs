@@ -107,7 +107,8 @@ public sealed class SeederCodeCreator
 
             var tableName = relEntity.Key;
             var newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
-            var devTableEntity = relationsDev.Entities.SingleOrDefault(x => x.Value.TableName == newTableName);
+            var devTableEntity = relationsDev.Entities.SingleOrDefault(x =>
+                string.Equals(x.Value.TableName, newTableName, StringComparison.CurrentCultureIgnoreCase));
 
             _logger.LogInformation("TableName = {tableName}", tableName);
 

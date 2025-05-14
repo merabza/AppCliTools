@@ -200,7 +200,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                  !entityData.SelfRecursiveFields.Select(s => s.Name).Contains(w.Name)) &&
                 (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name)).Select(p =>
             {
-                var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x => x.Name == p.Name);
+                var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x =>
+                    string.Equals(x.Name, p.Name, StringComparison.CurrentCultureIgnoreCase));
                 var result = $"{p.Name} = {GetRightValue(p, devFieldData)}";
                 if (devFieldData is null)
                     return result;
