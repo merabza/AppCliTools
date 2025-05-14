@@ -50,6 +50,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         var usedList = false;
         var tableName = GetNewTableName(entityData.TableName);
 
+        //tableName.ToLower() == "MorphemeRanges"
         Console.WriteLine("UseEntity tableName = {0}", tableName);
 
         var replaceFieldsDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
@@ -203,11 +204,11 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x =>
                     string.Equals(x.Name, p.Name, StringComparison.CurrentCultureIgnoreCase));
                 var result = $"{p.Name} = {GetRightValue(p, devFieldData)}";
-                if (devFieldData is null)
-                    return result;
+                //if (devFieldData is null)
+                //    return result;
 
-                if (devFieldData.IsValueType && p.IsNullable)
-                    return $"{result}.Value";
+                //if (devFieldData.IsValueType && p.IsNullable)
+                //    return $"{result}.Value";
 
                 return result;
             }));
