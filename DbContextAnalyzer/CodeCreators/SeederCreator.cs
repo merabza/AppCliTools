@@ -30,18 +30,20 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
     private string GetRightValue(FieldData fieldData, FieldData? devFieldData)
     {
+        var devFieldIsNullable = devFieldData?.IsNullable ?? false;
+
         if (fieldData.SubstituteField == null)
             return
-                $"s.{fieldData.FullName}{(!(devFieldData?.IsNullable ?? false) && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
+                $"s.{fieldData.FullName}{(!devFieldIsNullable && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
 
         var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(fieldData.SubstituteField.TableName);
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
-                ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})"
+                ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
                 : $"tempData.GetIntIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
         var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
-            ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})"
+            ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
