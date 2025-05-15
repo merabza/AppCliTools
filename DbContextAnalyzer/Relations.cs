@@ -194,9 +194,13 @@ public sealed class Relations
                 entity.OptimalIndexProperties.Count > 0
                     ? GetFieldsData(tableClrType, entity.OptimalIndexProperties, substTableName, fieldData)
                     : []);
-            var nav = forKeys[0].DependentToPrincipal ??
-                      throw new Exception($"Foreign Keys nam in table {tableName} is empty");
-            fieldData.NavigationFieldName = nav.Name;
+            var navName = forKeys[0].DependentToPrincipal?.Name ?? forKeys[0].PrincipalEntityType.ClrType.Name;
+            if (navName == null)
+            {
+                throw new Exception($"Foreign Keys navName in table {tableName} is empty");
+            }
+
+            fieldData.NavigationFieldName = navName;
             return fieldData;
         }
     }
