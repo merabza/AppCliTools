@@ -49,7 +49,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
     public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
     {
-        var usedList = false;
+        //var usedList = false;
         var tableName = GetNewTableName(entityData.TableName);
 
         //tableName.ToLower() == "MorphemeRanges"
@@ -224,7 +224,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 adaptMethod =
                     new CodeBlock(
                         $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
-                        $"_tempData = Create{tableNameCapitalCamel}List(jsonData).Values.ToList()",
+                        $"_tempData = Create{tableNameCapitalCamel}List(jsonData)",
                         "return _tempData.Values.ToList()");
             }
             else
@@ -239,7 +239,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                         $"return Create{tableNameCapitalCamel}List(jsonData)");
             }
 
-            usedList = true;
+            //usedList = true;
         }
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
