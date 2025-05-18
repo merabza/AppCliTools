@@ -114,34 +114,34 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         {
             if (entityData.NeedsToCreateTempData)
             {
-                FlatCodeBlock fcb;
+                FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
                 if (entityData.SelfRecursiveFields.Count > 0)
                 {
                     var seederModelObjectName = seederModelClassName.UnCapitalize();
 
                     var flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
-                            new FlatCodeBlock($"var {tableNameCamel}Dict = Create{tableNameCapitalCamel}List(jsonData)",
-                                $"var idsDict = {tableNameCamel}Dict.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
+                            new FlatCodeBlock(
+                                $"var idsDict = _tempData.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
                                 $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
                                 new CodeBlock(
                                     $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{s.Name} != null))",
-                                    $"{tableNameCamel}Dict[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
+                                    $"_tempData[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
                         .ToList();
 
-                    fcb = flatCodeBlocks[0];
+                    flatCodeBlockForAdditionalCheckMethod = flatCodeBlocks[0];
                     for (var i = 1; i < flatCodeBlocks.Count; i++)
-                        fcb.Add(flatCodeBlocks[i]);
-                    fcb.Add(new FlatCodeBlock("return true"));
+                        flatCodeBlockForAdditionalCheckMethod.Add(flatCodeBlocks[i]);
+                    flatCodeBlockForAdditionalCheckMethod.Add(new FlatCodeBlock("return true"));
                 }
                 else
                 {
-                    fcb = new FlatCodeBlock(
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(Create{tableNameCapitalCamel}List(jsonData).ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
+                    flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
+                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 
                 additionalCheckMethod = additionalCheckMethodHeader;
-                additionalCheckMethod.AddRange(fcb.CodeItems);
+                additionalCheckMethod.AddRange(flatCodeBlockForAdditionalCheckMethod.CodeItems);
             }
             else if (entityData.OptimalIndexProperties.Count > 0)
             {
@@ -154,10 +154,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 var keyFields = optimalIndexFieldsData.Count == 1
                     ? $"k.{GetPreferredFieldName(replaceFieldsDict, optimalIndexFieldsData[0].Name)}"
                     : $" new Tuple<{tupTypeList}>({keyFieldsList})";
-                FlatCodeBlock fcb;
+                FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
                 if (entityData.SelfRecursiveFields.Count > 0)
                 {
-                    fcb = new FlatCodeBlock(
+                    flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))", "return false"),
                         "return true");
@@ -189,13 +189,13 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 }
                 else
                 {
-                    fcb = new FlatCodeBlock(
+                    flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{GetPreferredFieldName(replaceFieldsDict, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 
                 additionalCheckMethod = additionalCheckMethodHeader;
-                additionalCheckMethod.AddRange(fcb.CodeItems);
+                additionalCheckMethod.AddRange(flatCodeBlockForAdditionalCheckMethod.CodeItems);
             }
 
             var fieldsListStr = string.Join(", ", entityData.FieldsData.Where(w =>
@@ -224,7 +224,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 adaptMethod =
                     new CodeBlock(
                         $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
-                        $"return Create{tableNameCapitalCamel}List(jsonData).Values.ToList()");
+                        $"_tempData = Create{tableNameCapitalCamel}List(jsonData).Values.ToList()",
+                        "return _tempData.Values.ToList()");
             }
             else
             {
@@ -260,11 +261,12 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             isCarcassType ? null : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
             isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using DatabaseToolsShared",
-            "using System.Collections.Generic",
             $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
-                new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
+                entityData.NeedsToCreateTempData
+                    ? $"private Dictionary<int, {tableNameSingular}> _tempData = []"
+                    : null, new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)"),
                 adaptMethod, additionalCheckMethod, createMethod, setParentsMethod));
