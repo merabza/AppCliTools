@@ -39,7 +39,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(fieldData.SubstituteField.TableName);
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
-                ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})" //{(devFieldIsNullable ? string.Empty : ".Value")}
+                ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
                 : $"tempData.GetIntIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
         var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
