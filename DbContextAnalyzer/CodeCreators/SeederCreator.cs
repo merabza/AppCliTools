@@ -36,7 +36,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             return
                 $"s.{fieldData.FullName}{(!devFieldIsNullable && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
 
-        var substituteTableNameCapitalCamel = GetTableNameSingularCapitalizeCamel(fieldData.SubstituteField.TableName);
+        var substituteTableNameCapitalCamel =
+            GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
                 ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
