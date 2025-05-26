@@ -9,11 +9,13 @@ public sealed class CliMenuSet
 {
     private readonly string? _caption;
     private readonly List<string> _errorMessages = [];
+    public int MenuVersion { get; set; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CliMenuSet(string? caption = null)
+    public CliMenuSet(string? caption = null, int menuVersion = 0)
     {
         _caption = caption;
+        MenuVersion = menuVersion;
     }
 
     //public string Name => _caption ?? string.Empty;

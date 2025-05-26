@@ -256,12 +256,12 @@ public abstract class CliAppLoop
         {
             AddChangeMenu(BuildMainMenu());
         }
-        //else
-        //{
-        //    var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
-        //    //if (!AddChangeMenu(selectedMenuCommand.GetSubMenu()))
-        //    //    return false;
-        //}
+        else
+        {
+            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
+            if (!AddChangeMenu(selectedMenuCommand.GetSubMenu()))
+                return false;
+        }
 
         return true;
     }

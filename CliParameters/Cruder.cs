@@ -19,6 +19,7 @@ public /*open*/ class Cruder : IFieldEditors
     public readonly string CrudName;
     public readonly string CrudNamePlural;
     protected readonly List<FieldEditor> FieldEditors = [];
+    private int _menuVersion;
 
     protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
@@ -163,24 +164,31 @@ public /*open*/ class Cruder : IFieldEditors
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
     }
 
+
+    private CliMenuSet? _cruderSubMenuSet;
+
+
     public CliMenuSet GetListMenu()
     {
-        var cruderSubMenuSet = new CliMenuSet(CrudNamePlural);
+        if ( _cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
+            return _cruderSubMenuSet;
+
+        _cruderSubMenuSet = new CliMenuSet(CrudNamePlural, _menuVersion);
 
         var newItemCommand = new NewItemCliMenuCommand(this, CrudNamePlural, $"New {CrudName}");
-        cruderSubMenuSet.AddMenuItem(newItemCommand);
+        _cruderSubMenuSet.AddMenuItem(newItemCommand);
 
         var itemDataDict = GetCrudersDictionary();
 
         foreach (var kvp in itemDataDict.OrderBy(o => o.Key))
-            cruderSubMenuSet.AddMenuItem(new ItemSubMenuCliMenuCommand(this, kvp.Key, CrudNamePlural));
+            _cruderSubMenuSet.AddMenuItem(new ItemSubMenuCliMenuCommand(this, kvp.Key, CrudNamePlural));
 
-        FillListMenuAdditional(cruderSubMenuSet);
+        FillListMenuAdditional(_cruderSubMenuSet);
 
         var key = ConsoleKey.Escape.Value().ToLower();
-        cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null), key.Length);
+        _cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null), key.Length);
 
-        return cruderSubMenuSet;
+        return _cruderSubMenuSet;
     }
 
     protected virtual void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
@@ -199,6 +207,7 @@ public /*open*/ class Cruder : IFieldEditors
             return false;
 
         RemoveRecordWithKey(recordKey);
+        _menuVersion++;
         Save($"{CrudName} with Name {recordKey} deleted successfully.");
 
         return true;
@@ -237,6 +246,7 @@ public /*open*/ class Cruder : IFieldEditors
         }
 
         AddRecordWithKey(newRecordKey, newRecord);
+        _menuVersion++;
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         Save($"Create new {CrudName} {newRecordKey} Finished");
@@ -287,6 +297,8 @@ public /*open*/ class Cruder : IFieldEditors
         {
             UpdateRecordWithKey(recordKey, newRecord);
         }
+
+        _menuVersion++;
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         Save($"{CrudName} {newRecordKey} Updated");
@@ -411,6 +423,7 @@ public /*open*/ class Cruder : IFieldEditors
             return false;
         RemoveRecordWithKey(recordKey);
         AddRecordWithKey(newRecordKey, itemData);
+        _menuVersion++;
         return true;
     }
 }
