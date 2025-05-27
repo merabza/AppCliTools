@@ -51,6 +51,19 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
+    private static string GetRealTypeNameForDictionaryGeneric(FieldData? fieldData)
+    {
+        if (fieldData is null)
+            return "int";
+        var realTypeName = fieldData.RealTypeName;
+        if (realTypeName.EndsWith('?'))
+            realTypeName = realTypeName[..^1];
+
+        realTypeName = fieldData.IsValueType ? realTypeName.Capitalize() : realTypeName.UnCapitalize();
+
+        return realTypeName;
+    }
+
     private static string GetRealTypeNameForMethodName(FieldData? fieldData)
     {
         if (fieldData is null)
