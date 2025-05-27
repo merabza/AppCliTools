@@ -38,14 +38,17 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var substituteTableNameCapitalCamel =
             GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
+
+        var realTypeName = fieldData.RealTypeName;
+
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
-                ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
-                : $"tempData.GetIntIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
+                ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
+                : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
         var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
-            ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
-            : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
+            ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
+            : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
     public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
