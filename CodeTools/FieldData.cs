@@ -38,7 +38,7 @@ public sealed class FieldData
 
     public static FieldData Create(Type? tableClrType, IProperty s, string preferredName, FieldData? parent)
     {
-        var clrType = s.ClrType;
+        Type clrType = s.ClrType;
         var isNullable = clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>);
         if (isNullable)
             clrType = clrType.GetGenericArguments()[0];

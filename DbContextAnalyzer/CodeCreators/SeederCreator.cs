@@ -59,9 +59,16 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         if (realTypeName.EndsWith('?'))
             realTypeName = realTypeName[..^1];
 
-        realTypeName = fieldData.IsValueType ? realTypeName.Capitalize() : realTypeName.UnCapitalize();
-
-        return realTypeName;
+        switch (realTypeName)
+        {
+            case "Int":
+                return "int";
+            case "datetime":
+                return "Datetime";
+            default:
+                realTypeName = realTypeName.UnCapitalize();
+                return realTypeName;
+        }
     }
 
     private static string GetRealTypeNameForMethodName(FieldData? fieldData)
@@ -141,7 +148,6 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
         var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
         var keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
-        
 
         if (!isCarcassType)
         {
