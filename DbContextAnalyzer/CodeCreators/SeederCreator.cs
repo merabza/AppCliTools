@@ -132,7 +132,6 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         {
             if (entityData.NeedsToCreateTempData)
             {
-
                 FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
                 if (entityData.SelfRecursiveFields.Count > 0)
                 {
@@ -283,7 +282,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 entityData.NeedsToCreateTempData
-                    ? $"private Dictionary<{keyRealTypeName}, {tableNameSingular}> _tempData = []"
+                    ? $"private Dictionary<{keyRealTypeName.UnCapitalize()}, {tableNameSingular}> _tempData = []"
                     : null, new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)"),
