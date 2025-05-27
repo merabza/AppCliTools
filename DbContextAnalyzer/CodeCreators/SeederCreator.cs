@@ -125,13 +125,13 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             break;
         }
 
+        var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
+        var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
+
         if (!isCarcassType)
         {
             if (entityData.NeedsToCreateTempData)
             {
-                var fieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
-
-                var realTypeName = GetRealTypeNameForMethodName(fieldData);
 
                 FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
                 if (entityData.SelfRecursiveFields.Count > 0)
@@ -141,7 +141,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     var flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
                             new FlatCodeBlock(
                                 $"var idsDict = _tempData.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
-                                $"DataSeederTempData.Instance.SaveOld{realTypeName}IdsDictTo{realTypeName}Ids<{tableNameSingular}>(idsDict)",
+                                $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(idsDict)",
                                 new CodeBlock(
                                     $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{s.Name} != null))",
                                     $"_tempData[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
@@ -283,7 +283,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 entityData.NeedsToCreateTempData
-                    ? $"private Dictionary<int, {tableNameSingular}> _tempData = []"
+                    ? $"private Dictionary<{keyRealTypeName}, {tableNameSingular}> _tempData = []"
                     : null, new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)"),
