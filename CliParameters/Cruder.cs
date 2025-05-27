@@ -164,13 +164,11 @@ public /*open*/ class Cruder : IFieldEditors
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
     }
 
-
     private CliMenuSet? _cruderSubMenuSet;
-
 
     public CliMenuSet GetListMenu()
     {
-        if ( _cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
+        if (_cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
             return _cruderSubMenuSet;
 
         _cruderSubMenuSet = new CliMenuSet(CrudNamePlural, _menuVersion);
