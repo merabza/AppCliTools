@@ -39,7 +39,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         var substituteTableNameCapitalCamel =
             GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
 
-        var realTypeName = fieldData.RealTypeName;
+        var realTypeName = fieldData.RealTypeName.EndsWith('?') ? fieldData.RealTypeName[..^1] : fieldData.RealTypeName;
 
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
