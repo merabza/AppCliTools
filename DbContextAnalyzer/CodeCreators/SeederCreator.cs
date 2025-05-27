@@ -257,7 +257,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             if (entityData.NeedsToCreateTempData)
             {
                 createMethod = new CodeBlock(
-                    $"protected virtual Dictionary<int, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
+                    $"protected virtual Dictionary<{keyRealTypeNameForDictionaryGeneric}, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
                     $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
                 adaptMethod =
