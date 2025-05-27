@@ -282,8 +282,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            !isCarcassType && entityData.OptimalIndexProperties.Count > 1 ? "using System" : null,
-            "using System.Collections.Generic", !isCarcassType ? "using System.Linq" : null,
+            (!isCarcassType && entityData.OptimalIndexProperties.Count > 1) ||
+            keyRealTypeNameForDictionaryGeneric == "DateTime"
+                ? "using System"
+                : null, "using System.Collections.Generic", !isCarcassType ? "using System.Linq" : null,
             //isCarcassType || (!isCarcassType && (entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
             //                                     entityData.OptimalIndex != null ||
             //                                     entityData.SelfRecursiveField != null))
