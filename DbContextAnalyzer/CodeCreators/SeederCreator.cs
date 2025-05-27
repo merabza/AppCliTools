@@ -44,7 +44,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 : $"tempData.GetIntIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
         var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
-            ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})" //{(devFieldIsNullable ? string.Empty : ".Value")}
+            ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
