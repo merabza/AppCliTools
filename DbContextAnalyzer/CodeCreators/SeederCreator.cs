@@ -59,12 +59,12 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         if (realTypeName.EndsWith('?'))
             realTypeName = realTypeName[..^1];
 
-        switch (realTypeName)
+        switch (realTypeName.ToLower())
         {
-            case "Int":
+            case "int":
                 return "int";
             case "datetime":
-                return "Datetime";
+                return "DateTime";
             default:
                 realTypeName = realTypeName.UnCapitalize();
                 return realTypeName;
