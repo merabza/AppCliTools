@@ -140,6 +140,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
         var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
+        var keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
+        
 
         if (!isCarcassType)
         {
@@ -295,7 +297,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 entityData.NeedsToCreateTempData
-                    ? $"private Dictionary<{keyRealTypeName.UnCapitalize()}, {tableNameSingular}> _tempData = []"
+                    ? $"private Dictionary<{keyRealTypeNameForDictionaryGeneric}, {tableNameSingular}> _tempData = []"
                     : null, new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)"),
