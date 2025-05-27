@@ -155,7 +155,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 else
                 {
                     flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
-                        $"DataSeederTempData.Instance.SaveOld{realTypeName}IdsDictTo{realTypeName}Ids<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
+                        $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 
