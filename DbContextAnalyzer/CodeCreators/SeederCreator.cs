@@ -39,10 +39,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         var substituteTableNameCapitalCamel =
             GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
 
-        var realTypeName = fieldData.RealTypeName;
-        if (realTypeName.EndsWith('?'))
-            realTypeName = realTypeName[..^1];
-        realTypeName = realTypeName.Capitalize();
+        var realTypeName = GetRealTypeNameForMethodName(fieldData);
 
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
@@ -52,6 +49,17 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         return fieldData.IsNullableByParents
             ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
             : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
+    }
+
+    private static string GetRealTypeNameForMethodName(FieldData? fieldData)
+    {
+        if (fieldData is null)
+            return "Int";
+        var realTypeName = fieldData.RealTypeName;
+        if (realTypeName.EndsWith('?'))
+            realTypeName = realTypeName[..^1];
+        realTypeName = realTypeName.Capitalize();
+        return realTypeName;
     }
 
     public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
@@ -121,6 +129,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         {
             if (entityData.NeedsToCreateTempData)
             {
+                var fieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
+
+                var realTypeName = GetRealTypeNameForMethodName(fieldData);
+
                 FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
                 if (entityData.SelfRecursiveFields.Count > 0)
                 {
@@ -129,7 +141,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     var flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
                             new FlatCodeBlock(
                                 $"var idsDict = _tempData.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
-                                $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
+                                $"DataSeederTempData.Instance.SaveOld{realTypeName}IdsDictTo{realTypeName}Ids<{tableNameSingular}>(idsDict)",
                                 new CodeBlock(
                                     $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{s.Name} != null))",
                                     $"_tempData[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
@@ -143,7 +155,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 else
                 {
                     flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
+                        $"DataSeederTempData.Instance.SaveOld{realTypeName}IdsDictTo{realTypeName}Ids<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 
