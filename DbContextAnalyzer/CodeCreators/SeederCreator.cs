@@ -47,10 +47,6 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
         var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
-<<<<<<< HEAD
-            ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
-            : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
-=======
             ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
             : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
@@ -84,7 +80,6 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             realTypeName = realTypeName[..^1];
         realTypeName = realTypeName.Capitalize();
         return realTypeName;
->>>>>>> d5ac55999fb1273484f71155947429cecd6b26eb
     }
 
     public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
