@@ -38,14 +38,53 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var substituteTableNameCapitalCamel =
             GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
+
+        var realTypeName = GetRealTypeNameForMethodName(fieldData);
+
         if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
-                ? $"tempData.GetIntNullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
-                : $"tempData.GetIntIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
+                ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
+                : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
         var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
         return fieldData.IsNullableByParents
+<<<<<<< HEAD
             ? $"tempData.GetIntNullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
             : $"tempData.GetIntIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
+=======
+            ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
+            : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
+    }
+
+    private static string GetRealTypeNameForDictionaryGeneric(FieldData? fieldData)
+    {
+        if (fieldData is null)
+            return "int";
+        var realTypeName = fieldData.RealTypeName;
+        if (realTypeName.EndsWith('?'))
+            realTypeName = realTypeName[..^1];
+
+        switch (realTypeName.ToLower())
+        {
+            case "int":
+                return "int";
+            case "datetime":
+                return "DateTime";
+            default:
+                realTypeName = realTypeName.UnCapitalize();
+                return realTypeName;
+        }
+    }
+
+    private static string GetRealTypeNameForMethodName(FieldData? fieldData)
+    {
+        if (fieldData is null)
+            return "Int";
+        var realTypeName = fieldData.RealTypeName;
+        if (realTypeName.EndsWith('?'))
+            realTypeName = realTypeName[..^1];
+        realTypeName = realTypeName.Capitalize();
+        return realTypeName;
+>>>>>>> d5ac55999fb1273484f71155947429cecd6b26eb
     }
 
     public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
@@ -111,6 +150,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             break;
         }
 
+        var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
+        var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
+        var keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
+
         if (!isCarcassType)
         {
             if (entityData.NeedsToCreateTempData)
@@ -123,7 +166,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     var flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
                             new FlatCodeBlock(
                                 $"var idsDict = _tempData.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
-                                $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(idsDict)",
+                                $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(idsDict)",
                                 new CodeBlock(
                                     $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{s.Name} != null))",
                                     $"_tempData[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
@@ -137,7 +180,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 else
                 {
                     flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
-                        $"DataSeederTempData.Instance.SaveOldIntIdsDictToIntIds<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
+                        $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
                         "return true");
                 }
 
@@ -219,7 +262,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             if (entityData.NeedsToCreateTempData)
             {
                 createMethod = new CodeBlock(
-                    $"protected virtual Dictionary<int, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
+                    $"protected virtual Dictionary<{keyRealTypeNameForDictionaryGeneric}, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
                     $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
                 adaptMethod =
@@ -244,8 +287,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            !isCarcassType && entityData.OptimalIndexProperties.Count > 1 ? "using System" : null,
-            "using System.Collections.Generic", !isCarcassType ? "using System.Linq" : null,
+            (!isCarcassType && entityData.OptimalIndexProperties.Count > 1) ||
+            keyRealTypeNameForDictionaryGeneric == "DateTime"
+                ? "using System"
+                : null, "using System.Collections.Generic", !isCarcassType ? "using System.Linq" : null,
             //isCarcassType || (!isCarcassType && (entityData.NeedsToCreateTempData || atLeastOneSubstitute ||
             //                                     entityData.OptimalIndex != null ||
             //                                     entityData.SelfRecursiveField != null))
@@ -265,7 +310,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 entityData.NeedsToCreateTempData
-                    ? $"private Dictionary<int, {tableNameSingular}> _tempData = []"
+                    ? $"private Dictionary<{keyRealTypeNameForDictionaryGeneric}, {tableNameSingular}> _tempData = []"
                     : null, new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
                     $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, seedDataType, keyFieldNamesList)"),
