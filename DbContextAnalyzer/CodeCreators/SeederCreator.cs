@@ -145,7 +145,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             break;
         }
 
-        var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == entityData.PrimaryKeyFieldName);
+        var primaryKeyFieldNewName = _excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName);
+        var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == primaryKeyFieldNewName);
         var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
         var keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
 
@@ -175,7 +176,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 else
                 {
                     flatCodeBlockForAdditionalCheckMethod = new FlatCodeBlock(
-                        $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}))",
+                        $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(_tempData.ToDictionary(k=>k.Key, v=>v.Value.{primaryKeyFieldNewName}))",
                         "return true");
                 }
 
