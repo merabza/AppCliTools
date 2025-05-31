@@ -73,7 +73,8 @@ public sealed class ExcludesRulesParametersDomain
 
     public Dictionary<string, string> GetReplaceFieldsDictByTableName(string tableName)
     {
-        return ReplaceFieldNames.Where(w => w.TableName == tableName)
+        var newTableName = GetReplaceTablesName(tableName);
+        return ReplaceFieldNames.Where(w => w.TableName == newTableName)
             .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
     }
 
