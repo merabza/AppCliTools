@@ -145,7 +145,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             break;
         }
 
-        var primaryKeyFieldNewName = _excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName);
+        var primaryKeyFieldNewName =
+            _excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName);
         var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == primaryKeyFieldNewName);
         var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
         var keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
