@@ -28,9 +28,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
     {
     }
 
-    private string GetRightValue(FieldData fieldData, FieldData? devFieldData)
+    private string GetRightValue(FieldData fieldData, bool devFieldIsNullable)
     {
-        var devFieldIsNullable = devFieldData?.IsNullable ?? false;
 
         if (fieldData.SubstituteField == null)
             return
@@ -45,7 +44,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             return fieldData.IsNullableByParents
                 ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
                 : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
-        var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, null)));
+        var keyParametersList = string.Join(", ", fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, true)));
         return fieldData.IsNullableByParents
             ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
             : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
@@ -246,7 +245,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             {
                 var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x =>
                     string.Equals(x.Name, p.Name, StringComparison.CurrentCultureIgnoreCase));
-                var result = $"{p.Name} = {GetRightValue(p, devFieldData)}";
+                var result = $"{p.Name} = {GetRightValue(p, devFieldData?.IsNullable ?? false)}";
                 //if (devFieldData is null)
                 //    return result;
 
