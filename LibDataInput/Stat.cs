@@ -47,7 +47,7 @@ public static class Stat
         if (askQuestion && !Inputer.InputBool($"Delete folder {path}?", false))
             return false;
 
-        FileStat.DeleteDirectory(path);
+        FileStat.DeleteDirectoryWithNormaliseAttributes(path);
 
         return true;
     }
