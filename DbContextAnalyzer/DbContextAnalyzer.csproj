@@ -7,15 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.CodeDom" Version="9.0.5" />
+        <PackageReference Include="System.CodeDom" Version="9.0.6" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\BackendCarcass\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibDatabaseParameters\LibDatabaseParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibParameters\LibParameters.csproj" />
-        <ProjectReference
-            Include="..\..\SystemTools\JetBrainsResharperGlobalToolsWork\JetBrainsResharperGlobalToolsWork.csproj" />
+        <ProjectReference Include="..\..\SystemTools\JetBrainsResharperGlobalToolsWork\JetBrainsResharperGlobalToolsWork.csproj" />
         <ProjectReference Include="..\CodeTools\CodeTools.csproj" />
     </ItemGroup>
 
