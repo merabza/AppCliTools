@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CliMenu;
 using CliTools.CliMenuCommands;
-using Figgle;
 using Figgle.Fonts;
 using LibParameters;
 using LibToolActions.BackgroundTasks;
