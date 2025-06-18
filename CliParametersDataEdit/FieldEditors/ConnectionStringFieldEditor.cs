@@ -34,7 +34,7 @@
 //            return "(Nothing)";
 //        var val = GetValue(record);
 //        var dataProvider = GetValue<EDatabaseProvider>(record, _dataProviderParameterName);
-//        var dbConnectionParameters = DbConnectionFabric.GetDbConnectionParameters(dataProvider, val);
+//        var dbConnectionParameters = DbConnectionFactory.GetDbConnectionParameters(dataProvider, val);
 //        if (val == null)
 //            return "(empty)";
 //        return dbConnectionParameters == null ? "(invalid)" : dbConnectionParameters.GetStatus();
@@ -46,7 +46,7 @@
 //        if (_memoryParametersManager == null)
 //        {
 //            var val = GetValue(record);
-//            var currentDbConnectionParameters = DbConnectionFabric.GetDbConnectionParameters(dataProvider, val) ??
+//            var currentDbConnectionParameters = DbConnectionFactory.GetDbConnectionParameters(dataProvider, val) ??
 //                                                new DbConnectionParameters();
 
 //            _memoryParametersManager =

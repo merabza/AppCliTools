@@ -6,11 +6,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Fabrics\**" />
+        <Compile Remove="Factorys\**" />
         <Compile Remove="Models\**" />
-        <EmbeddedResource Remove="Fabrics\**" />
+        <EmbeddedResource Remove="Factorys\**" />
         <EmbeddedResource Remove="Models\**" />
-        <None Remove="Fabrics\**" />
+        <None Remove="Factorys\**" />
         <None Remove="Models\**" />
     </ItemGroup>
 

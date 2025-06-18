@@ -102,7 +102,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
             var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
-            var createDatabaseManagerResult = DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
+            var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
                 databaseServerConnectionData, apiClients, _httpClientFactory, null, null).Preserve().Result;
 
             if (createDatabaseManagerResult.IsT1)

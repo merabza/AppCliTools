@@ -15,7 +15,7 @@
 //        var dataProvider = DataProvider;
 //        var status = $"Data Provider: {dataProvider}";
 //        var dbConnectionParameters =
-//            DbConnectionFabric.GetDbConnectionParameters(dataProvider, ConnectionString);
+//            DbConnectionFactory.GetDbConnectionParameters(dataProvider, ConnectionString);
 //        status +=
 //            $", Connection: {(dbConnectionParameters == null ? "(invalid)" : dbConnectionParameters.GetStatus())}";
 //        status += $", CommandTimeOut: {CommandTimeOut}";

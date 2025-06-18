@@ -37,7 +37,7 @@ public static class StandardArchiversGenerator
             return;
         }
 
-        var archiverDetector = ArchiverDetectorFabric.Create(useConsole, archiverName);
+        var archiverDetector = ArchiverDetectorFactory.Create(useConsole, archiverName);
         var archiverDetectorResults = archiverDetector?.Run();
 
         var decompressProgramPatch = archiverDetectorResults?.DecompressProgramPatch;

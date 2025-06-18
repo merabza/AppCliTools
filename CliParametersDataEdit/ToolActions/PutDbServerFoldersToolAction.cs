@@ -40,7 +40,7 @@
 //            return false;
 //        }
 
-//        var databaseManagementClient = await DatabaseAgentClientsFabric.CreateDatabaseManager(true, _logger,
+//        var databaseManagementClient = await DatabaseAgentClientsFactory.CreateDatabaseManager(true, _logger,
 //            _dbServerName, databaseServerConnections, null, null, CancellationToken.None);
 
 //        if (databaseManagementClient is null)

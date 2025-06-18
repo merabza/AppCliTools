@@ -58,7 +58,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             ServerPass = serverPass
         };
 
-        var dbConnectionStringBuilder = DbConnectionFabric.GetDbConnectionStringBuilder(sqlSerConPar) ??
+        var dbConnectionStringBuilder = DbConnectionFactory.GetDbConnectionStringBuilder(sqlSerConPar) ??
                                         throw new Exception("dbConnectionStringBuilder is null");
 
         var dbKit = ManagerFactory.GetKit(EDatabaseProvider.SqlServer);

@@ -21,7 +21,7 @@ public sealed class DecompressProgramPatchFieldEditor : FilePathFieldEditor
 
         if (fileExtension is not null)
         {
-            var archiverDetector = ArchiverDetectorFabric.Create(true, fileExtension);
+            var archiverDetector = ArchiverDetectorFactory.Create(true, fileExtension);
             if (archiverDetector != null)
             {
                 var archiverDetectorResults = archiverDetector.Run();

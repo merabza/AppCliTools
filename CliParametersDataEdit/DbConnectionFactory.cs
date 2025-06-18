@@ -10,7 +10,7 @@ using SystemToolsShared;
 
 namespace CliParametersDataEdit;
 
-public static class DbConnectionFabric
+public static class DbConnectionFactory
 {
     private const string JetOleDbDatabasePasswordKey = "Jet OLEDB:Database Password";
 

@@ -59,7 +59,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             return;
         }
 
-        var createDatabaseManagerResult = DatabaseManagersFabric.CreateDatabaseManager(_logger, true,
+        var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
                 databaseServerConnectionData, apiClients, _httpClientFactory, null, null, CancellationToken.None)
             .Preserve()
             .Result;

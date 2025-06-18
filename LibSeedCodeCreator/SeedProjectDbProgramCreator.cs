@@ -13,7 +13,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
         var repositoryClassName = $"{par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
         var repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
         var repositoryObjectName = $"{par.ProjectPrefixShort.ToLower()}DataSeederRepository"; //gmDataSeederRepository
-        var projectNewDataSeedersFabric = $"{par.ProjectPrefixShort}NewDataSeedersFabric"; //GmNewDataSeedersFabric
+        var projectNewDataSeedersFactory = $"{par.ProjectPrefixShort}NewDataSeedersFactory"; //GmNewDataSeedersFactory
 
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models", "using Microsoft.AspNetCore.Identity", "using LibDatabaseParameters",
@@ -45,7 +45,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)", "return 13"), string.Empty,
             "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
-            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFabric}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
+            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
             string.Empty, "return seeder.SeedData() ? 0 : 1", string.Empty);
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,

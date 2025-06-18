@@ -2,7 +2,7 @@
 
 namespace CliTools.ArchiverTools;
 
-public static class ArchiverDetectorFabric
+public static class ArchiverDetectorFactory
 {
     public static ArchiverDetector? Create(bool useConsole, string fileExtension)
     {

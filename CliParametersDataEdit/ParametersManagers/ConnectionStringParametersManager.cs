@@ -27,7 +27,7 @@
 //        Parameters = parameters;
 //        if (parameters is not DbConnectionParameters dbp)
 //            return;
-//        _fieldEditor.SetValue(Record, DbConnectionFabric.GetDbConnectionString(dbp));
+//        _fieldEditor.SetValue(Record, DbConnectionFactory.GetDbConnectionString(dbp));
 //        if (_parametersManager.Parameters is null)
 //            throw new Exception(
 //                "_parametersManager.Parameters is null in ConnectionStringParametersManager.Save");
