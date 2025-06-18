@@ -7,16 +7,16 @@ using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public sealed class ProjectDataSeedersFabricCreator : SeederCodeCreatorBase
+public sealed class ProjectDataSeedersFactoryCreator : SeederCodeCreatorBase
 {
     private readonly CodeRegion _carcassRegion;
     private readonly SeederCodeCreatorParameters _parameters;
     private readonly CodeRegion _projectRegion;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ProjectDataSeedersFabricCreator(ILogger logger, SeederCodeCreatorParameters parameters,
+    public ProjectDataSeedersFactoryCreator(ILogger logger, SeederCodeCreatorParameters parameters,
         ExcludesRulesParametersDomain excludesRulesParameters) : base(logger, excludesRulesParameters,
-        parameters.PlacePath, $"{parameters.ProjectDataSeedersFabricClassName}.cs")
+        parameters.PlacePath, $"{parameters.ProjectDataSeedersFactoryClassName}.cs")
     {
         _parameters = parameters;
         _carcassRegion = new CodeRegion("Carcass");
@@ -31,10 +31,10 @@ public sealed class ProjectDataSeedersFabricCreator : SeederCodeCreatorBase
             $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}",
             $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
             $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
-                $"public /*open*/ class {_parameters.ProjectDataSeedersFabricClassName} : CarcassDataSeedersFabric",
+                $"public /*open*/ class {_parameters.ProjectDataSeedersFactoryClassName} : CarcassDataSeedersFactory",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), new CodeBlock($"""
-                     protected {_parameters.ProjectDataSeedersFabricClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
+                     protected {_parameters.ProjectDataSeedersFactoryClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
                        string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, 
                        {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, secretDataFolder, dataSeedFolder, carcassRepo, 
                        repo)

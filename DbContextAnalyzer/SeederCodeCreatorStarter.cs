@@ -110,7 +110,7 @@ public sealed class SeederCodeCreatorStarter
         var seederCodeCreatorParameters = new SeederCodeCreatorParameters(_par.ProjectPrefix, _par.ProjectPrefixShort,
             "Models", _par.ProjectPrefix + "Seeders", "CarcassSeeders", _par.DataSeedingProjectPlacePath,
             _par.DataSeedingProjectNamespace, $"I{_par.ProjectPrefixShort}DataSeederRepository",
-            $"I{_par.ProjectPrefixShort}KeyNameIdRepository", _par.ProjectPrefixShort + "DataSeedersFabric",
+            $"I{_par.ProjectPrefixShort}KeyNameIdRepository", _par.ProjectPrefixShort + "DataSeedersFactory",
             _par.MainDatabaseProjectName, _par.ProjectDbContextClassName, "Models",
             _par.ProjectPrefixShort + "DataSeeder");
 

@@ -6,7 +6,7 @@ public sealed class SeederCodeCreatorParameters
     public SeederCodeCreatorParameters(string projectPrefix, string projectPrefixShort, string modelsFolderName,
         string projectSeedersFolderName, string carcassSeedersFolderName, string placePath, string projectNamespace,
         string dataSeederRepositoryInterfaceName, string keyNameIdRepositoryInterfaceName,
-        string projectDataSeedersFabricClassName, string dbProjectNamespace, string projectDbContextClassName,
+        string projectDataSeedersFactoryClassName, string dbProjectNamespace, string projectDbContextClassName,
         string dbProjectModelsFolderName, string dataSeederBaseClassName)
     {
         ProjectPrefix = projectPrefix;
@@ -18,7 +18,7 @@ public sealed class SeederCodeCreatorParameters
         ProjectNamespace = projectNamespace;
         DataSeederRepositoryInterfaceName = dataSeederRepositoryInterfaceName;
         KeyNameIdRepositoryInterfaceName = keyNameIdRepositoryInterfaceName;
-        ProjectDataSeedersFabricClassName = projectDataSeedersFabricClassName;
+        ProjectDataSeedersFactoryClassName = projectDataSeedersFactoryClassName;
         DbProjectNamespace = dbProjectNamespace;
         ProjectDbContextClassName = projectDbContextClassName;
         DbProjectModelsFolderName = dbProjectModelsFolderName;
@@ -34,7 +34,7 @@ public sealed class SeederCodeCreatorParameters
     public string CarcassSeedersFolderName { get; set; }
     public string DataSeederRepositoryInterfaceName { get; set; }
     public string KeyNameIdRepositoryInterfaceName { get; set; }
-    public string ProjectDataSeedersFabricClassName { get; set; }
+    public string ProjectDataSeedersFactoryClassName { get; set; }
     public string DbProjectNamespace { get; set; }
     public string ProjectDbContextClassName { get; set; }
     public string DbProjectModelsFolderName { get; set; }

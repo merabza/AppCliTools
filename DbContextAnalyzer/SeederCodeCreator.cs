@@ -90,9 +90,9 @@ public sealed class SeederCodeCreator
         //-------------
 
         //1.3
-        var projectDataSeedersFabricCreator =
-            new ProjectDataSeedersFabricCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters);
-        projectDataSeedersFabricCreator.CreateFileStructure();
+        var projectDataSeedersFactoryCreator =
+            new ProjectDataSeedersFactoryCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters);
+        projectDataSeedersFactoryCreator.CreateFileStructure();
 
         //-------------
 
@@ -148,7 +148,7 @@ public sealed class SeederCodeCreator
                 projectDataSeederCreator.UseEntity(relEntity.Value);
 
             //1.3
-            projectDataSeedersFabricCreator.UseEntity(relEntity.Value, isCarcassType);
+            projectDataSeedersFactoryCreator.UseEntity(relEntity.Value, isCarcassType);
         }
         //-------------
 
@@ -176,7 +176,7 @@ public sealed class SeederCodeCreator
         //1.2
         projectDataSeederCreator.FinishAndSave();
         //1.3
-        projectDataSeedersFabricCreator.FinishAndSave();
+        projectDataSeedersFactoryCreator.FinishAndSave();
 
         var place = new DirectoryInfo(_getJsonCreatorParameters.PlacePath);
         var solutionDir = place.Parent?.Parent;

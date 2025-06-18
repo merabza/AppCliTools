@@ -26,7 +26,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
     public override void CreateFileStructure()
     {
         _seedProjectSpecificDataMethodCodeBlock = new CodeBlock("protected virtual bool SeedProjectData()",
-            $"var seederFabric = ({_parameters.ProjectDataSeedersFabricClassName}) DataSeedersFabric", string.Empty,
+            $"var seederFactory = ({_parameters.ProjectDataSeedersFactoryClassName}) DataSeedersFactory", string.Empty,
             "Logger.LogInformation(\"Seed Project Data Started\")");
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
@@ -36,7 +36,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
             $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(
-                    "protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric, bool checkOnly) : base(logger, dataSeedersFabric, checkOnly)"),
+                    "protected ProjectDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFactory dataSeedersFactory, bool checkOnly) : base(logger, dataSeedersFactory, checkOnly)"),
                 new CodeBlock("public override bool SeedData()", "return base.SeedData() && SeedProjectData()"),
                 _seedProjectSpecificDataMethodCodeBlock));
         CodeFile.AddRange(block.CodeItems);
@@ -52,7 +52,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Logger.LogInformation(\"Seeding {tableNameCapitalCamel}\")", string.Empty,
             new OneLineComment($"{_counter} {tableNameCapitalCamel}"),
-            new CodeBlock($"if (!Use(seederFabric.Create{tableNameCapitalCamel}Seeder()))", "return false"));
+            new CodeBlock($"if (!Use(seederFactory.Create{tableNameCapitalCamel}Seeder()))", "return false"));
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
