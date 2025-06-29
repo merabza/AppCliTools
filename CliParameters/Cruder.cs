@@ -19,8 +19,11 @@ public /*open*/ class Cruder : IFieldEditors
     public readonly string CrudName;
     public readonly string CrudNamePlural;
     protected readonly List<FieldEditor> FieldEditors = [];
+
+    private CliMenuSet? _cruderSubMenuSet;
     private int _menuVersion;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
     {
@@ -65,14 +68,17 @@ public /*open*/ class Cruder : IFieldEditors
 
     protected virtual void RemoveRecordWithKey(string recordKey)
     {
+
     }
 
     public virtual void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
+
     }
 
     protected virtual void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
+
     }
 
     private ItemData? InputRecordData(string? recordKey = null, ItemData? defaultItemData = null)
@@ -164,8 +170,6 @@ public /*open*/ class Cruder : IFieldEditors
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
     }
 
-    private CliMenuSet? _cruderSubMenuSet;
-
     public CliMenuSet GetListMenu()
     {
         if (_cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
@@ -220,10 +224,9 @@ public /*open*/ class Cruder : IFieldEditors
         if (!_fieldKeyFromItem)
         {
             //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
-            TextDataInput nameInput = new($"New {CrudName} Name");
-            if (!nameInput.DoInput())
+            newRecordKey = InputNewRecordName();
+            if (string.IsNullOrWhiteSpace(newRecordKey))
                 return null;
-            newRecordKey = nameInput.Text;
             if (!CheckNewRecordKeyValid(null, newRecordKey))
                 return null;
 
@@ -251,6 +254,12 @@ public /*open*/ class Cruder : IFieldEditors
 
         //ყველაფერი კარგად დასრულდა
         return newRecordKey;
+    }
+
+    protected virtual string? InputNewRecordName()
+    {
+        TextDataInput nameInput = new($"New {CrudName} Name");
+        return !nameInput.DoInput() ? null : nameInput.Text;
     }
 
     public bool EditItemAllFieldsInSequence(string recordKey)
@@ -360,8 +369,8 @@ public /*open*/ class Cruder : IFieldEditors
     {
         var cruderDict = GetCrudersDictionary();
 
-        if (cruderDict.TryGetValue(itemName, out var name))
-            return name;
+        if (cruderDict.TryGetValue(itemName, out var itemData))
+            return itemData;
 
         if (writeErrorIfNotExists)
             StShared.WriteErrorLine($"{CrudName} with Name {itemName} is not exists. ", true);
