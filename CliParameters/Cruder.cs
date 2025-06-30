@@ -68,17 +68,14 @@ public /*open*/ class Cruder : IFieldEditors
 
     protected virtual void RemoveRecordWithKey(string recordKey)
     {
-
     }
 
     public virtual void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
-
     }
 
     protected virtual void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
-
     }
 
     private ItemData? InputRecordData(string? recordKey = null, ItemData? defaultItemData = null)
