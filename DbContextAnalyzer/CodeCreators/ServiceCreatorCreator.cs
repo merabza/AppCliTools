@@ -33,10 +33,12 @@ public sealed class ServiceCreatorCreator : CodeCreator
             "using SystemToolsShared", string.Empty, $"namespace {_par.SeedProjectNamespace}", string.Empty,
             new CodeBlock("public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
                 "private readonly string _connectionString", string.Empty,
+                "private readonly string _excludesRulesParametersFilePath", string.Empty,
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    "public SeedDbServicesCreator(string? logFolder, string? logFileName, string appName, string connectionString) : base(logFolder, logFileName, appName)",
-                    "_connectionString = connectionString"), string.Empty, new CodeBlock(
+                    "public SeedDbServicesCreator(string? logFolder, string? logFileName, string appName, string connectionString, string excludesRulesParametersFilePath) : base(logFolder, logFileName, appName)",
+                    "_connectionString = connectionString",
+                    "_excludesRulesParametersFilePath = excludesRulesParametersFilePath"), string.Empty, new CodeBlock(
                     "protected override void ConfigureServices(IServiceCollection services)",
                     "base.ConfigureServices(services)", new OneLineComment("identity"),
                     "services.AddScoped<IUserStore<AppUser>, MyUserStore>()",

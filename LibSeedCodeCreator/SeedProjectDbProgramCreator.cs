@@ -44,14 +44,17 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
                 "StShared.WriteErrorLine(\"par.SecretDataFolder is empty\", true)", "return 12"), string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)", "return 13"), string.Empty,
-            "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
-            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
+            string.Empty, "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
+            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, par.ExcludesRulesParametersFilePath, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
             string.Empty, "return seeder.SeedData() ? 0 : 1", string.Empty);
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringSeed))",
                 "StShared.WriteErrorLine(\"par.ConnectionStringSeed is empty\", true)", "return 3"), string.Empty,
-            $"var servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"{par.SeedProjectNamespace}\", par.ConnectionStringSeed)");
+            new CodeBlock("if (string.IsNullOrWhiteSpace(par.ExcludesRulesParametersFilePath))",
+                "StShared.WriteErrorLine(\"par.ExcludesRulesParametersFilePath is empty\", true)", "return 13"),
+            string.Empty,
+            $"var servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"{par.SeedProjectNamespace}\", par.ConnectionStringSeed, par.ExcludesRulesParametersFilePath)");
 
         var seedProjectDbProgramCreator = new ConsoleProgramCreator(logger, fcbSeedProjectDbProgramCreatorUsing,
             fcbGetJsonMainServiceCreatorCodeCommands, fcbGetJsonMainCommands, "SeederParameters",
