@@ -55,7 +55,7 @@ public sealed class SmartSchemaDetailCruder : Cruder
             _currentValuesList.Add(sid);
     }
 
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(ItemData? defaultItemData)
     {
         return new SmartSchemaDetail();
     }
