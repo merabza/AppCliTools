@@ -85,7 +85,7 @@ public /*open*/ class Cruder : IFieldEditors
             ItemData? currentItem;
             if (recordKey is null)
             {
-                currentItem = CreateNewItem(recordKey, defaultItemData);
+                currentItem = CreateNewItem(defaultItemData);
                 foreach (var fieldUpdater in FieldEditors) fieldUpdater.SetDefault(currentItem);
             }
             else
@@ -131,7 +131,7 @@ public /*open*/ class Cruder : IFieldEditors
         return true;
     }
 
-    protected virtual ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
+    protected virtual ItemData CreateNewItem(ItemData? defaultItemData)
     {
         return new ItemData();
     }

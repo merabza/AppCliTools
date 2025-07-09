@@ -108,7 +108,7 @@ public sealed class ApiClientCruder : ParCruder
         return apiClient?.Server;
     }
 
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(ItemData? defaultItemData)
     {
         return new ApiClientSettings();
     }

@@ -112,7 +112,7 @@ public sealed class DatabaseFoldersSetCruder : Cruder
         return databaseFoldersSet?.GetStatus();
     }
 
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(ItemData? defaultItemData)
     {
         return new DatabaseFoldersSet();
     }
