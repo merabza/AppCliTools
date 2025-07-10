@@ -45,7 +45,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)", "return 13"), string.Empty,
             string.Empty, "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
-            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, par.ExcludesRulesParametersFilePath, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
+            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
             string.Empty, "return seeder.SeedData() ? 0 : 1", string.Empty);
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,
