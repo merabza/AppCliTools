@@ -22,5 +22,4 @@ public sealed class SeederParametersDomain
     public EDatabaseProvider DataProvider { get; set; }
     public string ConnectionStringSeed { get; set; }
     public string ExcludesRulesParametersFilePath { get; }
-
 }
