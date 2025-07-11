@@ -134,7 +134,7 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")", string.Empty,
             $"var {tableVarName} = _context.{oldTableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
-            $"SaveJson({tableVarName}, \"{tableVarName}\")");
+            $"SaveJson({tableVarName}, \"{tableName}\")");
 
         if (_runMethodCodeBlock is null)
             throw new Exception("_runMethodCodeBlock is null");
