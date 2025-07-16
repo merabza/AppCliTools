@@ -54,7 +54,7 @@ public sealed class SmartSchemaCruder : ParCruder
         smartSchemas.Remove(recordKey);
     }
 
-    protected override ItemData CreateNewItem(ItemData? defaultItemData)
+    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         return new SmartSchema();
     }
