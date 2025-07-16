@@ -132,6 +132,7 @@ public /*open*/ class Cruder : IFieldEditors
     }
 
     //recordKey გამოყენებულია ქრაულერში
+    // ReSharper disable once UnusedParameter.Global
     protected virtual ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         return defaultItemData ?? new ItemData();
