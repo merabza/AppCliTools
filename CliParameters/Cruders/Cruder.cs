@@ -9,7 +9,7 @@ using LibMenuInput;
 using LibParameters;
 using SystemToolsShared;
 
-namespace CliParameters;
+namespace CliParameters.Cruders;
 
 public /*open*/ class Cruder : IFieldEditors
 {
