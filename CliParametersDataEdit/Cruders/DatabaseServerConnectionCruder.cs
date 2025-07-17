@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using CliMenu;
+﻿using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit.FieldEditors;
 using CliParametersDataEdit.CliMenuCommands;
 using CliParametersDataEdit.FieldEditors;
 using DatabasesManagement;
+using DbTools.Models;
 using LibApiClientParameters;
 using LibDatabaseParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using SystemToolsShared;
 using SystemToolsShared.Errors;
 
@@ -54,8 +55,12 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
         //FieldEditors.Add(new DatabaseBackupParametersFieldEditor(logger,
         //    nameof(DatabaseServerConnectionData.FullDbBackupParameters), parametersManager));
-        FieldEditors.Add(new DatabaseFoldersSetFieldEditor(parametersManager,
-            nameof(DatabaseServerConnectionData.DatabaseFoldersSets)));
+        //FieldEditors.Add(new DatabaseFoldersSetFieldEditor(parametersManager,
+        //    nameof(DatabaseServerConnectionData.DatabaseFoldersSets)));
+
+        FieldEditors.Add(
+            new DictionaryFieldEditor<DatabaseFoldersSetCruder, DatabaseFoldersSet>(
+                nameof(DatabaseServerConnectionData.DatabaseFoldersSets), parametersManager));
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
