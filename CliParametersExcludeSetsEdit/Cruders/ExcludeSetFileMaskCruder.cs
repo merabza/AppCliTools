@@ -6,27 +6,29 @@ using LibParameters;
 
 namespace CliParametersExcludeSetsEdit.Cruders;
 
-public sealed class ExcludeSetFileMaskCruder : ParCruder
+public sealed class ExcludeSetFileMaskCruder : Cruder
 {
     private readonly string _excludeSetName;
+    private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ExcludeSetFileMaskCruder(IParametersManager parametersManager, string excludeSetName) : base(
-        parametersManager, "File Mask", "File Masks")
+    public ExcludeSetFileMaskCruder(IParametersManager parametersManager, string excludeSetName) : base("File Mask",
+        "File Masks")
     {
+        _parametersManager = parametersManager;
         _excludeSetName = excludeSetName;
     }
 
     private List<string> GetFileMasks()
     {
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+        var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
         var excludeSets = parameters.ExcludeSets;
         return !excludeSets.TryGetValue(_excludeSetName, out var excludeSet) ? [] : excludeSet.FolderFileMasks;
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
     {
-        return GetFileMasks().ToDictionary(k => k, v => (ItemData)new TextItemData { Text = v });
+        return GetFileMasks().ToDictionary(k => k, ItemData (v) => new TextItemData { Text = v });
     }
 
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
@@ -48,7 +50,7 @@ public sealed class ExcludeSetFileMaskCruder : ParCruder
 
     protected override void AddRecordWithKey(string recordName, ItemData newRecord)
     {
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+        var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
         var excludeSets = parameters.ExcludeSets;
         if (!excludeSets.TryGetValue(_excludeSetName, out var excludeSet))
             return;
