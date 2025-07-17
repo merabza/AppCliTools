@@ -13,15 +13,15 @@ public sealed class SimpleNamesListFieldEditor<T> : FieldEditor<List<string>> wh
     private readonly ParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SimpleNamesListFieldEditor(string propertyName, ParametersManager parametersManager) : base(
-        propertyName, false, null, false, null, true)
+    public SimpleNamesListFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName,
+        false, null, false, null, true)
     {
         _parametersManager = parametersManager;
     }
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SimpleNamesListFieldEditor(ILogger logger, string propertyName,
-        ParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
+    public SimpleNamesListFieldEditor(ILogger logger, string propertyName, ParametersManager parametersManager) : base(
+        propertyName, false, null, false, null, true)
     {
         _logger = logger;
         _parametersManager = parametersManager;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
@@ -11,53 +10,60 @@ using LibParameters;
 
 namespace CliParametersEdit.Cruders;
 
-public sealed class SmartSchemaCruder : ParCruder
+public sealed class SmartSchemaCruder : ParCruder<SmartSchema>
 {
-    public SmartSchemaCruder(IParametersManager parametersManager) : base(parametersManager, "Smart Schema",
-        "Smart Schemas")
+    private SmartSchemaCruder(IParametersManager parametersManager,
+        Dictionary<string, SmartSchema> currentValuesDictionary) : base(parametersManager, currentValuesDictionary,
+        "Smart Schema", "Smart Schemas")
     {
         FieldEditors.Add(new IntFieldEditor(nameof(SmartSchema.LastPreserveCount), 1));
         FieldEditors.Add(new SmartSchemaDetailsFieldEditor(nameof(SmartSchema.Details)));
     }
 
-    protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    public static SmartSchemaCruder Create(IParametersManager parametersManager)
     {
-        var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        return parameters.SmartSchemas.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+        var parameters = (IParametersWithSmartSchemas)parametersManager.Parameters;
+        return new SmartSchemaCruder(parametersManager, parameters.SmartSchemas);
     }
 
-    public override bool ContainsRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        var smartSchemas = parameters.SmartSchemas;
-        return smartSchemas.ContainsKey(recordKey);
-    }
+    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    //{
+    //    var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
+    //    return parameters.SmartSchemas.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+    //}
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    {
-        var newFileStorage = (SmartSchema)newRecord;
-        var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        parameters.SmartSchemas[recordKey] = newFileStorage;
-    }
+    //public override bool ContainsRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
+    //    var smartSchemas = parameters.SmartSchemas;
+    //    return smartSchemas.ContainsKey(recordKey);
+    //}
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    {
-        var newFileStorage = (SmartSchema)newRecord;
-        var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        parameters.SmartSchemas.Add(recordKey, newFileStorage);
-    }
+    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    //{
+    //    var newFileStorage = (SmartSchema)newRecord;
+    //    var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
+    //    parameters.SmartSchemas[recordKey] = newFileStorage;
+    //}
 
-    protected override void RemoveRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
-        var smartSchemas = parameters.SmartSchemas;
-        smartSchemas.Remove(recordKey);
-    }
+    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    //{
+    //    var newFileStorage = (SmartSchema)newRecord;
+    //    var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
+    //    parameters.SmartSchemas.Add(recordKey, newFileStorage);
+    //}
 
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
-    {
-        return new SmartSchema();
-    }
+    //protected override void RemoveRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithSmartSchemas)ParametersManager.Parameters;
+    //    var smartSchemas = parameters.SmartSchemas;
+    //    smartSchemas.Remove(recordKey);
+    //}
+
+    //protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
+    //{
+    //    return new SmartSchema();
+    //}
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {

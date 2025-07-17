@@ -6,11 +6,11 @@ namespace LibDataInput.InputParsers;
 
 public /*open*/ class DelimiterParser : InputParser
 {
-    protected readonly int[] Maxes;
     private readonly int _count;
     private readonly int[] _digits;
 
     private readonly int[] _minimums;
+    protected readonly int[] Maxes;
 
     protected DelimiterParser(char delimiter, int[] minimums, int[] maxes) : base(delimiter)
     {

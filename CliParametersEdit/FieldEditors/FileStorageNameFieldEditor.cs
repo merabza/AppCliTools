@@ -22,7 +22,7 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
     {
         var currentFileStorageName = GetValue(recordForUpdate);
 
-        FileStorageCruder fileStorageCruder = new(_logger, _parametersManager);
+        var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
 
         SetValue(recordForUpdate, fileStorageCruder.GetNameWithPossibleNewName(FieldName, currentFileStorageName));
     }
@@ -34,7 +34,7 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
         if (val == null)
             return string.Empty;
 
-        FileStorageCruder fileStorageCruder = new(_logger, _parametersManager);
+        var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
 
         var status = fileStorageCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";

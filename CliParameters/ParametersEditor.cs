@@ -13,8 +13,8 @@ namespace CliParameters;
 public /*open*/ class ParametersEditor : IFieldEditors
 {
     public const char PasswordChar = '*';
-    protected readonly List<FieldEditor> FieldEditors = [];
     private readonly IParametersManager _parametersManager;
+    protected readonly List<FieldEditor> FieldEditors = [];
 
     protected ParametersEditor(string name, IParameters parameters, IParametersManager parametersManager)
     {

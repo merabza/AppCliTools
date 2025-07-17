@@ -1,4 +1,7 @@
-﻿using CliMenu;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit.FieldEditors;
@@ -10,24 +13,20 @@ using LibApiClientParameters;
 using LibDatabaseParameters;
 using LibParameters;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using SystemToolsShared;
 using SystemToolsShared.Errors;
 
 namespace CliParametersDataEdit.Cruders;
 
-public sealed class DatabaseServerConnectionCruder : ParCruder
+public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerConnectionData>
 {
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
 
-    //, IParametersManager listsParametersManager
     public DatabaseServerConnectionCruder(ILogger logger, IHttpClientFactory? httpClientFactory,
-        IParametersManager parametersManager) : base(parametersManager, "Database Server Connection",
-        "Database Server Connections")
+        IParametersManager parametersManager,
+        Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary) : base(parametersManager,
+        currentValuesDictionary, "Database Server Connection", "Database Server Connections")
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -37,8 +36,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         //მონაცემთა ბაზასთან დამაკავშირებელი ვებაგენტის სახელი
         if (httpClientFactory is not null)
         {
-            FieldEditors.Add(new ApiClientNameFieldEditor(logger, httpClientFactory,
-                nameof(DatabaseServerConnectionData.DbWebAgentName), ParametersManager, true));
+            FieldEditors.Add(new ApiClientNameFieldEditor(nameof(DatabaseServerConnectionData.DbWebAgentName), logger,
+                httpClientFactory, ParametersManager, true));
 
             FieldEditors.Add(new RemoteDbConnectionNameFieldEditor(logger, httpClientFactory,
                 nameof(DatabaseServerConnectionData.RemoteDbConnectionName), ParametersManager,
@@ -58,51 +57,57 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         //FieldEditors.Add(new DatabaseFoldersSetFieldEditor(parametersManager,
         //    nameof(DatabaseServerConnectionData.DatabaseFoldersSets)));
 
-        FieldEditors.Add(
-            new DictionaryFieldEditor<DatabaseFoldersSetCruder, DatabaseFoldersSet>(
-                nameof(DatabaseServerConnectionData.DatabaseFoldersSets), parametersManager));
+        FieldEditors.Add(new DictionaryFieldEditor<DatabaseFoldersSetCruder, DatabaseFoldersSet>(
+            nameof(DatabaseServerConnectionData.DatabaseFoldersSets), parametersManager));
     }
 
-    protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    public static DatabaseServerConnectionCruder Create(ILogger logger, IHttpClientFactory? httpClientFactory,
+        IParametersManager parametersManager)
     {
-        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        return parameters.DatabaseServerConnections.ToDictionary(p => p.Key, ItemData (p) => p.Value);
+        var parameters = (IParametersWithDatabaseServerConnections)parametersManager.Parameters;
+        return new DatabaseServerConnectionCruder(logger, httpClientFactory, parametersManager,
+            parameters.DatabaseServerConnections);
     }
 
-    public override bool ContainsRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        var databaseServerConnections = parameters.DatabaseServerConnections;
-        return databaseServerConnections.ContainsKey(recordKey);
-    }
+    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    //{
+    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+    //    return parameters.DatabaseServerConnections.ToDictionary(p => p.Key, ItemData (p) => p.Value);
+    //}
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    {
-        var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
-        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        parameters.DatabaseServerConnections[recordKey] = newDatabaseServerConnection;
-    }
+    //public override bool ContainsRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+    //    var databaseServerConnections = parameters.DatabaseServerConnections;
+    //    return databaseServerConnections.ContainsKey(recordKey);
+    //}
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    {
-        var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
-        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        parameters.DatabaseServerConnections.Add(recordKey, newDatabaseServerConnection);
-    }
+    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    //{
+    //    var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
+    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+    //    parameters.DatabaseServerConnections[recordKey] = newDatabaseServerConnection;
+    //}
 
-    protected override void RemoveRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        var databaseServerConnections = parameters.DatabaseServerConnections;
-        databaseServerConnections.Remove(recordKey);
-    }
+    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    //{
+    //    var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
+    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+    //    parameters.DatabaseServerConnections.Add(recordKey, newDatabaseServerConnection);
+    //}
+
+    //protected override void RemoveRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
+    //    var databaseServerConnections = parameters.DatabaseServerConnections;
+    //    databaseServerConnections.Remove(recordKey);
+    //}
 
     public override bool CheckValidation(ItemData item)
     {
         try
         {
-            if (item is not DatabaseServerConnectionData databaseServerConnectionData)
-                return false;
+            var databaseServerConnectionData = GetTItem(item);
 
             var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
@@ -229,11 +234,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder
         var databaseServerConnection = (DatabaseServerConnectionData?)GetItemByName(name);
         return
             $"{databaseServerConnection?.DatabaseServerProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
-    }
-
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
-    {
-        return new DatabaseServerConnectionData();
     }
 
     public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordKey)

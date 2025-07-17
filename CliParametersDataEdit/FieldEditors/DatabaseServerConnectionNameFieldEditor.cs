@@ -31,8 +31,8 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         //if (currentDatabaseServerConnectionName is null)
         //    throw new Exception("currentDatabaseServerConnectionName is null");
 
-        DatabaseServerConnectionCruder databaseServerConnectionCruder =
-            new(_logger, _httpClientFactory, _parametersManager);
+        var databaseServerConnectionCruder =
+            DatabaseServerConnectionCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
         SetValue(recordForUpdate,
             databaseServerConnectionCruder.GetNameWithPossibleNewName(FieldName, currentDatabaseServerConnectionName,
@@ -56,8 +56,8 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         if (val is null)
             return string.Empty;
 
-        DatabaseServerConnectionCruder databaseServerConnectionCruder =
-            new(_logger, _httpClientFactory, _parametersManager);
+        var databaseServerConnectionCruder =
+            DatabaseServerConnectionCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
         var status = databaseServerConnectionCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";

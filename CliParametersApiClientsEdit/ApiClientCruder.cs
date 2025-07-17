@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using CliParameters;
@@ -13,13 +12,14 @@ using TestApiContracts;
 
 namespace CliParametersApiClientsEdit;
 
-public sealed class ApiClientCruder : ParCruder
+public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
 
-    public ApiClientCruder(IParametersManager parametersManager, ILogger logger, IHttpClientFactory httpClientFactory) :
-        base(parametersManager, "Api Client", "Api Clients")
+    private ApiClientCruder(ILogger logger, IHttpClientFactory httpClientFactory, IParametersManager parametersManager,
+        Dictionary<string, ApiClientSettings> currentValuesDictionary) : base(parametersManager,
+        currentValuesDictionary, "Api Client", "Api Clients")
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -27,39 +27,46 @@ public sealed class ApiClientCruder : ParCruder
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey)));
     }
 
-    protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    public static ApiClientCruder Create(ILogger logger, IHttpClientFactory httpClientFactory,
+        IParametersManager parametersManager)
     {
-        var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        return parameters.ApiClients.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+        var parameters = (IParametersWithApiClients)parametersManager.Parameters;
+        return new ApiClientCruder(logger, httpClientFactory, parametersManager, parameters.ApiClients);
     }
 
-    public override bool ContainsRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        var apiClients = parameters.ApiClients;
-        return apiClients.ContainsKey(recordKey);
-    }
+    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    //{
+    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
+    //    return parameters.ApiClients.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+    //}
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    {
-        var newApiClient = (ApiClientSettings)newRecord;
-        var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        parameters.ApiClients[recordKey] = newApiClient;
-    }
+    //public override bool ContainsRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
+    //    var apiClients = parameters.ApiClients;
+    //    return apiClients.ContainsKey(recordKey);
+    //}
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    {
-        var newApiClient = (ApiClientSettings)newRecord;
-        var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        parameters.ApiClients.Add(recordKey, newApiClient);
-    }
+    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    //{
+    //    var newApiClient = (ApiClientSettings)newRecord;
+    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
+    //    parameters.ApiClients[recordKey] = newApiClient;
+    //}
 
-    protected override void RemoveRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-        var apiClients = parameters.ApiClients;
-        apiClients.Remove(recordKey);
-    }
+    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    //{
+    //    var newApiClient = (ApiClientSettings)newRecord;
+    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
+    //    parameters.ApiClients.Add(recordKey, newApiClient);
+    //}
+
+    //protected override void RemoveRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
+    //    var apiClients = parameters.ApiClients;
+    //    apiClients.Remove(recordKey);
+    //}
 
     public override bool CheckValidation(ItemData item)
     {
@@ -106,10 +113,5 @@ public sealed class ApiClientCruder : ParCruder
             return null;
         var apiClient = (ApiClientSettings?)GetItemByName(name);
         return apiClient?.Server;
-    }
-
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
-    {
-        return new ApiClientSettings();
     }
 }

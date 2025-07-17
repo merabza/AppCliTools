@@ -11,7 +11,7 @@ public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TMode
     protected readonly IParametersManager ParametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    protected ParametersFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
+    protected ParametersFieldEditor(string propertyName, ILogger logger, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {
         Logger = logger;

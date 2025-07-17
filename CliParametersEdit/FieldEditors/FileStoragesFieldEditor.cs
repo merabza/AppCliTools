@@ -1,45 +1,46 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CliMenu;
-using CliParameters.FieldEditors;
-using CliParametersEdit.Cruders;
-using LibFileParameters.Models;
-using LibParameters;
-using Microsoft.Extensions.Logging;
+﻿//using System.Collections.Generic;
+//using System.Linq;
+//using CliMenu;
+//using CliParameters.FieldEditors;
+//using CliParametersEdit.Cruders;
+//using LibFileParameters.Models;
+//using LibParameters;
+//using Microsoft.Extensions.Logging;
 
-namespace CliParametersEdit.FieldEditors;
+//namespace CliParametersEdit.FieldEditors;
 
-public sealed class FileStoragesFieldEditor : FieldEditor<Dictionary<string, FileStorageData>>
-{
-    private readonly ILogger _logger;
-    private readonly IParametersManager _parametersManager;
+//public sealed class FileStoragesFieldEditor : FieldEditor<Dictionary<string, FileStorageData>>
+//{
+//    private readonly ILogger _logger;
+//    private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public FileStoragesFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
-    {
-        _logger = logger;
-        _parametersManager = parametersManager;
-    }
+//    // ReSharper disable once ConvertToPrimaryConstructor
+//    public FileStoragesFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
+//        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
+//    {
+//        _logger = logger;
+//        _parametersManager = parametersManager;
+//    }
 
-    public override CliMenuSet GetSubMenu(object record)
-    {
-        FileStorageCruder fileStorageCruder = new(_logger, _parametersManager);
-        var menuSet = fileStorageCruder.GetListMenu();
-        return menuSet;
-    }
+//    public override CliMenuSet GetSubMenu(object record)
+//    {
+//        FileStorageCruder fileStorageCruder = new(_logger, _parametersManager);
+//        var menuSet = fileStorageCruder.GetListMenu();
+//        return menuSet;
+//    }
 
-    public override string GetValueStatus(object? record)
-    {
-        var val = GetValue(record);
+//    public override string GetValueStatus(object? record)
+//    {
+//        var val = GetValue(record);
 
-        if (val is null || val.Count <= 0)
-            return "No Details";
+//        if (val is null || val.Count <= 0)
+//            return "No Details";
 
-        if (val.Count > 1)
-            return $"{val.Count} Details";
+//        if (val.Count > 1)
+//            return $"{val.Count} Details";
 
-        var kvp = val.Single();
-        return $"{kvp.Key} - {kvp.Value.FileStoragePath} {kvp.Value.UserName ?? string.Empty}";
-    }
-}
+//        var kvp = val.Single();
+//        return $"{kvp.Key} - {kvp.Value.FileStoragePath} {kvp.Value.UserName ?? string.Empty}";
+//    }
+//}
+

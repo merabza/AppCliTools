@@ -13,7 +13,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
     private readonly bool _useNone;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ApiClientNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
+    public ApiClientNameFieldEditor(string propertyName, ILogger logger, IHttpClientFactory httpClientFactory,
         IParametersManager parametersManager, bool useNone = false, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)
     {
@@ -27,7 +27,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
     {
         var currentApiClientName = GetValue(recordForUpdate);
 
-        ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
+        var apiClientCruder = ApiClientCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
         var newValue = apiClientCruder.GetNameWithPossibleNewName(FieldName, currentApiClientName, null, _useNone);
 
@@ -41,7 +41,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
         if (val == null)
             return string.Empty;
 
-        ApiClientCruder apiClientCruder = new(_parametersManager, _logger, _httpClientFactory);
+        var apiClientCruder = ApiClientCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
         var status = apiClientCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";
