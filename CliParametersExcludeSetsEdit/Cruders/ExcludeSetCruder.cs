@@ -7,15 +7,15 @@ using CliParametersExcludeSetsEdit.MenuCommands;
 using LibFileParameters.Interfaces;
 using LibFileParameters.Models;
 using LibParameters;
-using SystemToolsShared;
 
 namespace CliParametersExcludeSetsEdit.Cruders;
 
-public sealed class ExcludeSetCruder : ParCruder
+public sealed class ExcludeSetCruder : ParCruder<ExcludeSet>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ExcludeSetCruder(IParametersManager parametersManager) : base(parametersManager, "Exclude Set",
-        "Exclude Sets", true)
+    public ExcludeSetCruder(IParametersManager parametersManager,
+        Dictionary<string, ExcludeSet> currentValuesDictionary) : base(parametersManager, currentValuesDictionary,
+        "Exclude Set", "Exclude Sets", true)
     {
     }
 
@@ -41,56 +41,62 @@ public sealed class ExcludeSetCruder : ParCruder
             itemSubMenuSet.AddMenuItem(detailListCommand);
     }
 
-    protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    public static ExcludeSetCruder Create(IParametersManager parametersManager)
     {
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
-        return parameters.ExcludeSets.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+        var parameters = (IParametersWithExcludeSets)parametersManager.Parameters;
+        return new ExcludeSetCruder(parametersManager, parameters.ExcludeSets);
     }
 
-    public override bool ContainsRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
-        var excludeSets = parameters.ExcludeSets;
-        return excludeSets.ContainsKey(recordKey);
-    }
+    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    //{
+    //    var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+    //    return parameters.ExcludeSets.ToDictionary(p => p.Key, p => (ItemData)p.Value);
+    //}
 
-    public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
-    {
-        var newExcludeSet = newRecord as ExcludeSet;
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
-        if (newExcludeSet is null)
-        {
-            StShared.WriteErrorLine("ExcludeSet is empty and cannot be saved", true);
-            return;
-        }
+    //public override bool ContainsRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+    //    var excludeSets = parameters.ExcludeSets;
+    //    return excludeSets.ContainsKey(recordKey);
+    //}
 
-        parameters.ExcludeSets[recordName] = newExcludeSet;
-    }
+    //public override void UpdateRecordWithKey(string recordName, ItemData newRecord)
+    //{
+    //    var newExcludeSet = newRecord as ExcludeSet;
+    //    var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+    //    if (newExcludeSet is null)
+    //    {
+    //        StShared.WriteErrorLine("ExcludeSet is empty and cannot be saved", true);
+    //        return;
+    //    }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
-    {
-        var newExcludeSet = newRecord as ExcludeSet;
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
-        if (newExcludeSet is null)
-        {
-            StShared.WriteErrorLine("ExcludeSet is empty and cannot be saved", true);
-            return;
-        }
+    //    parameters.ExcludeSets[recordName] = newExcludeSet;
+    //}
 
-        parameters.ExcludeSets.Add(recordName, newExcludeSet);
-    }
+    //protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    //{
+    //    var newExcludeSet = newRecord as ExcludeSet;
+    //    var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+    //    if (newExcludeSet is null)
+    //    {
+    //        StShared.WriteErrorLine("ExcludeSet is empty and cannot be saved", true);
+    //        return;
+    //    }
 
-    protected override void RemoveRecordWithKey(string recordKey)
-    {
-        var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
-        var excludeSets = parameters.ExcludeSets;
-        excludeSets.Remove(recordKey);
-    }
+    //    parameters.ExcludeSets.Add(recordName, newExcludeSet);
+    //}
 
-    protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
-    {
-        return new ExcludeSet();
-    }
+    //protected override void RemoveRecordWithKey(string recordKey)
+    //{
+    //    var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
+    //    var excludeSets = parameters.ExcludeSets;
+    //    excludeSets.Remove(recordKey);
+    //}
+
+    //protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
+    //{
+    //    return new ExcludeSet();
+    //}
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {

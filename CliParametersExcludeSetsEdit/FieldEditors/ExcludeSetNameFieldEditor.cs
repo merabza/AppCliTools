@@ -9,6 +9,7 @@ public sealed class ExcludeSetNameFieldEditor : FieldEditor<string>
     private readonly IParametersManager _parametersManager;
     private readonly bool _useNone;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ExcludeSetNameFieldEditor(string propertyName, IParametersManager parametersManager, bool useNone = false,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {
@@ -18,7 +19,7 @@ public sealed class ExcludeSetNameFieldEditor : FieldEditor<string>
 
     public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
     {
-        ExcludeSetCruder excludeSetCruder = new(_parametersManager);
+        var excludeSetCruder = ExcludeSetCruder.Create(_parametersManager);
         SetValue(recordForUpdate,
             excludeSetCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate), null, _useNone));
     }
