@@ -1,6 +1,6 @@
-﻿namespace CodeTools;
+﻿//namespace CodeTools;
 
-public enum ECodeType
-{
-    Command
-}
+//public enum ECodeType
+//{
+//    Command
+//}
