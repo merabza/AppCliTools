@@ -3,6 +3,7 @@ using CliMenu;
 using CliParameters;
 using CliParametersEdit.CliMenuCommands;
 using CliParametersEdit.FieldEditors;
+using LibFileParameters.Interfaces;
 using LibFileParameters.Models;
 using LibParameters;
 
@@ -18,6 +19,12 @@ public sealed class ArchiverCruder : ParCruder<ArchiverData>
         FieldEditors.Add(new ArchiverFileExtensionFieldEditor(nameof(ArchiverData.FileExtension)));
         FieldEditors.Add(new CompressProgramPatchFieldEditor(nameof(ArchiverData.CompressProgramPatch)));
         FieldEditors.Add(new DecompressProgramPatchFieldEditor(nameof(ArchiverData.DecompressProgramPatch)));
+    }
+
+    public static ArchiverCruder Create(IParametersManager parametersManager)
+    {
+        var parameters = (IParametersWithArchivers)parametersManager.Parameters;
+        return new ArchiverCruder(parametersManager, parameters.Archivers);
     }
 
     //protected override Dictionary<string, ItemData> GetCrudersDictionary()

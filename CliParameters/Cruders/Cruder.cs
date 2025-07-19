@@ -257,7 +257,7 @@ public /*open*/ class Cruder : IFieldEditors
 
     protected virtual string? InputNewRecordName()
     {
-        TextDataInput nameInput = new($"New {CrudName} Name");
+        var nameInput = new TextDataInput($"New {CrudName} Name");
         return !nameInput.DoInput() ? null : nameInput.Text;
     }
 
@@ -275,7 +275,7 @@ public /*open*/ class Cruder : IFieldEditors
         if (!_fieldKeyFromItem)
         {
             //ამოცანის სახელის რედაქტირება
-            TextDataInput nameInput = new($"change {CrudName} Name", recordKey);
+            var nameInput = new TextDataInput($"change {CrudName} Name", recordKey);
             if (!nameInput.DoInput())
                 return false;
             newRecordKey = nameInput.Text;
@@ -337,12 +337,12 @@ public /*open*/ class Cruder : IFieldEditors
 
         var itemSubMenuSet = new CliMenuSet(substituteName);
 
-        DeleteCruderRecordCliMenuCommand deleteCommand = new(this, itemName);
+        var deleteCommand = new DeleteCruderRecordCliMenuCommand(this, itemName);
         itemSubMenuSet.AddMenuItem(deleteCommand);
 
         if (_canEditFieldsInSequence)
         {
-            EditItemAllFieldsInSequenceCliMenuCommand editCommand = new(this, itemName);
+            var editCommand = new EditItemAllFieldsInSequenceCliMenuCommand(this, itemName);
             itemSubMenuSet.AddMenuItem(editCommand);
         }
 

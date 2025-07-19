@@ -59,7 +59,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
     public CliMenuSet GetParametersMainMenu()
     {
-        CliMenuSet parametersEditorMenuSet = new(GetMainMenuCaption());
+        var parametersEditorMenuSet = new CliMenuSet(GetMainMenuCaption());
 
         FillDetailsSubMenu(parametersEditorMenuSet);
 
@@ -73,7 +73,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
     public void FillDetailsSubMenu(CliMenuSet parametersEditorMenuSet)
     {
         //მენიუს ჩანაწერი, რომელიც საშუალებას გვაძლევს პარამეტრები დავარედაქტიროთ ყველა თანმიმდევრობით
-        EditParametersInSequenceCliMenuCommand editCommand = new(this);
+        var editCommand = new EditParametersInSequenceCliMenuCommand(this);
         parametersEditorMenuSet.AddMenuItem(editCommand);
 
         foreach (var fieldEditor in FieldEditors.Where(w => w.Enabled))

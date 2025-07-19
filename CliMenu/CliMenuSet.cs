@@ -137,7 +137,7 @@ public sealed class CliMenuSet
 
             if (key.Length > 3)
                 key = key[..3];
-            string preSpace = new(' ', 4 - key.Length);
+            var preSpace = new string(' ', 4 - key.Length);
             //Console.WriteLine($"{preSpace}{key}. {menuItem.MenuItemName} {menuItem.CliMenuCommand.GetStatus() ?? string.Empty}");
 
             Console.Write($"{preSpace}{key}. ");
@@ -193,7 +193,7 @@ public sealed class CliMenuSet
     // ReSharper disable once UnusedMember.Global
     public void InsertMenuItem(int index, CliMenuCommand menuCommand)
     {
-        CliMenuItem menuItem = new(menuCommand);
+        var menuItem = new CliMenuItem(menuCommand);
 
         MenuItems.Insert(index, menuItem);
     }
@@ -218,7 +218,7 @@ public sealed class CliMenuSet
             return;
         }
 
-        CliMenuItem menuItem = new(key, menuCommand, useId);
+        var menuItem = new CliMenuItem(key, menuCommand, useId);
 
         MenuItems.Add(menuItem);
     }

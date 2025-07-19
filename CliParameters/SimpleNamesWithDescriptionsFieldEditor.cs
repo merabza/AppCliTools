@@ -9,32 +9,43 @@ using Microsoft.Extensions.Logging;
 
 namespace CliParameters;
 
-public sealed class SimpleNamesWithDescriptionsFieldEditor<T> : FieldEditor<Dictionary<string, string>> where T : Cruder
+public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEditor<Dictionary<string, string>>
+    where TCruder : Cruder
 {
     private readonly ILogger? _logger;
-    private readonly ParametersManager _parametersManager;
+    private readonly ParametersManager? _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ParametersManager parametersManager) : base(
-        propertyName, false, null, false, null, true)
-    {
-        _parametersManager = parametersManager;
-    }
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public SimpleNamesWithDescriptionsFieldEditor(ILogger logger, string propertyName,
+    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ILogger logger,
         ParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
     {
         _logger = logger;
         _parametersManager = parametersManager;
     }
 
+    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ParametersManager parametersManager) : base(
+        propertyName, false, null, false, null, true)
+    {
+        _parametersManager = parametersManager;
+    }
+
+    public SimpleNamesWithDescriptionsFieldEditor(string propertyName) : base(propertyName, false, null, false, null,
+        true)
+    {
+    }
+
     public override CliMenuSet GetSubMenu(object record)
     {
-        var gitCruder = _logger is null
-            ? (T)Activator.CreateInstance(typeof(T), _parametersManager)!
-            : (T)Activator.CreateInstance(typeof(T), _logger, _parametersManager)!;
-        return gitCruder.GetListMenu();
+        Cruder cruder;
+        var currentValuesDict = GetValue(record) ?? [];
+
+        if (_logger is not null && _parametersManager is not null)
+            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager,
+                currentValuesDict)!;
+        else if (_parametersManager is not null)
+            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
+        else
+            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), currentValuesDict)!;
+        return cruder.GetListMenu();
     }
 
     public override string GetValueStatus(object? record)

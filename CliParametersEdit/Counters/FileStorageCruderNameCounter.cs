@@ -23,8 +23,7 @@ public sealed class FileStorageCruderNameCounter
 
     public string? Count()
     {
-        FileStorageCruder fileStorageCruder = new(_logger, _parametersManager);
+        var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
         return fileStorageCruder.GetNameWithPossibleNewName(_fieldName, _currentName);
     }
 }
-

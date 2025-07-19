@@ -120,7 +120,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         {
             StShared.WriteWarningLine($"File {startFileName} is not exists", true);
 
-            FileInfo fileInfo = new(startFileName);
+            var fileInfo = new FileInfo(startFileName);
             if (fileInfo.Directory == null)
             {
                 StShared.WriteErrorLine($"Invalid file name {startFileName} for Parameters", true);
