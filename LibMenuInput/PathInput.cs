@@ -31,7 +31,7 @@ public /*open*/ class PathInput : DataInput
     {
         Console.WriteLine($"Enter {_fieldName}: ");
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
 
         if (!string.IsNullOrWhiteSpace(_defaultValue))
         {
@@ -62,7 +62,7 @@ public /*open*/ class PathInput : DataInput
                         continue;
                     }
 
-                    DirectoryInfo dir = new(dirName);
+                    var dir = new DirectoryInfo(dirName);
                     var names = dir.GetDirectories($"{fileName}*").Select(s => s.Name + Path.DirectorySeparatorChar)
                         .ToList();
                     AddFiles(dir, fileName, names);
