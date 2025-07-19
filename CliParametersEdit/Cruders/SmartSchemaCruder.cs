@@ -67,7 +67,7 @@ public sealed class SmartSchemaCruder : ParCruder<SmartSchema>
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {
-        GenerateStandardSmartSchemasCliMenuCommand generateCommand = new(ParametersManager);
+        var generateCommand = new GenerateStandardSmartSchemasCliMenuCommand(ParametersManager);
         cruderSubMenuSet.AddMenuItem(generateCommand);
     }
 }

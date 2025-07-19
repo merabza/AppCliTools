@@ -140,7 +140,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
                 return;
 
             //შევქმნათ ცარელა პარამეტრები
-            EmptyParameters sampleParams = new();
+            var sampleParams = new EmptyParameters();
 
             var sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
 

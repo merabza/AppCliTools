@@ -50,7 +50,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         if (serverAddress is null || serverUser is null || serverPass is null)
             throw new Exception("serverAddress is null or serverUser is null or serverPass is null");
 
-        SqlServerConnectionParameters sqlSerConPar = new()
+        var sqlSerConPar = new SqlServerConnectionParameters
         {
             ServerAddress = serverAddress,
             WindowsNtIntegratedSecurity = windowsNtIntegratedSecurity,
@@ -69,7 +69,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         if (getDatabaseInfosResult.IsT0)
             databaseInfos = getDatabaseInfosResult.AsT0;
 
-        CliMenuSet databasesMenuSet = new();
+        var databasesMenuSet = new CliMenuSet();
         databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
 
         var keys = databaseInfos.Select(s => s.Name).ToList();

@@ -380,7 +380,7 @@ public /*open*/ class Cruder : IFieldEditors
     public string? GetNameWithPossibleNewName(string fieldName, string? currentName, string? currentStatus = null,
         bool useNone = false)
     {
-        CliMenuSet listSet = new();
+        var listSet = new CliMenuSet();
 
         if (useNone) listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
 

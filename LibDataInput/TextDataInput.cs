@@ -10,7 +10,7 @@ public sealed class TextDataInput : DataInput
     private readonly char _passwordCharacter;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public TextDataInput(string fieldName, string? defaultValue = default, char passwordCharacter = default)
+    public TextDataInput(string fieldName, string? defaultValue = null, char passwordCharacter = '\0')
     {
         _fieldName = fieldName;
         _defaultValue = defaultValue;
@@ -22,13 +22,13 @@ public sealed class TextDataInput : DataInput
     public override bool DoInput()
     {
         var showDefValue = _defaultValue ?? string.Empty;
-        if (_passwordCharacter != default && _defaultValue != default)
+        if (_passwordCharacter != 0 && _defaultValue != null)
             showDefValue = new string(_passwordCharacter, showDefValue.Length);
-        var prompt = $"Enter {_fieldName} {(_defaultValue == default ? string.Empty : $"[{showDefValue}]")}: ";
+        var prompt = $"Enter {_fieldName} {(_defaultValue == null ? string.Empty : $"[{showDefValue}]")}: ";
         Console.Write(prompt);
 
         var promptLength = prompt.Length;
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         while (true)
         {
             var ch = Console.ReadKey(true);
@@ -56,7 +56,7 @@ public sealed class TextDataInput : DataInput
                     {
                         sb.Remove(sb.Length - 1, 1);
                         ClearCurrentInput(promptLength);
-                        Console.Write(_passwordCharacter == default
+                        Console.Write(_passwordCharacter == 0
                             ? sb.ToString()
                             : new string(_passwordCharacter, sb.Length));
                     }
@@ -82,7 +82,7 @@ public sealed class TextDataInput : DataInput
                     if (ch.KeyChar >= 32)
                         sb.Append(ch.KeyChar);
                     //Console.Write(ch.KeyChar);
-                    Console.Write(_passwordCharacter == default ? ch.KeyChar : _passwordCharacter);
+                    Console.Write(_passwordCharacter == 0 ? ch.KeyChar : _passwordCharacter);
                     break;
             }
         }

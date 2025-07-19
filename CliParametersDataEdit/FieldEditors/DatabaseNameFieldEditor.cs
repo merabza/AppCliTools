@@ -63,7 +63,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         else
             Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
 
-        CliMenuSet databasesMenuSet = new();
+        var databasesMenuSet = new CliMenuSet();
         if (_canUseNewDatabaseName)
             databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
 

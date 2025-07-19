@@ -27,7 +27,7 @@ public sealed class DateInput : DataInput
         Console.Write(prompt);
 
         var promptLength = prompt.Length;
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         while (true)
         {
             //string currentInput = sb.ToString();
@@ -65,7 +65,7 @@ public sealed class DateInput : DataInput
                     break;
             }
 
-            DateParser dateParser = new();
+            var dateParser = new DateParser();
             var res = dateParser.TryAddNextChar(sb.ToString(), ch.KeyChar);
             if (res == null)
                 continue;

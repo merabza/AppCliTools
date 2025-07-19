@@ -68,7 +68,7 @@ public sealed class ArchiverCruder : ParCruder<ArchiverData>
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
     {
-        GenerateArchiversCliMenuCommand generateCommand = new(ParametersManager);
+        var generateCommand = new GenerateArchiversCliMenuCommand(ParametersManager);
         cruderSubMenuSet.AddMenuItem(generateCommand);
     }
 }

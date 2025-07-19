@@ -20,11 +20,11 @@ public sealed class TimeSpanInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
+        var prompt = $"{_fieldName} {(_defaultValue == TimeSpan.Zero ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
 
         var promptLength = prompt.Length;
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         while (true)
         {
             var ch = Console.ReadKey(true);
@@ -59,7 +59,7 @@ public sealed class TimeSpanInput : DataInput
                     break;
             }
 
-            TimeDelimiterParser timeDelimiterParser = new();
+            var timeDelimiterParser = new TimeDelimiterParser();
             var res = timeDelimiterParser.TryAddNextChar(sb.ToString(), ch.KeyChar);
             if (res == null)
                 continue;

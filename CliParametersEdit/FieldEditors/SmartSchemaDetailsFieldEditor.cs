@@ -18,7 +18,7 @@ public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchema
     {
         var currentValuesDict = GetValue(record) ?? [];
 
-        SmartSchemaDetailCruder smartSchemaDetailCruder = new(currentValuesDict);
+        var smartSchemaDetailCruder = new SmartSchemaDetailCruder(currentValuesDict);
         var menuSet = smartSchemaDetailCruder.GetListMenu();
 
         return menuSet;

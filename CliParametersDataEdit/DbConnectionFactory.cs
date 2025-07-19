@@ -23,7 +23,7 @@ public static class DbConnectionFactory
                 return null;
             case EDatabaseProvider.SqlServer:
                 var sqlConBuilder = new SqlConnectionStringBuilder(connectionString);
-                SqlServerConnectionParameters sqlSerPar = new()
+                var sqlSerPar = new SqlServerConnectionParameters
                 {
                     ServerAddress = sqlConBuilder.DataSource,
                     WindowsNtIntegratedSecurity = sqlConBuilder.IntegratedSecurity,

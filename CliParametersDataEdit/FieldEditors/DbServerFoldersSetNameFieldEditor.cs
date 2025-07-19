@@ -79,7 +79,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
         }
 
-        CliMenuSet databasesMenuSet = new();
+        var databasesMenuSet = new CliMenuSet();
 
         foreach (var listItem in databaseFoldersSetNames)
             databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));

@@ -10,7 +10,7 @@ public static class MenuInputer
 {
     public static int InputIdFromMenuList(string fieldName, CliMenuSet listSet, string? defaultValue = null)
     {
-        SelectFromMenuListInput selectMenuListInput = new(fieldName, listSet, defaultValue);
+        var selectMenuListInput = new SelectFromMenuListInput(fieldName, listSet, defaultValue);
         if (!selectMenuListInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return selectMenuListInput.Id;
@@ -18,7 +18,7 @@ public static class MenuInputer
 
     public static string? InputFromMenuList(string fieldName, CliMenuSet listSet, string? defaultValue = null)
     {
-        SelectFromMenuListInput selectMenuListInput = new(fieldName, listSet, defaultValue);
+        var selectMenuListInput = new SelectFromMenuListInput(fieldName, listSet, defaultValue);
         if (!selectMenuListInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return selectMenuListInput.SelectedCliMenuItem?.CliMenuCommand.Name;
@@ -31,7 +31,7 @@ public static class MenuInputer
         var names = new List<string> { none };
         names.AddRange(Enum.GetNames<TEnum>());
 
-        SelectFromListInput selectInput = new(fieldName, names, defaultValue.ToString());
+        var selectInput = new SelectFromListInput(fieldName, names, defaultValue.ToString());
         if (!selectInput.DoInput())
             throw new DataInputException($"Input {fieldName} Escaped");
         var key = selectInput.Text;
@@ -47,7 +47,7 @@ public static class MenuInputer
 
     public static TEnum InputFromEnumList<TEnum>(string fieldName, TEnum defaultValue) where TEnum : struct, Enum
     {
-        SelectFromListInput selectInput = new(fieldName, [.. Enum.GetNames<TEnum>()], defaultValue.ToString());
+        var selectInput = new SelectFromListInput(fieldName, [.. Enum.GetNames<TEnum>()], defaultValue.ToString());
         if (!selectInput.DoInput())
             throw new DataInputException($"Input {fieldName} Escaped");
         var key = selectInput.Text;
@@ -60,21 +60,21 @@ public static class MenuInputer
 
     public static List<string> MultipleInputFromList(string caption, Dictionary<string, bool> oldChecks)
     {
-        MultipleSelectFromListInput multipleSelectFromListInput = new(caption, oldChecks);
+        var multipleSelectFromListInput = new MultipleSelectFromListInput(caption, oldChecks);
         if (!multipleSelectFromListInput.DoInput())
             throw new DataInputException($"Input {caption} Escaped");
         return multipleSelectFromListInput.SourceListWithChecks.Where(w => w.Value).Select(s => s.Key).ToList();
     }
 
-    public static string? InputFolderPath(string fieldName, string? defaultValue = default)
+    public static string? InputFolderPath(string fieldName, string? defaultValue = null)
     {
-        FolderPathInput folderInput = new(fieldName, defaultValue);
+        var folderInput = new FolderPathInput(fieldName, defaultValue);
         if (!folderInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return folderInput.FolderPath;
     }
 
-    public static string InputFolderPathRequired(string fieldName, string? defaultValue = default)
+    public static string InputFolderPathRequired(string fieldName, string? defaultValue = null)
     {
         var result = string.Empty;
         while (result == string.Empty)
@@ -89,7 +89,7 @@ public static class MenuInputer
     public static string? InputFileOrFolderPath(string fieldName, string? defaultValue,
         bool warningIfFileDoesNotExists = true)
     {
-        FileOrFolderPathInput fileOrFolderPathInput = new(fieldName, defaultValue, warningIfFileDoesNotExists);
+        var fileOrFolderPathInput = new FileOrFolderPathInput(fieldName, defaultValue, warningIfFileDoesNotExists);
         if (!fileOrFolderPathInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return fileOrFolderPathInput.FileOrFolderPath;
@@ -97,7 +97,7 @@ public static class MenuInputer
 
     public static string? InputFilePath(string fieldName, string? defaultValue, bool warningIfFileDoesNotExists = true)
     {
-        FilePathInput filePathInput = new(fieldName, defaultValue, warningIfFileDoesNotExists);
+        var filePathInput = new FilePathInput(fieldName, defaultValue, warningIfFileDoesNotExists);
         if (!filePathInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return filePathInput.FilePath;

@@ -6,7 +6,7 @@ public static class Inputer
 {
     public static EDialogResult InputAnswer(string fieldName, EDialogResult defaultValue, bool useException = true)
     {
-        AnswerInput answerInput = new(fieldName, defaultValue);
+        var answerInput = new AnswerInput(fieldName, defaultValue);
         if (answerInput.DoInput())
             return answerInput.Value;
         if (useException)
@@ -16,7 +16,7 @@ public static class Inputer
 
     public static bool InputBool(string fieldName, bool defaultValue, bool useException = true)
     {
-        BoolDataInput boolInput = new(fieldName, defaultValue);
+        var boolInput = new BoolDataInput(fieldName, defaultValue);
         if (boolInput.DoInput())
             return boolInput.Value;
         if (useException)
@@ -26,7 +26,7 @@ public static class Inputer
 
     public static int InputInt(string fieldName, int defaultValue)
     {
-        IntDataInput intInput = new(fieldName, defaultValue);
+        var intInput = new IntDataInput(fieldName, defaultValue);
         if (!intInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return intInput.Value;
@@ -34,7 +34,7 @@ public static class Inputer
 
     public static string? InputText(string fieldName, string? defaultValue, char passwordCharacter = default)
     {
-        TextDataInput textDataInput = new(fieldName, defaultValue, passwordCharacter);
+        var textDataInput = new TextDataInput(fieldName, defaultValue, passwordCharacter);
         if (!textDataInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return textDataInput.Text;
@@ -55,7 +55,7 @@ public static class Inputer
 
     public static DateTime InputDateTime(string fieldName, DateTime defaultValue = default)
     {
-        DateTimeInput dateTimeInput = new(fieldName, defaultValue);
+        var dateTimeInput = new DateTimeInput(fieldName, defaultValue);
         if (!dateTimeInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return dateTimeInput.Value;
@@ -63,7 +63,7 @@ public static class Inputer
 
     public static DateTime InputDate(string fieldName, DateTime defaultValue = default)
     {
-        DateInput dateInput = new(fieldName, defaultValue);
+        var dateInput = new DateInput(fieldName, defaultValue);
         if (!dateInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return dateInput.Value;
@@ -71,7 +71,7 @@ public static class Inputer
 
     public static DateTime InputTime(string fieldName, DateTime defaultValue = default)
     {
-        TimeInput startAtDateTimeInput = new(fieldName, defaultValue);
+        var startAtDateTimeInput = new TimeInput(fieldName, defaultValue);
         if (!startAtDateTimeInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return startAtDateTimeInput.Value;
@@ -79,7 +79,7 @@ public static class Inputer
 
     public static TimeSpan InputTimeSpan(string fieldName, TimeSpan defaultValue)
     {
-        TimeSpanInput timeSpanInput = new(fieldName, defaultValue);
+        var timeSpanInput = new TimeSpanInput(fieldName, defaultValue);
         if (!timeSpanInput.DoInput())
             throw new DataInputException($"Invalid input of {fieldName}");
         return timeSpanInput.Value;

@@ -56,7 +56,7 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
                 Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
         }
 
-        CliMenuSet databasesMenuSet = new();
+        var databasesMenuSet = new CliMenuSet();
 
         foreach (var listItem in databaseConnectionNames)
             databasesMenuSet.AddMenuItem(new CliMenuCommand(listItem));
