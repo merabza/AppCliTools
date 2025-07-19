@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace CliParametersEdit.Counters;
 
+//გამოიყენება ApAgent პროექტში
+// ReSharper disable once UnusedType.Global
 public sealed class FileStorageCruderNameCounter
 {
     private readonly string? _currentName;
