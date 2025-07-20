@@ -60,7 +60,6 @@ public sealed class CliMenuSet
     {
         if (char.IsDigit(consoleKeyInfo.KeyChar)) return consoleKeyInfo.KeyChar - '0';
 
-        //if (IsInRange(char.ToLower(consoleKeyInfo.KeyChar), 'a', '~'))
         if (IsInRange(consoleKeyInfo.KeyChar, 'a', '~')) return consoleKeyInfo.KeyChar - 'a' + 10;
 
         if (IsInRange(consoleKeyInfo.KeyChar, 'A', 'Z')) return consoleKeyInfo.KeyChar - 'A' + 40;
@@ -176,12 +175,6 @@ public sealed class CliMenuSet
         Console.WriteLine(string.Empty);
         Console.Write("enter your choice: ");
     }
-
-    //public void AddMenuItemsRange(IEnumerable<CliMenuCommand> menuCommands, int useIdFrom = -1)
-    //{
-    //    MenuItems.AddRange(menuCommands.Select((x, i) =>
-    //        new CliMenuItem(x.Name, x, useIdFrom == -1 ? -1 : i + useIdFrom)));
-    //}
 
     public void AddMenuItem(CliMenuCommand menuCommand, int useId = -1)
     {
