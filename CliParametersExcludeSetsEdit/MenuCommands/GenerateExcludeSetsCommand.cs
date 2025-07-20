@@ -24,7 +24,7 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
         if (!Inputer.InputBool("This process will change Exclude Sets, are you sure?", false, false))
             return false;
 
-        StandardExcludeSetsGenerator standardExcludeSetsGenerator = new(_parametersManager);
+        var standardExcludeSetsGenerator = new StandardExcludeSetsGenerator(_parametersManager);
         standardExcludeSetsGenerator.Generate();
 
         //შენახვა
