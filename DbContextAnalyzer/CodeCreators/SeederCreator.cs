@@ -263,7 +263,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
                 adaptMethod =
                     new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                        $"public override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
                         $"_tempData = Create{tableNameCapitalCamel}List(jsonData)", "return _tempData.Values.ToList()");
             }
             else
@@ -274,7 +274,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     $"return {seedDataObjectName}.Select(s => new {tableNameSingular}{{ {fieldsListStr} }}).ToList()");
                 adaptMethod =
                     new CodeBlock(
-                        $"protected override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
+                        $"public override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
                         $"return Create{tableNameCapitalCamel}List(jsonData)");
             }
 

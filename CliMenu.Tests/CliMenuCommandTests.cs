@@ -8,7 +8,8 @@ public class CliMenuCommandTests
         // Arrange
         var name = "TestCommand";
         var parentMenuName = "ParentMenu";
-        var command = new CliMenuCommand(name, EMenuAction.LevelUp, EMenuAction.Reload, parentMenuName, true, EStatusView.Table, true);
+        var command = new CliMenuCommand(name, EMenuAction.LevelUp, EMenuAction.Reload, parentMenuName, true,
+            EStatusView.Table, true);
 
         // Assert
         Assert.Equal(name, command.Name);
@@ -91,8 +92,8 @@ public class CliMenuCommandTests
         private readonly bool _runBodyResult;
 
         // ReSharper disable once ConvertToPrimaryConstructor
-        public TestCliMenuCommand(string name, EMenuAction success, EMenuAction fail, bool runBodyResult = true)
-            : base(name, success, fail)
+        public TestCliMenuCommand(string name, EMenuAction success, EMenuAction fail, bool runBodyResult = true) : base(
+            name, success, fail)
         {
             _runBodyResult = runBodyResult;
         }
