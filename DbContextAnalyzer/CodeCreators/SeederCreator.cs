@@ -130,7 +130,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         CodeBlock? additionalCheckMethod = null;
         var additionalCheckMethodHeader =
             new CodeBlock(
-                $"protected override bool AdditionalCheck(List<{seederModelClassName}> jsonData, List<{tableNameSingular}> savedData)");
+                $"public override bool AdditionalCheck(List<{seederModelClassName}> jsonData, List<{tableNameSingular}> savedData)");
         CodeBlock? createMethod = null;
 
         var atLeastOneSubstitute = false;
