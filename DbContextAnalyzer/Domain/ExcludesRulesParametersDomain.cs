@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using DbContextAnalyzer.Models;
@@ -73,6 +74,7 @@ public sealed class ExcludesRulesParametersDomain
 
     public Dictionary<string, string> GetReplaceFieldsDictByTableName(string tableName)
     {
+        Console.WriteLine($"GetReplaceFieldsDictByTableName tableName = {tableName}");
         var newTableName = GetReplaceTablesName(tableName);
         return ReplaceFieldNames.Where(w => w.TableName == newTableName)
             .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
