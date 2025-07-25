@@ -7,6 +7,7 @@ using LibParameters;
 
 namespace CliParametersDataEdit.Cruders;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DatabaseFoldersSetCruder : Cruder
 {
     private readonly Dictionary<string, DatabaseFoldersSet> _currentValuesDictionary;

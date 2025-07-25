@@ -23,6 +23,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
 
+    //public კონსტრუქტორი საჭიროა. გამოიყენება რეფლექსიით DictionaryFieldEditor-ში
+    // ReSharper disable once MemberCanBePrivate.Global
     public DatabaseServerConnectionCruder(ILogger logger, IHttpClientFactory? httpClientFactory,
         IParametersManager parametersManager,
         Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary) : base(parametersManager,
@@ -68,40 +70,6 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         return new DatabaseServerConnectionCruder(logger, httpClientFactory, parametersManager,
             parameters.DatabaseServerConnections);
     }
-
-    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
-    //{
-    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-    //    return parameters.DatabaseServerConnections.ToDictionary(p => p.Key, ItemData (p) => p.Value);
-    //}
-
-    //public override bool ContainsRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-    //    var databaseServerConnections = parameters.DatabaseServerConnections;
-    //    return databaseServerConnections.ContainsKey(recordKey);
-    //}
-
-    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
-    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-    //    parameters.DatabaseServerConnections[recordKey] = newDatabaseServerConnection;
-    //}
-
-    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newDatabaseServerConnection = (DatabaseServerConnectionData)newRecord;
-    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-    //    parameters.DatabaseServerConnections.Add(recordKey, newDatabaseServerConnection);
-    //}
-
-    //protected override void RemoveRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-    //    var databaseServerConnections = parameters.DatabaseServerConnections;
-    //    databaseServerConnections.Remove(recordKey);
-    //}
 
     public override bool CheckValidation(ItemData item)
     {

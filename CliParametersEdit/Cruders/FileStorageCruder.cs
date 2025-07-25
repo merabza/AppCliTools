@@ -16,6 +16,8 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
 {
     private readonly ILogger _logger;
 
+    //public კონსტრუქტორი საჭიროა. გამოიყენება რეფლექსიით DictionaryFieldEditor-ში
+    // ReSharper disable once MemberCanBePrivate.Global
     public FileStorageCruder(ILogger logger, IParametersManager parametersManager,
         Dictionary<string, FileStorageData> currentValuesDictionary) : base(parametersManager, currentValuesDictionary,
         "File Storage", "File Storages")
@@ -35,44 +37,6 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         var parameters = (IParametersWithFileStorages)parametersManager.Parameters;
         return new FileStorageCruder(logger, parametersManager, parameters.FileStorages);
     }
-
-    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
-    //{
-    //    var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
-    //    return parameters.FileStorages.ToDictionary(p => p.Key, ItemData (p) => p.Value);
-    //}
-
-    //public override bool ContainsRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
-    //    var fileStorages = parameters.FileStorages;
-    //    return fileStorages.ContainsKey(recordKey);
-    //}
-
-    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newFileStorage = (FileStorageData)newRecord;
-    //    var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
-    //    if (parameters is null)
-    //        throw new Exception("parameters is null, cannot Update Record");
-    //    parameters.FileStorages[recordKey] = newFileStorage;
-    //}
-
-    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newFileStorage = (FileStorageData)newRecord;
-    //    var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
-    //    if (parameters is null)
-    //        throw new Exception("parameters is null, cannot Add Record");
-    //    parameters.FileStorages.Add(recordKey, newFileStorage);
-    //}
-
-    //protected override void RemoveRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithFileStorages)ParametersManager.Parameters;
-    //    var fileStorages = parameters.FileStorages;
-    //    fileStorages.Remove(recordKey);
-    //}
 
     public override bool CheckValidation(ItemData item)
     {
@@ -121,11 +85,6 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
         EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
     }
-
-    //protected override ItemData GetDefRecordWithStatus(string? currentStatus)
-    //{
-    //    return new FileStorageData { FileStoragePath = currentStatus };
-    //}
 
     public override string? GetStatusFor(string name)
     {

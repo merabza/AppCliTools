@@ -11,6 +11,8 @@ namespace CliParametersEdit.Cruders;
 
 public sealed class ArchiverCruder : ParCruder<ArchiverData>
 {
+    //public კონსტრუქტორი საჭიროა. გამოიყენება რეფლექსიით DictionaryFieldEditor-ში
+    // ReSharper disable once MemberCanBePrivate.Global
     public ArchiverCruder(IParametersManager parametersManager,
         Dictionary<string, ArchiverData> currentValuesDictionary) : base(parametersManager, currentValuesDictionary,
         "Archiver", "Archivers")
@@ -21,49 +23,10 @@ public sealed class ArchiverCruder : ParCruder<ArchiverData>
         FieldEditors.Add(new DecompressProgramPatchFieldEditor(nameof(ArchiverData.DecompressProgramPatch)));
     }
 
-    public static ArchiverCruder Create(IParametersManager parametersManager)
-    {
-        var parameters = (IParametersWithArchivers)parametersManager.Parameters;
-        return new ArchiverCruder(parametersManager, parameters.Archivers);
-    }
-
-    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
+    //public static ArchiverCruder Create(IParametersManager parametersManager)
     //{
-    //    var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-    //    return parameters.Archivers.ToDictionary(p => p.Key, p => (ItemData)p.Value);
-    //}
-
-    //public override bool ContainsRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-    //    var archivers = parameters.Archivers;
-    //    return archivers.ContainsKey(recordKey);
-    //}
-
-    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newArchiver = (ArchiverData)newRecord;
-    //    var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-    //    parameters.Archivers[recordKey] = newArchiver;
-    //}
-
-    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newArchiver = (ArchiverData)newRecord;
-    //    var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-    //    parameters.Archivers.Add(recordKey, newArchiver);
-    //}
-
-    //protected override void RemoveRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithArchivers)ParametersManager.Parameters;
-    //    var archivers = parameters.Archivers;
-    //    archivers.Remove(recordKey);
-    //}
-
-    //protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
-    //{
-    //    return new ArchiverData();
+    //    var parameters = (IParametersWithArchivers)parametersManager.Parameters;
+    //    return new ArchiverCruder(parametersManager, parameters.Archivers);
     //}
 
     protected override void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)

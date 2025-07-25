@@ -34,40 +34,6 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
         return new ApiClientCruder(logger, httpClientFactory, parametersManager, parameters.ApiClients);
     }
 
-    //protected override Dictionary<string, ItemData> GetCrudersDictionary()
-    //{
-    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-    //    return parameters.ApiClients.ToDictionary(p => p.Key, p => (ItemData)p.Value);
-    //}
-
-    //public override bool ContainsRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-    //    var apiClients = parameters.ApiClients;
-    //    return apiClients.ContainsKey(recordKey);
-    //}
-
-    //public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newApiClient = (ApiClientSettings)newRecord;
-    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-    //    parameters.ApiClients[recordKey] = newApiClient;
-    //}
-
-    //protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
-    //{
-    //    var newApiClient = (ApiClientSettings)newRecord;
-    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-    //    parameters.ApiClients.Add(recordKey, newApiClient);
-    //}
-
-    //protected override void RemoveRecordWithKey(string recordKey)
-    //{
-    //    var parameters = (IParametersWithApiClients)ParametersManager.Parameters;
-    //    var apiClients = parameters.ApiClients;
-    //    apiClients.Remove(recordKey);
-    //}
-
     public override bool CheckValidation(ItemData item)
     {
         try
