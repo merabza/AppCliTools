@@ -19,6 +19,7 @@ public sealed class EntityData
     public List<FieldData> FieldsData { get; set; } = [];
     public bool NeedsToCreateTempData { get; set; }
     public bool UsePrimaryKey { get; set; }
+    public bool HasAutoNumber { get; set; } = false;
 
     public List<FieldData> GetFlatFieldData(List<FieldData>? fieldsData = null)
     {

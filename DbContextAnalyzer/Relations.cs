@@ -47,16 +47,16 @@ public sealed class Relations
         }
     }
 
-    private void EntityAnalysis(IEntityType entityType)
+    private EntityData? EntityAnalysis(IEntityType entityType)
     {
         //დავადგინოთ ცხრილის სახელი.
         var tableName = GetTableName(entityType);
         if (tableName is null || Entities.ContainsKey(tableName))
             //თუ ეს ცხრილი უკვე ყოფილა გაანალიზებულების სიაში, მაშინ აქ აღარაფერი გვესაქმება
-            return;
+            return tableName is null ? null : Entities[tableName];
 
         if (_excludesRulesParameters.ExcludeTables.Contains(tableName))
-            return;
+            return null;
         //დავადგინოთ ცხრილს აქვს თუ არა გასაღები
         var primaryKeys = entityType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
         switch (primaryKeys.Count)
@@ -90,6 +90,7 @@ public sealed class Relations
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
         {
+            entityData.HasAutoNumber = true;
             //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
             var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s =>
                 string.Equals(s.TableName, tableName, StringComparison.CurrentCultureIgnoreCase));
@@ -130,6 +131,8 @@ public sealed class Relations
 
         entityData.SelfRecursiveFields.AddRange(entityData.FieldsData.Where(w =>
             w.SubstituteField != null && w.SubstituteField.TableName == tableName));
+
+        return entityData;
     }
 
     public static string? GetTableName(IEntityType entityType)
@@ -176,10 +179,14 @@ public sealed class Relations
             if (_preventLoopList.Contains(tableName))
                 throw new Exception($"table {tableName} loops for indexes");
 
+
             _preventLoopList.Push(tableName);
             var substEntityType = forKeys[0].PrincipalEntityType;
-            EntityAnalysis(substEntityType);
+            var analysedSubstEntityType = EntityAnalysis(substEntityType);
             _preventLoopList.Pop();
+
+            if (!(analysedSubstEntityType?.HasAutoNumber ?? false)) 
+                return fieldData;
 
             var substTableName = GetTableName(substEntityType) ??
                                  throw new Exception($"substitute table for table {tableName} have no name");
@@ -200,6 +207,7 @@ public sealed class Relations
             if (navName == null) throw new Exception($"Foreign Keys navName in table {tableName} is empty");
 
             fieldData.NavigationFieldName = navName;
+
             return fieldData;
         }
     }
