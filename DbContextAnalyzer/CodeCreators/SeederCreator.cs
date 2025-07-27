@@ -241,7 +241,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             var fieldsListStr = string.Join(", ", entityData.FieldsData.Where(w =>
                 (entityData.SelfRecursiveFields.Count == 0 ||
                  !entityData.SelfRecursiveFields.Select(s => s.Name).Contains(w.Name)) &&
-                (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.Name)).Select(p =>
+                (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.OldName)).Select(p =>
             {
                 var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x =>
                     string.Equals(x.Name, p.Name, StringComparison.CurrentCultureIgnoreCase));
