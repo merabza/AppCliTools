@@ -83,8 +83,9 @@ public sealed class Relations
 
         Entities.Add(tableName, entityData);
 
+        var needsToCreateTempData = false;
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
-        if (primaryKey.Properties[0].ValueGenerated != ValueGenerated.Never &&
+        if (primaryKey.Properties[0].ValueGenerated == ValueGenerated.OnAdd &&
             entityType.GetReferencingForeignKeys().Any())
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
@@ -104,13 +105,14 @@ public sealed class Relations
             {
                 entityData.OptimalIndexProperties = GetOptimalUniIndex(entityType)?.Properties.ToList() ?? [];
             }
+
+            needsToCreateTempData = entityData.OptimalIndexProperties.Count == 0 &&
+                                    entityType.GetReferencingForeignKeys().Any();
         }
 
         var haveOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
-        var needsToCreateTempData =
-            entityData.OptimalIndexProperties.Count == 0 && entityType.GetReferencingForeignKeys().Any();
         var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
         var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
