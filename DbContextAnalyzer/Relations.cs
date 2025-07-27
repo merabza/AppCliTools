@@ -179,13 +179,12 @@ public sealed class Relations
             if (_preventLoopList.Contains(tableName))
                 throw new Exception($"table {tableName} loops for indexes");
 
-
             _preventLoopList.Push(tableName);
             var substEntityType = forKeys[0].PrincipalEntityType;
             var analysedSubstEntityType = EntityAnalysis(substEntityType);
             _preventLoopList.Pop();
 
-            if (!(analysedSubstEntityType?.HasAutoNumber ?? false)) 
+            if (!(analysedSubstEntityType?.HasAutoNumber ?? false))
                 return fieldData;
 
             var substTableName = GetTableName(substEntityType) ??
