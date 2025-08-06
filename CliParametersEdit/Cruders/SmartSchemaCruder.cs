@@ -12,7 +12,9 @@ namespace CliParametersEdit.Cruders;
 
 public sealed class SmartSchemaCruder : ParCruder<SmartSchema>
 {
-    private SmartSchemaCruder(IParametersManager parametersManager,
+    //public საჭიროა რეფლექსიით კონსტრუირებისას DictionaryFieldEditor კლასიდან
+    // ReSharper disable once MemberCanBePrivate.Global
+    public SmartSchemaCruder(IParametersManager parametersManager,
         Dictionary<string, SmartSchema> currentValuesDictionary) : base(parametersManager, currentValuesDictionary,
         "Smart Schema", "Smart Schemas")
     {

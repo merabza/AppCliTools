@@ -7,9 +7,9 @@ namespace CliParametersEdit.Generators;
 
 public static class StandardSmartSchemas
 {
-    public const string HourlySmartSchemaName = "Hourly";
-    public const string ReduceSmartSchemaName = "Reduce";
-    public const string DailyStandardSmartSchemaName = "DailyStandard";
+    private const string HourlySmartSchemaName = "Hourly";
+    private const string ReduceSmartSchemaName = "Reduce";
+    private const string DailyStandardSmartSchemaName = "DailyStandard";
 
     public static void Generate(IParametersManager parametersManager)
     {
