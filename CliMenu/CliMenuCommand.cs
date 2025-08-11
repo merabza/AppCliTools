@@ -8,6 +8,7 @@ public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
     public readonly string? ParentMenuName;
+    public CliMenuSet? menuSet;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuCommand(string name, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,

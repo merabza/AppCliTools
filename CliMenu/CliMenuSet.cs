@@ -23,6 +23,7 @@ public sealed class CliMenuSet
 
     private List<CliMenuItem> MenuItems { get; } = [];
     public CliMenuSet? ParentMenu { get; set; }
+    public string? Caption => _caption;
 
     public CliMenuItem? GetMenuItemWithName(string menuItemName)
     {
@@ -214,5 +215,13 @@ public sealed class CliMenuSet
         var menuItem = new CliMenuItem(key, menuCommand, useId);
 
         MenuItems.Add(menuItem);
+    }
+
+    public void FixMenuElements()
+    {
+        foreach (var cliMenuItem in MenuItems)
+        {
+            cliMenuItem.setMenuSet(this);
+        }
     }
 }

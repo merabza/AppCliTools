@@ -309,6 +309,7 @@ public abstract class CliAppLoop
             _menuSetsList[_currentMenuSetLevel] = menuSet;
         if (_currentMenuSetLevel > 0)
             menuSet.ParentMenu = _menuSetsList[_currentMenuSetLevel - 1];
+        menuSet.FixMenuElements();
         return true;
     }
 

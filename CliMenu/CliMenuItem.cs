@@ -2,6 +2,7 @@
 
 public sealed class CliMenuItem
 {
+
     public CliMenuItem(CliMenuCommand cliMenuCommand, int countedId)
     {
         //MenuItemName = menuItemName;
@@ -22,6 +23,11 @@ public sealed class CliMenuItem
         //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
         CountedId = countedId;
+    }
+
+    public void setMenuSet(CliMenuSet menuSet)
+    {
+        CliMenuCommand.menuSet = menuSet;
     }
 
     public string? CountedKey { get; set; }
