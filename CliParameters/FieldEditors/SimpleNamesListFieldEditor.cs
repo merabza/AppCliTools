@@ -8,19 +8,17 @@ using Microsoft.Extensions.Logging;
 
 namespace CliParameters.FieldEditors;
 
-public sealed class SimpleNamesListFieldEditor<T> : FieldEditor<List<string>> where T : Cruder
+public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<string>> where TCruder : Cruder
 {
     private readonly ILogger? _logger;
     private readonly ParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public SimpleNamesListFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName,
         false, null, false, null, true)
     {
         _parametersManager = parametersManager;
     }
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public SimpleNamesListFieldEditor(ILogger logger, string propertyName, ParametersManager parametersManager) : base(
         propertyName, false, null, false, null, true)
     {
@@ -30,9 +28,15 @@ public sealed class SimpleNamesListFieldEditor<T> : FieldEditor<List<string>> wh
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        var cruder = _logger is null
-            ? (T)Activator.CreateInstance(typeof(T), _parametersManager, record)!
-            : (T)Activator.CreateInstance(typeof(T), _logger, _parametersManager, record)!;
+        Cruder cruder;
+        var currentValuesDict = GetValue(record) ?? [];
+
+        if (_logger is not null)
+            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager,
+                currentValuesDict)!;
+        else
+            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
+
         return cruder.GetListMenu();
     }
 
