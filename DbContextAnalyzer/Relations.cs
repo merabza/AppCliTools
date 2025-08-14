@@ -91,8 +91,7 @@ public sealed class Relations
         var hasReferencingForeignKeys = entityType.GetReferencingForeignKeys().Any();
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
-        if (primaryKey.Properties[0].ValueGenerated == ValueGenerated.OnAdd &&
-            (hasReferencingForeignKeys || haveOneToOneReference))
+        if (primaryKey.Properties[0].ValueGenerated == ValueGenerated.OnAdd && hasReferencingForeignKeys)
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
         {
@@ -113,9 +112,11 @@ public sealed class Relations
                 entityData.OptimalIndexProperties = GetOptimalUniIndex(entityType)?.Properties.ToList() ?? [];
             }
 
-            needsToCreateTempData = entityData.OptimalIndexProperties.Count == 0 &&
-                                    (hasReferencingForeignKeys || haveOneToOneReference);
+            needsToCreateTempData = entityData.OptimalIndexProperties.Count == 0 && hasReferencingForeignKeys;
         }
+
+        if (!needsToCreateTempData && haveOneToOneReference)
+            needsToCreateTempData = true;
 
         var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
