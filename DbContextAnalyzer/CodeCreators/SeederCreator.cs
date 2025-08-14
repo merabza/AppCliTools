@@ -43,6 +43,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             return fieldData.IsNullableByParents
                 ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
                 : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
+
         var keyParametersList = string.Join(", ",
             fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, fieldData.IsNullableByParents)));
         return fieldData.IsNullableByParents

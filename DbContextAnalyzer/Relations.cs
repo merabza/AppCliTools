@@ -85,8 +85,10 @@ public sealed class Relations
 
         var needsToCreateTempData = false;
 
-        var haveOneToOneReference = entityType.GetForeignKeys()
+        var hasOneToOneReference = entityType.GetForeignKeys()
             .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
+
+        entityData.HasOneToOneReference = hasOneToOneReference;
 
         var hasReferencingForeignKeys = entityType.GetReferencingForeignKeys().Any();
 
@@ -115,10 +117,10 @@ public sealed class Relations
             needsToCreateTempData = entityData.OptimalIndexProperties.Count == 0 && hasReferencingForeignKeys;
         }
 
-        if (!needsToCreateTempData && haveOneToOneReference)
+        if (!needsToCreateTempData && hasOneToOneReference)
             needsToCreateTempData = true;
 
-        var usePrimaryKey = haveOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
+        var usePrimaryKey = hasOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
         var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
             .Select(s => s.FieldName).ToList();
@@ -188,7 +190,7 @@ public sealed class Relations
             var analysedSubstEntityType = EntityAnalysis(substEntityType);
             _preventLoopList.Pop();
 
-            if (!(analysedSubstEntityType?.HasAutoNumber ?? false))
+            if (!(analysedSubstEntityType is not { HasAutoNumber: true } || !analysedSubstEntityType.HasOneToOneReference))
                 return fieldData;
 
             var substTableName = GetTableName(substEntityType) ??
