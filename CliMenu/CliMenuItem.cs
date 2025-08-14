@@ -2,7 +2,6 @@
 
 public sealed class CliMenuItem
 {
-
     public CliMenuItem(CliMenuCommand cliMenuCommand, int countedId)
     {
         //MenuItemName = menuItemName;

@@ -28,8 +28,8 @@ public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<strin
         _parametersManager = parametersManager;
     }
 
-    public SimpleNamesListFieldEditor(string propertyName, ILogger logger, IHttpClientFactory httpClientFactory, ParametersManager parametersManager) : base(
-        propertyName, false, null, false, null, true)
+    public SimpleNamesListFieldEditor(string propertyName, ILogger logger, IHttpClientFactory httpClientFactory,
+        ParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;

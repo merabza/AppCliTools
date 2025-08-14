@@ -97,15 +97,14 @@ public sealed class SeederCodeCreator
         //-------------
 
         var lastLevel = -1;
-        foreach (var relEntity in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
+        foreach (var (tableName, value) in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
         {
-            if (relEntity.Value.Level != lastLevel)
+            if (value.Level != lastLevel)
             {
-                lastLevel = relEntity.Value.Level;
+                lastLevel = value.Level;
                 _logger.LogInformation("Level = {lastLevel}", lastLevel);
             }
 
-            var tableName = relEntity.Key;
             var newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
             var devTableEntity = relationsDev.Entities.SingleOrDefault(x =>
                 string.Equals(x.Value.TableName, newTableName, StringComparison.CurrentCultureIgnoreCase));
@@ -118,7 +117,7 @@ public sealed class SeederCodeCreator
             var seederModelCreatorForJsonCreatorProject = new SeederModelCreator(_logger,
                 _getJsonCreatorParameters.PlacePath, _getJsonCreatorParameters.ProjectNamespace,
                 _getJsonCreatorParameters.ModelsFolderName, _excludesRulesParameters);
-            seederModelCreatorForJsonCreatorProject.UseEntity(relEntity.Value);
+            seederModelCreatorForJsonCreatorProject.UseEntity(value);
 
             if (!isCarcassType)
             {
@@ -126,7 +125,7 @@ public sealed class SeederCodeCreator
                 var seederModelCreator = new SeederModelCreator(_logger, _seederCodeCreatorParameters.PlacePath,
                     _seederCodeCreatorParameters.ProjectNamespace, _seederCodeCreatorParameters.ModelsFolderName,
                     _excludesRulesParameters);
-                seederModelCreator.UseEntity(relEntity.Value);
+                seederModelCreator.UseEntity(value);
             }
 
             //2.3
@@ -137,18 +136,18 @@ public sealed class SeederCodeCreator
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
-            var usedTableName = seederCreator.UseEntity(relEntity.Value, devTableEntity.Value, isCarcassType);
+            var usedTableName = seederCreator.UseEntity(value, devTableEntity.Value, isCarcassType);
             if (isCarcassType)
                 usedCarcassEntityTypes.Add(usedTableName);
 
             //1.1
-            creatorForJsonFilesCreator.UseEntity(relEntity.Value);
+            creatorForJsonFilesCreator.UseEntity(value);
             //1.2
             if (!isCarcassType)
-                projectDataSeederCreator.UseEntity(relEntity.Value);
+                projectDataSeederCreator.UseEntity(value);
 
             //1.3
-            projectDataSeedersFactoryCreator.UseEntity(relEntity.Value, isCarcassType);
+            projectDataSeedersFactoryCreator.UseEntity(value, isCarcassType);
         }
         //-------------
 
