@@ -190,7 +190,8 @@ public sealed class Relations
             var analysedSubstEntityType = EntityAnalysis(substEntityType);
             _preventLoopList.Pop();
 
-            if (!(analysedSubstEntityType is not { HasAutoNumber: true } || !analysedSubstEntityType.HasOneToOneReference))
+            if (!(analysedSubstEntityType is not { HasAutoNumber: true } ||
+                  !analysedSubstEntityType.HasOneToOneReference))
                 return fieldData;
 
             var substTableName = GetTableName(substEntityType) ??
