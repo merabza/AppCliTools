@@ -39,7 +39,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var realTypeName = GetRealTypeNameForMethodName(fieldData);
 
-        if (fieldData.SubstituteField.Fields.Count == 0)
+        if (fieldData.SubstituteField.Fields.Count == 0 && fieldData.SubstituteField.HasAutoNumber)
             return fieldData.IsNullableByParents
                 ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
                 : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
