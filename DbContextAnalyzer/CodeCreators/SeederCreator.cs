@@ -30,7 +30,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
     private string GetRightValue(FieldData fieldData, bool devFieldIsNullable)
     {
-        if (fieldData.SubstituteField == null)
+        if (fieldData.SubstituteField is not { HasAutoNumber: true })
             return
                 $"s.{fieldData.FullName}{(!devFieldIsNullable && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
 
@@ -39,7 +39,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var realTypeName = GetRealTypeNameForMethodName(fieldData);
 
-        if (fieldData.SubstituteField.Fields.Count == 0 && fieldData.SubstituteField.HasAutoNumber)
+        if (fieldData.SubstituteField.Fields.Count == 0)
             return fieldData.IsNullableByParents
                 ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
                 : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
