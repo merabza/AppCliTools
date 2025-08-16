@@ -30,7 +30,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
     private string GetRightValue(FieldData fieldData, bool devFieldIsNullable)
     {
-        if (fieldData.SubstituteField is not { HasAutoNumber: true })
+        if (fieldData.SubstituteField is null || !fieldData.SubstituteField.UseTempData)
             return
                 $"s.{fieldData.FullName}{(!devFieldIsNullable && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
 

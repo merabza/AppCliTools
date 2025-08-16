@@ -208,7 +208,7 @@ public sealed class Relations
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
                 entity.OptimalIndexProperties.Count > 0
                     ? GetFieldsData(tableClrType, entity.OptimalIndexProperties, substTableName, fieldData)
-                    : [], entity.HasAutoNumber);
+                    : [], entity.HasAutoNumber || entity.HasOneToOneReference);
             var navName = forKeys[0].DependentToPrincipal?.Name ?? forKeys[0].PrincipalEntityType.ClrType.Name;
             if (navName == null) throw new Exception($"Foreign Keys navName in table {tableName} is empty");
 
