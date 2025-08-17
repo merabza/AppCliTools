@@ -118,7 +118,7 @@ public sealed class Relations
         }
 
         if (!needsToCreateTempData && hasOneToOneReference)
-            needsToCreateTempData = true;
+            needsToCreateTempData = true; //აქ hasOneToOneReference საკმარისი არ არის, უნდა დავრწმუნდეთ რომ ერთი ერთზე დაკავშირებიულ ცხრილს აქვს AutoNumber
 
         var usePrimaryKey = hasOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
@@ -194,6 +194,11 @@ public sealed class Relations
                   !analysedSubstEntityType.HasOneToOneReference))
                 return fieldData;
 
+            //if (analysedSubstEntityType != null &&
+            //    analysedSubstEntityType.HasAutoNumber &&
+            //    analysedSubstEntityType.HasOneToOneReference == false)
+            //    return fieldData;
+
             var substTableName = GetTableName(substEntityType) ??
                                  throw new Exception($"substitute table for table {tableName} have no name");
 
@@ -208,7 +213,7 @@ public sealed class Relations
             fieldData.SubstituteField = new SubstituteFieldData(substTableName,
                 entity.OptimalIndexProperties.Count > 0
                     ? GetFieldsData(tableClrType, entity.OptimalIndexProperties, substTableName, fieldData)
-                    : [], entity.HasAutoNumber || entity.HasOneToOneReference);
+                    : [], entity.NeedsToCreateTempData);
             var navName = forKeys[0].DependentToPrincipal?.Name ?? forKeys[0].PrincipalEntityType.ClrType.Name;
             if (navName == null) throw new Exception($"Foreign Keys navName in table {tableName} is empty");
 
