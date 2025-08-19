@@ -87,8 +87,28 @@ public sealed class Relations
         Entities.Add(tableName, entityData);
 
         //დავადგინოთ ცხრილის მთავარი გასაღები ასევე არის თუ არა ავტონამბერი.
-        //თუ მთავარი გასაღები ავტონამბერი არ არის და მთავარი გასაღები ერთი ერთთან კავშირით დაკავშირებულია სხვა ცხრილის ავტონამბერ მთავარ გასაღებთან, მაშინ ასეთი ცხრილის მთავარი გასაღებიც უნდა გავუთანაბროთ ავტონამბერს
-        //უნდა გაკეთდეს რეკურსიული ფუნქცია, რომელიც ერთიერთთან კავშირებს გაყვება, სანამ არ დასრულდება ეს კავშირები და არ დადგინდება, ბოლო გასაღები არის თუ არა ავტონამბერი.
+        entityData.HasAutoNumber = primaryKey.Properties[0].ValueGenerated == ValueGenerated.OnAdd;
+
+        ////დავადგინოთ რომელიმე გარე გასაღები არის თუ არა ამავდროულად ამ ცხრილის მთავარი გასაღების ველი
+        ////ამით დგინდება, ეს ცხრილი დაკავშირებულია სხვა ცხრილთან ერთი ერთთან კავშირით
+        //var hasOneToOneReference = !isAutoNumber && entityType.GetForeignKeys()
+        //    .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
+
+        //დავადგინოთ რომელ ცხრილთან არის ეს ცხრილი დაკავშირებული ერთი ერთთან კავშირით
+        var referencingOneToOneForeignKey = entityType.GetForeignKeys()
+            .SingleOrDefault(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
+
+        var oneToOneParentType = referencingOneToOneForeignKey?.PrincipalEntityType;
+        if (oneToOneParentType != null)
+        {
+            var analysedOneToOneParentEntityType = AnaliseEntityTypeWithPreventLoop(tableName, oneToOneParentType);
+            if (analysedOneToOneParentEntityType != null)
+            {
+                entityData.HasOneToOneReference = true;
+                entityData.HasAutoNumberByOneToOnePrincipal = analysedOneToOneParentEntityType.HasAutoNumber || analysedOneToOneParentEntityType.HasAutoNumberByOneToOnePrincipal;
+            }
+        }
+
 
 
 
@@ -100,22 +120,16 @@ public sealed class Relations
         //      თუ გამონაკლის წესებში არ არის მითითებული, მაშინ დავადგინოთ ოპტიმალური ჩამნაცვლებელი ინდექსი.
         //      თუ ჩამნაცვლებელი ინდექსის დაანგარიშება ვერ მოხერხდა, მაშინ სიდერს სჭირდება დროებითი ინფორმაციის შენახვა
 
-
         var needsToCreateTempData = false;
-
-        var hasOneToOneReference = entityType.GetForeignKeys()
-            .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
-
-        entityData.HasOneToOneReference = hasOneToOneReference;
 
         var hasReferencingForeignKeys = entityType.GetReferencingForeignKeys().Any();
 
+
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
-        if (primaryKey.Properties[0].ValueGenerated == ValueGenerated.OnAdd && hasReferencingForeignKeys)
+        if ((entityData.HasAutoNumber || entityData.HasAutoNumberByOneToOnePrincipal) && hasReferencingForeignKeys)
             //თუ მთავარი გასაღები თვითონ ივსება და ამ ცხრილზე სხვა ცხრილები არის დამოკიდებული.
             //მაშინ მოვძებნოთ ოპტიმალური ინდექსი
         {
-            entityData.HasAutoNumber = true;
             //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
             var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s =>
                 string.Equals(s.TableName, tableName, StringComparison.CurrentCultureIgnoreCase));
@@ -135,11 +149,7 @@ public sealed class Relations
             needsToCreateTempData = entityData.OptimalIndexProperties.Count == 0 && hasReferencingForeignKeys;
         }
 
-        if (!needsToCreateTempData && hasOneToOneReference)
-            needsToCreateTempData =
-                true; //აქ hasOneToOneReference საკმარისი არ არის, უნდა დავრწმუნდეთ რომ ერთი ერთზე დაკავშირებიულ ცხრილს აქვს AutoNumber
-
-        var usePrimaryKey = hasOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
+        var usePrimaryKey = primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
         var ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
             .Select(s => s.FieldName).ToList();
@@ -201,13 +211,11 @@ public sealed class Relations
                     throw new Exception($"Multiple Foreign Keys in table {tableName} for field {preferredName}");
             }
 
-            if (_preventLoopList.Contains(tableName))
-                throw new Exception($"table {tableName} loops for indexes");
-
-            _preventLoopList.Push(tableName);
             var substEntityType = forKeys[0].PrincipalEntityType;
-            var analysedSubstEntityType = EntityAnalysis(substEntityType);
-            _preventLoopList.Pop();
+
+            var analysedSubstEntityType = AnaliseEntityTypeWithPreventLoop(tableName, substEntityType);
+
+
 
             if (!(analysedSubstEntityType is not { HasAutoNumber: true } ||
                   !analysedSubstEntityType.HasOneToOneReference))
@@ -241,6 +249,18 @@ public sealed class Relations
 
             return fieldData;
         }
+    }
+
+    private EntityData? AnaliseEntityTypeWithPreventLoop(string preventLoopTableName, IEntityType entityType)
+    {
+        if (_preventLoopList.Contains(preventLoopTableName))
+            throw new Exception($"table {preventLoopTableName} loops for indexes");
+
+        _preventLoopList.Push(preventLoopTableName);
+        var analysedEntityType = EntityAnalysis(entityType);
+        _preventLoopList.Pop();
+
+        return analysedEntityType;
     }
 
     private static IIndex? GetOptimalUniIndex(IEntityType entityType)

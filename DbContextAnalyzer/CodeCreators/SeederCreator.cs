@@ -82,7 +82,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         return realTypeName;
     }
 
-    public string UseEntity(EntityData entityData, EntityData? entityDataForDev, bool isCarcassType)
+    public string UseEntity(EntityData entityData, EntityData? entityDataForDevBase, bool isCarcassType)
     {
         //var usedList = false;
         var tableName = GetNewTableName(entityData.TableName);
@@ -244,7 +244,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                  !entityData.SelfRecursiveFields.Select(s => s.Name).Contains(w.Name)) &&
                 (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.OldName)).Select(p =>
             {
-                var devFieldData = entityDataForDev?.FieldsData.SingleOrDefault(x =>
+                var devFieldData = entityDataForDevBase?.FieldsData.SingleOrDefault(x =>
                     string.Equals(x.Name, p.Name, StringComparison.CurrentCultureIgnoreCase));
                 var result = $"{p.Name} = {GetRightValue(p, devFieldData?.IsNullable ?? false)}";
                 //if (devFieldData is null)

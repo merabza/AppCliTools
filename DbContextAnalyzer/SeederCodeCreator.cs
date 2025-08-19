@@ -69,8 +69,8 @@ public sealed class SeederCodeCreator
         var relations = new Relations(_dbScContext, _excludesRulesParameters);
         relations.DbContextAnalysis();
 
-        var relationsDev = new Relations(_devContext, _excludesRulesParameters);
-        relationsDev.DbContextAnalysis();
+        var relationsInDevBase = new Relations(_devContext, _excludesRulesParameters);
+        relationsInDevBase.DbContextAnalysis();
         //-----
 
         var usedCarcassEntityTypes = new List<string>();
@@ -106,7 +106,7 @@ public sealed class SeederCodeCreator
             }
 
             var newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
-            var devTableEntity = relationsDev.Entities.SingleOrDefault(x =>
+            var devBaseTableEntity = relationsInDevBase.Entities.SingleOrDefault(x =>
                 string.Equals(x.Value.TableName, newTableName, StringComparison.CurrentCultureIgnoreCase));
 
             _logger.LogInformation("TableName = {tableName}", tableName);
@@ -136,7 +136,7 @@ public sealed class SeederCodeCreator
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
-            var usedTableName = seederCreator.UseEntity(value, devTableEntity.Value, isCarcassType);
+            var usedTableName = seederCreator.UseEntity(value, devBaseTableEntity.Value, isCarcassType);
             if (isCarcassType)
                 usedCarcassEntityTypes.Add(usedTableName);
 
