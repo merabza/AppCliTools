@@ -33,55 +33,73 @@ public sealed class Relations
     public void DbContextAnalysis()
     {
         foreach (var entityType in _dbContext.Model.GetEntityTypes())
-        {
-            if (entityType.GetKeys().Count(w => w.IsPrimaryKey()) != 1)
-                continue;
-            var tableName = GetTableName(entityType);
-
-            if (tableName is not null && _excludesRulesParameters?.ExcludeTables is not null &&
-                _excludesRulesParameters.ExcludeTables.Contains(tableName))
-                continue;
-
-            //აქ ხდება გამონაკლისი ველების გათვალისწინება
+            //ერთი ერთეულის გაანალიზება
             EntityAnalysis(entityType);
-        }
     }
 
+    //ამ მეთოდის დანიშნულებაა შეამოწმოს ერთეული გამოდგება თუ არა გასაანალიზებლად
+    //ამისათვის მოწმდება ერთეულს აქვს თუ არა მთავარი გასაღები
+    //და ხომ არ არის შესაბამისი ცხრილის სახელი გამონაკლისების სიაში
+    //როგორც გვერდითი ეფექტი, ეს მეთოდი ადგენს ერთეულის შესაბამისი ცხრილის სახელს
+    private string? ValidateEntityForAnalise(IEntityType entityType)
+    {
+        //თუ მთავარი გასაღები არ აქვს, ან მთავარი გასაღების ველების რაოდენობა 1-ის ტოლი არ არის, ასეთ ცხრილებს არ ვაკოპირებთ
+        if (entityType.GetKeys().Count(w => w.IsPrimaryKey()) != 1)
+            return null;
+
+        //დავადგინოთ ცხრილის სახელი ერთეულის ტიპიდან გამომდინარე
+        var tableName = GetTableName(entityType);
+
+        //თუ ცხრილი არის გამონაკლისების სიაში, მას აღარ განვიხილავთ
+        if (tableName is not null && _excludesRulesParameters.ExcludeTables.Contains(tableName))
+            return null;
+
+        return tableName;
+    }
+
+    //ამ მეთოდის საშუალებით ხდება ერთი ერთეულის გაანალიზება
     private EntityData? EntityAnalysis(IEntityType entityType)
     {
-        //დავადგინოთ ცხრილის სახელი.
-        var tableName = GetTableName(entityType);
+        //ერთეულის ვალიდაცია და შესაბამისი ცხრილის სახელის დადგენა
+        var tableName = ValidateEntityForAnalise(entityType);
+
+        //თუ ცხრილის სახელი არ დაგვიბრუნა ვალიდაციამ, ეს ნიშნავს, რომ ან ამ ერთეულს არ ვაანალიზებთ, ან ცხრილის სახელის დადგენა ვერ მოხერხდა.
+        //თუ ცხრილის სახელი ვერ დადგინდა შესაბამისად ამ ერთეულს არ ვაანალიზებთ
+        //ასევე თუ ერთეული უკვე გაანალიზებულების ლექსიკონშია, თავიდან აღარ ვაანალიზებთ
         if (tableName is null || Entities.ContainsKey(tableName))
-            //თუ ეს ცხრილი უკვე ყოფილა გაანალიზებულების სიაში, მაშინ აქ აღარაფერი გვესაქმება
             return tableName is null ? null : Entities[tableName];
 
-        if (_excludesRulesParameters.ExcludeTables.Contains(tableName))
-            return null;
-        //დავადგინოთ ცხრილს აქვს თუ არა გასაღები
+        //დავადგინოთ ცხრილის მთავარი გასაღები
         var primaryKeys = entityType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
-        switch (primaryKeys.Count)
-        {
-            //ასეთი რამე სავარაუდოდ არ მოხდება, მაგრამ მაინც ვამოწმებ. ანუ ერთ ცხრილში არ შეიძლება ერთზე მეტი მთავარი გასაღები იყოს.
-            case > 1:
-                throw new Exception($"Multiple primary keys in table {tableName}");
-            //თუ აღმოჩნდა, რომ რომელიღაც ცხრილს მთავარი გასაღები არ აქვს, მაშინ ასეთ ბაზას ჯერჯერობით არ განვიხილავ
-            case < 1:
-                throw new Exception($"No primary key in table {tableName}");
-        }
 
         //გასაღები უნდა იყოს აუცილებლად 1 ცალი, ჯერჯერობით სხვა ვერსიებს არ განვიხილავთ
         var primaryKey = primaryKeys[0];
-        //მთავარი გასაღები ერთი ველისაგან უნდა შედგებოდეს. სხვანაირ ბაზას ჯერ არ განვიხილავ
-        if (primaryKey.Properties.Count > 1)
-            throw new Exception($"Multiple fields primary key in table {tableName}");
 
-        //entityType, 
+        //შევქმნათ ობიექტი ერთეულთან დაკავშირებით რა ინფორმაციასაც შევაგროვებთ, იმის შესანახად
+        //ჯერ გადავინახოთ ის ინფორმაცია, რაც უკვე ვიცით
+        //ეს არის ცხრილის სახელი მთავარი გასაღების ველის სახელი და თვითონ ერთეულის ობიექტი
         var entityData = new EntityData
         {
             TableName = tableName, PrimaryKeyFieldName = primaryKey.Properties[0].Name, EntityType = entityType
         };
 
+        //ჩავამატოთ უკვე გაანალიზებული ერთეულების სიაში
         Entities.Add(tableName, entityData);
+
+        //დავადგინოთ ცხრილის მთავარი გასაღები ასევე არის თუ არა ავტონამბერი.
+        //თუ მთავარი გასაღები ავტონამბერი არ არის და მთავარი გასაღები ერთი ერთთან კავშირით დაკავშირებულია სხვა ცხრილის ავტონამბერ მთავარ გასაღებთან, მაშინ ასეთი ცხრილის მთავარი გასაღებიც უნდა გავუთანაბროთ ავტონამბერს
+        //უნდა გაკეთდეს რეკურსიული ფუნქცია, რომელიც ერთიერთთან კავშირებს გაყვება, სანამ არ დასრულდება ეს კავშირები და არ დადგინდება, ბოლო გასაღები არის თუ არა ავტონამბერი.
+
+
+
+        //დავადგინოთ სჭირდება თუ არა ამ ერთეულის შესაბამისი მონაცემების სიდერს დროებითი ინფორმაციის შენახვა.
+        //დროებითი ინფორმაციის შენახვა საჭიროა შემდეგ შემთხვევებში:
+        //  თუ ამ ცხრილის მთავარი გასაღები არის ავტონამბერი და მიბმულია რელაციური კავშირით სხვა რომელიმე ცხრილის გარე გასაღებთან
+        //    მაშინ უნდა დავადგინოთ რომელი ინდექსი უნდა გამოვიყენოთ როგორც ალტერნატიოული ინდექსი.
+        //      თუ გამონაკლის წესებში მითითებულია, გამოსაყენებელი, მაშინ ეს ინდექსი უნდა გამოვიყემოთ ალტერნატიულ ინდექსად
+        //      თუ გამონაკლის წესებში არ არის მითითებული, მაშინ დავადგინოთ ოპტიმალური ჩამნაცვლებელი ინდექსი.
+        //      თუ ჩამნაცვლებელი ინდექსის დაანგარიშება ვერ მოხერხდა, მაშინ სიდერს სჭირდება დროებითი ინფორმაციის შენახვა
+
 
         var needsToCreateTempData = false;
 
@@ -118,7 +136,8 @@ public sealed class Relations
         }
 
         if (!needsToCreateTempData && hasOneToOneReference)
-            needsToCreateTempData = true; //აქ hasOneToOneReference საკმარისი არ არის, უნდა დავრწმუნდეთ რომ ერთი ერთზე დაკავშირებიულ ცხრილს აქვს AutoNumber
+            needsToCreateTempData =
+                true; //აქ hasOneToOneReference საკმარისი არ არის, უნდა დავრწმუნდეთ რომ ერთი ერთზე დაკავშირებიულ ცხრილს აქვს AutoNumber
 
         var usePrimaryKey = hasOneToOneReference || primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
@@ -215,7 +234,8 @@ public sealed class Relations
                     ? GetFieldsData(tableClrType, entity.OptimalIndexProperties, substTableName, fieldData)
                     : [], entity.NeedsToCreateTempData);
             var navName = forKeys[0].DependentToPrincipal?.Name ?? forKeys[0].PrincipalEntityType.ClrType.Name;
-            if (navName == null) throw new Exception($"Foreign Keys navName in table {tableName} is empty");
+            if (navName == null)
+                throw new Exception($"Foreign Keys navName in table {tableName} is empty");
 
             fieldData.NavigationFieldName = navName;
 
