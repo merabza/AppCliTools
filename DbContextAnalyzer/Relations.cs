@@ -105,12 +105,11 @@ public sealed class Relations
             if (analysedOneToOneParentEntityType != null)
             {
                 entityData.HasOneToOneReference = true;
-                entityData.HasAutoNumberByOneToOnePrincipal = analysedOneToOneParentEntityType.HasAutoNumber || analysedOneToOneParentEntityType.HasAutoNumberByOneToOnePrincipal;
+                entityData.HasAutoNumberByOneToOnePrincipal = analysedOneToOneParentEntityType.HasAutoNumber ||
+                                                              analysedOneToOneParentEntityType
+                                                                  .HasAutoNumberByOneToOnePrincipal;
             }
         }
-
-
-
 
         //დავადგინოთ სჭირდება თუ არა ამ ერთეულის შესაბამისი მონაცემების სიდერს დროებითი ინფორმაციის შენახვა.
         //დროებითი ინფორმაციის შენახვა საჭიროა შემდეგ შემთხვევებში:
@@ -123,7 +122,6 @@ public sealed class Relations
         var needsToCreateTempData = false;
 
         var hasReferencingForeignKeys = entityType.GetReferencingForeignKeys().Any();
-
 
         //თუ მთავარი გასაღების დაგენერირება ავტომატურად არ ხდება, მაშინ უნდა მოხდეს მისი გამოყენება და ოპტიმალური ინდექსის ძებნა აღარ არის საჭირო
         if ((entityData.HasAutoNumber || entityData.HasAutoNumberByOneToOnePrincipal) && hasReferencingForeignKeys)
@@ -214,8 +212,6 @@ public sealed class Relations
             var substEntityType = forKeys[0].PrincipalEntityType;
 
             var analysedSubstEntityType = AnaliseEntityTypeWithPreventLoop(tableName, substEntityType);
-
-
 
             if (!(analysedSubstEntityType is not { HasAutoNumber: true } ||
                   !analysedSubstEntityType.HasOneToOneReference))
