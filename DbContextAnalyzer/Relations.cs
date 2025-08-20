@@ -213,8 +213,7 @@ public sealed class Relations
 
             var analysedSubstEntityType = AnaliseEntityTypeWithPreventLoop(tableName, substEntityType);
 
-            if (!(analysedSubstEntityType is not { HasAutoNumber: true } ||
-                  !analysedSubstEntityType.HasOneToOneReference))
+            if (analysedSubstEntityType is not null && analysedSubstEntityType.HasAutoNumberByOneToOnePrincipal)
                 return fieldData;
 
             //if (analysedSubstEntityType != null &&

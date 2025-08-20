@@ -30,7 +30,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
     private string GetRightValue(FieldData fieldData, bool devFieldIsNullable)
     {
-        if (fieldData.SubstituteField is null) // || !fieldData.SubstituteField.UseTempData
+        if (fieldData.SubstituteField is null)
             return
                 $"s.{fieldData.FullName}{(!devFieldIsNullable && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
 
