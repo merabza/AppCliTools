@@ -24,14 +24,14 @@ public sealed class CliMenuItem
         CountedId = countedId;
     }
 
-    public void setMenuSet(CliMenuSet menuSet)
-    {
-        CliMenuCommand.menuSet = menuSet;
-    }
-
     public string? CountedKey { get; set; }
     public int CountedId { get; set; }
     public string? Key { get; set; }
     public string MenuItemName => CliMenuCommand.Name;
     public CliMenuCommand CliMenuCommand { get; set; }
+
+    public void SetMenuSet(CliMenuSet menuSet)
+    {
+        CliMenuCommand.MenuSet = menuSet;
+    }
 }

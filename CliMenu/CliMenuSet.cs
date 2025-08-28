@@ -7,13 +7,12 @@ namespace CliMenu;
 
 public sealed class CliMenuSet
 {
-    private readonly string? _caption;
     private readonly List<string> _errorMessages = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuSet(string? caption = null, int menuVersion = 0)
     {
-        _caption = caption;
+        Caption = caption;
         MenuVersion = menuVersion;
     }
 
@@ -23,7 +22,7 @@ public sealed class CliMenuSet
 
     private List<CliMenuItem> MenuItems { get; } = [];
     public CliMenuSet? ParentMenu { get; set; }
-    public string? Caption => _caption;
+    public string? Caption { get; }
 
     public CliMenuItem? GetMenuItemWithName(string menuItemName)
     {
@@ -84,10 +83,10 @@ public sealed class CliMenuSet
 
     private string? GetCaption()
     {
-        if (_caption == null)
+        if (Caption == null)
             return null;
         var parentCaption = ParentMenu?.GetCaption();
-        return parentCaption != null ? $"{parentCaption}/{_caption}" : $"/{_caption}";
+        return parentCaption != null ? $"{parentCaption}/{Caption}" : $"/{Caption}";
     }
 
     public void Show(bool clearBefore = true)
@@ -219,9 +218,6 @@ public sealed class CliMenuSet
 
     public void FixMenuElements()
     {
-        foreach (var cliMenuItem in MenuItems)
-        {
-            cliMenuItem.setMenuSet(this);
-        }
+        foreach (var cliMenuItem in MenuItems) cliMenuItem.SetMenuSet(this);
     }
 }

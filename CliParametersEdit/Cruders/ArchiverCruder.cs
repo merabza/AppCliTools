@@ -3,12 +3,12 @@ using CliMenu;
 using CliParameters;
 using CliParametersEdit.CliMenuCommands;
 using CliParametersEdit.FieldEditors;
-using LibFileParameters.Interfaces;
 using LibFileParameters.Models;
 using LibParameters;
 
 namespace CliParametersEdit.Cruders;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ArchiverCruder : ParCruder<ArchiverData>
 {
     //public კონსტრუქტორი საჭიროა. გამოიყენება რეფლექსიით DictionaryFieldEditor-ში

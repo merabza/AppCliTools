@@ -1,5 +1,6 @@
 using System;
-using CliMenu;
+
+namespace CliMenu.Tests;
 
 public class CliMenuSetTests
 {
