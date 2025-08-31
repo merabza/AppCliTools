@@ -17,7 +17,9 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
 
-    private ApiClientCruder(ILogger logger, IHttpClientFactory httpClientFactory, IParametersManager parametersManager,
+    //public გამოიყენება რეფლექსიით DictionaryFieldEditor-ში
+    // ReSharper disable once MemberCanBePrivate.Global
+    public ApiClientCruder(ILogger logger, IHttpClientFactory httpClientFactory, IParametersManager parametersManager,
         Dictionary<string, ApiClientSettings> currentValuesDictionary) : base(parametersManager,
         currentValuesDictionary, "Api Client", "Api Clients")
     {
