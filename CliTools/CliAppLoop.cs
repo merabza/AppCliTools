@@ -258,6 +258,11 @@ public abstract class CliAppLoop
         }
         else
         {
+            if ( _currentMenuSetLevel > _selectedMenuCommandsList.Count)
+            {
+                StShared.WriteErrorLine($"Wrong menu build. missed selected command on level {_currentMenuSetLevel}", true);
+                return false;
+            }
             var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
             if (!AddChangeMenu(selectedMenuCommand.GetSubMenu()))
                 return false;
