@@ -7,9 +7,11 @@ namespace CliMenu;
 public /*open*/ class CliMenuCommand
 {
     private readonly bool _askRunAction;
+
     //public გამოიყენება SupportTools პროექტში
     // ReSharper disable once MemberCanBeProtected.Global
     public readonly string? ParentMenuName;
+
     //გამოიყენება SupportTools პროექტში
     // ReSharper disable once NotAccessedField.Global
     public CliMenuSet? MenuSet;
