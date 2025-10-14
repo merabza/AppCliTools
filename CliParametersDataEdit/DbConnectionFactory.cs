@@ -88,11 +88,11 @@ public static class DbConnectionFactory
             return (null, null, -1);
         }
 
-        
         var connectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
 
         if (!string.IsNullOrWhiteSpace(connectionString))
-            return (databaseConnectionData.DatabaseServerProvider, connectionString, databasesParameters.CommandTimeOut);
+            return (databaseConnectionData.DatabaseServerProvider, connectionString,
+                databasesParameters.CommandTimeOut);
 
         StShared.WriteErrorLine("could not Created Connection String", true);
         return (null, null, -1);
