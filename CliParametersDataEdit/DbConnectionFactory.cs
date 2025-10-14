@@ -64,7 +64,7 @@ public static class DbConnectionFactory
         }
     }
 
-    public static (EDatabaseProvider?, string?, int) GetDataProviderAndConnectionString(
+    public static (EDatabaseProvider?, string?, int) GetDataProviderConnectionStringCommandTimeOut(
         DatabaseParameters? databasesParameters, DatabaseServerConnections databaseServerConnections)
     {
         if (databasesParameters is null)
