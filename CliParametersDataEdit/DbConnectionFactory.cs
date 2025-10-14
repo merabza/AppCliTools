@@ -64,19 +64,19 @@ public static class DbConnectionFactory
         }
     }
 
-    public static (EDatabaseProvider?, string?) GetDataProviderAndConnectionString(
+    public static (EDatabaseProvider?, string?, int) GetDataProviderAndConnectionString(
         DatabaseParameters? databasesParameters, DatabaseServerConnections databaseServerConnections)
     {
         if (databasesParameters is null)
         {
             StShared.WriteErrorLine("databasesParameters does not specified", true);
-            return (null, null);
+            return (null, null, -1);
         }
 
         if (databasesParameters.DbConnectionName is null)
         {
             StShared.WriteErrorLine("databasesParameters.DbConnectionName does not specified", true);
-            return (null, null);
+            return (null, null, -1);
         }
 
         var databaseConnectionData =
@@ -85,16 +85,17 @@ public static class DbConnectionFactory
         if (databaseConnectionData is null)
         {
             StShared.WriteErrorLine("DatabaseConnectionData Data is not Created", true);
-            return (null, null);
+            return (null, null, -1);
         }
 
+        
         var connectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
 
         if (!string.IsNullOrWhiteSpace(connectionString))
-            return (databaseConnectionData.DatabaseServerProvider, connectionString);
+            return (databaseConnectionData.DatabaseServerProvider, connectionString, databasesParameters.CommandTimeOut);
 
         StShared.WriteErrorLine("could not Created Connection String", true);
-        return (null, null);
+        return (null, null, -1);
     }
 
     private static string? GetDbConnectionString(DatabaseParameters databasesParameters,
