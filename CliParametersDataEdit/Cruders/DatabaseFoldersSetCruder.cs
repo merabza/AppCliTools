@@ -66,45 +66,6 @@ public sealed class DatabaseFoldersSetCruder : Cruder
         return _currentValuesDictionary.Keys.ToList();
     }
 
-    //public override bool CheckValidation(ItemData item)
-    //{
-    //    try
-    //    {
-    //        if (item is not ApiClientSettings apiClientSettings)
-    //            return false;
-
-    //        if (string.IsNullOrWhiteSpace(apiClientSettings.Server))
-    //            return false;
-
-    //        Console.WriteLine("Try connect to Test Api Client...");
-
-    //        //კლიენტის შექმნა ვერსიის შესამოწმებლად
-    //        var apiClient = new TestApiClient(_logger, _httpClientFactory, apiClientSettings.Server, true);
-
-    //        var getVersionResult = apiClient.GetVersion(CancellationToken.None).Result;
-
-    //        if (getVersionResult.IsT1)
-    //        {
-    //            Err.PrintErrorsOnConsole(getVersionResult.AsT1);
-    //            return false;
-    //        }
-
-    //        var version = getVersionResult.AsT0;
-
-    //        if (string.IsNullOrWhiteSpace(version))
-    //            return false;
-
-    //        Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
-
-    //        return true;
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        _logger.LogError(e, "Error in method CheckValidation");
-    //        return false;
-    //    }
-    //}
-
     public override string? GetStatusFor(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))

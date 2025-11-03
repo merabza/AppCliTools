@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParametersDataEdit.ToolActions;
@@ -29,6 +30,25 @@ public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
     {
         var getDbServerFoldersToolAction =
             new GetDbServerFoldersToolAction(_logger, _httpClientFactory, _dbServerName, _parametersManager);
-        return getDbServerFoldersToolAction.Run(CancellationToken.None).Result;
+        try
+        {
+            // ReSharper disable once using
+            // ReSharper disable once DisposableConstructor
+            using var cts = new CancellationTokenSource();
+            var token = cts.Token;
+            token.ThrowIfCancellationRequested();
+
+            return getDbServerFoldersToolAction.Run(token).Result;
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+            return false;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

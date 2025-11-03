@@ -51,7 +51,12 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
             //კლიენტის შექმნა ვერსიის შესამოწმებლად
             var apiClient = new TestApiClient(_logger, _httpClientFactory, apiClientSettings.Server, true);
 
-            var getVersionResult = apiClient.GetVersion(CancellationToken.None).Result;
+            // ReSharper disable once using
+            // ReSharper disable once DisposableConstructor
+            using var cts = new CancellationTokenSource();
+            var token = cts.Token;
+            token.ThrowIfCancellationRequested();
+            var getVersionResult = apiClient.GetVersion(token).Result;
 
             if (getVersionResult.IsT1)
             {
@@ -67,6 +72,11 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
             Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
 
             return true;
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+            return false;
         }
         catch (Exception e)
         {

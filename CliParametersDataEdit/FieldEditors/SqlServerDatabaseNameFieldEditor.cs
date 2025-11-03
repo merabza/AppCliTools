@@ -41,55 +41,74 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
 
     public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
-        var currentDatabaseName = GetValue(recordForUpdate);
-        var serverAddress = GetValue<string>(recordForUpdate, _serverAddressPropertyName);
-        var windowsNtIntegratedSecurity = GetValue<bool>(recordForUpdate, _windowsNtIntegratedSecurityPropertyName);
-        var serverUser = GetValue<string>(recordForUpdate, _serverUserPropertyName);
-        var serverPass = GetValue<string>(recordForUpdate, _serverPassPropertyName);
-
-        if (serverAddress is null || serverUser is null || serverPass is null)
-            throw new Exception("serverAddress is null or serverUser is null or serverPass is null");
-
-        var sqlSerConPar = new SqlServerConnectionParameters
+        try
         {
-            ServerAddress = serverAddress,
-            WindowsNtIntegratedSecurity = windowsNtIntegratedSecurity,
-            ServerUser = serverUser,
-            ServerPass = serverPass
-        };
+            var currentDatabaseName = GetValue(recordForUpdate);
+            var serverAddress = GetValue<string>(recordForUpdate, _serverAddressPropertyName);
+            var windowsNtIntegratedSecurity = GetValue<bool>(recordForUpdate, _windowsNtIntegratedSecurityPropertyName);
+            var serverUser = GetValue<string>(recordForUpdate, _serverUserPropertyName);
+            var serverPass = GetValue<string>(recordForUpdate, _serverPassPropertyName);
 
-        var dbConnectionStringBuilder = DbConnectionFactory.GetDbConnectionStringBuilder(sqlSerConPar) ??
-                                        throw new Exception("dbConnectionStringBuilder is null");
+            if (serverAddress is null || serverUser is null || serverPass is null)
+                throw new Exception("serverAddress is null or serverUser is null or serverPass is null");
 
-        var dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
-        DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
-        var getDatabaseInfosResult = dc.GetDatabaseInfos(CancellationToken.None).Result;
+            var sqlSerConPar = new SqlServerConnectionParameters
+            {
+                ServerAddress = serverAddress,
+                WindowsNtIntegratedSecurity = windowsNtIntegratedSecurity,
+                ServerUser = serverUser,
+                ServerPass = serverPass
+            };
 
-        var databaseInfos = new List<DatabaseInfoModel>();
-        if (getDatabaseInfosResult.IsT0)
-            databaseInfos = getDatabaseInfosResult.AsT0;
+            var dbConnectionStringBuilder = DbConnectionFactory.GetDbConnectionStringBuilder(sqlSerConPar) ??
+                                            throw new Exception("dbConnectionStringBuilder is null");
 
-        var databasesMenuSet = new CliMenuSet();
-        databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
+            var dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
+            DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
 
-        var keys = databaseInfos.Select(s => s.Name).ToList();
-        foreach (var listItem in keys)
-            databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+            // ReSharper disable once using
+            // ReSharper disable once DisposableConstructor
+            using var cts = new CancellationTokenSource();
+            var token = cts.Token;
+            token.ThrowIfCancellationRequested();
 
-        var selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
+            var getDatabaseInfosResult = dc.GetDatabaseInfos(token).Result;
 
-        if (selectedId == 0)
-        {
-            var newDatabaseName = Inputer.InputTextRequired("New Database Name");
+            var databaseInfos = new List<DatabaseInfoModel>();
+            if (getDatabaseInfosResult.IsT0)
+                databaseInfos = getDatabaseInfosResult.AsT0;
 
-            SetValue(recordForUpdate, newDatabaseName);
-            return;
+            var databasesMenuSet = new CliMenuSet();
+            databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
+
+            var keys = databaseInfos.Select(s => s.Name).ToList();
+            foreach (var listItem in keys)
+                databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+
+            var selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
+
+            if (selectedId == 0)
+            {
+                var newDatabaseName = Inputer.InputTextRequired("New Database Name");
+
+                SetValue(recordForUpdate, newDatabaseName);
+                return;
+            }
+
+            var index = selectedId - 1;
+            if (index < 0 || index >= keys.Count)
+                throw new DataInputException("Selected invalid ID. ");
+
+            SetValue(recordForUpdate, keys[index]);
         }
-
-        var index = selectedId - 1;
-        if (index < 0 || index >= keys.Count)
-            throw new DataInputException("Selected invalid ID. ");
-
-        SetValue(recordForUpdate, keys[index]);
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in SqlServerDatabaseNameFieldEditor.UpdateField");
+            throw;
+        }
     }
 }

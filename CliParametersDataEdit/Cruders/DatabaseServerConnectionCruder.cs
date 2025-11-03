@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using CliMenu;
 using CliParameters;
 using CliParameters.FieldEditors;
@@ -80,8 +81,14 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
+            // ReSharper disable once using
+            // ReSharper disable once DisposableConstructor
+            using var cts = new CancellationTokenSource();
+            var token = cts.Token;
+            token.ThrowIfCancellationRequested();
+
             var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
-                databaseServerConnectionData, apiClients, _httpClientFactory, null, null).Preserve().Result;
+                databaseServerConnectionData, apiClients, _httpClientFactory, null, null, token).Preserve().Result;
 
             if (createDatabaseManagerResult.IsT1)
             {
@@ -94,7 +101,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             var dbManager = createDatabaseManagerResult.AsT0;
 
-            var dbmTestConnectionResult = dbManager.TestConnection(null).Result;
+            var dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
             if (dbmTestConnectionResult.IsSome)
             {
                 Err.PrintErrorsOnConsole((Err[])dbmTestConnectionResult);
@@ -106,7 +113,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
             //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-            var getDbServerInfoResult = dbManager.GetDatabaseServerInfo().Result;
+            var getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
             if (getDbServerInfoResult.IsT1)
             {
                 Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
@@ -118,7 +125,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
             Console.WriteLine(
                 $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
-            var isServerLocalResult = dbManager.IsServerLocal().Result;
+            var isServerLocalResult = dbManager.IsServerLocal(token).Result;
             Console.WriteLine(isServerLocalResult.IsT0
                 ? $"Server is {(isServerLocalResult.AsT0 ? string.Empty : "NOT ")} local"
                 : "Server is local or not is not detected");
@@ -133,11 +140,16 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             return true;
         }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+        }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return false;
         }
+
+        return false;
     }
 
     protected override void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)

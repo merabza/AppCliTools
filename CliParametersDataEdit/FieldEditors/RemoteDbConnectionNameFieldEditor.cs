@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using CliMenu;
@@ -33,40 +34,57 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var currentRemoteDbConnectionName = GetValue(recordForUpdate);
-        var databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
-        var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
-        var apiClients = new ApiClients(acParameters.ApiClients);
-
-        var createDatabaseManagerResult = DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger,
-            _httpClientFactory, true, databaseApiClientName, apiClients, null, null, CancellationToken.None).Result;
-
-        var databaseConnectionNames = new List<string>();
-        if (createDatabaseManagerResult.IsT1)
+        try
         {
-            Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
-        }
-        else
-        {
-            var apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
-            var getDatabaseFoldersSetsResult = apiClient.GetDatabaseConnectionNames(CancellationToken.None).Result;
-            if (getDatabaseFoldersSetsResult.IsT0)
-                databaseConnectionNames = getDatabaseFoldersSetsResult.AsT0;
+            var currentRemoteDbConnectionName = GetValue(recordForUpdate);
+            var databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
+            var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
+            var apiClients = new ApiClients(acParameters.ApiClients);
+
+            // ReSharper disable once using
+            // ReSharper disable once DisposableConstructor
+            using var cts = new CancellationTokenSource();
+            var token = cts.Token;
+            token.ThrowIfCancellationRequested();
+            var createDatabaseManagerResult = DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger,
+                _httpClientFactory, true, databaseApiClientName, apiClients, null, null, token).Result;
+
+            var databaseConnectionNames = new List<string>();
+            if (createDatabaseManagerResult.IsT1)
+            {
+                Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            }
             else
-                Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+            {
+                var apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
+                var getDatabaseFoldersSetsResult = apiClient.GetDatabaseConnectionNames(token).Result;
+                if (getDatabaseFoldersSetsResult.IsT0)
+                    databaseConnectionNames = getDatabaseFoldersSetsResult.AsT0;
+                else
+                    Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+            }
+
+            var databasesMenuSet = new CliMenuSet();
+
+            foreach (var listItem in databaseConnectionNames)
+                databasesMenuSet.AddMenuItem(new CliMenuCommand(listItem));
+
+            var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentRemoteDbConnectionName);
+
+            if (selectedKey is null)
+                throw new DataInputException("Selected invalid Item. ");
+
+            SetValue(recordForUpdate, selectedKey);
         }
-
-        var databasesMenuSet = new CliMenuSet();
-
-        foreach (var listItem in databaseConnectionNames)
-            databasesMenuSet.AddMenuItem(new CliMenuCommand(listItem));
-
-        var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentRemoteDbConnectionName);
-
-        if (selectedKey is null)
-            throw new DataInputException("Selected invalid Item. ");
-
-        SetValue(recordForUpdate, selectedKey);
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in RemoteDbConnectionNameFieldEditor.UpdateField");
+            throw;
+        }
     }
 
     public override string GetValueStatus(object? record)
