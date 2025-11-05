@@ -9,9 +9,7 @@ public static class Inputer
         var answerInput = new AnswerInput(fieldName, defaultValue);
         if (answerInput.DoInput())
             return answerInput.Value;
-        if (useException)
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return defaultValue;
+        return useException ? throw new DataInputException($"Invalid input of {fieldName}") : defaultValue;
     }
 
     public static bool InputBool(string fieldName, bool defaultValue, bool useException = true)
@@ -19,29 +17,23 @@ public static class Inputer
         var boolInput = new BoolDataInput(fieldName, defaultValue);
         if (boolInput.DoInput())
             return boolInput.Value;
-        if (useException)
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return false;
+        return useException ? throw new DataInputException($"Invalid input of {fieldName}") : false;
     }
 
     public static int InputInt(string fieldName, int defaultValue)
     {
         var intInput = new IntDataInput(fieldName, defaultValue);
-        if (!intInput.DoInput())
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return intInput.Value;
+        return !intInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : intInput.Value;
     }
 
-    public static string? InputText(string fieldName, string? defaultValue, char passwordCharacter = default)
+    public static string? InputText(string fieldName, string? defaultValue, char passwordCharacter = '\0')
     {
         var textDataInput = new TextDataInput(fieldName, defaultValue, passwordCharacter);
-        if (!textDataInput.DoInput())
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return textDataInput.Text;
+        return !textDataInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : textDataInput.Text;
     }
 
     public static string InputTextRequired(string fieldName, string? defaultValue = null,
-        char passwordCharacter = default)
+        char passwordCharacter = '\0')
     {
         var result = string.Empty;
         while (result == string.Empty)
@@ -56,32 +48,24 @@ public static class Inputer
     public static DateTime InputDateTime(string fieldName, DateTime defaultValue = default)
     {
         var dateTimeInput = new DateTimeInput(fieldName, defaultValue);
-        if (!dateTimeInput.DoInput())
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return dateTimeInput.Value;
+        return !dateTimeInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : dateTimeInput.Value;
     }
 
     public static DateTime InputDate(string fieldName, DateTime defaultValue = default)
     {
         var dateInput = new DateInput(fieldName, defaultValue);
-        if (!dateInput.DoInput())
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return dateInput.Value;
+        return !dateInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : dateInput.Value;
     }
 
     public static DateTime InputTime(string fieldName, DateTime defaultValue = default)
     {
         var startAtDateTimeInput = new TimeInput(fieldName, defaultValue);
-        if (!startAtDateTimeInput.DoInput())
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return startAtDateTimeInput.Value;
+        return !startAtDateTimeInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : startAtDateTimeInput.Value;
     }
 
     public static TimeSpan InputTimeSpan(string fieldName, TimeSpan defaultValue)
     {
         var timeSpanInput = new TimeSpanInput(fieldName, defaultValue);
-        if (!timeSpanInput.DoInput())
-            throw new DataInputException($"Invalid input of {fieldName}");
-        return timeSpanInput.Value;
+        return !timeSpanInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : timeSpanInput.Value;
     }
 }
