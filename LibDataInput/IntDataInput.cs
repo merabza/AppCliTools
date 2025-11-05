@@ -9,7 +9,7 @@ public sealed class IntDataInput : DataInput
     private readonly string _fieldName;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public IntDataInput(string fieldName, int defaultValue = default)
+    public IntDataInput(string fieldName, int defaultValue = 0)
     {
         _fieldName = fieldName;
         _defaultValue = defaultValue;
@@ -19,7 +19,7 @@ public sealed class IntDataInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"{_fieldName} {(_defaultValue == default ? string.Empty : $"[{_defaultValue}]")}: ";
+        var prompt = $"{_fieldName} {(_defaultValue == 0 ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
 
         var promptLength = prompt.Length;
