@@ -6,8 +6,8 @@ public class CliMenuCommandTests
     public void Constructor_InitializesPropertiesCorrectly()
     {
         // Arrange
-        var name = "TestCommand";
-        var parentMenuName = "ParentMenu";
+        const string name = "TestCommand";
+        const string parentMenuName = "ParentMenu";
         var command = new CliMenuCommand(name, EMenuAction.LevelUp, EMenuAction.Reload, parentMenuName, true,
             EStatusView.Table, true);
 
@@ -51,7 +51,7 @@ public class CliMenuCommandTests
     public void Run_SetsMenuActionOnFail()
     {
         // Arrange
-        var command = new TestCliMenuCommand("Test", EMenuAction.LevelUp, EMenuAction.Reload, runBodyResult: false);
+        var command = new TestCliMenuCommand("Test", EMenuAction.LevelUp, EMenuAction.Reload, false);
 
         // Act
         command.Run();
@@ -98,6 +98,9 @@ public class CliMenuCommandTests
             _runBodyResult = runBodyResult;
         }
 
-        protected override bool RunBody() => _runBodyResult;
+        protected override bool RunBody()
+        {
+            return _runBodyResult;
+        }
     }
 }
