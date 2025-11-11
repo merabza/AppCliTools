@@ -68,8 +68,6 @@ public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
 
     protected T GetTItem(ItemData item)
     {
-        if (item is not T model)
-            throw new Exception("newRecord is null");
-        return model;
+        return item as T ?? throw new Exception("newRecord is null");
     }
 }

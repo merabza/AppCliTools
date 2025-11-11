@@ -174,6 +174,8 @@ public /*open*/ class Cruder : IFieldEditors
         if (_cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
             return _cruderSubMenuSet;
 
+        BeforeGetListMenu();
+
         _cruderSubMenuSet = new CliMenuSet(CrudNamePlural, _menuVersion);
 
         var newItemCommand = new NewItemCliMenuCommand(this, CrudNamePlural, $"New {CrudName}");
@@ -190,6 +192,10 @@ public /*open*/ class Cruder : IFieldEditors
         _cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null), key.Length);
 
         return _cruderSubMenuSet;
+    }
+
+    protected virtual void BeforeGetListMenu()
+    {
     }
 
     protected virtual void FillListMenuAdditional(CliMenuSet cruderSubMenuSet)
