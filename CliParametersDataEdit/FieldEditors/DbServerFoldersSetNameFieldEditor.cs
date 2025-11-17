@@ -68,8 +68,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             var token = cts.Token;
             token.ThrowIfCancellationRequested();
             var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
-                    databaseServerConnectionData, apiClients, _httpClientFactory, null, null, token)
-                .Preserve().Result;
+                databaseServerConnectionData, apiClients, _httpClientFactory, null, null, token).Preserve().Result;
             var databaseFoldersSetNames = databaseServerConnectionData.DatabaseFoldersSets?.Keys.ToList() ?? [];
 
             if (createDatabaseManagerResult.IsT1)
