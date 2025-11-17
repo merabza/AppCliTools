@@ -29,11 +29,12 @@ public static class Inputer
     public static string? InputText(string fieldName, string? defaultValue, char passwordCharacter = '\0')
     {
         var textDataInput = new TextDataInput(fieldName, defaultValue, passwordCharacter);
-        return !textDataInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : textDataInput.Text;
+        return !textDataInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : textDataInput.Text;
     }
 
-    public static string InputTextRequired(string fieldName, string? defaultValue = null,
-        char passwordCharacter = '\0')
+    public static string InputTextRequired(string fieldName, string? defaultValue = null, char passwordCharacter = '\0')
     {
         var result = string.Empty;
         while (result == string.Empty)
@@ -48,7 +49,9 @@ public static class Inputer
     public static DateTime InputDateTime(string fieldName, DateTime defaultValue = default)
     {
         var dateTimeInput = new DateTimeInput(fieldName, defaultValue);
-        return !dateTimeInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : dateTimeInput.Value;
+        return !dateTimeInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : dateTimeInput.Value;
     }
 
     public static DateTime InputDate(string fieldName, DateTime defaultValue = default)
@@ -60,12 +63,16 @@ public static class Inputer
     public static DateTime InputTime(string fieldName, DateTime defaultValue = default)
     {
         var startAtDateTimeInput = new TimeInput(fieldName, defaultValue);
-        return !startAtDateTimeInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : startAtDateTimeInput.Value;
+        return !startAtDateTimeInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : startAtDateTimeInput.Value;
     }
 
     public static TimeSpan InputTimeSpan(string fieldName, TimeSpan defaultValue)
     {
         var timeSpanInput = new TimeSpanInput(fieldName, defaultValue);
-        return !timeSpanInput.DoInput() ? throw new DataInputException($"Invalid input of {fieldName}") : timeSpanInput.Value;
+        return !timeSpanInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : timeSpanInput.Value;
     }
 }
