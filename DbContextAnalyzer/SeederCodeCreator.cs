@@ -163,7 +163,7 @@ public sealed class SeederCodeCreator
         {
             //2.3
             var placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
-                _seederCodeCreatorParameters.ProjectSeedersFolderName);
+                _seederCodeCreatorParameters.CarcassSeedersFolderName);
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
