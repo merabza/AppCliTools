@@ -9,7 +9,7 @@ using SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
-public class SeederCodeCreatorBase : CodeCreator
+public /*open*/ class SeederCodeCreatorBase : CodeCreator
 {
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
 

@@ -1,6 +1,6 @@
 namespace CliMenu.Tests;
 
-public class CliMenuCommandTests
+public sealed class CliMenuCommandTests
 {
     [Fact]
     public void Constructor_InitializesPropertiesCorrectly()

@@ -2,7 +2,7 @@ using System;
 
 namespace CliMenu.Tests;
 
-public class CliMenuSetTests
+public sealed class CliMenuSetTests
 {
     [Fact]
     public void Constructor_InitializesProperties()
