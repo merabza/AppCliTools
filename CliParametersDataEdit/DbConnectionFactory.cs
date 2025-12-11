@@ -182,6 +182,7 @@ public static class DbConnectionFactory
         DatabaseParameters databasesParameters, DatabaseServerConnectionData databaseServerConnection)
     {
         if (databasesParameters.DbServerFoldersSetName is null ||
+            databaseServerConnection.DatabaseFoldersSets is null ||
             !databaseServerConnection.DatabaseFoldersSets.TryGetValue(databasesParameters.DbServerFoldersSetName,
                 out var databaseFoldersSet))
         {
@@ -211,11 +212,12 @@ public static class DbConnectionFactory
         return (databaseFilePath, password);
     }
 
-    public static string? GetDbConnectionString(DbConnectionParameters dbConnectionParameters)
-    {
-        var dbConnectionStringBuilder = GetDbConnectionStringBuilder(dbConnectionParameters);
-        return dbConnectionStringBuilder?.ConnectionString;
-    }
+    //გავაუქმე, რადგან არ ვიცით სად გამოიყენება. თუ აღმოჩნდება, რომ გამოიყენება, მაშინ დავაბრუნებ.
+    //public static string? GetDbConnectionString(DbConnectionParameters dbConnectionParameters)
+    //{
+    //    var dbConnectionStringBuilder = GetDbConnectionStringBuilder(dbConnectionParameters);
+    //    return dbConnectionStringBuilder?.ConnectionString;
+    //}
 
     public static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DbConnectionParameters dbConnectionParameters)
     {
