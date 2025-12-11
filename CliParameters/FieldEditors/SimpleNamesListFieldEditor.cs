@@ -1,18 +1,18 @@
-﻿using CliMenu;
-using CliParameters.Cruders;
-using LibParameters;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using CliMenu;
+using CliParameters.Cruders;
+using LibParameters;
+using Microsoft.Extensions.Logging;
 
 namespace CliParameters.FieldEditors;
 
 public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<string>> where TCruder : Cruder
 {
-    private readonly ILogger? _logger;
     private readonly IHttpClientFactory? _httpClientFactory;
+    private readonly ILogger? _logger;
     private readonly ParametersManager _parametersManager;
 
     public SimpleNamesListFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName,
