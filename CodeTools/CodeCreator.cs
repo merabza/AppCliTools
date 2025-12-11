@@ -7,9 +7,9 @@ namespace CodeTools;
 
 public /*open*/ class CodeCreator
 {
+    protected readonly CodeFile CodeFile;
     private readonly ILogger _logger;
     private readonly string _placePath;
-    protected readonly CodeFile CodeFile;
 
     protected CodeCreator(ILogger logger, string placePath, string? codeFileName = null)
     {

@@ -12,10 +12,10 @@ namespace DbContextAnalyzer;
 
 public sealed class Relations
 {
+    public readonly Dictionary<string, EntityData> Entities = [];
     private readonly DbContext _dbContext;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly Stack<string> _preventLoopList = new();
-    public readonly Dictionary<string, EntityData> Entities = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)

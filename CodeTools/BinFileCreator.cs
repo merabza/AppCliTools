@@ -7,10 +7,10 @@ namespace CodeTools;
 
 public /*open*/ class BinFileCreator
 {
-    private readonly string _placePath;
     protected readonly BinFile BinFile;
 
     protected readonly ILogger Logger;
+    private readonly string _placePath;
 
     public BinFileCreator(ILogger logger, string placePath, string binFileName)
     {
