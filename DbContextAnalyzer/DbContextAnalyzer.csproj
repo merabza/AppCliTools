@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\BackendCarcass\Carcass.Database\Carcass.Database.csproj" />
         <ProjectReference Include="..\..\BackendCarcass\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibDatabaseParameters\LibDatabaseParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\LibParameters\LibParameters.csproj" />

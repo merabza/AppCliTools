@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using CarcassDb;
+using Carcass.Database;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.EntityFrameworkCore;
