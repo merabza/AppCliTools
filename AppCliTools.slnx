@@ -1,0 +1,48 @@
+<Solution>
+    <Folder Name="/DatabaseTools/">
+        <Project Path="../DatabaseTools/DbTools/DbTools.csproj" />
+        <Project Path="../DatabaseTools/DbToolsFactory/DbToolsFactory.csproj" />
+        <Project Path="../DatabaseTools/OleDbTools/OleDbTools.csproj" />
+        <Project Path="../DatabaseTools/SqLiteDbTools/SqLiteDbTools.csproj" />
+        <Project Path="../DatabaseTools/SqlServerDbTools/SqlServerDbTools.csproj" />
+    </Folder>
+    <Folder Name="/ParametersManagement/">
+        <Project Path="../ParametersManagement/LibApiClientParameters/LibApiClientParameters.csproj" />
+        <Project Path="../ParametersManagement/LibDatabaseParameters/LibDatabaseParameters.csproj" />
+        <Project Path="../ParametersManagement/LibParameters/LibParameters.csproj" />
+    </Folder>
+    <Folder Name="/Solution Items/">
+        <File Path=".editorconfig" />
+        <File Path="Directory.Build.props" />
+        <File Path="Directory.Packages.props" />
+    </Folder>
+    <Folder Name="/SystemTools/">
+        <Project Path="../SystemTools/ApiContracts/ApiContracts.csproj" />
+        <Project Path="../SystemTools/SystemToolsShared/SystemToolsShared.csproj" />
+        <Project Path="../SystemTools/TestApiContracts/TestApiContracts.csproj" />
+    </Folder>
+    <Folder Name="/Tests/">
+        <Project Path="CliMenu.Tests/CliMenu.Tests.csproj" />
+        <Project Path="CliParameters.Tests/CliParameters.Tests.csproj" />
+    </Folder>
+    <Folder Name="/ToolsManagement/">
+        <Project Path="../ToolsManagement/ApiClientsManagement/ApiClientsManagement.csproj" />
+        <Project Path="../ToolsManagement/DatabasesManagement/DatabasesManagement.csproj" />
+        <Project Path="../ToolsManagement/LibToolActions/LibToolActions.csproj" />
+    </Folder>
+    <Project Path="AppCliTools/AppCliTools.csproj" />
+    <Project Path="CliMenu/CliMenu.csproj" />
+    <Project Path="CliParameters/CliParameters.csproj" />
+    <Project Path="CliParametersApiClientsEdit/CliParametersApiClientsEdit.csproj" />
+    <Project Path="CliParametersDataEdit/CliParametersDataEdit.csproj" />
+    <Project Path="CliParametersEdit/CliParametersEdit.csproj" />
+    <Project Path="CliParametersExcludeSetsEdit/CliParametersExcludeSetsEdit.csproj" />
+    <Project Path="CliTools/CliTools.csproj" />
+    <Project Path="CliToolsData/CliToolsData.csproj" />
+    <Project Path="CodeTools/CodeTools.csproj" />
+    <Project Path="DbContextAnalyzer/DbContextAnalyzer.csproj" />
+    <Project Path="GramParser/GramParser.csproj" />
+    <Project Path="LibDataInput/LibDataInput.csproj" />
+    <Project Path="LibMenuInput/LibMenuInput.csproj" />
+    <Project Path="LibSeedCodeCreator/LibSeedCodeCreator.csproj" />
+</Solution>
