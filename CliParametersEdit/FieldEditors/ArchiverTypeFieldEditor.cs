@@ -20,7 +20,7 @@ public sealed class ArchiverTypeFieldEditor : EnumFieldEditor<EArchiveType>
     {
         base.UpdateField(recordKey, recordForUpdate);
         var currentArchiveType = GetValue(recordForUpdate);
-        var enable = currentArchiveType != EArchiveType.ZipClass;
+        bool enable = currentArchiveType != EArchiveType.ZipClass;
         _cruder.EnableFieldByName(nameof(ArchiverData.CompressProgramPatch), enable);
         _cruder.EnableFieldByName(nameof(ArchiverData.DecompressProgramPatch), enable);
     }

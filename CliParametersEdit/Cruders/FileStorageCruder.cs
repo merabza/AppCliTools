@@ -89,12 +89,12 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
             return;
         }
 
-        var isFileSchema = fileStorageData.IsFileSchema();
-        var enableUserNamePassword = isFileSchema is not null && !isFileSchema.Value;
+        bool? isFileSchema = fileStorageData.IsFileSchema();
+        bool enableUserNamePassword = isFileSchema is not null && !isFileSchema.Value;
         EnableFieldByName(nameof(FileStorageData.UserName), enableUserNamePassword);
         EnableFieldByName(nameof(FileStorageData.Password), enableUserNamePassword);
-        var isFtp = fileStorageData.IsFtp();
-        var enableFtpProperties = isFtp is not null && isFtp.Value;
+        bool? isFtp = fileStorageData.IsFtp();
+        bool enableFtpProperties = isFtp is not null && isFtp.Value;
         EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
         EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
     }

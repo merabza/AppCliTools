@@ -17,12 +17,12 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
 
     protected override bool RunBody()
     {
-        var menuLine = _menuLinkWithoutMainMenu.Split('/');
+        string[] menuLine = _menuLinkWithoutMainMenu.Split('/');
 
         var currentMenu = _cliAppLoop.BuildMainMenu();
 
         CliMenuItem? menuItem = null;
-        foreach (var menuName in menuLine)
+        foreach (string menuName in menuLine)
         {
             menuItem = currentMenu?.GetMenuItemWithName(menuName);
             if (menuItem is null)

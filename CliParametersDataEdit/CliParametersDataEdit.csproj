@@ -13,12 +13,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\DatabaseTools\DatabaseTools.DbTools\DatabaseTools.DbTools.csproj" />
-        <ProjectReference Include="..\..\DatabaseTools\DbToolsFactory\DbToolsFactory.csproj" />
-        <ProjectReference Include="..\..\DatabaseTools\DbTools\DbTools.csproj" />
-        <ProjectReference Include="..\..\DatabaseTools\SqlServerDbTools\SqlServerDbTools.csproj" />
-        <ProjectReference Include="..\..\ParametersManagement\LibDatabaseParameters\LibDatabaseParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibDatabaseParameters\ParametersManagement.LibDatabaseParameters.csproj" />
-        <ProjectReference Include="..\..\ToolsManagement\DatabasesManagement\DatabasesManagement.csproj" />
         <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.DatabasesManagement\ToolsManagement.DatabasesManagement.csproj" />
         <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.LibToolActions\ToolsManagement.LibToolActions.csproj" />
         <ProjectReference Include="..\CliParametersApiClientsEdit\CliParametersApiClientsEdit.csproj" />

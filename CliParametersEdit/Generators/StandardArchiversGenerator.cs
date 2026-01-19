@@ -25,7 +25,7 @@ public static class StandardArchiversGenerator
     private static void CreateArchiverZip(bool useConsole, IParametersWithArchivers parameters,
         EArchiveType archiveType)
     {
-        var archiverName = archiveType.ToString();
+        string archiverName = archiveType.ToString();
         if (parameters.Archivers.ContainsKey(archiverName))
         {
             return;
@@ -42,8 +42,8 @@ public static class StandardArchiversGenerator
         var archiverDetector = ArchiverDetectorFactory.Create(useConsole, archiverName);
         var archiverDetectorResults = archiverDetector?.Run();
 
-        var decompressProgramPatch = archiverDetectorResults?.DecompressProgramPatch;
-        var compressProgramPatch = archiverDetectorResults?.CompressProgramPatch;
+        string? decompressProgramPatch = archiverDetectorResults?.DecompressProgramPatch;
+        string? compressProgramPatch = archiverDetectorResults?.CompressProgramPatch;
 
         if (decompressProgramPatch == null || compressProgramPatch == null)
         {

@@ -17,7 +17,7 @@ public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
     {
         var archiveType = GetValue<EArchiveType>(recordForUpdate, nameof(ArchiverData.Type));
 
-        var extensionCandidate = archiveType.ToString();
+        string extensionCandidate = archiveType.ToString();
         extensionCandidate =
             (extensionCandidate.Length > 2 ? extensionCandidate[..3] : extensionCandidate).ToLower(CultureInfo
                 .CurrentCulture);

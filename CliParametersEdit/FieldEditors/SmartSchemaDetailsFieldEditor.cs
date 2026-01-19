@@ -36,7 +36,7 @@ public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchema
         var sb = new System.Text.StringBuilder();
         var culture = System.Globalization.CultureInfo.InvariantCulture;
         sb.Append(culture, $"{val[0].PeriodType}-{val[0].PreserveCount}");
-        for (var i = 1; i < val.Count; i++)
+        for (int i = 1; i < val.Count; i++)
         {
             sb.Append(culture, $"/{val[i].PeriodType}-{val[i].PreserveCount}");
         }

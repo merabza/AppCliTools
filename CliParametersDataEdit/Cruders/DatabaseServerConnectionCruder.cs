@@ -131,7 +131,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             Console.WriteLine(
                 $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
             OneOf<bool, Err[]> isServerLocalResult = dbManager.IsServerLocal(token).Result;
-            var notOrNot = isServerLocalResult.AsT0 ? string.Empty : "NOT ";
+            string notOrNot = isServerLocalResult.AsT0 ? string.Empty : "NOT ";
             Console.WriteLine(isServerLocalResult.IsT0
                 ? $"Server is {notOrNot} local"
                 : "Server is local or not is not detected");
@@ -163,7 +163,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
 
         var databaseServerProvider = databaseServerConnection.DatabaseServerProvider;
-        (var toReturn, bool enablePassword, bool enableUser, bool enableSqlServerProps, bool enableWebAgentProps) =
+        (bool toReturn, bool enablePassword, bool enableUser, bool enableSqlServerProps, bool enableWebAgentProps) =
             EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
         if (toReturn)
         {
@@ -213,7 +213,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
                 EnableAllFieldButOne(nameof(DatabaseServerConnectionData.DatabaseServerProvider), false);
                 return (true, false, false, false, false);
             case EDatabaseProvider.SqlServer:
-                var enablePassword = !databaseServerConnection.WindowsNtIntegratedSecurity;
+                bool enablePassword = !databaseServerConnection.WindowsNtIntegratedSecurity;
                 return (false, enablePassword, enablePassword, true, false);
             case EDatabaseProvider.SqLite:
             case EDatabaseProvider.OleDb:

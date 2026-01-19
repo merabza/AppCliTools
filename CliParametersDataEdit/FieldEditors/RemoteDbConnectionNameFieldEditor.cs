@@ -91,7 +91,7 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         }
         catch (Exception e)
         {
-            var contextualMessage =
+            string contextualMessage =
                 $"Error in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {FieldName}";
             _logger.LogError(e,
                 "Error in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {FieldName}",

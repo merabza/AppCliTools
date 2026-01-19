@@ -20,7 +20,7 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var currentFileStorageName = GetValue(recordForUpdate);
+        string? currentFileStorageName = GetValue(recordForUpdate);
 
         var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
 
@@ -29,7 +29,7 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
+        string? val = GetValue(record);
 
         if (val == null)
         {
@@ -38,7 +38,7 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
 
         var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
 
-        var status = fileStorageCruder.GetStatusFor(val);
+        string? status = fileStorageCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";
     }
 }

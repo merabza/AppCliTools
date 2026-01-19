@@ -25,18 +25,18 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var currentApiClientName = GetValue(recordForUpdate);
+        string? currentApiClientName = GetValue(recordForUpdate);
 
         var apiClientCruder = ApiClientCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
-        var newValue = apiClientCruder.GetNameWithPossibleNewName(FieldName, currentApiClientName, null, _useNone);
+        string? newValue = apiClientCruder.GetNameWithPossibleNewName(FieldName, currentApiClientName, null, _useNone);
 
         SetValue(recordForUpdate, newValue);
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
+        string? val = GetValue(record);
 
         if (val == null)
         {
@@ -45,7 +45,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
 
         var apiClientCruder = ApiClientCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
-        var status = apiClientCruder.GetStatusFor(val);
+        string? status = apiClientCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";
     }
 }
