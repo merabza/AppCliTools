@@ -1,10 +1,10 @@
-﻿using CliMenu;
-using CliParametersEdit.Generators;
-using LibDataInput;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParametersEdit.Generators;
+using AppCliTools.LibDataInput;
 using ParametersManagement.LibFileParameters.Interfaces;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersEdit.CliMenuCommands;
+namespace AppCliTools.CliParametersEdit.CliMenuCommands;
 
 public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
 {

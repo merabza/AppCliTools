@@ -2,7 +2,7 @@
 
 // ReSharper disable CollectionNeverUpdated.Global
 
-namespace DbContextAnalyzer.Models;
+namespace AppCliTools.DbContextAnalyzer.Models;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ExcludesRulesParameters

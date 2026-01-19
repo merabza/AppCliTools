@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CliMenu;
-using CliParameters;
-using CliParameters.CliMenuCommands;
-using CliParametersExcludeSetsEdit.MenuCommands;
-using LibFileParameters.Interfaces;
-using LibFileParameters.Models;
-using LibParameters;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParametersExcludeSetsEdit.MenuCommands;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
 
-namespace CliParametersExcludeSetsEdit.Cruders;
+namespace AppCliTools.CliParametersExcludeSetsEdit.Cruders;
 
 public sealed class ExcludeSetCruder : ParCruder<ExcludeSet>
 {
@@ -20,25 +20,26 @@ public sealed class ExcludeSetCruder : ParCruder<ExcludeSet>
     }
 
     //public გამოიყენება UsbCopy პროექტში
-    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordName)
+    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
     {
-        base.FillDetailsSubMenu(itemSubMenuSet, recordName);
+        base.FillDetailsSubMenu(itemSubMenuSet, itemName);
 
         var parameters = (IParametersWithExcludeSets)ParametersManager.Parameters;
-        var excludeSets = parameters.ExcludeSets;
-        var excludeSet = excludeSets[recordName];
+        Dictionary<string, ExcludeSet> excludeSets = parameters.ExcludeSets;
+        ExcludeSet excludeSet = excludeSets[itemName];
 
-        var detailsCruder = new ExcludeSetFileMaskCruder(ParametersManager, recordName);
-        var newItemCommand =
-            new NewItemCliMenuCommand(detailsCruder, recordName, $"Create New {detailsCruder.CrudName}");
+        var detailsCruder = new ExcludeSetFileMaskCruder(ParametersManager, itemName);
+        var newItemCommand = new NewItemCliMenuCommand(detailsCruder, itemName, $"Create New {detailsCruder.CrudName}");
         itemSubMenuSet.AddMenuItem(newItemCommand);
 
         //if (excludeSet.FolderFileMasks == null)
         //    return;
 
-        foreach (var detailListCommand in excludeSet.FolderFileMasks.Select(mask =>
-                     new ItemSubMenuCliMenuCommand(detailsCruder, mask, recordName, true)))
+        foreach (ItemSubMenuCliMenuCommand detailListCommand in excludeSet.FolderFileMasks.Select(mask =>
+                     new ItemSubMenuCliMenuCommand(detailsCruder, mask, itemName, true)))
+        {
             itemSubMenuSet.AddMenuItem(detailListCommand);
+        }
     }
 
     public static ExcludeSetCruder Create(IParametersManager parametersManager)

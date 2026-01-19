@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using CliMenu;
-using CliParameters;
-using CliParametersEdit.CliMenuCommands;
-using CliParametersEdit.FieldEditors;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParametersEdit.CliMenuCommands;
+using AppCliTools.CliParametersEdit.FieldEditors;
 using ParametersManagement.LibFileParameters.Interfaces;
 using ParametersManagement.LibFileParameters.Models;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersEdit.Cruders;
+namespace AppCliTools.CliParametersEdit.Cruders;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ArchiverCruder : ParCruder<ArchiverData>

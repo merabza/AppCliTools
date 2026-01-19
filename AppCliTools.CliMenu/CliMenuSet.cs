@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using SystemTools.SystemToolsShared;
 
-namespace CliMenu;
+namespace AppCliTools.CliMenu;
 
 public sealed class CliMenuSet
 {

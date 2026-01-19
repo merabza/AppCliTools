@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LibDataInput.InputParsers;
+namespace AppCliTools.LibDataInput.InputParsers;
 
 public /*open*/ class DelimiterParser : InputParser
 {

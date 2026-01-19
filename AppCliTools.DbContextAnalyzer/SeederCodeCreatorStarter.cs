@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
+using AppCliTools.DbContextAnalyzer.Domain;
+using AppCliTools.DbContextAnalyzer.Models;
 using Carcass.Database;
-using DbContextAnalyzer.Domain;
-using DbContextAnalyzer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer;
+namespace AppCliTools.DbContextAnalyzer;
 
 public sealed class SeederCodeCreatorStarter
 {
@@ -23,7 +23,7 @@ public sealed class SeederCodeCreatorStarter
 
     public void Go(DbContext contextDbSc, DbContext devContext)
     {
-        var pathToContentRoot = Directory.GetCurrentDirectory();
+        string pathToContentRoot = Directory.GetCurrentDirectory();
         Console.WriteLine("pathToContentRoot=" + pathToContentRoot);
 
         var excludesRulesParameters =
@@ -91,7 +91,8 @@ public sealed class SeederCodeCreatorStarter
             return;
         }
 
-        var modelFullPath = Path.Combine(_par.DataSeedingProjectPlacePath, _par.DataSeedingProjectNamespace, "Models");
+        string modelFullPath =
+            Path.Combine(_par.DataSeedingProjectPlacePath, _par.DataSeedingProjectNamespace, "Models");
         if (FileStat.CreateFolderIfNotExists(modelFullPath, true) is null)
         {
             StShared.WriteErrorLine("modelFullPath does not created", true);

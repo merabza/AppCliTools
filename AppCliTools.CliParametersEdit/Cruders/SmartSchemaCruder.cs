@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using CliMenu;
-using CliParameters;
-using CliParameters.FieldEditors;
-using CliParametersEdit.CliMenuCommands;
-using CliParametersEdit.FieldEditors;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersEdit.CliMenuCommands;
+using AppCliTools.CliParametersEdit.FieldEditors;
 using ParametersManagement.LibFileParameters.Interfaces;
 using ParametersManagement.LibFileParameters.Models;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersEdit.Cruders;
+namespace AppCliTools.CliParametersEdit.Cruders;
 
 public sealed class SmartSchemaCruder : ParCruder<SmartSchema>
 {

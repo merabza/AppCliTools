@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibDataInput.InputParsers;
+namespace AppCliTools.LibDataInput.InputParsers;
 
 public sealed class DateDelimiterParser : DelimiterParser
 {
@@ -11,7 +11,7 @@ public sealed class DateDelimiterParser : DelimiterParser
 
     protected override int GetMax(int[] digs)
     {
-        var i = digs.Length - 1;
+        int i = digs.Length - 1;
         return i < 2 ? Maxes[i] : DateTime.DaysInMonth(digs[0], digs[1]);
     }
 }

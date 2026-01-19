@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CliParameters;
-using CliParameters.FieldEditors;
-using CliParametersEdit.FieldEditors;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersEdit.FieldEditors;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibFileParameters.Interfaces;
 using ParametersManagement.LibFileParameters.Models;
@@ -10,7 +10,7 @@ using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 using ToolsManagement.FileManagersMain;
 
-namespace CliParametersEdit.Cruders;
+namespace AppCliTools.CliParametersEdit.Cruders;
 
 public sealed class FileStorageCruder : ParCruder<FileStorageData>
 {

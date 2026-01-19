@@ -1,8 +1,8 @@
 ﻿using System;
-using LibDataInput;
+using AppCliTools.LibDataInput;
 using SystemTools.SystemToolsShared;
 
-namespace CliMenu;
+namespace AppCliTools.CliMenu;
 
 public /*open*/ class CliMenuCommand
 {

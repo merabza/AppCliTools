@@ -2,7 +2,7 @@
 using ParametersManagement.LibParameters;
 using ToolsManagement.LibToolActions;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public /*open*/ class ToolCommand : ToolAction, IToolCommand
 {

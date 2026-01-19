@@ -3,7 +3,7 @@ using ParametersManagement.LibFileParameters.Models;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParametersEdit.Generators;
+namespace AppCliTools.CliParametersEdit.Generators;
 
 public static class StandardSmartSchemas
 {

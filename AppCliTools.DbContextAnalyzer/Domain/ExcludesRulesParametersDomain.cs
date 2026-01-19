@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using DbContextAnalyzer.Models;
+using AppCliTools.DbContextAnalyzer.Models;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer.Domain;
+namespace AppCliTools.DbContextAnalyzer.Domain;
 
 public sealed class ExcludesRulesParametersDomain
 {

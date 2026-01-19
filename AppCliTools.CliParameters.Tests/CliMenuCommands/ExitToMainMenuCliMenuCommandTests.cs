@@ -1,8 +1,8 @@
 using System;
-using CliMenu;
-using CliParameters.CliMenuCommands;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
 
-namespace CliParameters.Tests.CliMenuCommands;
+namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
 public sealed class ExitToMainMenuCliMenuCommandTests
 {
@@ -226,11 +226,14 @@ public sealed class ExitToMainMenuCliMenuCommandTests
         // Act & Assert - This should throw based on base class validation
         // Note: The actual behavior depends on the base class implementation
         // If the base class allows null, this test would need adjustment
-        var exception = Record.Exception(() => new ExitToMainMenuCliMenuCommand(name!, parentMenuName));
+        Exception? exception = Record.Exception(() => new ExitToMainMenuCliMenuCommand(name!, parentMenuName));
 
 // If no exception is thrown, the constructor accepts null
         // If an exception is thrown, we verify it's the expected type
-        if (exception != null) Assert.IsType<ArgumentNullException>(exception);
+        if (exception != null)
+        {
+            Assert.IsType<ArgumentNullException>(exception);
+        }
     }
 
     [Fact]

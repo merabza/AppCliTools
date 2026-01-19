@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CliMenu;
-using CliParameters.Cruders;
-using CliParameters.FieldEditors;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEditor<Dictionary<string, string>>
     where TCruder : Cruder

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class CodeRegion : CodeBlockBase, ICodeItem
 {
@@ -14,7 +14,7 @@ public sealed class CodeRegion : CodeBlockBase, ICodeItem
 
     public override string Output(int indentLevel)
     {
-        var indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new(' ', indentLevel * Stats.IndentSize);
         var sb = new StringBuilder();
 
         sb.AppendLine();
@@ -29,7 +29,7 @@ public sealed class CodeRegion : CodeBlockBase, ICodeItem
 
     public override string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
-        var indent = new string(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
+        string indent = new(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
         var sb = new StringBuilder();
         sb.Append(indent + $"new CodeRegion({RegionHeader.Quotas()}");
         sb.Append(base.Output(indentLevel));

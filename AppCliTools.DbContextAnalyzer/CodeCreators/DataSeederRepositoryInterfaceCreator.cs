@@ -1,9 +1,9 @@
 ﻿using System;
-using CodeTools;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class DataSeederRepositoryInterfaceCreator : CodeCreator
 {

@@ -1,9 +1,9 @@
 ﻿using System;
-using CodeTools;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class FakeCreatorForJsonFilesCreator : CodeCreator
 {
@@ -18,8 +18,8 @@ public sealed class FakeCreatorForJsonFilesCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var dbContextClassName = $"{_par.ProjectPrefix.Replace('.', '_')}DbScContext";
-        var dbContextProjectName = $"{_par.ProjectPrefix}ScaffoldSeederDbSc";
+        string dbContextClassName = $"{_par.ProjectPrefix.Replace('.', '_')}DbScContext";
+        string dbContextProjectName = $"{_par.ProjectPrefix}ScaffoldSeederDbSc";
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             $"using {dbContextProjectName}", $"namespace {_par.GetJsonProjectNamespace}", string.Empty,

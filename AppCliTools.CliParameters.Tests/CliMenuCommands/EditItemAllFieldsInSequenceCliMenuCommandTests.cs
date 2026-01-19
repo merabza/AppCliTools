@@ -1,9 +1,9 @@
 using System.Reflection;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.Cruders;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.Cruders;
 
-namespace CliParameters.Tests.CliMenuCommands;
+namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
 public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
 {
@@ -34,10 +34,10 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
 
         // Assert - Constructor doesn't validate, it just stores the value
         Assert.NotNull(command);
-        var cruderField = typeof(EditItemAllFieldsInSequenceCliMenuCommand).GetField("_cruder",
+        FieldInfo? cruderField = typeof(EditItemAllFieldsInSequenceCliMenuCommand).GetField("_cruder",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(cruderField);
-        var storedCruder = cruderField.GetValue(command);
+        object? storedCruder = cruderField.GetValue(command);
         Assert.Null(storedCruder);
     }
 
@@ -105,7 +105,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
     {
         // Arrange
         var cruder = new TestCruder("Item", "Items");
-        var itemName = new string('A', 1000);
+        string itemName = new('A', 1000);
 
         // Act
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
@@ -132,7 +132,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
 
         // Assert
         Assert.Equal("Edit All fields in sequence", command.Name);
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(itemName, parentMenuName);
     }
 
@@ -200,7 +200,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(itemName, parentMenuName);
     }
 
@@ -214,7 +214,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, null!);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Null(parentMenuName);
     }
 
@@ -228,7 +228,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, string.Empty);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(string.Empty, parentMenuName);
     }
 
@@ -243,7 +243,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(itemName, parentMenuName);
     }
 
@@ -270,7 +270,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Act
-        var result = command.GetSubMenu();
+        CliMenuSet? result = command.GetSubMenu();
 
         // Assert
         Assert.Null(result);
@@ -285,7 +285,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Act
-        var result = command.GetMenuLinkToGo();
+        string? result = command.GetMenuLinkToGo();
 
         // Assert
         Assert.Null(result);
@@ -326,10 +326,10 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Assert - Verify cruder is stored by using reflection
-        var cruderField = typeof(EditItemAllFieldsInSequenceCliMenuCommand).GetField("_cruder",
+        FieldInfo? cruderField = typeof(EditItemAllFieldsInSequenceCliMenuCommand).GetField("_cruder",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(cruderField);
-        var storedCruder = cruderField.GetValue(command);
+        object? storedCruder = cruderField.GetValue(command);
         Assert.Same(cruder, storedCruder);
     }
 
@@ -344,7 +344,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Assert - Verify parentMenuName is passed to base constructor
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(itemName, parentMenuName);
     }
 
@@ -373,34 +373,10 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
 
         // Act - MenuAction is public and has a protected setter through inheritance
         // We can't set it directly in tests, but we can verify it starts as Nothing
-        var initialAction = command.MenuAction;
+        EMenuAction initialAction = command.MenuAction;
 
         // Assert
         Assert.Equal(EMenuAction.Nothing, initialAction);
-    }
-
-    [Fact]
-    public void MenuActionOnBodySuccess_CanBeReadButNotSetInTests()
-    {
-        // Arrange
-        var cruder = new TestCruder("Item", "Items");
-        const string itemName = "TestItem";
-        var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
-
-        // Act & Assert - Verify the value set by constructor
-        Assert.Equal(EMenuAction.LevelUp, command.MenuActionOnBodySuccess);
-    }
-
-    [Fact]
-    public void MenuActionOnBodyFail_CanBeReadButNotSetInTests()
-    {
-        // Arrange
-        var cruder = new TestCruder("Item", "Items");
-        const string itemName = "TestItem";
-        var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
-
-        // Act & Assert - Verify the value set by constructor
-        Assert.Equal(EMenuAction.Reload, command.MenuActionOnBodyFail);
     }
 
     [Fact]
@@ -436,24 +412,6 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         Assert.Equal(EMenuAction.LevelUp, command.MenuActionOnBodySuccess);
         Assert.Equal(EMenuAction.Reload, command.MenuActionOnBodyFail);
         Assert.Equal(itemName, GetParentMenuName(command));
-    }
-
-    [Fact]
-    public void Constructor_StoresCruderReference()
-    {
-        // Arrange
-        var cruder = new TestCruder("Item", "Items");
-        const string itemName = "TestItem";
-
-        // Act
-        var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
-
-        // Assert - Verify the same cruder instance is stored
-        var cruderField = typeof(EditItemAllFieldsInSequenceCliMenuCommand).GetField("_cruder",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-        Assert.NotNull(cruderField);
-        var storedCruder = cruderField.GetValue(command);
-        Assert.Same(cruder, storedCruder);
     }
 
     [Fact]
@@ -507,7 +465,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName!);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(itemName, parentMenuName);
     }
 
@@ -522,7 +480,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Assert - Item name should be stored as-is without trimming
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(itemName, parentMenuName);
     }
 
@@ -535,7 +493,7 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
         var command = new EditItemAllFieldsInSequenceCliMenuCommand(cruder, itemName);
 
         // Assert
-        Assert.Null(command.Status);
+        Assert.Null(command.StatusString);
     }
 
     [Fact]
@@ -555,7 +513,8 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommandTests
     /// </summary>
     private static string? GetParentMenuName(EditItemAllFieldsInSequenceCliMenuCommand command)
     {
-        var field = typeof(CliMenuCommand).GetField("ParentMenuName", BindingFlags.Public | BindingFlags.Instance);
+        FieldInfo? field =
+            typeof(CliMenuCommand).GetField("ParentMenuName", BindingFlags.Public | BindingFlags.Instance);
         return field?.GetValue(command) as string;
     }
 

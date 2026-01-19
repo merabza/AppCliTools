@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public sealed class TextDataInput : DataInput
 {
@@ -34,7 +34,7 @@ public sealed class TextDataInput : DataInput
         var sb = new StringBuilder();
         while (true)
         {
-            var ch = Console.ReadKey(true);
+            ConsoleKeyInfo ch = Console.ReadKey(true);
             switch (ch.Key)
             {
                 case ConsoleKey.Enter when sb.Length == 0:
@@ -42,16 +42,16 @@ public sealed class TextDataInput : DataInput
                     Text = _defaultValue;
                     return true;
                 case ConsoleKey.Enter:
-                {
-                    if (sb.Length > 0)
                     {
-                        Text = sb.ToString();
-                        Console.WriteLine();
-                        return true;
-                    }
+                        if (sb.Length > 0)
+                        {
+                            Text = sb.ToString();
+                            Console.WriteLine();
+                            return true;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case ConsoleKey.Escape:
                     throw new DataInputEscapeException("Escape");
                 case ConsoleKey.Backspace:

@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public /*open*/ class CodeCreator
 {

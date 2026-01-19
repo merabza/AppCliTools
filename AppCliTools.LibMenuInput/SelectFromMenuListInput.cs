@@ -1,8 +1,8 @@
 ﻿using System;
-using CliMenu;
-using LibDataInput;
+using AppCliTools.CliMenu;
+using AppCliTools.LibDataInput;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public sealed class SelectFromMenuListInput : DataInput
 {
@@ -30,8 +30,8 @@ public sealed class SelectFromMenuListInput : DataInput
 
         while (true)
         {
-            var ch = Console.ReadKey(true);
-            var menuItem = _listSet.GetMenuItemByKey(ch);
+            ConsoleKeyInfo ch = Console.ReadKey(true);
+            CliMenuItem? menuItem = _listSet.GetMenuItemByKey(ch);
             if (menuItem != null)
             {
                 SelectedCliMenuItem = menuItem;
@@ -54,20 +54,20 @@ public sealed class SelectFromMenuListInput : DataInput
                 case ConsoleKey.Enter when _defaultValue == null:
                     continue;
                 case ConsoleKey.Enter:
-                {
-                    menuItem = _listSet.GetMenuItemWithName(_defaultValue);
-
-                    if (menuItem == null)
                     {
-                        continue;
-                    }
+                        menuItem = _listSet.GetMenuItemWithName(_defaultValue);
 
-                    SelectedCliMenuItem = menuItem;
-                    Id = menuItem.CountedId;
-                    Console.WriteLine();
-                    Console.WriteLine($"{_fieldName} is: {_defaultValue}");
-                    return true;
-                }
+                        if (menuItem == null)
+                        {
+                            continue;
+                        }
+
+                        SelectedCliMenuItem = menuItem;
+                        Id = menuItem.CountedId;
+                        Console.WriteLine();
+                        Console.WriteLine($"{_fieldName} is: {_defaultValue}");
+                        return true;
+                    }
                 case ConsoleKey.Escape:
                     throw new DataInputEscapeException("Escape");
             }

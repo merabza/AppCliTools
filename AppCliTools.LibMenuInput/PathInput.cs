@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using LibDataInput;
+using AppCliTools.LibDataInput;
 using SystemTools.SystemToolsShared;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public /*open*/ class PathInput : DataInput
 {

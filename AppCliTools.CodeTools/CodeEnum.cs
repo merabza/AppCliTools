@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class CodeEnum : ICodeItem
 {
@@ -16,14 +16,14 @@ public sealed class CodeEnum : ICodeItem
 
     public string Output(int indentLevel)
     {
-        var indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new(' ', indentLevel * Stats.IndentSize);
         var sb = new StringBuilder();
 
         sb.AppendLine();
         sb.AppendLine(indent + _enumHeader);
         sb.AppendLine(indent + "{");
-        var elementIndent = new string(' ', (indentLevel + 1) * Stats.IndentSize);
-        foreach (var enumElement in _enumElementsList)
+        string elementIndent = new(' ', (indentLevel + 1) * Stats.IndentSize);
+        foreach (string enumElement in _enumElementsList)
         {
             sb.AppendLine(elementIndent + enumElement);
         }
@@ -35,14 +35,14 @@ public sealed class CodeEnum : ICodeItem
 
     public string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
-        var indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new(' ', indentLevel * Stats.IndentSize);
         var sb = new StringBuilder();
 
         sb.AppendLine();
         sb.AppendLine(indent + _enumHeader);
         sb.AppendLine(indent + "{");
-        var elementIndent = new string(' ', (indentLevel + 1) * Stats.IndentSize);
-        foreach (var enumElement in _enumElementsList)
+        string elementIndent = new(' ', (indentLevel + 1) * Stats.IndentSize);
+        foreach (string enumElement in _enumElementsList)
         {
             sb.AppendLine(elementIndent + enumElement);
         }

@@ -1,18 +1,18 @@
 ﻿using System;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class CodeExtraLine : ICodeItem
 {
     public string Output(int indentLevel)
     {
-        var indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new(' ', indentLevel * Stats.IndentSize);
         return indent + Environment.NewLine;
     }
 
     public string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
-        var indent = new string(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
+        string indent = new(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
         return "," + Environment.NewLine + indent + "\"\"";
     }
 }

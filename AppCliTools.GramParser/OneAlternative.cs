@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GramParser;
+namespace AppCliTools.GramParser;
 
 public class OneAlternative
 {
@@ -10,7 +10,7 @@ public class OneAlternative
     {
         if (split)
         {
-            var strAtoms = alternative.Split(' ');
+            string[] strAtoms = alternative.Split(' ');
             _atoms.AddRange(strAtoms);
         }
         else

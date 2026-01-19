@@ -1,8 +1,8 @@
-﻿using CliMenu;
-using CliParameters.Cruders;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
 using SystemTools.SystemToolsShared;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class EditItemAllFieldsInSequenceCliMenuCommand : CliMenuCommand
 {

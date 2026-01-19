@@ -1,9 +1,9 @@
 ﻿using System.Net.Http;
-using CliParameters.FieldEditors;
+using AppCliTools.CliParameters.FieldEditors;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersApiClientsEdit.FieldEditors;
+namespace AppCliTools.CliParametersApiClientsEdit.FieldEditors;
 
 public sealed class ApiClientNameFieldEditor : FieldEditor<string>
 {

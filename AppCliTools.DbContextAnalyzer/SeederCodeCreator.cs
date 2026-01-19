@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DbContextAnalyzer.CodeCreators;
-using DbContextAnalyzer.Domain;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.CodeCreators;
+using AppCliTools.DbContextAnalyzer.Domain;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using SystemTools.JetBrainsResharperGlobalToolsWork;
 
-namespace DbContextAnalyzer;
+namespace AppCliTools.DbContextAnalyzer;
 
 public sealed class SeederCodeCreator
 {
@@ -64,7 +66,7 @@ public sealed class SeederCodeCreator
         projectDataSeederCreator.CreateFileStructure();
 
         //----
-        var carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
+        List<IEntityType> carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
 
         var relations = new Relations(_dbScContext, _excludesRulesParameters);
         relations.DbContextAnalysis();
@@ -96,8 +98,9 @@ public sealed class SeederCodeCreator
 
         //-------------
 
-        var lastLevel = -1;
-        foreach (var (tableName, value) in relations.Entities.OrderBy(o => o.Value.Level).ThenBy(tb => tb.Key))
+        int lastLevel = -1;
+        foreach ((string tableName, EntityData value) in relations.Entities.OrderBy(o => o.Value.Level)
+                     .ThenBy(tb => tb.Key))
         {
             if (value.Level != lastLevel)
             {
@@ -105,13 +108,13 @@ public sealed class SeederCodeCreator
                 _logger.LogInformation("Level = {LastLevel}", lastLevel);
             }
 
-            var newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
-            var devBaseTableEntity = relationsInDevBase.Entities.SingleOrDefault(x =>
+            string newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
+            KeyValuePair<string, EntityData> devBaseTableEntity = relationsInDevBase.Entities.SingleOrDefault(x =>
                 string.Equals(x.Value.TableName, newTableName, StringComparison.Ordinal));
 
             _logger.LogInformation("TableName = {TableName}", tableName);
 
-            var isCarcassType = carcassEntityTypes.Any(a =>
+            bool isCarcassType = carcassEntityTypes.Any(a =>
                 string.Equals(Relations.GetTableName(a), tableName, StringComparison.OrdinalIgnoreCase));
             //2.1
             var seederModelCreatorForJsonCreatorProject = new SeederModelCreator(_logger,
@@ -129,14 +132,14 @@ public sealed class SeederCodeCreator
             }
 
             //2.3
-            var placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
+            string placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
                 isCarcassType
                     ? _seederCodeCreatorParameters.CarcassSeedersFolderName
                     : _seederCodeCreatorParameters.ProjectSeedersFolderName);
 
             var seederCreator =
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
-            var usedTableName = seederCreator.UseEntity(value, devBaseTableEntity.Value, isCarcassType);
+            string usedTableName = seederCreator.UseEntity(value, devBaseTableEntity.Value, isCarcassType);
             if (isCarcassType)
             {
                 usedCarcassEntityTypes.Add(usedTableName);
@@ -155,7 +158,7 @@ public sealed class SeederCodeCreator
         }
         //-------------
 
-        var notUsedCarcassTypes = (from carcassEntityType in carcassEntityTypes
+        List<IEntityType> notUsedCarcassTypes = (from carcassEntityType in carcassEntityTypes
             let tableName = Relations.GetTableName(carcassEntityType)
             where !string.IsNullOrEmpty(tableName)
             let isUsed =
@@ -163,10 +166,10 @@ public sealed class SeederCodeCreator
             where !isUsed
             select carcassEntityType).ToList();
 
-        foreach (var carcassEntityType in notUsedCarcassTypes)
+        foreach (IEntityType carcassEntityType in notUsedCarcassTypes)
         {
             //2.3
-            var placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
+            string placePath = Path.Combine(_seederCodeCreatorParameters.PlacePath,
                 _seederCodeCreatorParameters.CarcassSeedersFolderName);
 
             var seederCreator =
@@ -182,7 +185,7 @@ public sealed class SeederCodeCreator
         projectDataSeedersFactoryCreator.FinishAndSave();
 
         var place = new DirectoryInfo(_getJsonCreatorParameters.PlacePath);
-        var solutionDir = place.Parent?.Parent;
+        DirectoryInfo? solutionDir = place.Parent?.Parent;
         if (solutionDir is null)
         {
             return;

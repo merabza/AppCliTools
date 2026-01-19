@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DbContextAnalyzer.Models;
+namespace AppCliTools.DbContextAnalyzer.Models;
 
 public sealed class KeyFieldNamesModel
 {

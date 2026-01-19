@@ -1,8 +1,8 @@
 ﻿using System;
-using CodeTools;
+using AppCliTools.CodeTools;
 using Microsoft.Extensions.Logging;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
 {
@@ -27,8 +27,8 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var projectMigrationProjectName = _dbProjectNamespace + "Migration"; //GeoModelDbMigration
-        var designTimeDbContextFactoryClassName =
+        string projectMigrationProjectName = _dbProjectNamespace + "Migration"; //GeoModelDbMigration
+        string designTimeDbContextFactoryClassName =
             $"{_dbProjectNamespace}DesignTimeDbContextFactory"; //GeoModelDesignTimeDbContextFactory
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             $"using {_dbProjectNamespace}", "using CarcassDb", string.Empty, $"namespace {_projectNamespace}",

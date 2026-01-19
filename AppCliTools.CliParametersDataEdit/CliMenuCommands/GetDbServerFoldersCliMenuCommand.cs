@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
-using CliMenu;
-using CliParametersDataEdit.ToolActions;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParametersDataEdit.ToolActions;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersDataEdit.CliMenuCommands;
+namespace AppCliTools.CliParametersDataEdit.CliMenuCommands;
 
 public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
 {
@@ -35,7 +35,7 @@ public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
             return getDbServerFoldersToolAction.Run(token).Result;

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.Cruders;
-using LibParameters;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.Cruders;
+using ParametersManagement.LibParameters;
 
-namespace CliParameters.Tests.CliMenuCommands;
+namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
 public sealed class CruderListCliMenuCommandTests
 {
@@ -40,7 +41,7 @@ public sealed class CruderListCliMenuCommandTests
         var command = new CruderListCliMenuCommand(cruder);
 
         // Act
-        var result = command.GetSubMenu();
+        CliMenuSet result = command.GetSubMenu();
 
         // Assert
         Assert.NotNull(result);
@@ -55,8 +56,8 @@ public sealed class CruderListCliMenuCommandTests
         var command = new CruderListCliMenuCommand(cruder);
 
         // Act
-        var result1 = command.GetSubMenu();
-        var result2 = command.GetSubMenu();
+        CliMenuSet result1 = command.GetSubMenu();
+        CliMenuSet result2 = command.GetSubMenu();
 
         // Assert
         Assert.NotNull(result1);
@@ -77,7 +78,7 @@ public sealed class CruderListCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal("42", command.Status);
+        Assert.Equal("42", command.StatusString);
     }
 
     [Fact]
@@ -91,7 +92,7 @@ public sealed class CruderListCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal("0", command.Status);
+        Assert.Equal("0", command.StatusString);
     }
 
     [Fact]
@@ -105,7 +106,7 @@ public sealed class CruderListCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal("1", command.Status);
+        Assert.Equal("1", command.StatusString);
     }
 
     [Fact]
@@ -119,7 +120,7 @@ public sealed class CruderListCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal("999999", command.Status);
+        Assert.Equal("999999", command.StatusString);
     }
 
     [Fact]
@@ -157,14 +158,14 @@ public sealed class CruderListCliMenuCommandTests
         var command = new CruderListCliMenuCommand(cruder);
 
         // Verify initial state
-        Assert.Null(command.Status);
+        Assert.Null(command.StatusString);
 
         // Act
         command.CountStatus();
 
         // Assert
-        Assert.NotNull(command.Status);
-        Assert.Equal("15", command.Status);
+        Assert.NotNull(command.StatusString);
+        Assert.Equal("15", command.StatusString);
     }
 
     [Fact]
@@ -176,12 +177,12 @@ public sealed class CruderListCliMenuCommandTests
 
         // Act & Assert - First call
         command.CountStatus();
-        Assert.Equal("10", command.Status);
+        Assert.Equal("10", command.StatusString);
 
         // Update the count
         cruder.SetKeyCount(20);
         command.CountStatus();
-        Assert.Equal("20", command.Status);
+        Assert.Equal("20", command.StatusString);
     }
 
     [Theory]
@@ -200,7 +201,7 @@ public sealed class CruderListCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal(count.ToString(), command.Status);
+        Assert.Equal(count.ToString(CultureInfo.InvariantCulture), command.StatusString);
     }
 
     [Fact]
@@ -224,7 +225,7 @@ public sealed class CruderListCliMenuCommandTests
         var command = new CruderListCliMenuCommand(cruder);
 
         // Act
-        var result = command.GetSubMenu();
+        CliMenuSet result = command.GetSubMenu();
 
         // Assert
         Assert.NotNull(result);
@@ -262,9 +263,9 @@ public sealed class CruderListCliMenuCommandTests
 
         // Act
         command.CountStatus();
-        var firstStatus = command.Status;
+        string? firstStatus = command.StatusString;
         command.CountStatus();
-        var secondStatus = command.Status;
+        string? secondStatus = command.StatusString;
 
         // Assert
         Assert.Equal(firstStatus, secondStatus);
@@ -292,14 +293,14 @@ public sealed class CruderListCliMenuCommandTests
         var command = new CruderListCliMenuCommand(cruder);
 
         command.CountStatus();
-        Assert.Equal("5", command.Status);
+        Assert.Equal("5", command.StatusString);
 
         // Act - Change the count
         cruder.SetKeyCount(3);
         command.CountStatus();
 
         // Assert
-        Assert.Equal("3", command.Status);
+        Assert.Equal("3", command.StatusString);
     }
 
     [Fact]
@@ -313,8 +314,8 @@ public sealed class CruderListCliMenuCommandTests
         var command2 = new CruderListCliMenuCommand(cruder2);
 
         // Act
-        var menu1 = command1.GetSubMenu();
-        var menu2 = command2.GetSubMenu();
+        CliMenuSet menu1 = command1.GetSubMenu();
+        CliMenuSet menu2 = command2.GetSubMenu();
 
         // Assert
         Assert.NotNull(menu1);
@@ -330,18 +331,18 @@ public sealed class CruderListCliMenuCommandTests
         var command = new CruderListCliMenuCommand(cruder);
 
         // Initially null
-        Assert.Null(command.Status);
+        Assert.Null(command.StatusString);
 
         // Act - First count
         command.CountStatus();
-        Assert.Equal("0", command.Status);
+        Assert.Equal("0", command.StatusString);
 
         // Add items
         cruder.SetKeyCount(5);
         command.CountStatus();
 
         // Assert
-        Assert.Equal("5", command.Status);
+        Assert.Equal("5", command.StatusString);
     }
 
     /// <summary>
@@ -372,7 +373,10 @@ public sealed class CruderListCliMenuCommandTests
         public void SetKeyCount(int count)
         {
             _items.Clear();
-            for (var i = 0; i < count; i++) _items.Add($"Key{i}", new TestItemData());
+            for (int i = 0; i < count; i++)
+            {
+                _items.Add($"Key{i}", new TestItemData());
+            }
         }
 
         private sealed class TestItemData : ItemData

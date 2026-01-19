@@ -1,4 +1,4 @@
-namespace CliMenu.Tests;
+namespace AppCliTools.CliMenu.Tests;
 
 public sealed class CliMenuCommandTests
 {
@@ -31,7 +31,7 @@ public sealed class CliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Null(command.Status); // Default GetStatus returns null
+        Assert.Null(command.StatusString); // Default GetStatus returns null
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public sealed class CliMenuCommandTests
         var command = new CliMenuCommand("Test");
 
         // Act
-        var subMenu = command.GetSubMenu();
+        CliMenuSet? subMenu = command.GetSubMenu();
 
         // Assert
         Assert.Null(subMenu);
@@ -80,14 +80,14 @@ public sealed class CliMenuCommandTests
         var command = new CliMenuCommand("Test");
 
         // Act
-        var link = command.GetMenuLinkToGo();
+        string? link = command.GetMenuLinkToGo();
 
         // Assert
         Assert.Null(link);
     }
 
     // Helper class to override RunBody for testing
-    private class TestCliMenuCommand : CliMenuCommand
+    private sealed class TestCliMenuCommand : CliMenuCommand
     {
         private readonly bool _runBodyResult;
 

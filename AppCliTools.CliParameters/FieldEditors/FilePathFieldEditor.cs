@@ -1,6 +1,6 @@
-﻿using LibMenuInput;
+﻿using AppCliTools.LibMenuInput;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public /*open*/ class FilePathFieldEditor : FieldEditor<string>
 {

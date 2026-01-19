@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using LibDataInput;
+using AppCliTools.LibDataInput;
 using Newtonsoft.Json;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IParameters, new()
 {

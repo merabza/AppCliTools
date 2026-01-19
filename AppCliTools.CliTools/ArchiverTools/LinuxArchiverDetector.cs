@@ -3,7 +3,7 @@ using OneOf;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
-namespace CliTools.ArchiverTools;
+namespace AppCliTools.CliTools.ArchiverTools;
 
 public sealed class LinuxArchiverDetector : ArchiverDetector
 {

@@ -1,9 +1,9 @@
-﻿using CliMenu;
+﻿using AppCliTools.CliMenu;
 using SystemTools.SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
 {

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using CliMenu;
-using LibDataInput;
-using LibMenuInput.CliMenuCommands;
+using AppCliTools.CliMenu;
+using AppCliTools.LibDataInput;
+using AppCliTools.LibMenuInput.CliMenuCommands;
 using SystemTools.SystemToolsShared;
-using System.Globalization;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public sealed class MultipleSelectFromListInput : DataInput
 {
     private readonly string _fieldName;
-    public Dictionary<string, bool> SourceListWithChecks { get; set; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public MultipleSelectFromListInput(string fieldName, Dictionary<string, bool> sourceListWithChecks)
@@ -19,6 +17,8 @@ public sealed class MultipleSelectFromListInput : DataInput
         _fieldName = fieldName;
         SourceListWithChecks = sourceListWithChecks;
     }
+
+    public Dictionary<string, bool> SourceListWithChecks { get; set; }
 
     public override bool DoInput()
     {
@@ -30,9 +30,7 @@ public sealed class MultipleSelectFromListInput : DataInput
 
             foreach (KeyValuePair<string, bool> listItem in SourceListWithChecks)
             {
-                listSet.AddMenuItem(
-                    new MultipleSelectFromListElementCliMenuCommand(
-                        listItem));
+                listSet.AddMenuItem(new MultipleSelectFromListElementCliMenuCommand(listItem));
             }
 
             string key = ConsoleKey.Escape.Value().ToUpperInvariant();

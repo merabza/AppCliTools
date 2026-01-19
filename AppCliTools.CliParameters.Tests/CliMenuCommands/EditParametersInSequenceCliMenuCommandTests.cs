@@ -1,9 +1,10 @@
+using System;
 using System.Reflection;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using LibParameters;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using ParametersManagement.LibParameters;
 
-namespace CliParameters.Tests.CliMenuCommands;
+namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
 public sealed class EditParametersInSequenceCliMenuCommandTests
 {
@@ -30,10 +31,10 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
         // Assert - Constructor doesn't validate, it just stores the value
         Assert.NotNull(command);
-        var parametersEditorField = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
+        FieldInfo? parametersEditorField = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(parametersEditorField);
-        var storedParametersEditor = parametersEditorField.GetValue(command);
+        object? storedParametersEditor = parametersEditorField.GetValue(command);
         Assert.Null(storedParametersEditor);
     }
 
@@ -53,21 +54,6 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
     }
 
     [Fact]
-    public void Constructor_PassesCorrectParametersToBaseClass()
-    {
-        // Arrange
-        var parametersEditor = new TestParametersEditor("TestParameters");
-
-        // Act
-        var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
-
-        // Assert - Verify all parameters passed to base constructor
-        Assert.Equal("Edit Parameters in sequence", command.Name);
-        Assert.Equal(EMenuAction.LevelUp, command.MenuActionOnBodySuccess);
-        Assert.Equal(EMenuAction.Reload, command.MenuActionOnBodyFail);
-    }
-
-    [Fact]
     public void Constructor_StoresParametersEditorReference()
     {
         // Arrange
@@ -77,10 +63,10 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
 
         // Assert - Verify parametersEditor is stored by using reflection
-        var parametersEditorField = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
+        FieldInfo? parametersEditorField = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(parametersEditorField);
-        var storedParametersEditor = parametersEditorField.GetValue(command);
+        object? storedParametersEditor = parametersEditorField.GetValue(command);
         Assert.Same(parametersEditor, storedParametersEditor);
     }
 
@@ -138,7 +124,7 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
 
         // Act
-        var result = command.GetSubMenu();
+        CliMenuSet? result = command.GetSubMenu();
 
         // Assert
         Assert.Null(result);
@@ -152,7 +138,7 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
 
         // Act
-        var result = command.GetMenuLinkToGo();
+        string? result = command.GetMenuLinkToGo();
 
         // Assert
         Assert.Null(result);
@@ -193,7 +179,7 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
         // Assert
         Assert.NotSame(command1, command2);
-        var field1 = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
+        FieldInfo? field1 = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.Same(parametersEditor1, field1?.GetValue(command1));
         Assert.Same(parametersEditor2, field1?.GetValue(command2));
@@ -207,7 +193,7 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
 
         // Assert - Verify class is sealed
-        var type = command.GetType();
+        Type type = command.GetType();
         Assert.True(type.IsSealed);
     }
 
@@ -219,7 +205,7 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
 
         // Act
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
 
         // Assert
         Assert.Null(parentMenuName);
@@ -264,32 +250,10 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
 
         // Act
-        var menuAction = command.MenuAction;
+        EMenuAction menuAction = command.MenuAction;
 
         // Assert
         Assert.Equal(EMenuAction.Nothing, menuAction);
-    }
-
-    [Fact]
-    public void MenuActionOnBodySuccess_CanBeReadButNotSetInTests()
-    {
-        // Arrange
-        var parametersEditor = new TestParametersEditor("TestParameters");
-        var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
-
-        // Act & Assert - Verify the value set by constructor
-        Assert.Equal(EMenuAction.LevelUp, command.MenuActionOnBodySuccess);
-    }
-
-    [Fact]
-    public void MenuActionOnBodyFail_CanBeReadButNotSetInTests()
-    {
-        // Arrange
-        var parametersEditor = new TestParametersEditor("TestParameters");
-        var command = new EditParametersInSequenceCliMenuCommand(parametersEditor);
-
-        // Act & Assert - Verify the value set by constructor
-        Assert.Equal(EMenuAction.Reload, command.MenuActionOnBodyFail);
     }
 
     [Fact]
@@ -304,7 +268,7 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
         // Assert
         Assert.NotSame(command1, command2);
-        var field = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
+        FieldInfo? field = typeof(EditParametersInSequenceCliMenuCommand).GetField("_parametersEditor",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.Same(parametersEditor, field?.GetValue(command1));
         Assert.Same(parametersEditor, field?.GetValue(command2));
@@ -312,7 +276,8 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
     private static string? GetParentMenuName(CliMenuCommand command)
     {
-        var field = typeof(CliMenuCommand).GetField("ParentMenuName", BindingFlags.Public | BindingFlags.Instance);
+        FieldInfo? field =
+            typeof(CliMenuCommand).GetField("ParentMenuName", BindingFlags.Public | BindingFlags.Instance);
         return field?.GetValue(command) as string;
     }
 
@@ -324,8 +289,6 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         public TestParametersEditor(string name) : base(name, new TestParametersManager())
         {
         }
-
-        public int EditParametersInSequenceCallCount { get; private set; }
     }
 
     /// <summary>

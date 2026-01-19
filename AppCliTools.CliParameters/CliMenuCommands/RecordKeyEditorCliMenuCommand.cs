@@ -1,8 +1,8 @@
-﻿using CliMenu;
-using CliParameters.Cruders;
-using LibDataInput;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.LibDataInput;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
 {
@@ -19,7 +19,7 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
 
     protected override bool RunBody()
     {
-        var newRecordName = Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
+        string newRecordName = Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
 
         if (!_cruder.ChangeRecordKey(_recordKey, newRecordName))
         {

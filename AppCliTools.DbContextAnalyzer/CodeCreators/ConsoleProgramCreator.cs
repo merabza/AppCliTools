@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeTools;
+using AppCliTools.CodeTools;
 using Microsoft.Extensions.Logging;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class ConsoleProgramCreator : CodeCreator
 {
@@ -38,7 +38,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
             ? string.Empty
             : $", {string.Join(", ", _possibleSwitches.Select(s => $"\"--{s}\""))}";
 
-        var finalServiceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
+        FlatCodeBlock finalServiceCreatorCodeCommands = _serviceCreatorCodeCommands ?? new FlatCodeBlock(
             $"var servicesCreator = new ServicesCreator(par.LogFolder, null, \"{_projectNamespace}\")");
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),

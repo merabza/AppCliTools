@@ -1,6 +1,6 @@
-﻿using LibDataInput;
+﻿using AppCliTools.LibDataInput;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public sealed class BoolNullableFieldEditor : FieldEditor<bool?>
 {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.FieldEditors;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibDataInput;
+using AppCliTools.LibMenuInput;
 using DatabaseTools.DbTools.Models;
-using LibDataInput;
-using LibMenuInput;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using ParametersManagement.LibApiClientParameters;
@@ -17,7 +17,7 @@ using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 {

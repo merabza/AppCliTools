@@ -1,10 +1,10 @@
-﻿using CliTools.ArchiverTools;
+﻿using AppCliTools.CliTools.ArchiverTools;
 using ParametersManagement.LibFileParameters.Interfaces;
 using ParametersManagement.LibFileParameters.Models;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParametersEdit.Generators;
+namespace AppCliTools.CliParametersEdit.Generators;
 
 public static class StandardArchiversGenerator
 {
@@ -39,8 +39,8 @@ public static class StandardArchiversGenerator
             return;
         }
 
-        var archiverDetector = ArchiverDetectorFactory.Create(useConsole, archiverName);
-        var archiverDetectorResults = archiverDetector?.Run();
+        ArchiverDetector? archiverDetector = ArchiverDetectorFactory.Create(useConsole, archiverName);
+        ArchiverDetectorResults? archiverDetectorResults = archiverDetector?.Run();
 
         string? decompressProgramPatch = archiverDetectorResults?.DecompressProgramPatch;
         string? compressProgramPatch = archiverDetectorResults?.CompressProgramPatch;

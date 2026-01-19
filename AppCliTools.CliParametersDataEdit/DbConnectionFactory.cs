@@ -2,14 +2,14 @@
 using System.Data.Common;
 using System.Data.OleDb;
 using System.IO;
-using CliParametersDataEdit.Models;
+using AppCliTools.CliParametersDataEdit.Models;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using ParametersManagement.LibDatabaseParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParametersDataEdit;
+namespace AppCliTools.CliParametersDataEdit;
 
 public static class DbConnectionFactory
 {
@@ -65,7 +65,8 @@ public static class DbConnectionFactory
                 return msAccessPar;
 #pragma warning restore CA1416
             default:
-                throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, "Unsupported database provider.");
+                throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider,
+                    "Unsupported database provider.");
         }
     }
 
@@ -194,7 +195,8 @@ public static class DbConnectionFactory
 
             case EDatabaseProvider.WebAgent:
             default:
-                throw new ArgumentOutOfRangeException(nameof(databasesParameters), dataProvider, "Unsupported database provider.");
+                throw new ArgumentOutOfRangeException(nameof(databasesParameters), dataProvider,
+                    "Unsupported database provider.");
         }
     }
 

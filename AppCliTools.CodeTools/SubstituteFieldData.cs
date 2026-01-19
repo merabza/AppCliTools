@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class SubstituteFieldData
 {

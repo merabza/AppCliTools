@@ -1,7 +1,7 @@
 ﻿using System;
-using LibMenuInput;
+using AppCliTools.LibMenuInput;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public /*open*/ class EnumNullableFieldEditor<TEnum> : FieldEditor<TEnum?> where TEnum : struct, Enum
 {
@@ -14,13 +14,13 @@ public /*open*/ class EnumNullableFieldEditor<TEnum> : FieldEditor<TEnum?> where
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var current = GetValue(recordForUpdate, DefaultValue);
+        TEnum? current = GetValue(recordForUpdate, DefaultValue);
         SetValue(recordForUpdate, MenuInputer.InputFromEnumNullableList(FieldName, current));
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValueOrDefault(record);
+        TEnum? val = GetValueOrDefault(record);
         return val?.ToString() ?? string.Empty;
     }
 }

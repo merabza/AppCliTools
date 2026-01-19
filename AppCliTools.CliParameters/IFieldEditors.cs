@@ -1,4 +1,4 @@
-﻿namespace CliParameters;
+﻿namespace AppCliTools.CliParameters;
 
 public interface IFieldEditors
 {

@@ -15,13 +15,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\AppCliTools\CliTools\CliTools.csproj" />
-        <ProjectReference Include="..\..\ParametersManagement\LibFileParameters\LibFileParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibFileParameters\ParametersManagement.LibFileParameters.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
-        <ProjectReference Include="..\..\ToolsManagement\FileManagersMain\FileManagersMain.csproj" />
+        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
         <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.FileManagersMain\ToolsManagement.FileManagersMain.csproj" />
-        <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliTools\AppCliTools.CliTools.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace CliTools.ArchiverTools;
+﻿namespace AppCliTools.CliTools.ArchiverTools;
 
 public sealed class ArchiverDetectorResults
 {

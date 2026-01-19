@@ -1,8 +1,8 @@
-﻿using CliParameters.FieldEditors;
-using CliParametersExcludeSetsEdit.Cruders;
-using LibParameters;
+﻿using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersExcludeSetsEdit.Cruders;
+using ParametersManagement.LibParameters;
 
-namespace CliParametersExcludeSetsEdit.FieldEditors;
+namespace AppCliTools.CliParametersExcludeSetsEdit.FieldEditors;
 
 public sealed class ExcludeSetNameFieldEditor : FieldEditor<string>
 {
@@ -17,7 +17,7 @@ public sealed class ExcludeSetNameFieldEditor : FieldEditor<string>
         _useNone = useNone;
     }
 
-    public override void UpdateField(string? recordName, object recordForUpdate) //, object currentRecord
+    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         var excludeSetCruder = ExcludeSetCruder.Create(_parametersManager);
         SetValue(recordForUpdate,

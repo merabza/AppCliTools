@@ -1,9 +1,9 @@
 ﻿using System;
-using CodeTools;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class ServiceCreatorCreator : CodeCreator
 {
@@ -18,12 +18,12 @@ public sealed class ServiceCreatorCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var dataSeedingProjectName = $"{_par.DbProjectNamespace}DataSeeding"; //GeoModelDataSeeding
-        var newDataSeedingProjectName = $"{_par.DbProjectNamespace}NewDataSeeding"; //GeoModelNewDataSeeding
-        var projectDbProjectName = _par.DbProjectNamespace; // + "Db"; //GeoModelDb
-        var repositoryClassName = $"{_par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
-        var repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
-        var projectDbContextClassName = _par.ProjectDbContextClassName; // + "DbContext"; //GeoModelDbContext
+        string dataSeedingProjectName = $"{_par.DbProjectNamespace}DataSeeding"; //GeoModelDataSeeding
+        string newDataSeedingProjectName = $"{_par.DbProjectNamespace}NewDataSeeding"; //GeoModelNewDataSeeding
+        string projectDbProjectName = _par.DbProjectNamespace; // + "Db"; //GeoModelDb
+        string repositoryClassName = $"{_par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
+        string repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
+        string projectDbContextClassName = _par.ProjectDbContextClassName; // + "DbContext"; //GeoModelDbContext
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             "using CarcassDataSeeding", "using CarcassDb", "using CarcassIdentity", "using CarcassMasterDataDom.Models",

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.FieldEditors;
-using LibDataInput;
-using LibMenuInput;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibDataInput;
+using AppCliTools.LibMenuInput;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using ParametersManagement.LibApiClientParameters;
@@ -19,7 +19,7 @@ using ToolsManagement.DatabasesManagement;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
 {
@@ -112,8 +112,12 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {PropertyName}", recordKey, PropertyName);
-            throw new Exception($"Error occurred in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {PropertyName}", e);
+            _logger.LogError(e,
+                "Error in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {PropertyName}",
+                recordKey, PropertyName);
+            throw new Exception(
+                $"Error occurred in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {PropertyName}",
+                e);
         }
     }
 

@@ -1,7 +1,8 @@
-﻿using CliMenu;
-using CliParameters.Cruders;
+﻿using System.Globalization;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 //გამოიყენება ApAgent-ში
 // ReSharper disable once UnusedType.Global
@@ -22,6 +23,6 @@ public sealed class CruderListCliMenuCommand : CliMenuCommand
 
     protected override string GetStatus()
     {
-        return _cruder.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return _cruder.Count.ToString(CultureInfo.InvariantCulture);
     }
 }

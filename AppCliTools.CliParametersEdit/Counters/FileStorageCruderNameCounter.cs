@@ -1,8 +1,8 @@
-﻿using CliParametersEdit.Cruders;
+﻿using AppCliTools.CliParametersEdit.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersEdit.Counters;
+namespace AppCliTools.CliParametersEdit.Counters;
 
 //გამოიყენება ApAgent პროექტში
 // ReSharper disable once UnusedType.Global

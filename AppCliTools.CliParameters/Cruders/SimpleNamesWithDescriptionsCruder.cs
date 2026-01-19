@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CliParameters.FieldEditors;
+using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters.Cruders;
+namespace AppCliTools.CliParameters.Cruders;
 
 public abstract class SimpleNamesWithDescriptionsCruder : Cruder
 {
@@ -28,13 +28,13 @@ public abstract class SimpleNamesWithDescriptionsCruder : Cruder
 
     public override bool ContainsRecordWithKey(string recordKey)
     {
-        var reactAppTemplateNames = GetDictionary();
+        Dictionary<string, string> reactAppTemplateNames = GetDictionary();
         return reactAppTemplateNames.ContainsKey(recordKey);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
     {
-        var reactAppTemplateNames = GetDictionary();
+        Dictionary<string, string> reactAppTemplateNames = GetDictionary();
         reactAppTemplateNames.Remove(recordKey);
     }
 
@@ -70,7 +70,7 @@ public abstract class SimpleNamesWithDescriptionsCruder : Cruder
 
     public override string? GetStatusFor(string name)
     {
-        if (GetDictionary().TryGetValue(name, out var description) && !string.IsNullOrWhiteSpace(description))
+        if (GetDictionary().TryGetValue(name, out string? description) && !string.IsNullOrWhiteSpace(description))
         {
             return description;
         }

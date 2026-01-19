@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CliMenu;
-using LibDataInput;
+using AppCliTools.CliMenu;
+using AppCliTools.LibDataInput;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public static class MenuInputer
 {

@@ -1,9 +1,9 @@
-﻿using CliMenu;
-using CliParameters.FieldEditors;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.FieldEditors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
 {

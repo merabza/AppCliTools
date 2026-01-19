@@ -1,6 +1,8 @@
-﻿namespace LibDataInput;
+﻿using System;
 
-[System.Flags]
+namespace AppCliTools.LibDataInput;
+
+[Flags]
 public enum EDialogResult
 {
     Yes = 1,

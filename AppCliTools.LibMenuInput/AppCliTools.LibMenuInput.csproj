@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CliMenu\CliMenu.csproj" />
-        <ProjectReference Include="..\LibDataInput\LibDataInput.csproj" />
+      <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
     </ItemGroup>
 
 </Project>

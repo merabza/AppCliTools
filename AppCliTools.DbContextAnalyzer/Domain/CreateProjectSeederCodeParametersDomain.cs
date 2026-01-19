@@ -1,6 +1,6 @@
 ﻿using ParametersManagement.LibParameters;
 
-namespace DbContextAnalyzer.Domain;
+namespace AppCliTools.DbContextAnalyzer.Domain;
 
 public sealed class CreateProjectSeederCodeParametersDomain : IParameters
 {

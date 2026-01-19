@@ -1,8 +1,8 @@
-﻿using CliParameters.FieldEditors;
-using CliParametersEdit.Cruders;
+﻿using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersEdit.Cruders;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersEdit.FieldEditors;
+namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class SmartSchemaNameFieldEditor : FieldEditor<string>
 {

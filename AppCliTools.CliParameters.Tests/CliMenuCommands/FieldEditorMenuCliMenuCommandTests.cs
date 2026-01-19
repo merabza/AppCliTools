@@ -1,12 +1,12 @@
 using System;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.Cruders;
-using CliParameters.FieldEditors;
-using LibParameters;
-using System.Reflection;
+using System.Collections.Generic;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
+using ParametersManagement.LibParameters;
 
-namespace CliParameters.Tests.CliMenuCommands;
+namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
 // NOTE: The RunBody method in FieldEditorMenuCliMenuCommand has the following behavior:
 // 1. Calls _fieldEditor.UpdateField(_recordKey, _recordForUpdate)
@@ -53,11 +53,13 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         const string recordKey = "TestKey";
 
         // Act & Assert
-        var exception = Record.Exception(() =>
+        Exception? exception = Record.Exception(() =>
             new FieldEditorMenuCliMenuCommand(fieldName!, fieldEditor, recordForUpdate, cruder, recordKey));
 
         if (exception != null)
+        {
             Assert.IsType<ArgumentNullException>(exception);
+        }
     }
 
     [Fact]
@@ -302,7 +304,7 @@ public sealed class FieldEditorMenuCliMenuCommandTests
 
         // Assert
         Assert.True(fieldEditor.GetValueStatusCalled);
-        Assert.Equal("Test Status", command.Status);
+        Assert.Equal("Test Status", command.StatusString);
     }
 
     [Fact]
@@ -338,7 +340,7 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal("Custom Status Value", command.Status);
+        Assert.Equal("Custom Status Value", command.StatusString);
     }
 
     [Fact]
@@ -356,7 +358,7 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal("", command.Status);
+        Assert.Equal("", command.StatusString);
     }
 
     [Fact]
@@ -374,7 +376,7 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Null(command.Status);
+        Assert.Null(command.StatusString);
     }
 
     [Theory]
@@ -396,7 +398,7 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         command.CountStatus();
 
         // Assert
-        Assert.Equal(expectedStatus, command.Status);
+        Assert.Equal(expectedStatus, command.StatusString);
     }
 
     [Fact]
@@ -412,9 +414,9 @@ public sealed class FieldEditorMenuCliMenuCommandTests
 
         // Act
         command.CountStatus();
-        var callCountAfterFirst = fieldEditor.GetValueStatusCallCount;
+        int callCountAfterFirst = fieldEditor.GetValueStatusCallCount;
         command.CountStatus();
-        var callCountAfterSecond = fieldEditor.GetValueStatusCallCount;
+        int callCountAfterSecond = fieldEditor.GetValueStatusCallCount;
 
         // Assert
         Assert.Equal(1, callCountAfterFirst);
@@ -423,16 +425,16 @@ public sealed class FieldEditorMenuCliMenuCommandTests
 
     private sealed class TestFieldEditor : FieldEditor
     {
+        public TestFieldEditor(string propertyName) : base(propertyName, null, false)
+        {
+        }
+
         public bool UpdateFieldCalled { get; private set; }
         public bool GetValueStatusCalled { get; private set; }
         public int GetValueStatusCallCount { get; private set; }
         public string? LastRecordKey { get; private set; }
         public object? LastRecordForUpdate { get; private set; }
         public string? StatusToReturn { get; set; } = "Test Status";
-
-        public TestFieldEditor(string propertyName) : base(propertyName, null, false, false)
-        {
-        }
 
         public override void UpdateField(string? recordKey, object recordForUpdate)
         {
@@ -456,6 +458,10 @@ public sealed class FieldEditorMenuCliMenuCommandTests
 
     private sealed class TestCruder : Cruder
     {
+        public TestCruder() : base("TestCrud", "TestCruds")
+        {
+        }
+
         public bool UpdateRecordWithKeyCalled { get; private set; }
         public bool CheckValidationCalled { get; private set; }
         public bool SaveCalled { get; private set; }
@@ -463,15 +469,11 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         public ItemData? LastNewRecord { get; private set; }
         public ItemData? LastItemToValidate { get; private set; }
         public string? LastSaveMessage { get; private set; }
-        public bool ValidationResult { get; set; } = true;
+        public bool ValidationResult { get; } = true;
 
-        public TestCruder() : base("TestCrud", "TestCruds")
+        protected override Dictionary<string, ItemData> GetCrudersDictionary()
         {
-        }
-
-        protected override System.Collections.Generic.Dictionary<string, ItemData> GetCrudersDictionary()
-        {
-            return new System.Collections.Generic.Dictionary<string, ItemData>();
+            return new Dictionary<string, ItemData>();
         }
 
         public override bool ContainsRecordWithKey(string recordKey)

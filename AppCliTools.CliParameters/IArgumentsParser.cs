@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public interface IArgumentsParser
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace LibDataInput.InputParsers;
+namespace AppCliTools.LibDataInput.InputParsers;
 
 public /*open*/ class InputParser
 {

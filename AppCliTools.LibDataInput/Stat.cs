@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using SystemTools.SystemToolsShared;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public static class Stat
 {

@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace GramParser;
+namespace AppCliTools.GramParser;
 
 public class ParseTree
 {
-    public readonly Token? Atom;
-    public readonly List<ParseTree> Branches = new();
-
     public ParseTree()
     {
     }
@@ -27,6 +24,9 @@ public class ParseTree
     {
         Branches.Add(parseTree);
     }
+
+    public Token? Atom { get; }
+    public List<ParseTree> Branches { get; } = new();
 
     public ParseTree? Parent { get; private set; }
 
@@ -58,15 +58,21 @@ public class ParseTree
     public bool IsEqual(ParseTree parseTree)
     {
         if (Branches.Count != parseTree.Branches.Count)
+        {
             return false;
+        }
+
         if (Branches.Count > 0)
+        {
             return !Branches.Where((t, i) => !t.IsEqual(parseTree.Branches[i])).Any();
+        }
+
         return Atom == parseTree.Atom;
     }
 
     public string ToString(int indent = 0)
     {
-        var toRet = new string(' ', indent) + Atom + "\n";
+        string toRet = new string(' ', indent) + Atom + "\n";
         toRet += new string(' ', indent) + "[\n";
         toRet = Branches.Aggregate(toRet, (current, t) => current + t.ToString(indent + 1));
         toRet += new string(' ', indent) + "]\n";

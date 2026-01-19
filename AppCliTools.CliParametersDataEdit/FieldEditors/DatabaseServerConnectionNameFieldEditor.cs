@@ -1,10 +1,10 @@
 ﻿using System.Net.Http;
-using CliParameters.FieldEditors;
-using CliParametersDataEdit.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersDataEdit.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string>
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace LibDataInput.InputParsers;
+namespace AppCliTools.LibDataInput.InputParsers;
 
 public sealed class DateParser : InputParser
 {

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CliParameters.Cruders;
-using CliParameters.FieldEditors;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibFileParameters.Models;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParametersEdit.Cruders;
+namespace AppCliTools.CliParametersEdit.Cruders;
 
 public sealed class SmartSchemaDetailCruder : Cruder
 {
@@ -33,7 +33,7 @@ public sealed class SmartSchemaDetailCruder : Cruder
 
     protected override void RemoveRecordWithKey(string recordKey)
     {
-        var rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
+        SmartSchemaDetail? rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
         if (rbk != null)
         {
             _currentValuesList.Remove(rbk);
@@ -52,7 +52,7 @@ public sealed class SmartSchemaDetailCruder : Cruder
             return;
         }
 
-        var rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
+        SmartSchemaDetail? rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
         rbk?.PreserveCount = newSmartSchemaDetail.PreserveCount;
     }
 

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.FieldEditors;
-using LibDataInput;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibDataInput;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public /*open*/ class ParametersEditor : IFieldEditors
 {

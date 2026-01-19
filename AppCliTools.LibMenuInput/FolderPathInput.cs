@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public sealed class FolderPathInput : PathInput
 {

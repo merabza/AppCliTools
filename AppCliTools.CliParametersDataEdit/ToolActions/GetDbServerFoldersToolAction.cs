@@ -1,7 +1,9 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
+using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
@@ -10,7 +12,7 @@ using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 using ToolsManagement.LibToolActions;
 
-namespace CliParametersDataEdit.ToolActions;
+namespace AppCliTools.CliParametersDataEdit.ToolActions;
 
 public sealed class GetDbServerFoldersToolAction : ToolAction
 {
@@ -46,8 +48,9 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
 
-        var createDatabaseManagerResult = await DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
-            _dbServerName, databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
+        OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+            await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, _dbServerName, databaseServerConnections,
+                apiClients, _httpClientFactory, null, null, cancellationToken);
 
         if (createDatabaseManagerResult.IsT1)
         {
@@ -56,7 +59,7 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
             return false;
         }
 
-        var getDatabaseServerInfoResult =
+        OneOf<DbServerInfo, Err[]> getDatabaseServerInfoResult =
             await createDatabaseManagerResult.AsT0.GetDatabaseServerInfo(cancellationToken);
         if (getDatabaseServerInfoResult.IsT1)
         {
@@ -64,9 +67,9 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
             return false;
         }
 
-        var dbInfo = getDatabaseServerInfoResult.AsT0;
+        DbServerInfo? dbInfo = getDatabaseServerInfoResult.AsT0;
 
-        var dbCon = parameters.DatabaseServerConnections[_dbServerName];
+        DatabaseServerConnectionData dbCon = parameters.DatabaseServerConnections[_dbServerName];
 
         dbCon.SetDefaultFolders(dbInfo);
 

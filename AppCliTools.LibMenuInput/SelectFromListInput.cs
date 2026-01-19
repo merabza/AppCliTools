@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using CliMenu;
-using LibDataInput;
+using AppCliTools.CliMenu;
+using AppCliTools.LibDataInput;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public sealed class SelectFromListInput : DataInput
 {
@@ -44,8 +44,8 @@ public sealed class SelectFromListInput : DataInput
 
         while (true)
         {
-            var ch = Console.ReadKey(true);
-            var menuItem = listSet.GetMenuItemByKey(ch);
+            ConsoleKeyInfo ch = Console.ReadKey(true);
+            CliMenuItem? menuItem = listSet.GetMenuItemByKey(ch);
 
             if (menuItem != null)
             {
@@ -67,17 +67,17 @@ public sealed class SelectFromListInput : DataInput
                 case ConsoleKey.Enter when _defaultValue == null:
                     continue;
                 case ConsoleKey.Enter:
-                {
-                    if (listSet.GetMenuItemWithName(_defaultValue) == null)
                     {
-                        continue;
-                    }
+                        if (listSet.GetMenuItemWithName(_defaultValue) == null)
+                        {
+                            continue;
+                        }
 
-                    Text = _defaultValue;
-                    Console.WriteLine();
-                    Console.WriteLine($"{_fieldName} is: {Text}");
-                    return true;
-                }
+                        Text = _defaultValue;
+                        Console.WriteLine();
+                        Console.WriteLine($"{_fieldName} is: {Text}");
+                        return true;
+                    }
                 case ConsoleKey.Escape:
                     throw new DataInputEscapeException("Escape");
             }

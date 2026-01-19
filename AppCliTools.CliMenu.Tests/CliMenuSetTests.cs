@@ -1,6 +1,6 @@
 using System;
 
-namespace CliMenu.Tests;
+namespace AppCliTools.CliMenu.Tests;
 
 public sealed class CliMenuSetTests
 {
@@ -17,7 +17,7 @@ public sealed class CliMenuSetTests
         var set = new CliMenuSet();
         var command = new CliMenuCommand("Item1");
         set.AddMenuItem(command);
-        var item = set.GetMenuItemWithName("Item1");
+        CliMenuItem? item = set.GetMenuItemWithName("Item1");
         Assert.NotNull(item);
         Assert.Equal("Item1", item.MenuItemName);
         Assert.Equal(command, item.CliMenuCommand);
@@ -41,7 +41,7 @@ public sealed class CliMenuSetTests
         var set = new CliMenuSet();
         var command = new CliMenuCommand("Item1");
         set.AddMenuItem("A", command, 1);
-        var item = set.GetMenuItemWithName("Item1");
+        CliMenuItem? item = set.GetMenuItemWithName("Item1");
         Assert.NotNull(item);
         Assert.Equal("A", item.Key);
     }
@@ -71,7 +71,7 @@ public sealed class CliMenuSetTests
         var command = new CliMenuCommand("Item1");
         set.AddMenuItem(command, 1);
         var keyInfo = new ConsoleKeyInfo('0', ConsoleKey.D0, false, false, false);
-        var item = set.GetMenuItemByKey(keyInfo);
+        CliMenuItem? item = set.GetMenuItemByKey(keyInfo);
         Assert.NotNull(item);
         Assert.Null(item.Key);
     }
@@ -81,7 +81,7 @@ public sealed class CliMenuSetTests
     {
         var set = new CliMenuSet();
         var keyInfo = new ConsoleKeyInfo('Z', ConsoleKey.Z, false, false, false);
-        var item = set.GetMenuItemByKey(keyInfo);
+        CliMenuItem? item = set.GetMenuItemByKey(keyInfo);
         Assert.Null(item);
     }
 }

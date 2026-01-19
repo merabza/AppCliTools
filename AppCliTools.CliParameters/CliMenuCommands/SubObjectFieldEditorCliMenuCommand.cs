@@ -1,8 +1,8 @@
-﻿using CliMenu;
-using CliParameters.FieldEditors;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class SubObjectFieldEditorCliMenuCommand : CliMenuCommand
 {

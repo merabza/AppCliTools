@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer;
+namespace AppCliTools.DbContextAnalyzer;
 
 public static class DbContextCreator
 {

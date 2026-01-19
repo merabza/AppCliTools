@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public /*open*/ class CodeBlockBase
 {

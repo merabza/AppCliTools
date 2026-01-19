@@ -1,10 +1,10 @@
-﻿using CliMenu;
-using CliParametersExcludeSetsEdit.Generators;
-using LibDataInput;
-using LibFileParameters.Interfaces;
-using LibParameters;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParametersExcludeSetsEdit.Generators;
+using AppCliTools.LibDataInput;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibParameters;
 
-namespace CliParametersExcludeSetsEdit.MenuCommands;
+namespace AppCliTools.CliParametersExcludeSetsEdit.MenuCommands;
 
 public sealed class GenerateExcludeSetsCommand : CliMenuCommand
 {
@@ -22,7 +22,9 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Exclude Sets, are you sure?", false, false))
+        {
             return false;
+        }
 
         var standardExcludeSetsGenerator = new StandardExcludeSetsGenerator(_parametersManager);
         standardExcludeSetsGenerator.Generate();

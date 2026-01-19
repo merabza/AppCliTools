@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DbContextAnalyzer.Domain;
+namespace AppCliTools.DbContextAnalyzer.Domain;
 
 public sealed class KeyFieldNamesDomain
 {

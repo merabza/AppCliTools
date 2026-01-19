@@ -1,4 +1,4 @@
-﻿namespace LibDataInput;
+﻿namespace AppCliTools.LibDataInput;
 
 public sealed class ListIsEmptyException : DataInputException
 {

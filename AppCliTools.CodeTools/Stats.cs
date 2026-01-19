@@ -1,4 +1,4 @@
-﻿namespace CodeTools;
+﻿namespace AppCliTools.CodeTools;
 
 public static class Stats
 {

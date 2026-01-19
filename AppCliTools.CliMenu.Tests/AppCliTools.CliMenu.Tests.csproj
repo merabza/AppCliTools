@@ -8,20 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.collector" Version="6.0.4">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-        <PackageReference Include="xunit" Version="2.9.3" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
+      <PackageReference Include="xunit" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CliMenu\CliMenu.csproj" />
+      <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
     </ItemGroup>
 
     <ItemGroup>

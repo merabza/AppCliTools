@@ -1,6 +1,6 @@
-﻿using CliMenu;
+﻿using AppCliTools.CliMenu;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class MenuCommandWithStatusCliMenuCommand : CliMenuCommand
 {

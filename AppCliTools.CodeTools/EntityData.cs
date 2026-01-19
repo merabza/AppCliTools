@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class EntityData
 {

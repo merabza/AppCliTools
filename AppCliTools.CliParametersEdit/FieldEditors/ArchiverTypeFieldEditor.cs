@@ -1,11 +1,11 @@
-﻿using CliParameters.Cruders;
-using CliParameters.FieldEditors;
+﻿// ReSharper disable ConvertToPrimaryConstructor
+
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibFileParameters.Models;
 using SystemTools.SystemToolsShared;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
-namespace CliParametersEdit.FieldEditors;
+namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class ArchiverTypeFieldEditor : EnumFieldEditor<EArchiveType>
 {
@@ -19,7 +19,7 @@ public sealed class ArchiverTypeFieldEditor : EnumFieldEditor<EArchiveType>
     public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
         base.UpdateField(recordKey, recordForUpdate);
-        var currentArchiveType = GetValue(recordForUpdate);
+        EArchiveType currentArchiveType = GetValue(recordForUpdate);
         bool enable = currentArchiveType != EArchiveType.ZipClass;
         _cruder.EnableFieldByName(nameof(ArchiverData.CompressProgramPatch), enable);
         _cruder.EnableFieldByName(nameof(ArchiverData.DecompressProgramPatch), enable);

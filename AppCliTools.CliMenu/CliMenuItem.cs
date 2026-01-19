@@ -1,4 +1,4 @@
-﻿namespace CliMenu;
+﻿namespace AppCliTools.CliMenu;
 
 public sealed class CliMenuItem
 {

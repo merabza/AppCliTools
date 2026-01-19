@@ -1,4 +1,4 @@
-﻿namespace CliMenu;
+﻿namespace AppCliTools.CliMenu;
 
 public enum EStatusView
 {

@@ -1,7 +1,7 @@
-﻿using CliMenu;
-using CliParameters.Cruders;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class NewItemCliMenuCommand : CliMenuCommand
 {

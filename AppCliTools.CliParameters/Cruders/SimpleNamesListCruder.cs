@@ -2,7 +2,7 @@
 using System.Linq;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters.Cruders;
+namespace AppCliTools.CliParameters.Cruders;
 
 public abstract class SimpleNamesListCruder : Cruder
 {
@@ -26,13 +26,13 @@ public abstract class SimpleNamesListCruder : Cruder
 
     public override bool ContainsRecordWithKey(string recordKey)
     {
-        var reactAppTemplateNames = GetList();
+        List<string> reactAppTemplateNames = GetList();
         return reactAppTemplateNames.Contains(recordKey);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
     {
-        var reactAppTemplateNames = GetList();
+        List<string> reactAppTemplateNames = GetList();
         reactAppTemplateNames.Remove(recordKey);
     }
 

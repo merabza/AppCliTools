@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using CliMenu;
-using CliParameters.Cruders;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dictionary<string, TItemData>>
     where TCruder : Cruder where TItemData : ItemData
@@ -41,7 +41,7 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
     public override CliMenuSet GetSubMenu(object record)
     {
         Cruder cruder;
-        var currentValuesDict = GetValue(record) ?? [];
+        Dictionary<string, TItemData> currentValuesDict = GetValue(record) ?? [];
 
         if (_httpClientFactory is not null && _logger is not null)
         {
@@ -59,7 +59,7 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
+        Dictionary<string, TItemData>? val = GetValue(record);
 
         if (val is null || val.Count <= 0)
         {
@@ -71,7 +71,7 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
             return $"{val.Count} Details";
         }
 
-        var kvp = val.Single();
+        KeyValuePair<string, TItemData> kvp = val.Single();
         return $"{kvp.Key} - {kvp.Value.GetItemKey()}";
     }
 }

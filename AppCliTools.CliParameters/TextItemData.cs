@@ -1,6 +1,6 @@
 ﻿using ParametersManagement.LibParameters;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public sealed class TextItemData : ItemData
 {

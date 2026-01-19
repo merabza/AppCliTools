@@ -1,8 +1,8 @@
-﻿using CliMenu;
+﻿using AppCliTools.CliMenu;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TModel>
     where TModel : ParametersWithStatus, new() where TEditor : ParametersEditor

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using LibFileParameters.Interfaces;
-using LibFileParameters.Models;
-using LibParameters;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
 
-namespace CliParametersExcludeSetsEdit.Generators;
+namespace AppCliTools.CliParametersExcludeSetsEdit.Generators;
 
 public sealed class StandardExcludeSetsGenerator
 {
@@ -67,9 +67,10 @@ public sealed class StandardExcludeSetsGenerator
         ExcludeSet excludeSet)
     {
         if (parameters.ExcludeSets.ContainsKey(excludeSetName))
+        {
             return;
+        }
 
-        if (!parameters.ExcludeSets.ContainsKey(excludeSetName))
-            parameters.ExcludeSets.Add(excludeSetName, excludeSet);
+        parameters.ExcludeSets.TryAdd(excludeSetName, excludeSet);
     }
 }

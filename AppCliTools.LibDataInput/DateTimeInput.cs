@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using LibDataInput.InputParsers;
+using AppCliTools.LibDataInput.InputParsers;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public sealed class DateTimeInput : DataInput
 {

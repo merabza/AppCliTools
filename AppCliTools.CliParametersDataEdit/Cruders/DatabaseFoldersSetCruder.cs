@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CliParameters.Cruders;
-using CliParameters.FieldEditors;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
 using DatabaseTools.DbTools.Models;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersDataEdit.Cruders;
+namespace AppCliTools.CliParametersDataEdit.Cruders;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DatabaseFoldersSetCruder : Cruder
@@ -41,7 +41,7 @@ public sealed class DatabaseFoldersSetCruder : Cruder
             return;
         }
 
-        if (!_currentValuesDictionary.TryGetValue(recordKey, out var cv))
+        if (!_currentValuesDictionary.TryGetValue(recordKey, out DatabaseFoldersSet? cv))
         {
             return;
         }

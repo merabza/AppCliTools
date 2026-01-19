@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public sealed class BoolDataInput : DataInput
 {

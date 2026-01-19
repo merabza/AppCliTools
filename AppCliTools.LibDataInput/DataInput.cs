@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public /*open*/ class DataInput
 {
@@ -11,7 +11,7 @@ public /*open*/ class DataInput
 
     protected static void ClearCurrentInput(int column)
     {
-        var currentLine = Console.CursorTop;
+        int currentLine = Console.CursorTop;
         //int currentColumn = Console.CursorLeft;
         Console.SetCursorPosition(column, currentLine);
         Console.Write(new string(' ', Console.WindowWidth - column));

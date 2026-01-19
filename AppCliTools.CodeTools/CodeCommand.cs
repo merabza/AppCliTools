@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class CodeCommand : ICodeItem
 {
@@ -14,13 +14,13 @@ public sealed class CodeCommand : ICodeItem
 
     public string Output(int indentLevel)
     {
-        var indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new(' ', indentLevel * Stats.IndentSize);
         return indent + CommandLine + ";" + Environment.NewLine;
     }
 
     public string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
-        var indent = new string(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
+        string indent = new(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
         return "," + Environment.NewLine + indent + CommandLine.Quotas();
     }
 }

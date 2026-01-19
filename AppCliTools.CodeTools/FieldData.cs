@@ -2,10 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class FieldData
 {

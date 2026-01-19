@@ -1,4 +1,4 @@
-namespace CliMenu.Tests;
+namespace AppCliTools.CliMenu.Tests;
 
 public sealed class CliMenuItemTests
 {
@@ -83,7 +83,7 @@ public sealed class CliMenuItemTests
         var menuItem = new CliMenuItem(command);
 
         // Act
-        var menuItemName = menuItem.MenuItemName;
+        string menuItemName = menuItem.MenuItemName;
 
         // Assert
         Assert.Equal(commandName, menuItemName);
@@ -109,8 +109,7 @@ public sealed class CliMenuItemTests
     {
         // Arrange
         var command = new CliMenuCommand("TestCommand");
-        var menuItem = new CliMenuItem(command);
-        menuItem.CountedKey = "1";
+        var menuItem = new CliMenuItem(command) { CountedKey = "1" };
 
         // Act
         menuItem.CountedKey = null;
@@ -154,10 +153,11 @@ public sealed class CliMenuItemTests
     {
         // Arrange
         var command = new CliMenuCommand("TestCommand");
-        var menuItem = new CliMenuItem("A", command, 1);
-
-        // Act
-        menuItem.Key = null;
+        var menuItem = new CliMenuItem("A", command, 1)
+        {
+            // Act
+            Key = null
+        };
 
         // Assert
         Assert.Null(menuItem.Key);

@@ -1,6 +1,6 @@
 ﻿using ParametersManagement.LibParameters;
 
-namespace CliTools;
+namespace AppCliTools.CliTools;
 
 public interface IParametersWithRecentData : IParameters
 {

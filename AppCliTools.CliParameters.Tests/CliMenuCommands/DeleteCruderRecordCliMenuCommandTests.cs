@@ -1,9 +1,9 @@
 using System.Reflection;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.Cruders;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.Cruders;
 
-namespace CliParameters.Tests.CliMenuCommands;
+namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
 public sealed class DeleteCruderRecordCliMenuCommandTests
 {
@@ -34,10 +34,10 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
 
         // Assert - Constructor doesn't validate, it just stores the value
         Assert.NotNull(command);
-        var cruderField = typeof(DeleteCruderRecordCliMenuCommand).GetField("_cruder",
+        FieldInfo? cruderField = typeof(DeleteCruderRecordCliMenuCommand).GetField("_cruder",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(cruderField);
-        var storedCruder = cruderField.GetValue(command);
+        object? storedCruder = cruderField.GetValue(command);
         Assert.Null(storedCruder);
     }
 
@@ -105,7 +105,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
     {
         // Arrange
         var cruder = new TestCruder("Item", "Items");
-        var recordName = new string('A', 1000);
+        string recordName = new('A', 1000);
 
         // Act
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
@@ -132,7 +132,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
 
         // Assert
         Assert.Equal("Delete this record", command.Name);
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(recordName, parentMenuName);
     }
 
@@ -200,7 +200,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(recordName, parentMenuName);
     }
 
@@ -214,7 +214,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, null!);
 
         // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Null(parentMenuName);
     }
 
@@ -228,7 +228,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, string.Empty);
 
 // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(string.Empty, parentMenuName);
     }
 
@@ -243,7 +243,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
 
 // Assert
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(recordName, parentMenuName);
     }
 
@@ -270,7 +270,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
 
         // Act
-        var result = command.GetSubMenu();
+        CliMenuSet? result = command.GetSubMenu();
 
         // Assert
         Assert.Null(result);
@@ -285,7 +285,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
 
         // Act
-        var result = command.GetMenuLinkToGo();
+        string? result = command.GetMenuLinkToGo();
 
 // Assert
         Assert.Null(result);
@@ -326,10 +326,10 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
 
         // Assert - Verify cruder is stored by using reflection
-        var cruderField = typeof(DeleteCruderRecordCliMenuCommand).GetField("_cruder",
+        FieldInfo? cruderField = typeof(DeleteCruderRecordCliMenuCommand).GetField("_cruder",
             BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(cruderField);
-        var storedCruder = cruderField.GetValue(command);
+        object? storedCruder = cruderField.GetValue(command);
         Assert.Same(cruder, storedCruder);
     }
 
@@ -344,7 +344,7 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
         var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
 
         // Assert - Verify parentMenuName is passed to base constructor
-        var parentMenuName = GetParentMenuName(command);
+        string? parentMenuName = GetParentMenuName(command);
         Assert.Equal(recordName, parentMenuName);
     }
 
@@ -373,34 +373,10 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
 
         // Act - MenuAction is public and has a protected setter through inheritance
         // We can't set it directly in tests, but we can verify it starts as Nothing
-        var initialAction = command.MenuAction;
+        EMenuAction initialAction = command.MenuAction;
 
 // Assert
         Assert.Equal(EMenuAction.Nothing, initialAction);
-    }
-
-    [Fact]
-    public void MenuActionOnBodySuccess_CanBeReadButNotSetInTests()
-    {
-        // Arrange
-        var cruder = new TestCruder("Item", "Items");
-        const string recordName = "TestRecord";
-        var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
-
-        // Act & Assert - Verify the value set by constructor
-        Assert.Equal(EMenuAction.LevelUp, command.MenuActionOnBodySuccess);
-    }
-
-    [Fact]
-    public void MenuActionOnBodyFail_CanBeReadButNotSetInTests()
-    {
-        // Arrange
-        var cruder = new TestCruder("Item", "Items");
-        const string recordName = "TestRecord";
-        var command = new DeleteCruderRecordCliMenuCommand(cruder, recordName);
-
-        // Act & Assert - Verify the value set by constructor
-        Assert.Equal(EMenuAction.Reload, command.MenuActionOnBodyFail);
     }
 
     [Fact]
@@ -426,7 +402,8 @@ public sealed class DeleteCruderRecordCliMenuCommandTests
     /// </summary>
     private static string? GetParentMenuName(DeleteCruderRecordCliMenuCommand command)
     {
-        var field = typeof(CliMenuCommand).GetField("ParentMenuName", BindingFlags.Public | BindingFlags.Instance);
+        FieldInfo? field =
+            typeof(CliMenuCommand).GetField("ParentMenuName", BindingFlags.Public | BindingFlags.Instance);
         return field?.GetValue(command) as string;
     }
 

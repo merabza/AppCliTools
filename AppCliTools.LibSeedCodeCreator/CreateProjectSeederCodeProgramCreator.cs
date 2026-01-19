@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
-using CodeTools;
-using DbContextAnalyzer.CodeCreators;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.CodeCreators;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
-namespace LibSeedCodeCreator;
+namespace AppCliTools.LibSeedCodeCreator;
 
 public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {
     public void Go()
     {
-        var scaffoldSeederDbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
-        var dbScContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
+        string scaffoldSeederDbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
+        string dbScContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
-        var dbContextProjectName = par.DbContextProjectName;
-        var dbContextClassName = par.DbContextClassName;
+        string dbContextProjectName = par.DbContextProjectName;
+        string dbContextClassName = par.DbContextClassName;
 
         var fcbAdditionalUsing = new FlatCodeBlock($"using {scaffoldSeederDbContextProjectName}",
             $"using {dbContextProjectName}", "using DbContextAnalyzer", "using Microsoft.EntityFrameworkCore",

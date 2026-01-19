@@ -1,9 +1,9 @@
-﻿using CliParameters.FieldEditors;
-using CliParametersEdit.Cruders;
+﻿using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersEdit.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersEdit.FieldEditors;
+namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class FileStorageNameFieldEditor : FieldEditor<string>
 {

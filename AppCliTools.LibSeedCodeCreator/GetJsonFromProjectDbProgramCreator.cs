@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
-using CodeTools;
-using DbContextAnalyzer.CodeCreators;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.CodeCreators;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
-namespace LibSeedCodeCreator;
+namespace AppCliTools.LibSeedCodeCreator;
 
 public sealed class GetJsonFromProjectDbProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {
     public void Go()
     {
-        var dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
-        var dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
+        string dbContextProjectName = $"{par.ProjectPrefix}ScaffoldSeederDbSc";
+        string dbContextClassName = $"{par.ProjectPrefix.Replace('.', '_')}DbScContext";
 
         var fcbGetJsonAdditionalUsing = new FlatCodeBlock($"using {dbContextProjectName}",
             "using Microsoft.EntityFrameworkCore", "using DbContextAnalyzer.Models",

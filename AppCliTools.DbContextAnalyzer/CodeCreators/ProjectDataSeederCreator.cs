@@ -1,11 +1,11 @@
 ﻿using System;
-using CodeTools;
-using DbContextAnalyzer.Domain;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Domain;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
 {
@@ -43,7 +43,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
     public void UseEntity(EntityData entityData)
     {
         string tableName = GetNewTableName(entityData.TableName);
-        var tableNameCapitalCamel = tableName.CapitalizeCamel();
+        string tableNameCapitalCamel = tableName.CapitalizeCamel();
 
         _counter++;
 

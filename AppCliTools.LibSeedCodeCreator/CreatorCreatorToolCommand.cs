@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CliParameters;
-using DbContextAnalyzer.Models;
+using AppCliTools.CliParameters;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace LibSeedCodeCreator;
+namespace AppCliTools.LibSeedCodeCreator;
 
 public sealed class CreatorCreatorToolCommand : ToolCommand
 {

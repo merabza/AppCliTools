@@ -3,12 +3,12 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CodeTools;
-using DbContextAnalyzer.Domain;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Domain;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class SeederModelCreator : SeederCodeCreatorBase
 {

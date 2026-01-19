@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Net.Http;
-using CliParameters;
-using CliParameters.FieldEditors;
-using CliParametersDataEdit.FieldEditors;
-using CliParametersEdit.FieldEditors;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersDataEdit.FieldEditors;
+using AppCliTools.CliParametersEdit.FieldEditors;
 using DatabaseTools.DbTools;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
 
-namespace CliParametersDataEdit.ParametersEditors;
+namespace AppCliTools.CliParametersDataEdit.ParametersEditors;
 
 public sealed class DatabaseParametersEditor : ParametersEditor
 {

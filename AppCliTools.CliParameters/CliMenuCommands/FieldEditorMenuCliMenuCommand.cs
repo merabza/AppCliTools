@@ -1,10 +1,10 @@
-﻿using CliMenu;
-using CliParameters.Cruders;
-using CliParameters.FieldEditors;
-using LibDataInput;
+﻿using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibDataInput;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.CliMenuCommands;
 
 public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
 {

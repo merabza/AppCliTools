@@ -1,7 +1,7 @@
-﻿using CliParameters.FieldEditors;
+﻿using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public sealed class SubParametersManager<T> : IParametersManager
 {

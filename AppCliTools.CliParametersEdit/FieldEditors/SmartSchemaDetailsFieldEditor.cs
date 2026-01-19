@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
-using CliMenu;
-using CliParameters.FieldEditors;
-using CliParametersEdit.Cruders;
+using System.Globalization;
+using System.Text;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersEdit.Cruders;
 using ParametersManagement.LibFileParameters.Models;
 
-namespace CliParametersEdit.FieldEditors;
+namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchemaDetail>>
 {
@@ -16,30 +18,31 @@ public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchema
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        var currentValuesDict = GetValue(record) ?? [];
+        List<SmartSchemaDetail> currentValuesDict = GetValue(record) ?? [];
 
         var smartSchemaDetailCruder = new SmartSchemaDetailCruder(currentValuesDict);
-        var menuSet = smartSchemaDetailCruder.GetListMenu();
+        CliMenuSet menuSet = smartSchemaDetailCruder.GetListMenu();
 
         return menuSet;
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
+        List<SmartSchemaDetail>? val = GetValue(record);
 
         if (val is null || val.Count <= 0)
         {
             return "No Details";
         }
 
-        var sb = new System.Text.StringBuilder();
-        var culture = System.Globalization.CultureInfo.InvariantCulture;
+        var sb = new StringBuilder();
+        CultureInfo culture = CultureInfo.InvariantCulture;
         sb.Append(culture, $"{val[0].PeriodType}-{val[0].PreserveCount}");
         for (int i = 1; i < val.Count; i++)
         {
             sb.Append(culture, $"/{val[i].PeriodType}-{val[i].PreserveCount}");
         }
+
         return sb.ToString();
     }
 }

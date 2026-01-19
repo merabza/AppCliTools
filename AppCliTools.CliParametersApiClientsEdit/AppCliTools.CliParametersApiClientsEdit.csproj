@@ -15,11 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ParametersManagement\LibApiClientParameters\LibApiClientParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibApiClientParameters\ParametersManagement.LibApiClientParameters.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.TestApiContracts\SystemTools.TestApiContracts.csproj" />
-        <ProjectReference Include="..\..\SystemTools\TestApiContracts\TestApiContracts.csproj" />
-        <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
-using CodeTools;
-using DbContextAnalyzer.CodeCreators;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.CodeCreators;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 
-namespace LibSeedCodeCreator;
+namespace AppCliTools.LibSeedCodeCreator;
 
 public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, ILogger logger)
 {

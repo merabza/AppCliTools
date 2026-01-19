@@ -1,4 +1,4 @@
-﻿namespace CliParametersDataEdit.Models;
+﻿namespace AppCliTools.CliParametersDataEdit.Models;
 
 public sealed class SqLiteConnectionParameters : DbConnectionParameters
 {

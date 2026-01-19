@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
-using CliMenu;
-using CliParameters;
-using CliParameters.FieldEditors;
-using CliParametersApiClientsEdit.FieldEditors;
-using CliParametersDataEdit.CliMenuCommands;
-using CliParametersDataEdit.FieldEditors;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersApiClientsEdit.FieldEditors;
+using AppCliTools.CliParametersDataEdit.CliMenuCommands;
+using AppCliTools.CliParametersDataEdit.FieldEditors;
 using DatabaseTools.DbTools.Models;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
@@ -19,7 +19,7 @@ using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 
-namespace CliParametersDataEdit.Cruders;
+namespace AppCliTools.CliParametersDataEdit.Cruders;
 
 public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerConnectionData>
 {
@@ -162,7 +162,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
 
-        var databaseServerProvider = databaseServerConnection.DatabaseServerProvider;
+        EDatabaseProvider databaseServerProvider = databaseServerConnection.DatabaseServerProvider;
         (bool toReturn, bool enablePassword, bool enableUser, bool enableSqlServerProps, bool enableWebAgentProps) =
             EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
         if (toReturn)
@@ -238,8 +238,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         base.FillDetailsSubMenu(itemSubMenuSet, itemName);
 
         var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        DatabaseServerConnectionData databaseServerConnectionDataByKey =
-            parameters.DatabaseServerConnections[itemName];
+        DatabaseServerConnectionData databaseServerConnectionDataByKey = parameters.DatabaseServerConnections[itemName];
 
         if (databaseServerConnectionDataByKey.DatabaseServerProvider == EDatabaseProvider.WebAgent)
         {

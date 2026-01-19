@@ -1,7 +1,7 @@
 ﻿using System;
-using LibMenuInput;
+using AppCliTools.LibMenuInput;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public /*open*/ class EnumFieldEditor<TEnum> : FieldEditor<TEnum> where TEnum : struct, Enum
 {
@@ -16,7 +16,7 @@ public /*open*/ class EnumFieldEditor<TEnum> : FieldEditor<TEnum> where TEnum : 
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var current = GetValue(recordForUpdate, _defaultValue);
+        TEnum current = GetValue(recordForUpdate, _defaultValue);
         SetValue(recordForUpdate, MenuInputer.InputFromEnumList(FieldName, current));
     }
 }

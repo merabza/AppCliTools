@@ -1,4 +1,4 @@
-﻿namespace GramParser;
+﻿namespace AppCliTools.GramParser;
 
 public class Token
 {

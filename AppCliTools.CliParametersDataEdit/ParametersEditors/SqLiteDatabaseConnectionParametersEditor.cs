@@ -1,10 +1,10 @@
-﻿using CliParameters;
-using CliParameters.FieldEditors;
-using CliParametersDataEdit.Models;
+﻿using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersDataEdit.Models;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParametersDataEdit.ParametersEditors;
+namespace AppCliTools.CliParametersDataEdit.ParametersEditors;
 
 public sealed class SqLiteDatabaseConnectionParametersEditor : ParametersEditor
 {

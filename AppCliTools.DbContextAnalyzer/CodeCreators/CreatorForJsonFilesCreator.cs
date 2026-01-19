@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeTools;
-using DbContextAnalyzer.Domain;
-using DbContextAnalyzer.Models;
+using System.Text;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Domain;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
 {
@@ -156,7 +157,7 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
             atLeastOneAdded = true;
         }
 
-        var tableVarName = tableName.UnCapitalize();
+        string tableVarName = tableName.UnCapitalize();
         var block = new CodeBlock(string.Empty, string.Empty,
             $"Console.WriteLine(\"Working on {tableNameCapitalCamel}\")", string.Empty,
             $"var {tableVarName} = _context.{oldTableNameCapitalCamel}{includes}.Select(s => new {seederModelClassName} ({strFieldsList})).ToList()",
@@ -172,7 +173,7 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
 
     private static string FieldName(FieldData[] list, int levelCount)
     {
-        var sb = new System.Text.StringBuilder("s");
+        var sb = new StringBuilder("s");
 
         int needCount = Math.Min(list.Length, levelCount);
 

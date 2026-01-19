@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeTools;
-using DbContextAnalyzer.Domain;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public /*open*/ class SeederCodeCreatorBase : CodeCreator
 {

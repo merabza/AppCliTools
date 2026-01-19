@@ -1,7 +1,7 @@
-﻿using CliParameters.FieldEditors;
-using LibMenuInput;
+﻿using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibMenuInput;
 
-namespace CliParametersEdit.FieldEditors;
+namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class FileStoragePathFieldEditor : FieldEditor<string>
 {

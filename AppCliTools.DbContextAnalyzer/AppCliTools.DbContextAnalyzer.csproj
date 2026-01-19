@@ -15,7 +15,7 @@
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibDatabaseParameters\ParametersManagement.LibDatabaseParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.JetBrainsResharperGlobalToolsWork\SystemTools.JetBrainsResharperGlobalToolsWork.csproj" />
-        <ProjectReference Include="..\CodeTools\CodeTools.csproj" />
+        <ProjectReference Include="..\AppCliTools.CodeTools\AppCliTools.CodeTools.csproj" />
     </ItemGroup>
 
 </Project>

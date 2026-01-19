@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.FieldEditors;
-using CliParametersDataEdit.Models;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersDataEdit.Models;
+using AppCliTools.LibDataInput;
+using AppCliTools.LibMenuInput;
 using DatabaseTools.DbTools;
 using DatabaseTools.DbTools.Models;
 using DatabaseTools.DbToolsFactory;
 using DatabaseTools.SqlServerDbTools;
-using LibDataInput;
-using LibMenuInput;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using OneOf;
 using ParametersManagement.LibDatabaseParameters;
+using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
 {
@@ -68,7 +70,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
                 DbConnectionFactory.GetDbConnectionStringBuilder(sqlSerConPar) ??
                 throw new Exception("dbConnectionStringBuilder is null");
 
-            var dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
+            DbKit dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
             DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
 
             // ReSharper disable once using
@@ -77,7 +79,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            var getDatabaseInfosResult = dc.GetDatabaseInfos(token).Result;
+            OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseInfosResult = dc.GetDatabaseInfos(token).Result;
 
             var databaseInfos = new List<DatabaseInfoModel>();
             if (getDatabaseInfosResult.IsT0)
@@ -88,7 +90,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             var databasesMenuSet = new CliMenuSet();
             databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
 
-            var keys = databaseInfos.Select(s => s.Name).ToList();
+            List<string> keys = databaseInfos.Select(s => s.Name).ToList();
             foreach (string listItem in keys)
             {
                 databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));

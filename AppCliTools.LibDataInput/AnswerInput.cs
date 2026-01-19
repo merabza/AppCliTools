@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public sealed class AnswerInput : DataInput
 {

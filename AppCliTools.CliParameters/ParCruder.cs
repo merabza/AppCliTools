@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CliParameters.Cruders;
+using AppCliTools.CliParameters.Cruders;
 using ParametersManagement.LibParameters;
 
-namespace CliParameters;
+namespace AppCliTools.CliParameters;
 
 public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
 {

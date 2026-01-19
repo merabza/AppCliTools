@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ParametersManagement\LibFileParameters\LibFileParameters.csproj" />
-        <ProjectReference Include="..\CliParameters\CliParameters.csproj" />
+      <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibFileParameters\ParametersManagement.LibFileParameters.csproj" />
+      <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
     </ItemGroup>
 
 </Project>

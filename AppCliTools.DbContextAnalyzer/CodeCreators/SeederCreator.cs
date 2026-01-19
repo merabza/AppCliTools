@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeTools;
-using DbContextAnalyzer.Domain;
-using DbContextAnalyzer.Models;
+using AppCliTools.CodeTools;
+using AppCliTools.DbContextAnalyzer.Domain;
+using AppCliTools.DbContextAnalyzer.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
-namespace DbContextAnalyzer.CodeCreators;
+namespace AppCliTools.DbContextAnalyzer.CodeCreators;
 
 public sealed class SeederCreator : SeederCodeCreatorBase
 {
@@ -36,7 +36,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
 
         string realTypeName = GetRealTypeNameForMethodName(fieldData);
-        var dotValue = devFieldIsNullable ? string.Empty : ".Value";
+        string dotValue = devFieldIsNullable ? string.Empty : ".Value";
 
         if (fieldData.SubstituteField.Fields.Count == 0)
         {

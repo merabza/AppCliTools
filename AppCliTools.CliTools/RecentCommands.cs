@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ParametersManagement.LibParameters;
 
-namespace CliTools;
+namespace AppCliTools.CliTools;
 
 public sealed class RecentCommands : IParameters
 {

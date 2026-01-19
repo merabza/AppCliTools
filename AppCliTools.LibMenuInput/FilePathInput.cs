@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace LibMenuInput;
+namespace AppCliTools.LibMenuInput;
 
 public sealed class FilePathInput : PathInput
 {
@@ -16,7 +16,7 @@ public sealed class FilePathInput : PathInput
 
     protected override void AddFiles(DirectoryInfo dir, string fileName, List<string> names)
     {
-        var fileNames = dir.GetFiles($"{fileName}*").Select(s => s.Name).ToList();
+        List<string> fileNames = dir.GetFiles($"{fileName}*").Select(s => s.Name).ToList();
         names.AddRange(fileNames);
     }
 

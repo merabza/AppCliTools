@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
-using CliParameters;
-using CliParameters.FieldEditors;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.FieldEditors;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using ParametersManagement.LibApiClientParameters;
@@ -11,7 +11,7 @@ using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared.Errors;
 using SystemTools.TestApiContracts;
 
-namespace CliParametersApiClientsEdit;
+namespace AppCliTools.CliParametersApiClientsEdit;
 
 public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
 {

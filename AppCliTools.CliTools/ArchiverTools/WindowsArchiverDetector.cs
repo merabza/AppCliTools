@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace CliTools.ArchiverTools;
+namespace AppCliTools.CliTools.ArchiverTools;
 
 public sealed class WindowsArchiverDetector : ArchiverDetector
 {

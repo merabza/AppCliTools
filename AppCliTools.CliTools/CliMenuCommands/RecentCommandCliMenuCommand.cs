@@ -1,6 +1,6 @@
-﻿using CliMenu;
+﻿using AppCliTools.CliMenu;
 
-namespace CliTools.CliMenuCommands;
+namespace AppCliTools.CliTools.CliMenuCommands;
 
 public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
 {
@@ -19,7 +19,7 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
     {
         string[] menuLine = _menuLinkWithoutMainMenu.Split('/');
 
-        var currentMenu = _cliAppLoop.BuildMainMenu();
+        CliMenuSet? currentMenu = _cliAppLoop.BuildMainMenu();
 
         CliMenuItem? menuItem = null;
         foreach (string menuName in menuLine)

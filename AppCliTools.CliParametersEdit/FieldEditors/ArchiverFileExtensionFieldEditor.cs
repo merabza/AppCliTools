@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
-using CliParameters.FieldEditors;
-using LibDataInput;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibDataInput;
 using ParametersManagement.LibFileParameters.Models;
 using SystemTools.SystemToolsShared;
 
-namespace CliParametersEdit.FieldEditors;
+namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
 {

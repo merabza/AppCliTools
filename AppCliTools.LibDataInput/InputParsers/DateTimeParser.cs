@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace LibDataInput.InputParsers;
+namespace AppCliTools.LibDataInput.InputParsers;
 
 public sealed class DateTimeParser : InputParser
 {

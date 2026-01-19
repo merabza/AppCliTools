@@ -1,6 +1,6 @@
 ﻿using ParametersManagement.LibParameters;
 
-namespace CliParametersDataEdit;
+namespace AppCliTools.CliParametersDataEdit;
 
 public /*open*/ class DbConnectionParameters : IParameters
 {

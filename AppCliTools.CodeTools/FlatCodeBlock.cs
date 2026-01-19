@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class FlatCodeBlock : CodeBlockBase, ICodeItem
 {
@@ -12,7 +12,7 @@ public sealed class FlatCodeBlock : CodeBlockBase, ICodeItem
     public override string Output(int indentLevel)
     {
         var sb = new StringBuilder();
-        foreach (var codeItem in CodeItems)
+        foreach (ICodeItem codeItem in CodeItems)
         {
             sb.Append(codeItem.Output(indentLevel));
         }

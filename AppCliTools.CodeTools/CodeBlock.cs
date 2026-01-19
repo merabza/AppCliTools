@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace CodeTools;
+namespace AppCliTools.CodeTools;
 
 public sealed class CodeBlock : CodeBlockBase, ICodeItem
 {
@@ -36,7 +36,7 @@ public sealed class CodeBlock : CodeBlockBase, ICodeItem
 
     public override string Output(int indentLevel)
     {
-        string indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new(' ', indentLevel * Stats.IndentSize);
         var sb = new StringBuilder();
         if (BlockInOneLine && CodeItems.All(a => a is CodeCommand))
         {

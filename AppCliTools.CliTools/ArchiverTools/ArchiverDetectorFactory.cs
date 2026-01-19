@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace CliTools.ArchiverTools;
+namespace AppCliTools.CliTools.ArchiverTools;
 
 public static class ArchiverDetectorFactory
 {

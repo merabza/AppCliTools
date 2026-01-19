@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CliParameters;
-using CliParameters.Cruders;
-using LibFileParameters.Interfaces;
-using LibParameters;
+using AppCliTools.CliParameters;
+using AppCliTools.CliParameters.Cruders;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
 
-namespace CliParametersExcludeSetsEdit.Cruders;
+namespace AppCliTools.CliParametersExcludeSetsEdit.Cruders;
 
 public sealed class ExcludeSetFileMaskCruder : Cruder
 {
@@ -23,8 +24,8 @@ public sealed class ExcludeSetFileMaskCruder : Cruder
     private List<string> GetFileMasks()
     {
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
-        var excludeSets = parameters.ExcludeSets;
-        return !excludeSets.TryGetValue(_excludeSetName, out var excludeSet) ? [] : excludeSet.FolderFileMasks;
+        Dictionary<string, ExcludeSet> excludeSets = parameters.ExcludeSets;
+        return !excludeSets.TryGetValue(_excludeSetName, out ExcludeSet? excludeSet) ? [] : excludeSet.FolderFileMasks;
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -39,23 +40,25 @@ public sealed class ExcludeSetFileMaskCruder : Cruder
 
     public override bool ContainsRecordWithKey(string recordKey)
     {
-        var fileMasks = GetFileMasks();
+        List<string> fileMasks = GetFileMasks();
         return fileMasks.Contains(recordKey);
     }
 
     protected override void RemoveRecordWithKey(string recordKey)
     {
-        var fileMasks = GetFileMasks();
+        List<string> fileMasks = GetFileMasks();
         fileMasks.Remove(recordKey);
     }
 
-    protected override void AddRecordWithKey(string recordName, ItemData newRecord)
+    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
-        var excludeSets = parameters.ExcludeSets;
-        if (!excludeSets.TryGetValue(_excludeSetName, out var excludeSet))
+        Dictionary<string, ExcludeSet> excludeSets = parameters.ExcludeSets;
+        if (!excludeSets.TryGetValue(_excludeSetName, out ExcludeSet? excludeSet))
+        {
             return;
+        }
 
-        excludeSet.FolderFileMasks.Add(recordName);
+        excludeSet.FolderFileMasks.Add(recordKey);
     }
 }

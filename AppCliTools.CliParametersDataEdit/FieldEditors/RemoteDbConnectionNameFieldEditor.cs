@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
-using CliMenu;
-using CliParameters.FieldEditors;
-using LibDataInput;
-using LibMenuInput;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.LibDataInput;
+using AppCliTools.LibMenuInput;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using ParametersManagement.LibApiClientParameters;
@@ -16,7 +16,7 @@ using WebAgentContracts.WebAgentDatabasesApiContracts;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CliParametersDataEdit.FieldEditors;
+namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
 {

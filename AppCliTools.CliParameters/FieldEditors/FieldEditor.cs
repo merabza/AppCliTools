@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
-using CliMenu;
-using CliParameters.CliMenuCommands;
-using CliParameters.Cruders;
-using LibDataInput;
+using AppCliTools.CliMenu;
+using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliParameters.Cruders;
+using AppCliTools.LibDataInput;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
-namespace CliParameters.FieldEditors;
+namespace AppCliTools.CliParameters.FieldEditors;
 
 public /*open*/ class FieldEditor
 {

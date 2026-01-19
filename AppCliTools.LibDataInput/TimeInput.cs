@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public sealed class TimeInput : DataInput
 {
@@ -34,7 +34,7 @@ public sealed class TimeInput : DataInput
             }
 
             if (!DateTime.TryParseExact(Text, "T", CultureInfo.InvariantCulture, DateTimeStyles.None,
-                    out var userDateTime))
+                    out DateTime userDateTime))
             {
                 if (!Inputer.InputBool("Entered date time is not valid try again?", false, false))
                 {

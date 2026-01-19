@@ -1,4 +1,4 @@
-﻿namespace DbContextAnalyzer.Models;
+﻿namespace AppCliTools.DbContextAnalyzer.Models;
 
 public sealed class GetJsonCreatorParameters
 {

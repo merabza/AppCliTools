@@ -4,14 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using CliMenu;
-using CliTools.CliMenuCommands;
+using AppCliTools.CliMenu;
+using AppCliTools.CliTools.CliMenuCommands;
 using Figgle.Fonts;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 using ToolsManagement.LibToolActions.BackgroundTasks;
 
-namespace CliTools;
+namespace AppCliTools.CliTools;
 
 public abstract class CliAppLoop
 {

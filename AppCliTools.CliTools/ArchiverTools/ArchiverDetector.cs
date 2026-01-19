@@ -1,6 +1,6 @@
 ﻿using SystemTools.SystemToolsShared;
 
-namespace CliTools.ArchiverTools;
+namespace AppCliTools.CliTools.ArchiverTools;
 
 public /*open*/ class ArchiverDetector
 {

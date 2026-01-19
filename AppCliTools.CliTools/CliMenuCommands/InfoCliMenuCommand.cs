@@ -1,6 +1,6 @@
-﻿using CliMenu;
+﻿using AppCliTools.CliMenu;
 
-namespace CliTools.CliMenuCommands;
+namespace AppCliTools.CliTools.CliMenuCommands;
 
 public /*open*/ class InfoCliMenuCommand : CliMenuCommand
 {

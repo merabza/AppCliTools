@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace LibDataInput;
+namespace AppCliTools.LibDataInput;
 
 public sealed class IntDataInput : DataInput
 {
