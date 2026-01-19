@@ -1,6 +1,6 @@
 ﻿using CliMenu;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.FieldEditors;
 
@@ -20,20 +20,20 @@ public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TMode
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
-        return val == null ? "(empty)" : val.GetStatus();
+        TModel? val = GetValue(record);
+        return val?.GetStatus() ?? "(empty)";
     }
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        var currentValue = GetValue(record);
+        TModel? currentValue = GetValue(record);
         if (currentValue == null)
         {
             currentValue = new TModel();
             SetValue(record, currentValue);
         }
 
-        var parametersEditor = CreateEditor(record, currentValue);
+        TEditor parametersEditor = CreateEditor(record, currentValue);
         parametersEditor.CheckFieldsEnables(currentValue);
         return parametersEditor.GetParametersMainMenu();
     }

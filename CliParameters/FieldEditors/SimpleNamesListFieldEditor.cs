@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using CliMenu;
 using CliParameters.Cruders;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.FieldEditors;
 
@@ -39,31 +39,37 @@ public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<strin
     public override CliMenuSet GetSubMenu(object record)
     {
         Cruder cruder;
-        var currentValuesDict = GetValue(record) ?? [];
+        List<string> currentValuesDict = GetValue(record) ?? [];
 
         if (_httpClientFactory is not null && _logger is not null)
+        {
             cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _httpClientFactory, _parametersManager,
                 currentValuesDict)!;
-        else if (_logger is not null)
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager,
-                currentValuesDict)!;
-        else
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
+            return cruder.GetListMenu();
+        }
+
+        cruder = _logger is not null
+            ? (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager, currentValuesDict)!
+            : (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
 
         return cruder.GetListMenu();
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
+        List<string>? val = GetValue(record);
 
         if (val is not { Count: > 0 })
+        {
             return "No Details";
+        }
 
         if (val.Count > 1)
+        {
             return $"{val.Count} Details";
+        }
 
-        var element = val.Single();
+        string element = val.Single();
         return element;
     }
 }

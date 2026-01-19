@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CodeTools;
@@ -32,28 +34,35 @@ public sealed class FieldData
     public int GetLevel()
     {
         if (SubstituteField == null)
+        {
             return 0;
+        }
+
         return SubstituteField.Fields.Select(m => m.GetLevel()).DefaultIfEmpty().Max() + 1;
     }
 
     public static FieldData Create(Type? tableClrType, IProperty s, string preferredName, FieldData? parent)
     {
-        var clrType = s.ClrType;
-        var isNullable = clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        Type clrType = s.ClrType;
+        bool isNullable = clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>);
         if (isNullable)
+        {
             clrType = clrType.GetGenericArguments()[0];
+        }
         else
+        {
             isNullable = IsAdvanceNullable(tableClrType, s.Name);
+        }
 
-        var isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
-        var realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable, isNullableByParents);
+        bool isNullableByParents = parent == null ? isNullable : parent.IsNullableByParents || isNullable;
+        string realTypeName = GetRealTypeName(clrType.Name, s.GetColumnType(), isNullable, isNullableByParents);
 
         return new FieldData
         {
             Name = preferredName,
             OldName = s.Name,
             RealTypeName = realTypeName,
-            FullName = (parent == null ? string.Empty : parent.FullName) + preferredName,
+            FullName = (parent?.FullName ?? string.Empty) + preferredName,
             IsNullable = isNullable,
             IsNullableByParents = isNullableByParents,
             IsValueType = clrType.IsValueType
@@ -63,27 +72,35 @@ public sealed class FieldData
     private static bool IsAdvanceNullable(Type? clrType, string fieldName)
     {
         if (clrType == null)
+        {
             return false;
+        }
 
-        var clrProperties = clrType.GetProperties();
+        PropertyInfo[] clrProperties = clrType.GetProperties();
 
-        var prop = clrProperties.SingleOrDefault(x => x.Name == fieldName);
+        PropertyInfo? prop = clrProperties.SingleOrDefault(x => x.Name == fieldName);
 
-        var attr = prop?.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
+        CustomAttributeData? attr =
+            prop?.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
 
-        attr = attr ??
-               prop?.PropertyType.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
+        attr ??= prop?.PropertyType.CustomAttributes.SingleOrDefault(x => x.AttributeType.Name == "NullableAttribute");
 
         if (attr is null)
+        {
             return false;
+        }
 
         if (attr.ConstructorArguments.Count < 1)
+        {
             return false;
+        }
 
         if (attr.ConstructorArguments[0].Value is not byte)
+        {
             return false;
+        }
 
-        var b = (byte)(attr.ConstructorArguments[0].Value ?? 0);
+        byte b = (byte)(attr.ConstructorArguments[0].Value ?? 0);
 
         return b == 2;
     }
@@ -91,7 +108,7 @@ public sealed class FieldData
     private static string GetRealTypeName(string clrTypeName, string typeName, bool isNullable,
         bool isNullableByParents)
     {
-        var realTypeCandidate = clrTypeName switch
+        string realTypeCandidate = clrTypeName switch
         {
             "Int32" => "int",
             "String" => "string",

@@ -1,6 +1,6 @@
 ﻿using CliMenu;
 using CliParameters.FieldEditors;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.CliMenuCommands;
 

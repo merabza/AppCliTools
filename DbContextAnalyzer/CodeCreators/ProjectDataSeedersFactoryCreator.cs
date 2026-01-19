@@ -3,7 +3,7 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
@@ -44,12 +44,12 @@ public sealed class ProjectDataSeedersFactoryCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData, bool isCarcassType)
     {
-        var tableName = GetNewTableName(entityData.TableName);
+        string tableName = GetNewTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
-        var seederClassName = tableNameCapitalCamel + "Seeder";
-        var newClassName = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + seederClassName;
+        string seederClassName = tableNameCapitalCamel + "Seeder";
+        string newClassName = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + seederClassName;
 
-        var additionalParameters = tableName switch
+        string additionalParameters = tableName switch
         {
             "roles" => "MyRoleManager, SecretDataFolder, ",
             "users" => "MyUserManager, SecretDataFolder, ",
@@ -63,8 +63,12 @@ public sealed class ProjectDataSeedersFactoryCreator : SeederCodeCreatorBase
             $"return new {newClassName}({additionalParameters}DataSeedFolder, Repo)");
 
         if (isCarcassType)
+        {
             _carcassRegion.Add(block);
+        }
         else
+        {
             _projectRegion.Add(block);
+        }
     }
 }

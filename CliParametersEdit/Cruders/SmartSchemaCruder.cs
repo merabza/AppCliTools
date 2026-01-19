@@ -4,9 +4,9 @@ using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersEdit.CliMenuCommands;
 using CliParametersEdit.FieldEditors;
-using LibFileParameters.Interfaces;
-using LibFileParameters.Models;
-using LibParameters;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersEdit.Cruders;
 

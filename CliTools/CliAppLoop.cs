@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using CliMenu;
 using CliTools.CliMenuCommands;
 using Figgle.Fonts;
-using LibParameters;
-using LibToolActions.BackgroundTasks;
-using SystemToolsShared;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
+using ToolsManagement.LibToolActions.BackgroundTasks;
 
 namespace CliTools;
 
@@ -51,7 +51,7 @@ public abstract class CliAppLoop
 
         if (_header == null)
         {
-            var header = $"{ProgramAttributes.Instance.AppName} {Assembly.GetEntryAssembly()?.GetName().Version}";
+            string header = $"{ProgramAttributes.Instance.AppName} {Assembly.GetEntryAssembly()?.GetName().Version}";
             Console.WriteLine(FiggleFonts.Standard.Render(header));
         }
         else
@@ -61,9 +61,9 @@ public abstract class CliAppLoop
 
         Console.WriteLine();
 
-        var refreshList = true;
+        bool refreshList = true;
         _currentMenuSetLevel = 0;
-        var inFirstTime = true;
+        bool inFirstTime = true;
 
         LoadRecent();
 
@@ -106,11 +106,11 @@ public abstract class CliAppLoop
                 continue;
             }
 
-            var ch = Console.ReadKey(true);
+            ConsoleKeyInfo ch = Console.ReadKey(true);
 
             refreshList = true;
 
-            var menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemByKey(ch);
+            CliMenuItem? menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemByKey(ch);
 
             if (menuItem == null)
             {
@@ -122,13 +122,15 @@ public abstract class CliAppLoop
             Console.Write(menuItem.CountedKey);
             Console.WriteLine();
 
-            var menuCommand = menuItem.CliMenuCommand;
+            CliMenuCommand menuCommand = menuItem.CliMenuCommand;
             menuCommand.Run();
 
             if (menuCommand is not RecentCommandCliMenuCommand)
+            {
                 AddSelectedCommand(menuCommand);
+            }
 
-            var menuAction = menuCommand.MenuAction;
+            EMenuAction menuAction = menuCommand.MenuAction;
             //თუ მენიუს ცვლილება მოთხოვნილი არ არის, ვაგრძელებთ ჩვეულებრივად
 
             switch (menuAction)
@@ -141,7 +143,10 @@ public abstract class CliAppLoop
                     return true;
                 case EMenuAction.LoadSubMenu:
                     if (!AddSubMenu(menuCommand.GetSubMenu()))
+                    {
                         return false;
+                    }
+
                     break;
                 case EMenuAction.LevelUp when _currentMenuSetLevel <= 0:
                     return true;
@@ -156,9 +161,11 @@ public abstract class CliAppLoop
                     SaveRecent(menuCommand);
                     break;
                 case EMenuAction.GoToMenuLink:
-                    if (!GoToMenu(menuCommand.GetMenuLinkToGo()))
-                        if (!ReloadCurrentMenu())
-                            return false;
+                    if (!GoToMenu(menuCommand.GetMenuLinkToGo()) && !ReloadCurrentMenu())
+                    {
+                        return false;
+                    }
+
                     break;
                 default:
                     throw new UnreachableException($"EMenuAction {menuAction} did rot realized");
@@ -171,10 +178,16 @@ public abstract class CliAppLoop
     private void LoadRecent()
     {
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
+        {
             return;
+        }
+
         var parLoader = new ParametersLoader<RecentCommands>();
         if (!parLoader.TryLoadParameters(_par.RecentCommandsFileName, false) || parLoader.Par is null)
+        {
             return;
+        }
+
         _recentCommands = (RecentCommands)parLoader.Par;
         _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Key).ToDictionary(k => k.Key, v => v.Value);
     }
@@ -182,7 +195,9 @@ public abstract class CliAppLoop
     private void SaveRecent(CliMenuCommand menuCommand)
     {
         if (_par is null || string.IsNullOrWhiteSpace(_par.RecentCommandsFileName) || _par.RecentCommandsCount < 1)
+        {
             return;
+        }
 
         string commLink;
         if (menuCommand is RecentCommandCliMenuCommand)
@@ -192,7 +207,10 @@ public abstract class CliAppLoop
         else
         {
             if (_currentMenuSetLevel < 1)
+            {
                 return;
+            }
+
             commLink = string.Join('/', _selectedMenuCommandsList.Take(_currentMenuSetLevel + 1).Select(x => x.Name));
         }
 
@@ -201,8 +219,10 @@ public abstract class CliAppLoop
         _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Value).ToDictionary(k => k.Key, v => v.Value);
 
         if (_recentCommands.Rc.Count > _par.RecentCommandsCount)
+        {
             _recentCommands.Rc = _recentCommands.Rc.OrderByDescending(x => x.Value).Take(_par.RecentCommandsCount)
                 .ToDictionary(k => k.Key, v => v.Value);
+        }
 
         var parMan = new ParametersManager(_par.RecentCommandsFileName, _recentCommands);
         parMan.Save(_recentCommands);
@@ -211,9 +231,11 @@ public abstract class CliAppLoop
     private bool GoToMenu(string? menuLinkToGo)
     {
         if (menuLinkToGo is null)
+        {
             return false;
+        }
 
-        var menuLine = menuLinkToGo.Split('/');
+        string[] menuLine = menuLinkToGo.Split('/');
 
         //Console.WriteLine("GoToMenu Start");
         //var line = 0;
@@ -235,16 +257,20 @@ public abstract class CliAppLoop
         //if (menuLine.Length <= 1 || menuLine[1] != _menuSetsList[_currentMenuSetLevel].Name)
         //    return true;
 
-        foreach (var menuName in menuLine)
+        foreach (string menuName in menuLine)
         {
-            var menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemWithName(menuName);
+            CliMenuItem? menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemWithName(menuName);
             if (menuItem is null)
+            {
                 return false;
+            }
 
             //AddSelectedCommand(menuItem.CliMenuCommand);
 
             if (!AddSubMenu(menuItem.CliMenuCommand.GetSubMenu()))
+            {
                 return false;
+            }
         }
 
         return true;
@@ -265,9 +291,11 @@ public abstract class CliAppLoop
                 return false;
             }
 
-            var selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
+            CliMenuCommand selectedMenuCommand = _selectedMenuCommandsList[_currentMenuSetLevel - 1];
             if (!AddChangeMenu(selectedMenuCommand.GetSubMenu()))
+            {
                 return false;
+            }
         }
 
         return true;
@@ -296,7 +324,9 @@ public abstract class CliAppLoop
     {
         _currentMenuSetLevel++;
         if (_menuSetsList.Count >= _currentMenuSetLevel)
+        {
             return AddChangeMenu(menuSet);
+        }
 
         StShared.WriteErrorLine($"Wrong menu build. missed menu level {_currentMenuSetLevel}", true);
         return false;
@@ -311,11 +341,19 @@ public abstract class CliAppLoop
         }
 
         if (_menuSetsList.Count == _currentMenuSetLevel)
+        {
             _menuSetsList.Add(menuSet);
+        }
         else if (_menuSetsList.Count > _currentMenuSetLevel)
+        {
             _menuSetsList[_currentMenuSetLevel] = menuSet;
+        }
+
         if (_currentMenuSetLevel > 0)
+        {
             menuSet.ParentMenu = _menuSetsList[_currentMenuSetLevel - 1];
+        }
+
         menuSet.FixMenuElements();
         return true;
     }
@@ -323,8 +361,12 @@ public abstract class CliAppLoop
     private void AddSelectedCommand(CliMenuCommand menuCommand)
     {
         if (_selectedMenuCommandsList.Count == _currentMenuSetLevel)
+        {
             _selectedMenuCommandsList.Add(menuCommand);
+        }
         else if (_selectedMenuCommandsList.Count > _currentMenuSetLevel)
+        {
             _selectedMenuCommandsList[_currentMenuSetLevel] = menuCommand;
+        }
     }
 }

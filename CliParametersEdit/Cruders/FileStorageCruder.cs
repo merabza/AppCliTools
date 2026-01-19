@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersEdit.FieldEditors;
-using FileManagersMain;
-using LibFileParameters.Interfaces;
-using LibFileParameters.Models;
-using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
+using ToolsManagement.FileManagersMain;
 
 namespace CliParametersEdit.Cruders;
 
@@ -43,23 +43,33 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         try
         {
             if (item is not FileStorageData fileStorageData)
+            {
                 return false;
+            }
 
             if (fileStorageData.FileStoragePath is null)
+            {
                 return false;
+            }
 
             if (FileStat.IsFileSchema(fileStorageData.FileStoragePath))
+            {
                 return true;
+            }
 
             var rfm = RemoteFileManager.Create(fileStorageData, true, _logger, null);
 
             if (rfm == null)
+            {
                 return false;
+            }
 
             Console.WriteLine("Try connect to file server...");
 
             if (!rfm.CheckConnection())
+            {
                 return false;
+            }
 
             Console.WriteLine("Connected successfully");
 
@@ -75,7 +85,10 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
     protected override void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)
     {
         if (itemData is not FileStorageData fileStorageData)
+        {
             return;
+        }
+
         var isFileSchema = fileStorageData.IsFileSchema();
         var enableUserNamePassword = isFileSchema is not null && !isFileSchema.Value;
         EnableFieldByName(nameof(FileStorageData.UserName), enableUserNamePassword);
@@ -95,7 +108,10 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
     {
         if (defaultItemData is FileStorageData defFileStorageData)
+        {
             return new FileStorageData { FileStoragePath = defFileStorageData.FileStoragePath };
+        }
+
         return new FileStorageData();
     }
 }

@@ -21,17 +21,26 @@ public sealed class EntityData
     public bool UsePrimaryKey { get; set; }
     public bool HasAutoNumber { get; set; }
     public bool HasAutoNumberByOneToOnePrincipal { get; set; }
-    public bool HasOneToOneReference { get; set; } = false;
+    public bool HasOneToOneReference { get; set; }
 
     public List<FieldData> GetFlatFieldData(List<FieldData>? fieldsData = null)
     {
         var flat = new List<FieldData>();
-        foreach (var fieldData in fieldsData ?? FieldsData)
+        foreach (FieldData fieldData in fieldsData ?? FieldsData)
+        {
             if (fieldData.SubstituteField is null || fieldData.SubstituteField.Fields.Count == 0)
+            {
                 AddOneWithCheckOnDuplicates(flat, fieldData);
+            }
             else
-                foreach (var fd in GetFlatFieldData(fieldData.SubstituteField.Fields))
+            {
+                foreach (FieldData fd in GetFlatFieldData(fieldData.SubstituteField.Fields))
+                {
                     AddOneWithCheckOnDuplicates(flat, fd);
+                }
+            }
+        }
+
         return flat;
     }
 

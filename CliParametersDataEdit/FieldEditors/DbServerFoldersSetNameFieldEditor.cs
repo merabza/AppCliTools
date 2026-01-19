@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
-using DatabasesManagement;
-using LibApiClientParameters;
-using LibDatabaseParameters;
 using LibDataInput;
 using LibMenuInput;
-using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
-using SystemToolsShared.Errors;
+using OneOf;
+using ParametersManagement.LibApiClientParameters;
+using ParametersManagement.LibDatabaseParameters;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
+using SystemTools.SystemToolsShared.Errors;
+using ToolsManagement.DatabasesManagement;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -40,8 +42,9 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
     {
         try
         {
-            var currentFoldersSetName = GetValue(recordForUpdate);
-            var databaseServerConnectionName = GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
+            string? currentFoldersSetName = GetValue(recordForUpdate);
+            string? databaseServerConnectionName =
+                GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
             var dscParameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
             var databaseServerConnections = new DatabaseServerConnections(dscParameters.DatabaseServerConnections);
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
@@ -53,7 +56,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 return;
             }
 
-            var databaseServerConnectionData =
+            DatabaseServerConnectionData? databaseServerConnectionData =
                 databaseServerConnections.GetDatabaseServerConnectionByKey(databaseServerConnectionName);
 
             if (databaseServerConnectionData == null)
@@ -65,11 +68,13 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
-            var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
-                databaseServerConnectionData, apiClients, _httpClientFactory, null, null, token).Preserve().Result;
-            var databaseFoldersSetNames = databaseServerConnectionData.DatabaseFoldersSets?.Keys.ToList() ?? [];
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
+                .CreateDatabaseManager(_logger, true, databaseServerConnectionData, apiClients, _httpClientFactory,
+                    null, null, token).Preserve().Result;
+            List<string>? databaseFoldersSetNames =
+                databaseServerConnectionData.DatabaseFoldersSets?.Keys.ToList() ?? [];
 
             if (createDatabaseManagerResult.IsT1)
             {
@@ -77,23 +82,27 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             }
             else
             {
-                var getDatabaseFoldersSetsResult = createDatabaseManagerResult.AsT0
+                OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult = createDatabaseManagerResult.AsT0
                     .GetDatabaseFoldersSetNames(token).Result;
                 if (getDatabaseFoldersSetsResult.IsT0)
+                {
                     databaseFoldersSetNames = getDatabaseFoldersSetsResult.AsT0;
+                }
                 else
+                {
                     Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                }
             }
 
             var databasesMenuSet = new CliMenuSet();
 
-            foreach (var listItem in databaseFoldersSetNames)
+            foreach (string listItem in databaseFoldersSetNames)
+            {
                 databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+            }
 
-            var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentFoldersSetName);
-
-            if (selectedKey is null)
-                throw new DataInputException("Selected invalid Item. ");
+            string selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentFoldersSetName) ??
+                                 throw new DataInputException("Selected invalid Item. ");
 
             SetValue(recordForUpdate, selectedKey);
         }
@@ -103,8 +112,8 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in DbServerFoldersSetNameFieldEditor.UpdateField");
-            throw;
+            _logger.LogError(e, "Error in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {PropertyName}", recordKey, PropertyName);
+            throw new Exception($"Error occurred in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {PropertyName}", e);
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using CliParameters.FieldEditors;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersApiClientsEdit.FieldEditors;
 
@@ -39,7 +39,9 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
         var val = GetValue(record);
 
         if (val == null)
+        {
             return string.Empty;
+        }
 
         var apiClientCruder = ApiClientCruder.Create(_logger, _httpClientFactory, _parametersManager);
 

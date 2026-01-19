@@ -1,6 +1,6 @@
 ﻿using CliMenu;
 using CliParameters.Cruders;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace CliParameters.CliMenuCommands;
 
@@ -18,7 +18,9 @@ public sealed class EditItemAllFieldsInSequenceCliMenuCommand : CliMenuCommand
     protected override bool RunBody()
     {
         if (!string.IsNullOrWhiteSpace(ParentMenuName))
+        {
             return _cruder.EditItemAllFieldsInSequence(ParentMenuName);
+        }
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
         return false;

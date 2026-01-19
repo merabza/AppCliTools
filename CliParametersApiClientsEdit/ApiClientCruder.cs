@@ -4,11 +4,12 @@ using System.Net.Http;
 using System.Threading;
 using CliParameters;
 using CliParameters.FieldEditors;
-using LibApiClientParameters;
-using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared.Errors;
-using TestApiContracts;
+using OneOf;
+using ParametersManagement.LibApiClientParameters;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared.Errors;
+using SystemTools.TestApiContracts;
 
 namespace CliParametersApiClientsEdit;
 
@@ -41,10 +42,14 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
         try
         {
             if (item is not ApiClientSettings apiClientSettings)
+            {
                 return false;
+            }
 
             if (string.IsNullOrWhiteSpace(apiClientSettings.Server))
+            {
                 return false;
+            }
 
             Console.WriteLine("Try connect to Test Api Client...");
 
@@ -54,9 +59,9 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
-            var getVersionResult = apiClient.GetVersion(token).Result;
+            OneOf<string, Err[]> getVersionResult = apiClient.GetVersion(token).Result;
 
             if (getVersionResult.IsT1)
             {
@@ -64,10 +69,12 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
                 return false;
             }
 
-            var version = getVersionResult.AsT0;
+            string? version = getVersionResult.AsT0;
 
             if (string.IsNullOrWhiteSpace(version))
+            {
                 return false;
+            }
 
             Console.WriteLine($"Connected successfully, Test Api Client version is {version}");
 
@@ -88,7 +95,10 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
     public override string? GetStatusFor(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
+        {
             return null;
+        }
+
         var apiClient = (ApiClientSettings?)GetItemByName(name);
         return apiClient?.Server;
     }

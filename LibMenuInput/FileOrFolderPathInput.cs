@@ -17,7 +17,7 @@ public sealed class FileOrFolderPathInput : PathInput
 
     protected override void AddFiles(DirectoryInfo dir, string fileName, List<string> names)
     {
-        var fileNames = dir.GetFiles($"{fileName}*").Select(s => s.Name).ToList();
+        List<string> fileNames = dir.GetFiles($"{fileName}*").Select(s => s.Name).ToList();
         names.AddRange(fileNames);
     }
 
@@ -28,7 +28,7 @@ public sealed class FileOrFolderPathInput : PathInput
 
     private static bool IsFileSchema(string? path)
     {
-        var uriCreated = Uri.TryCreate(path, UriKind.Absolute, out var uri);
-        return !uriCreated || uri is null || uri.Scheme.ToLower() == "file";
+        bool uriCreated = Uri.TryCreate(path, UriKind.Absolute, out Uri? uri);
+        return !uriCreated || uri is null || uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
     }
 }

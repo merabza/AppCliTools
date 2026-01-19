@@ -12,10 +12,10 @@ namespace DbContextAnalyzer;
 
 public sealed class Relations
 {
-    public readonly Dictionary<string, EntityData> Entities = [];
     private readonly DbContext _dbContext;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly Stack<string> _preventLoopList = new();
+    public readonly Dictionary<string, EntityData> Entities = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)
@@ -34,7 +34,9 @@ public sealed class Relations
     {
         foreach (var entityType in _dbContext.Model.GetEntityTypes())
             //ერთი ერთეულის გაანალიზება
+        {
             EntityAnalysis(entityType);
+        }
     }
 
     //ამ მეთოდის დანიშნულებაა შეამოწმოს ერთეული გამოდგება თუ არა გასაანალიზებლად
@@ -45,14 +47,18 @@ public sealed class Relations
     {
         //თუ მთავარი გასაღები არ აქვს, ან მთავარი გასაღების ველების რაოდენობა 1-ის ტოლი არ არის, ასეთ ცხრილებს არ ვაკოპირებთ
         if (entityType.GetKeys().Count(w => w.IsPrimaryKey()) != 1)
+        {
             return null;
+        }
 
         //დავადგინოთ ცხრილის სახელი ერთეულის ტიპიდან გამომდინარე
         var tableName = GetTableName(entityType);
 
         //თუ ცხრილი არის გამონაკლისების სიაში, მას აღარ განვიხილავთ
         if (tableName is not null && _excludesRulesParameters.ExcludeTables.Contains(tableName))
+        {
             return null;
+        }
 
         return tableName;
     }
@@ -67,7 +73,9 @@ public sealed class Relations
         //თუ ცხრილის სახელი ვერ დადგინდა შესაბამისად ამ ერთეულს არ ვაანალიზებთ
         //ასევე თუ ერთეული უკვე გაანალიზებულების ლექსიკონშია, თავიდან აღარ ვაანალიზებთ
         if (tableName is null || Entities.ContainsKey(tableName))
+        {
             return tableName is null ? null : Entities[tableName];
+        }
 
         //დავადგინოთ ცხრილის მთავარი გასაღები
         var primaryKeys = entityType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
@@ -83,10 +91,10 @@ public sealed class Relations
             TableName = tableName, PrimaryKeyFieldName = primaryKey.Properties[0].Name, EntityType = entityType
         };
 
-        //ჩავამატოთ უკვე გაანალიზებული ერთეულების სიაში
+        //ჩავამატოთ უკვე გაანალიზებული ერთეულის სიაში
         Entities.Add(tableName, entityData);
 
-        //დავადგინოთ ცხრილის მთავარი გასაღები ასევე არის თუ არა ავტონამბერი.
+        //დავადგინოთ ცხრილის მთავარი გასაღებაღაც არის თუ არა ავტონამბერი.
         entityData.HasAutoNumber = primaryKey.Properties[0].ValueGenerated == ValueGenerated.OnAdd;
 
         ////დავადგინოთ რომელიმე გარე გასაღები არის თუ არა ამავდროულად ამ ცხრილის მთავარი გასაღების ველი
@@ -94,7 +102,7 @@ public sealed class Relations
         //var hasOneToOneReference = !isAutoNumber && entityType.GetForeignKeys()
         //    .Any(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
-        //დავადგინოთ რომელ ცხრილთან არის ეს ცხრილი დაკავშირებული ერთი ერთთან კავშირით
+        //დავადგინოთ რომელ ცხრილთან არის ეს ცხრილი დაკავშირებული ერთი ერთთან კავშირის საშუალებით
         var referencingOneToOneForeignKey = entityType.GetForeignKeys()
             .SingleOrDefault(s => s.Properties.Any(w => w.Name == entityData.PrimaryKeyFieldName));
 
@@ -115,8 +123,8 @@ public sealed class Relations
         //დროებითი ინფორმაციის შენახვა საჭიროა შემდეგ შემთხვევებში:
         //  თუ ამ ცხრილის მთავარი გასაღები არის ავტონამბერი და მიბმულია რელაციური კავშირით სხვა რომელიმე ცხრილის გარე გასაღებთან
         //    მაშინ უნდა დავადგინოთ რომელი ინდექსი უნდა გამოვიყენოთ როგორც ალტერნატიოული ინდექსი.
-        //      თუ გამონაკლის წესებში მითითებულია, გამოსაყენებელი, მაშინ ეს ინდექსი უნდა გამოვიყემოთ ალტერნატიულ ინდექსად
-        //      თუ გამონაკლის წესებში არ არის მითითებული, მაშინ დავადგინოთ ოპტიმალური ჩამნაცვლებელი ინდექსი.
+        //      თუ გამონაკლის წესებში მითითებულია, გამოსაყენებელი, მაშინ ეს ინდექსი უნდა გამოვიყმოთ ალტერნატიულ ინდექსად
+        //      თუ გამონაკლის წესებში არ არის მითითებული, მაშინ დავადგინოთ ოპტიმალური ჩამნაცვლებელიინდექსი.
         //      თუ ჩამნაცვლებელი ინდექსის დაანგარიშება ვერ მოხერხდა, მაშინ სიდერს სჭირდება დროებითი ინფორმაციის შენახვა
 
         var needsToCreateTempData = false;
@@ -130,14 +138,14 @@ public sealed class Relations
         {
             //თუ გამონაკლის წესებში მითითებულია ინდექსის ველები ამ ცხრილისათვის, მაშინ გამოვიყენოთ ეს ველები და დამატებით ოპტიმალური ინდექსების ძებნა საჭირო აღარ არის
             var exKeyFieldNames = _excludesRulesParameters.KeyFieldNames.SingleOrDefault(s =>
-                string.Equals(s.TableName, tableName, StringComparison.CurrentCultureIgnoreCase));
+                string.Equals(s.TableName, tableName, StringComparison.Ordinal));
             if (exKeyFieldNames is not null)
             {
                 var exKeyFields = exKeyFieldNames.Keys;
                 entityData.OptimalIndexProperties = exKeyFields.Select(keyField =>
-                    entityType.GetProperties().SingleOrDefault(ss => string.Equals(ss.Name,
-                        _excludesRulesParameters.GetNewFieldName(tableName, keyField),
-                        StringComparison.CurrentCultureIgnoreCase))).OfType<IProperty>().ToList();
+                        entityType.GetProperties().SingleOrDefault(ss => string.Equals(ss.Name,
+                            _excludesRulesParameters.GetNewFieldName(tableName, keyField), StringComparison.Ordinal)))
+                    .OfType<IProperty>().ToList();
             }
             else
             {
@@ -153,8 +161,8 @@ public sealed class Relations
             .Select(s => s.FieldName).ToList();
 
         var fieldsBase = entityType.GetProperties().Where(w =>
-            ((needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey()) ||
-            (!w.IsPrimaryKey() && !ignoreFields.Contains(w.Name)));
+            (needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey() ||
+            !w.IsPrimaryKey() && !ignoreFields.Contains(w.Name));
         entityData.NeedsToCreateTempData = needsToCreateTempData;
         entityData.UsePrimaryKey = usePrimaryKey;
         entityData.FieldsData = GetFieldsData(entityType.ClrType, fieldsBase, tableName);
@@ -181,7 +189,10 @@ public sealed class Relations
     private int GetLevel(FieldData fieldData)
     {
         if (fieldData.SubstituteField == null)
+        {
             return 0;
+        }
+
         var corEnt = Entities.SingleOrDefault(s => s.Key == fieldData.SubstituteField.TableName);
         return corEnt.Value.Level;
     }
@@ -214,7 +225,9 @@ public sealed class Relations
             var analysedSubstEntityType = AnaliseEntityTypeWithPreventLoop(tableName, substEntityType);
 
             if (analysedSubstEntityType is null or { HasAutoNumberByOneToOnePrincipal: false, HasAutoNumber: false })
+            {
                 return fieldData;
+            }
 
             //if (analysedSubstEntityType != null &&
             //    analysedSubstEntityType.HasAutoNumber &&
@@ -225,10 +238,14 @@ public sealed class Relations
                                  throw new Exception($"substitute table for table {tableName} have no name");
 
             if (_excludesRulesParameters.ExcludeTables.Contains(substTableName))
+            {
                 return fieldData;
+            }
 
             if (!Entities.TryGetValue(substTableName, out var entity))
+            {
                 throw new Exception($"substitute table {substTableName} Not analyzed for table {tableName}");
+            }
 
             //var optIndex = entity.OptimalIndex;
 
@@ -236,8 +253,7 @@ public sealed class Relations
                 entity.OptimalIndexProperties.Count > 0
                     ? GetFieldsData(tableClrType, entity.OptimalIndexProperties, substTableName, fieldData)
                     : []);
-            var navName = forKeys[0].DependentToPrincipal?.Name ?? forKeys[0].PrincipalEntityType.ClrType.Name;
-            if (navName == null)
+            var navName = forKeys[0].DependentToPrincipal?.Name ?? forKeys[0].PrincipalEntityType.ClrType.Name ??
                 throw new Exception($"Foreign Keys navName in table {tableName} is empty");
 
             fieldData.NavigationFieldName = navName;
@@ -249,7 +265,9 @@ public sealed class Relations
     private EntityData? AnaliseEntityTypeWithPreventLoop(string preventLoopTableName, IEntityType entityType)
     {
         if (_preventLoopList.Contains(preventLoopTableName))
+        {
             throw new Exception($"table {preventLoopTableName} loops for indexes");
+        }
 
         _preventLoopList.Push(preventLoopTableName);
         var analysedEntityType = EntityAnalysis(entityType);
@@ -268,11 +286,13 @@ public sealed class Relations
         var uniKeys = entityType.GetIndexes().Where(w =>
             w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never)).ToList();
 
-        //ჯერ გავარკვიოთ საერთოდ უნიკალური ინდექსები გვაქვს თუ არა
+        //ჯერ გავარკვიოთ საერთოდ უნიკალური ინდექსები გვაქვს თუ კი
         if (uniKeys.Count == 0)
             //უნიკალური ინდექსები ამ ცხრილში არ ყოფილა.
             //ძებნის გაგრძელებას აზრი არ აქვს,
+        {
             return null;
+        }
 
         //უნიკალური ინდექსების სია გავფილტროთ ისე, რომ დარჩეს მხოლოდ ის ინდექსები, რომელთა ველები სხვა ცხრილებზე არ არის დამოკიდებული რელაციურად
         var independentUniKeys =
@@ -284,37 +304,41 @@ public sealed class Relations
                 //მოიძებნა ზუსტად ერთი დამოუკიდებელი ინდექსი.
                 return independentUniKeys[0];
             case > 1:
-            {
-                //დამოუკიდებელი ინდექსი ერთზე მეტია
-                //გავფილტროთ ისე, რომ დაგვრჩეს ისეთი ინდექსები, რომელთაც მხოლოდ ერთი ველი აქვთ და ისიც სტრიქონი
-                var oneFieldStringUniKeys = independentUniKeys.FindAll(w =>
-                    w is { IsUnique: true, Properties.Count: 1 } && w.Properties[0].ClrType.Name == "String");
-                switch (oneFieldStringUniKeys.Count)
                 {
-                    case 1:
-                        return oneFieldStringUniKeys[0];
-                    case > 1:
+                    //დამოუკიდებელი ინდექსი ერთზე მეტია
+                    //გავფილტროთ ისე, რომ დადავრჩეს ისეთი ინდექსები, რომელთაც მხოლოდ ერთი ველი აქვთ და ისიც სტრიქონი
+                    var oneFieldStringUniKeys = independentUniKeys.FindAll(w =>
+                        w is { IsUnique: true, Properties.Count: 1 } && w.Properties[0].ClrType.Name == "String");
+                    switch (oneFieldStringUniKeys.Count)
                     {
-                        //თუ ასეთი ინდექსების რაოდენობა 1-ზე მეტია
-                        //პირველად უპირატესობას ვაძლევთ იმ ინდექსს, რომლის ველის სახელიც მთავრდება "key" სტრიქონით
-                        //თუ ასეთი არ მოიძებნა, მაშინ უპირატესობა ეძლევა იმ ინდექსს, რომლის ველის სახელიც მთავრდება "name" სტრიქონით
-                        var res = oneFieldStringUniKeys.Find(f => f.Properties[0].Name.ToLower().EndsWith("key")) ??
-                                  oneFieldStringUniKeys.Find(f => f.Properties[0].Name.ToLower().EndsWith("name"));
-                        if (res != null)
-                            return res;
-                        break;
-                    }
-                }
+                        case 1:
+                            return oneFieldStringUniKeys[0];
+                        case > 1:
+                            {
+                                //თუ ასეთი ინდექსების რაოდენობა 1-ზე მეტია
+                                //პირველად უპირატესობას ვაძლევთ იმ ინდექსს, რომლის ველის სახელიც მთავრდება "key" სტრიქონით
+                                //თუ ასეთი არ მოიძებნა, მაშინ უპირატესობა ეძლევა იმ ინდექსს, რომლის ველის სახელიც მთავრდება "name" სტრიქონით
+                                var res =
+                                    oneFieldStringUniKeys.Find(f => f.Properties[0].Name.ToUpperInvariant().EndsWith("KEY", StringComparison.Ordinal)) ??
+                                    oneFieldStringUniKeys.Find(f => f.Properties[0].Name.ToUpperInvariant().EndsWith("NAME", StringComparison.Ordinal));
+                                if (res != null)
+                                {
+                                    return res;
+                                }
 
-                //აქ თუ მოვედით, ეს ნიშნავს, რომ ერთველიანი სტრიქონიანი ინდექსები არ გვაქვს.
-                //თუმცა რაც გვაქვს დამოუკიდებელი ინდექსებია და მათგან უნდა ავარჩიოთ იმის მიხედვით, ვის აქვს ყველაზე ნაკლები ველი
-                return independentUniKeys.OrderBy(o => o.Properties.Count).ToList()[0];
-            }
+                                break;
+                            }
+                    }
+
+                    //აქ თუ მოვედით, ეს ნიშნავს, რომ ერთველიანი სტრიქონიანი ინდექსები არ გვაქვს.
+                    //თუმცა რაც გვაქვს დამოუკიდებელი ინდექსებია და მათგან უნდა ავარჩიოთ მისი მიხედვით, ვის აქვს ყველაზე ნაკლები ველი
+                    return independentUniKeys.OrderBy(o => o.Properties.Count).ToList()[0];
+                }
             default:
                 //აქ თუ მოვედით, დამოუკიდებელი ინდექსები არ გვაქვს.
                 //თუმცა რაღაც ინდექსები გვაქვს, რომლიდანაც უნდა ავარჩიოთ ოპტიმალური
 
-                //ოპტიმალურად უნდა ჩავთვალოთ პირველ რიგში ის ინდექსი, რომელსაც ყველაზე ნაკლები რაოდენობის დამოკიდებული ველები აქვს,
+                //ოპტიმალურად უნდა ჩავთვალო პირველ რიგში ის ინდექსი, რომელსაც ყველაზე ნაკლები რაოდენობის დამოკიდებული ველები აქვს,
                 //ხოლო შემდეგ იმის მიხედვით დანარჩენი ველების რაოდენობა, რომ ყველაზე ნაკლები ჰქონდეს.
 
                 return uniKeys.OrderBy(o => o.Properties.Count(c => c.GetContainingForeignKeys().Any()))

@@ -1,5 +1,6 @@
 ﻿namespace LibDataInput;
 
+[System.Flags]
 public enum EDialogResult
 {
     Yes = 1,

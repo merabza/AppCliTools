@@ -2,7 +2,7 @@
 using CliMenu;
 using CliParameters.FieldEditors;
 using CliParametersEdit.Cruders;
-using LibFileParameters.Models;
+using ParametersManagement.LibFileParameters.Models;
 
 namespace CliParametersEdit.FieldEditors;
 
@@ -29,12 +29,17 @@ public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchema
         var val = GetValue(record);
 
         if (val is null || val.Count <= 0)
+        {
             return "No Details";
+        }
 
-        var result = $"{val[0].PeriodType}-{val[0].PreserveCount}";
+        var sb = new System.Text.StringBuilder();
+        var culture = System.Globalization.CultureInfo.InvariantCulture;
+        sb.Append(culture, $"{val[0].PeriodType}-{val[0].PreserveCount}");
         for (var i = 1; i < val.Count; i++)
-            result += $"/{val[i].PeriodType}-{val[i].PreserveCount}";
-
-        return result;
+        {
+            sb.Append(culture, $"/{val[i].PeriodType}-{val[i].PreserveCount}");
+        }
+        return sb.ToString();
     }
 }

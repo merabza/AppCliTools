@@ -22,6 +22,6 @@ public sealed class CruderListCliMenuCommand : CliMenuCommand
 
     protected override string GetStatus()
     {
-        return _cruder.Count.ToString();
+        return _cruder.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 }

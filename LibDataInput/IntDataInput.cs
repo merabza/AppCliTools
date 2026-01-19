@@ -19,14 +19,14 @@ public sealed class IntDataInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"{_fieldName} {(_defaultValue == 0 ? string.Empty : $"[{_defaultValue}]")}: ";
+        string prompt = $"{_fieldName} {(_defaultValue == 0 ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
 
-        var promptLength = prompt.Length;
+        int promptLength = prompt.Length;
         var sb = new StringBuilder();
         while (true)
         {
-            var ch = Console.ReadKey(true);
+            ConsoleKeyInfo ch = Console.ReadKey(true);
             switch (ch.Key)
             {
                 case ConsoleKey.Enter when sb.Length == 0:
@@ -34,17 +34,16 @@ public sealed class IntDataInput : DataInput
                     Value = _defaultValue;
                     return true;
                 case ConsoleKey.Enter:
-                {
-                    if (sb.Length > 0)
-                        if (int.TryParse(sb.ToString(), out var result))
+                    {
+                        if (sb.Length > 0 && int.TryParse(sb.ToString(), out int result))
                         {
                             Value = result;
                             Console.WriteLine();
                             return true;
                         }
 
-                    break;
-                }
+                        break;
+                    }
                 case ConsoleKey.Escape:
                     return false;
                 case ConsoleKey.Backspace:
@@ -58,9 +57,11 @@ public sealed class IntDataInput : DataInput
                     break;
             }
 
-            var key = ch.Key.IntValue();
+            string? key = ch.Key.IntValue();
             if (key == null)
+            {
                 continue;
+            }
 
             sb.Append(key);
             Console.Write(key);

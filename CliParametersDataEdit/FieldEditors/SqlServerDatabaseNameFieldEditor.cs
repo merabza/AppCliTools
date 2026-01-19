@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.Models;
-using DbTools;
-using DbTools.Models;
-using DbToolsFactory;
-using LibDatabaseParameters;
+using DatabaseTools.DbTools;
+using DatabaseTools.DbTools.Models;
+using DatabaseTools.DbToolsFactory;
+using DatabaseTools.SqlServerDbTools;
 using LibDataInput;
 using LibMenuInput;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using SqlServerDbTools;
+using ParametersManagement.LibDatabaseParameters;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -43,14 +44,17 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
     {
         try
         {
-            var currentDatabaseName = GetValue(recordForUpdate);
-            var serverAddress = GetValue<string>(recordForUpdate, _serverAddressPropertyName);
-            var windowsNtIntegratedSecurity = GetValue<bool>(recordForUpdate, _windowsNtIntegratedSecurityPropertyName);
-            var serverUser = GetValue<string>(recordForUpdate, _serverUserPropertyName);
-            var serverPass = GetValue<string>(recordForUpdate, _serverPassPropertyName);
+            string? currentDatabaseName = GetValue(recordForUpdate);
+            string? serverAddress = GetValue<string>(recordForUpdate, _serverAddressPropertyName);
+            bool windowsNtIntegratedSecurity =
+                GetValue<bool>(recordForUpdate, _windowsNtIntegratedSecurityPropertyName);
+            string? serverUser = GetValue<string>(recordForUpdate, _serverUserPropertyName);
+            string? serverPass = GetValue<string>(recordForUpdate, _serverPassPropertyName);
 
             if (serverAddress is null || serverUser is null || serverPass is null)
+            {
                 throw new Exception("serverAddress is null or serverUser is null or serverPass is null");
+            }
 
             var sqlSerConPar = new SqlServerConnectionParameters
             {
@@ -60,8 +64,9 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
                 ServerPass = serverPass
             };
 
-            var dbConnectionStringBuilder = DbConnectionFactory.GetDbConnectionStringBuilder(sqlSerConPar) ??
-                                            throw new Exception("dbConnectionStringBuilder is null");
+            DbConnectionStringBuilder dbConnectionStringBuilder =
+                DbConnectionFactory.GetDbConnectionStringBuilder(sqlSerConPar) ??
+                throw new Exception("dbConnectionStringBuilder is null");
 
             var dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
             DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
@@ -69,35 +74,41 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
             var getDatabaseInfosResult = dc.GetDatabaseInfos(token).Result;
 
             var databaseInfos = new List<DatabaseInfoModel>();
             if (getDatabaseInfosResult.IsT0)
+            {
                 databaseInfos = getDatabaseInfosResult.AsT0;
+            }
 
             var databasesMenuSet = new CliMenuSet();
             databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
 
             var keys = databaseInfos.Select(s => s.Name).ToList();
-            foreach (var listItem in keys)
+            foreach (string listItem in keys)
+            {
                 databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+            }
 
-            var selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
+            int selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
 
             if (selectedId == 0)
             {
-                var newDatabaseName = Inputer.InputTextRequired("New Database Name");
+                string newDatabaseName = Inputer.InputTextRequired("New Database Name");
 
                 SetValue(recordForUpdate, newDatabaseName);
                 return;
             }
 
-            var index = selectedId - 1;
+            int index = selectedId - 1;
             if (index < 0 || index >= keys.Count)
+            {
                 throw new DataInputException("Selected invalid ID. ");
+            }
 
             SetValue(recordForUpdate, keys[index]);
         }
@@ -107,8 +118,8 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in SqlServerDatabaseNameFieldEditor.UpdateField");
-            throw;
+            _logger.LogError(e, "Error in SqlServerDatabaseNameFieldEditor.UpdateField: {Message}", e.Message);
+            throw new Exception("An error occurred while updating the SQL Server database name field.", e);
         }
     }
 }

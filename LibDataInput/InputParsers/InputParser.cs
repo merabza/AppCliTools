@@ -16,7 +16,10 @@ public /*open*/ class InputParser
     {
         var sb = new StringBuilder(current);
         if (!IsValidNextChar(current, nextChar))
+        {
             return null;
+        }
+
         sb.Append(nextChar);
         Console.Write(nextChar);
         TryAddDelimiter(sb);
@@ -26,7 +29,10 @@ public /*open*/ class InputParser
     protected void TryAddDelimiter(StringBuilder sb)
     {
         if (!CanAddDelimiter(sb.ToString()))
+        {
             return;
+        }
+
         sb.Append(Delimiter);
         Console.Write(Delimiter);
     }

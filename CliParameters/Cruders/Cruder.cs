@@ -6,19 +6,19 @@ using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using LibDataInput;
 using LibMenuInput;
-using LibParameters;
-using SystemToolsShared;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParameters.Cruders;
 
 public /*open*/ class Cruder : IFieldEditors
 {
-    public readonly string CrudName;
-    public readonly string CrudNamePlural;
-    protected readonly List<FieldEditor> FieldEditors = [];
     private readonly bool _canEditFieldsInSequence;
 
     private readonly bool _fieldKeyFromItem;
+    public readonly string CrudName;
+    public readonly string CrudNamePlural;
+    protected readonly List<FieldEditor> FieldEditors = [];
 
     private CliMenuSet? _cruderSubMenuSet;
     private int _menuVersion;
@@ -37,21 +37,24 @@ public /*open*/ class Cruder : IFieldEditors
 
     public void EnableFieldByName(string fieldName, bool enable = true)
     {
-        var fieldEditor = FieldEditors.SingleOrDefault(s => s.PropertyName == fieldName);
-        if (fieldEditor != null)
-            fieldEditor.Enabled = enable;
+        FieldEditor? fieldEditor = FieldEditors.SingleOrDefault(s => s.PropertyName == fieldName);
+        fieldEditor?.Enabled = enable;
     }
 
     protected void EnableAllFieldButOne(string butOneFieldName, bool enable = true)
     {
-        foreach (var fieldEditor in FieldEditors)
+        foreach (FieldEditor fieldEditor in FieldEditors)
+        {
             fieldEditor.Enabled = fieldEditor.PropertyName == butOneFieldName || enable;
+        }
     }
 
     protected void EnableOffAllFieldButList(List<string> butOneFieldName)
     {
-        foreach (var fieldEditor in FieldEditors)
+        foreach (FieldEditor fieldEditor in FieldEditors)
+        {
             fieldEditor.Enabled = butOneFieldName.Contains(fieldEditor.PropertyName);
+        }
     }
 
     protected virtual Dictionary<string, ItemData> GetCrudersDictionary()
@@ -86,7 +89,10 @@ public /*open*/ class Cruder : IFieldEditors
             if (recordKey is null)
             {
                 currentItem = CreateNewItem(recordKey, defaultItemData);
-                foreach (var fieldUpdater in FieldEditors) fieldUpdater.SetDefault(currentItem);
+                foreach (FieldEditor fieldUpdater in FieldEditors)
+                {
+                    fieldUpdater.SetDefault(currentItem);
+                }
             }
             else
             {
@@ -98,7 +104,7 @@ public /*open*/ class Cruder : IFieldEditors
                 }
             }
 
-            foreach (var fieldUpdater in FieldEditors.Where(fieldUpdater =>
+            foreach (FieldEditor fieldUpdater in FieldEditors.Where(fieldUpdater =>
                          fieldUpdater is { Enabled: true, EnterFieldDataOnCreate: true }))
             {
                 fieldUpdater.UpdateField(recordKey, currentItem);
@@ -106,7 +112,9 @@ public /*open*/ class Cruder : IFieldEditors
             }
 
             if (CheckValidation(currentItem))
+            {
                 return currentItem;
+            }
 
             return !Inputer.InputBool($"{recordKey} is not valid {CrudName}, continue input data?", false, false)
                 ? null
@@ -138,11 +146,11 @@ public /*open*/ class Cruder : IFieldEditors
         return defaultItemData ?? new ItemData();
     }
 
-    //public საჭიროა ApAgent.FieldEditors.ArchiverFieldEditor.UpdateField მეთოდისთვის
+    //public საჭიროა ApAgent.FieldEditors.ArchiverFieldEditor.UpdateField მეთოდისათვის
     // ReSharper disable once MemberCanBeProtected.Global
     public virtual List<string> GetKeys()
     {
-        var crudersDictionary = GetCrudersDictionary();
+        Dictionary<string, ItemData> crudersDictionary = GetCrudersDictionary();
         return [.. crudersDictionary.Keys.OrderBy(x => x)];
     }
 
@@ -153,9 +161,11 @@ public /*open*/ class Cruder : IFieldEditors
     //public საჭიროა SupportTools TemplateSubMenuCommand
     public virtual void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
     {
-        var item = GetItemByName(itemName);
+        ItemData? item = GetItemByName(itemName);
         if (item == null)
+        {
             return;
+        }
 
         CheckFieldsEnables(item);
 
@@ -165,14 +175,18 @@ public /*open*/ class Cruder : IFieldEditors
             itemSubMenuSet.AddMenuItem(new RecordKeyEditorCliMenuCommand(fieldName, this, itemName));
         }
 
-        foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
+        foreach (FieldEditor fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
+        {
             fieldEditor.AddFieldEditMenuItem(itemSubMenuSet, item, this, itemName);
+        }
     }
 
     public CliMenuSet GetListMenu()
     {
         if (_cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
+        {
             return _cruderSubMenuSet;
+        }
 
         BeforeGetListMenu();
 
@@ -181,14 +195,17 @@ public /*open*/ class Cruder : IFieldEditors
         var newItemCommand = new NewItemCliMenuCommand(this, CrudNamePlural, $"New {CrudName}");
         _cruderSubMenuSet.AddMenuItem(newItemCommand);
 
-        var itemDataDict = GetCrudersDictionary();
+        Dictionary<string, ItemData> itemDataDict = GetCrudersDictionary();
 
-        foreach (var kvp in itemDataDict.OrderBy(o => o.Key))
+        foreach (KeyValuePair<string, ItemData> kvp in itemDataDict.OrderBy(o => o.Key))
+        {
             _cruderSubMenuSet.AddMenuItem(new ItemSubMenuCliMenuCommand(this, kvp.Key, CrudNamePlural));
+        }
 
         FillListMenuAdditional(_cruderSubMenuSet);
 
-        var key = ConsoleKey.Escape.Value().ToLower();
+        // string key = ConsoleKey.Escape.Value().ToLower();
+        string key = ConsoleKey.Escape.Value().ToUpperInvariant();
         _cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null), key.Length);
 
         return _cruderSubMenuSet;
@@ -211,7 +228,9 @@ public /*open*/ class Cruder : IFieldEditors
         }
 
         if (!Inputer.InputBool($"Are you sure, you wont to delete {recordKey}?", true, false))
+        {
             return false;
+        }
 
         RemoveRecordWithKey(recordKey);
         _menuVersion++;
@@ -225,15 +244,20 @@ public /*open*/ class Cruder : IFieldEditors
         //ჩანაწერის შექმნის პროცესი დაიწყო
         Console.WriteLine($"Create new {CrudName} started");
 
-        var newRecordKey = Guid.NewGuid().ToString();
+        string? newRecordKey = Guid.NewGuid().ToString();
         if (!_fieldKeyFromItem)
         {
             //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
             newRecordKey = InputNewRecordName();
             if (string.IsNullOrWhiteSpace(newRecordKey))
+            {
                 return null;
+            }
+
             if (!CheckNewRecordKeyValid(null, newRecordKey))
+            {
                 return null;
+            }
 
             if (string.IsNullOrWhiteSpace(newRecordKey))
             {
@@ -242,8 +266,8 @@ public /*open*/ class Cruder : IFieldEditors
             }
         }
 
-        var defRecordWithStatus = GetDefRecordWithStatus(currentStatus);
-        var newRecord = InputRecordData(null, defRecordWithStatus);
+        ItemData? defRecordWithStatus = GetDefRecordWithStatus(currentStatus);
+        ItemData? newRecord = InputRecordData(null, defRecordWithStatus);
 
         if (newRecord is null)
         {
@@ -283,16 +307,23 @@ public /*open*/ class Cruder : IFieldEditors
             //ამოცანის სახელის რედაქტირება
             var nameInput = new TextDataInput($"change {CrudName} Name", recordKey);
             if (!nameInput.DoInput())
+            {
                 return false;
+            }
+
             newRecordKey = nameInput.Text;
             if (!CheckNewRecordKeyValid(recordKey, newRecordKey))
+            {
                 return false;
+            }
         }
 
-        var newRecord = InputRecordData(recordKey);
+        ItemData? newRecord = InputRecordData(recordKey);
 
         if (newRecord is null)
+        {
             return false;
+        }
 
         if (newRecordKey is not null && newRecordKey != recordKey)
         {
@@ -322,13 +353,21 @@ public /*open*/ class Cruder : IFieldEditors
     private bool CheckNewRecordKeyValid(string? recordKey, string? newRecordKey)
     {
         if (string.IsNullOrWhiteSpace(newRecordKey))
+        {
             return false;
+        }
 
         if (newRecordKey == recordKey)
+        {
             return true;
+        }
+
         //გადავამოწმოთ ხომ არ არსებობს იგივე სახელით სხვა ჩანაწერი.
         if (!ContainsRecordWithKey(newRecordKey))
+        {
             return true;
+        }
+
         StShared.WriteErrorLine(
             $"Another {CrudName} with Name {newRecordKey} is already exists. cannot change {CrudName} name. ", true);
         return false;
@@ -336,10 +375,12 @@ public /*open*/ class Cruder : IFieldEditors
 
     public CliMenuSet GetItemMenu(string itemName)
     {
-        var substituteName = itemName;
-        var item = GetItemByName(itemName);
+        string substituteName = itemName;
+        ItemData? item = GetItemByName(itemName);
         if (item is not null)
+        {
             substituteName = item.GetItemKey() ?? substituteName;
+        }
 
         var itemSubMenuSet = new CliMenuSet(substituteName);
 
@@ -354,7 +395,8 @@ public /*open*/ class Cruder : IFieldEditors
 
         FillDetailsSubMenu(itemSubMenuSet, itemName);
 
-        var key = ConsoleKey.Escape.Value().ToLower();
+        // string key = ConsoleKey.Escape.Value().ToLower();
+        string key = ConsoleKey.Escape.Value().ToUpperInvariant();
         itemSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand($"Exit to {CrudNamePlural} menu", null),
             key.Length);
 
@@ -372,13 +414,17 @@ public /*open*/ class Cruder : IFieldEditors
 
     public ItemData? GetItemByName(string itemName, bool writeErrorIfNotExists = true)
     {
-        var cruderDict = GetCrudersDictionary();
+        Dictionary<string, ItemData> cruderDict = GetCrudersDictionary();
 
-        if (cruderDict.TryGetValue(itemName, out var itemData))
+        if (cruderDict.TryGetValue(itemName, out ItemData? itemData))
+        {
             return itemData;
+        }
 
         if (writeErrorIfNotExists)
+        {
             StShared.WriteErrorLine($"{CrudName} with Name {itemName} is not exists. ", true);
+        }
 
         return null;
     }
@@ -388,31 +434,43 @@ public /*open*/ class Cruder : IFieldEditors
     {
         var listSet = new CliMenuSet();
 
-        if (useNone) listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
+        if (useNone)
+        {
+            listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
+        }
 
-        var id = 0;
+        int id = 0;
         listSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand($"New {fieldName}"), id++);
 
-        var keys = GetKeys();
-        foreach (var listItem in keys)
+        List<string> keys = GetKeys();
+        foreach (string listItem in keys)
+        {
             listSet.AddMenuItem(new ListItemCliMenuCommand(this, listItem), id++);
+        }
 
-        var selectedId = MenuInputer.InputIdFromMenuList(fieldName.Pluralize(), listSet, currentName);
+        int selectedId = MenuInputer.InputIdFromMenuList(fieldName.Pluralize(), listSet, currentName);
 
         if (useNone && selectedId == -1)
+        {
             return null;
+        }
 
         if (selectedId == 0)
         {
-            var newName = CreateNewRecord(currentStatus);
+            string? newName = CreateNewRecord(currentStatus);
             if (newName != null)
+            {
                 return newName;
+            }
+
             throw new DataInputException($"{fieldName} does not created");
         }
 
-        var index = selectedId - 1; // - oneMore;
+        int index = selectedId - 1; // - oneMore;
         if (index >= 0 && index < keys.Count)
+        {
             return keys[index];
+        }
 
         throw new DataInputException("Selected invalid ID. ");
     }
@@ -425,14 +483,26 @@ public /*open*/ class Cruder : IFieldEditors
     public bool ChangeRecordKey(string recordKey, string newRecordKey)
     {
         if (recordKey == newRecordKey)
+        {
             return true;
+        }
+
         if (ContainsRecordWithKey(newRecordKey))
+        {
             return false;
+        }
+
         if (!ContainsRecordWithKey(recordKey))
+        {
             return false;
-        var itemData = GetItemByName(recordKey);
+        }
+
+        ItemData? itemData = GetItemByName(recordKey);
         if (itemData is null)
+        {
             return false;
+        }
+
         RemoveRecordWithKey(recordKey);
         AddRecordWithKey(newRecordKey, itemData);
         _menuVersion++;

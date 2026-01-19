@@ -1,8 +1,8 @@
 ﻿using CliMenu;
 using CliParametersEdit.Generators;
 using LibDataInput;
-using LibFileParameters.Interfaces;
-using LibParameters;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersEdit.CliMenuCommands;
 
@@ -22,7 +22,9 @@ public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
         var parameters = (IParametersWithSmartSchemas)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Smart Schemas, are you sure?", false, false))
+        {
             return false;
+        }
 
         StandardSmartSchemas.Generate(_parametersManager);
 

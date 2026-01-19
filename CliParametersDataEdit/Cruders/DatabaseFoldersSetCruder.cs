@@ -2,8 +2,8 @@
 using System.Linq;
 using CliParameters.Cruders;
 using CliParameters.FieldEditors;
-using DbTools.Models;
-using LibParameters;
+using DatabaseTools.DbTools.Models;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersDataEdit.Cruders;
 
@@ -37,9 +37,14 @@ public sealed class DatabaseFoldersSetCruder : Cruder
     public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is not DatabaseFoldersSet newSmartSchemaDetail)
+        {
             return;
+        }
+
         if (!_currentValuesDictionary.TryGetValue(recordKey, out var cv))
+        {
             return;
+        }
 
         cv.Backup = newSmartSchemaDetail.Backup;
         cv.Data = newSmartSchemaDetail.Data;
@@ -50,7 +55,10 @@ public sealed class DatabaseFoldersSetCruder : Cruder
     protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is not DatabaseFoldersSet sid)
+        {
             return;
+        }
+
         _currentValuesDictionary.Add(recordKey, sid);
         _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} Added");
     }
@@ -69,7 +77,10 @@ public sealed class DatabaseFoldersSetCruder : Cruder
     public override string? GetStatusFor(string? name)
     {
         if (string.IsNullOrWhiteSpace(name))
+        {
             return null;
+        }
+
         var databaseFoldersSet = (DatabaseFoldersSet?)GetItemByName(name);
         return databaseFoldersSet?.GetItemKey();
     }

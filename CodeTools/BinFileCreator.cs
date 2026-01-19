@@ -1,23 +1,23 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace CodeTools;
 
 public /*open*/ class BinFileCreator
 {
+    private readonly string _placePath;
     protected readonly BinFile BinFile;
 
     protected readonly ILogger Logger;
-    private readonly string _placePath;
 
     public BinFileCreator(ILogger logger, string placePath, string binFileName)
     {
         Logger = logger;
         _placePath = placePath;
         BinFile = new BinFile(binFileName);
-        Logger.LogInformation("create Code file started -> {binFileName}", binFileName);
+        Logger.LogInformation("create Code file started -> {BinFileName}", binFileName);
     }
 
     public virtual void CreateFileData()
@@ -32,12 +32,15 @@ public /*open*/ class BinFileCreator
     protected void CreateFile(string? codePath = null)
     {
         //var strCode = CodeFile.Output(-1);
-        var placePath = codePath ?? _placePath;
+        string placePath = codePath ?? _placePath;
         StShared.CreateFolder(placePath, true);
-        var forCreateFileName = Path.Combine(placePath, BinFile.FileName);
+        string forCreateFileName = Path.Combine(placePath, BinFile.FileName);
         if (string.IsNullOrWhiteSpace(BinFile.Base64String))
+        {
             throw new Exception("BinFile.Base64String is empty");
+        }
+
         File.WriteAllBytes(forCreateFileName, Convert.FromBase64String(BinFile.Base64String));
-        Logger.LogInformation("Bin file created: {forCreateFileName}", forCreateFileName);
+        Logger.LogInformation("Bin file created: {ForCreateFileName}", forCreateFileName);
     }
 }

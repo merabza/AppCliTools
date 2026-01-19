@@ -6,7 +6,7 @@ public sealed class OleDbConnectionParameters : DbConnectionParameters
 
     public string? DatabaseFilePath { get; set; }
     public string? Provider { get; set; } = MsAccessOleDbProviderName;
-    public bool PersistSecurityInfo { get; set; } = false;
+    public bool PersistSecurityInfo { get; set; }
     public string? Password { get; set; }
 
     public override string GetStatus()

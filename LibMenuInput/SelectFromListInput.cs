@@ -26,15 +26,19 @@ public sealed class SelectFromListInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"Select for {_fieldName} {(_defaultValue == null ? string.Empty : $"[{_defaultValue}]")}: ";
+        string prompt = $"Select for {_fieldName} {(_defaultValue == null ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
         var listSet = new CliMenuSet();
 
         if (_useNone)
+        {
             listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
+        }
 
-        foreach (var listItem in _sourceList)
+        foreach (string listItem in _sourceList)
+        {
             listSet.AddMenuItem(new CliMenuCommand(listItem));
+        }
 
         listSet.Show(false);
 
@@ -60,12 +64,15 @@ public sealed class SelectFromListInput : DataInput
 
             switch (ch.Key)
             {
-                case ConsoleKey.Enter when _defaultValue == default:
+                case ConsoleKey.Enter when _defaultValue == null:
                     continue;
                 case ConsoleKey.Enter:
                 {
                     if (listSet.GetMenuItemWithName(_defaultValue) == null)
+                    {
                         continue;
+                    }
+
                     Text = _defaultValue;
                     Console.WriteLine();
                     Console.WriteLine($"{_fieldName} is: {Text}");

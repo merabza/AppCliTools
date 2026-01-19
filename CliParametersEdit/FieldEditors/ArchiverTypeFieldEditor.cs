@@ -1,7 +1,7 @@
 ﻿using CliParameters.Cruders;
 using CliParameters.FieldEditors;
-using LibFileParameters.Models;
-using SystemToolsShared;
+using ParametersManagement.LibFileParameters.Models;
+using SystemTools.SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 

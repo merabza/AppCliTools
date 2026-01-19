@@ -20,14 +20,14 @@ public sealed class TimeInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"Enter {_fieldName} [{_defaultValue.ToString("T", CultureInfo.InvariantCulture)}]: ";
+        string prompt = $"Enter {_fieldName} [{_defaultValue.ToString("T", CultureInfo.InvariantCulture)}]: ";
 
         while (true)
         {
             Console.Write(prompt);
             Text = Console.ReadLine();
 
-            if (Text == string.Empty)
+            if (string.IsNullOrEmpty(Text))
             {
                 Value = _defaultValue;
                 break;
@@ -37,7 +37,10 @@ public sealed class TimeInput : DataInput
                     out var userDateTime))
             {
                 if (!Inputer.InputBool("Entered date time is not valid try again?", false, false))
+                {
                     return false;
+                }
+
                 continue;
             }
 

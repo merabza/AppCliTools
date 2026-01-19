@@ -3,10 +3,11 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.IO;
 using CliParametersDataEdit.Models;
-using LibDatabaseParameters;
+using DatabaseTools.DbTools.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
-using SystemToolsShared;
+using ParametersManagement.LibDatabaseParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParametersDataEdit;
 
@@ -44,7 +45,9 @@ public static class DbConnectionFactory
                 return sqLitePar;
             case EDatabaseProvider.OleDb:
                 if (!SystemStat.IsWindows())
+                {
                     throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, null);
+                }
 #pragma warning disable CA1416
                 var msaConBuilder = new OleDbConnectionStringBuilder(connectionString);
                 var msAccessPar = new OleDbConnectionParameters
@@ -55,12 +58,14 @@ public static class DbConnectionFactory
                 };
 
                 if (msAccessPar.PersistSecurityInfo && msaConBuilder.ContainsKey(JetOleDbDatabasePasswordKey))
+                {
                     msAccessPar.Password = msaConBuilder[JetOleDbDatabasePasswordKey].ToString();
+                }
 
                 return msAccessPar;
 #pragma warning restore CA1416
             default:
-                throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, null);
+                throw new ArgumentOutOfRangeException(nameof(dataProvider), dataProvider, "Unsupported database provider.");
         }
     }
 
@@ -79,7 +84,7 @@ public static class DbConnectionFactory
             return (null, null, -1);
         }
 
-        var databaseConnectionData =
+        DatabaseServerConnectionData? databaseConnectionData =
             databaseServerConnections.GetDatabaseServerConnectionByKey(databasesParameters.DbConnectionName);
 
         if (databaseConnectionData is null)
@@ -88,11 +93,13 @@ public static class DbConnectionFactory
             return (null, null, -1);
         }
 
-        var connectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
+        string? connectionString = GetDbConnectionString(databasesParameters, databaseConnectionData);
 
         if (!string.IsNullOrWhiteSpace(connectionString))
+        {
             return (databaseConnectionData.DatabaseServerProvider, connectionString,
                 databasesParameters.CommandTimeOut);
+        }
 
         StShared.WriteErrorLine("could not Created Connection String", true);
         return (null, null, -1);
@@ -101,14 +108,15 @@ public static class DbConnectionFactory
     private static string? GetDbConnectionString(DatabaseParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
-        var dbConnectionStringBuilder = GetDbConnectionStringBuilder(databasesParameters, databaseServerConnection);
+        DbConnectionStringBuilder? dbConnectionStringBuilder =
+            GetDbConnectionStringBuilder(databasesParameters, databaseServerConnection);
         return dbConnectionStringBuilder?.ConnectionString;
     }
 
     private static DbConnectionStringBuilder? GetDbConnectionStringBuilder(DatabaseParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
-        var dataProvider = databaseServerConnection.DatabaseServerProvider;
+        EDatabaseProvider dataProvider = databaseServerConnection.DatabaseServerProvider;
         switch (dataProvider)
         {
             case EDatabaseProvider.None:
@@ -130,20 +138,27 @@ public static class DbConnectionFactory
                 }
 
                 if (databasesParameters.DatabaseName != null)
+                {
                     sqlConBuilder.InitialCatalog = databasesParameters.DatabaseName;
+                }
 
                 return sqlConBuilder;
             case EDatabaseProvider.SqLite:
 
-                var (databaseFilePath, password) =
+                (string? databaseFilePath, string? password) =
                     GetOneFileDbConnectionStringBuilderParameters(databasesParameters, databaseServerConnection);
 
                 if (string.IsNullOrWhiteSpace(databaseFilePath))
+                {
                     return null;
+                }
 
                 var sltConBuilder = new SqliteConnectionStringBuilder { DataSource = databaseFilePath };
                 if (!string.IsNullOrWhiteSpace(password))
+                {
                     sltConBuilder.Password = password;
+                }
+
                 return sltConBuilder;
             case EDatabaseProvider.OleDb:
 
@@ -153,11 +168,13 @@ public static class DbConnectionFactory
                     return null;
                 }
 
-                var (oleDatabaseFilePath, olePassword) =
+                (string? oleDatabaseFilePath, string? olePassword) =
                     GetOneFileDbConnectionStringBuilderParameters(databasesParameters, databaseServerConnection);
 
                 if (string.IsNullOrWhiteSpace(oleDatabaseFilePath))
+                {
                     return null;
+                }
 
 #pragma warning disable CA1416
 
@@ -166,15 +183,18 @@ public static class DbConnectionFactory
                     DataSource = oleDatabaseFilePath, Provider = "Microsoft.ACE.OLEDB.12.0"
                 };
                 if (string.IsNullOrWhiteSpace(olePassword))
+                {
                     return oleDbConBuilder;
+                }
 
                 oleDbConBuilder.PersistSecurityInfo = true;
                 oleDbConBuilder.Add(JetOleDbDatabasePasswordKey, olePassword);
                 return oleDbConBuilder;
 #pragma warning restore CA1416
 
+            case EDatabaseProvider.WebAgent:
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(databasesParameters), dataProvider, "Unsupported database provider.");
         }
     }
 
@@ -184,14 +204,14 @@ public static class DbConnectionFactory
         if (databasesParameters.DbServerFoldersSetName is null ||
             databaseServerConnection.DatabaseFoldersSets is null ||
             !databaseServerConnection.DatabaseFoldersSets.TryGetValue(databasesParameters.DbServerFoldersSetName,
-                out var databaseFoldersSet))
+                out DatabaseFoldersSet? databaseFoldersSet))
         {
             StShared.WriteErrorLine(
                 $"DatabaseFoldersSets does not contain key {databasesParameters.DbServerFoldersSetName}", true);
             return (null, null);
         }
 
-        var dataPath = databaseFoldersSet.Data;
+        string? dataPath = databaseFoldersSet.Data;
 
         if (string.IsNullOrWhiteSpace(dataPath))
         {
@@ -199,7 +219,7 @@ public static class DbConnectionFactory
             return (null, null);
         }
 
-        var databaseName = databasesParameters.DatabaseName;
+        string? databaseName = databasesParameters.DatabaseName;
 
         if (string.IsNullOrWhiteSpace(databaseName))
         {
@@ -207,12 +227,12 @@ public static class DbConnectionFactory
             return (null, null);
         }
 
-        var databaseFilePath = Path.Combine(dataPath, databaseName);
-        var password = databaseServerConnection.ServerPass;
+        string databaseFilePath = Path.Combine(dataPath, databaseName);
+        string? password = databaseServerConnection.ServerPass;
         return (databaseFilePath, password);
     }
 
-    //გავაუქმე, რადგან არ ვიცით სად გამოიყენება. თუ აღმოჩნდება, რომ გამოიყენება, მაშინ დავაბრუნებ.
+    //გავაუქმე, რადგან არ ვიცით სად გამოიყენება. თუ აღმოაჩინდება, რომ გამოიყენება, მაშინ დავაბრუნებ.
     //public static string? GetDbConnectionString(DbConnectionParameters dbConnectionParameters)
     //{
     //    var dbConnectionStringBuilder = GetDbConnectionStringBuilder(dbConnectionParameters);
@@ -238,13 +258,17 @@ public static class DbConnectionFactory
             }
 
             if (par.DatabaseName != null)
+            {
                 sqlConBuilder.InitialCatalog = par.DatabaseName;
+            }
 
             return sqlConBuilder;
         }
 
         if (dbConnectionParameters is not SqLiteConnectionParameters slPar)
+        {
             return null;
+        }
 
         var sltConBuilder = new SqliteConnectionStringBuilder
         {

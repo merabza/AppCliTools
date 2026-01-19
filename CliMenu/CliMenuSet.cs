@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace CliMenu;
 
@@ -31,25 +32,30 @@ public sealed class CliMenuSet
 
     public CliMenuItem? GetMenuItemByKey(ConsoleKeyInfo consoleKeyInfo)
     {
-        var keyId = GetNoKeyId(consoleKeyInfo);
+        int keyId = GetNoKeyId(consoleKeyInfo);
         if (keyId > -1)
         {
-            var menuItemsWithNoKey = MenuItems.Where(w => w.Key == null).ToList();
+            List<CliMenuItem> menuItemsWithNoKey = MenuItems.Where(w => w.Key == null).ToList();
             if (menuItemsWithNoKey.Count <= keyId)
+            {
                 return null;
+            }
+
             menuItemsWithNoKey[keyId].CountedKey = consoleKeyInfo.KeyChar.ToString();
             menuItemsWithNoKey[keyId].CountedId = keyId;
             return menuItemsWithNoKey[keyId];
         }
 
-        var key = char.IsSymbol(consoleKeyInfo.KeyChar) || consoleKeyInfo.KeyChar == '-'
+        string key = char.IsSymbol(consoleKeyInfo.KeyChar) || consoleKeyInfo.KeyChar == '-'
             ? consoleKeyInfo.KeyChar.ToString()
-            : consoleKeyInfo.Key.ToString().ToLower();
+            : consoleKeyInfo.Key.ToString().ToLower(CultureInfo.CurrentCulture);
 
-        var menuItem = MenuItems.SingleOrDefault(w =>
-            w.Key != null && w.Key.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+        CliMenuItem? menuItem = MenuItems.SingleOrDefault(w =>
+            w.Key != null && w.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
         if (menuItem == null)
+        {
             return null;
+        }
 
         menuItem.CountedKey = key;
         menuItem.CountedId = -1;
@@ -58,11 +64,20 @@ public sealed class CliMenuSet
 
     private static int GetNoKeyId(ConsoleKeyInfo consoleKeyInfo)
     {
-        if (char.IsDigit(consoleKeyInfo.KeyChar)) return consoleKeyInfo.KeyChar - '0';
+        if (char.IsDigit(consoleKeyInfo.KeyChar))
+        {
+            return consoleKeyInfo.KeyChar - '0';
+        }
 
-        if (IsInRange(consoleKeyInfo.KeyChar, 'a', '~')) return consoleKeyInfo.KeyChar - 'a' + 10;
+        if (IsInRange(consoleKeyInfo.KeyChar, 'a', '~'))
+        {
+            return consoleKeyInfo.KeyChar - 'a' + 10;
+        }
 
-        if (IsInRange(consoleKeyInfo.KeyChar, 'A', 'Z')) return consoleKeyInfo.KeyChar - 'A' + 40;
+        if (IsInRange(consoleKeyInfo.KeyChar, 'A', 'Z'))
+        {
+            return consoleKeyInfo.KeyChar - 'A' + 40;
+        }
 
         return -1;
     }
@@ -74,43 +89,53 @@ public sealed class CliMenuSet
 
     private static string UseLength(string? strFrom, int length, bool addSpaces = true)
     {
-        var str = strFrom ?? string.Empty;
-        var strLength = str.Length;
-        return strLength > length
-            ? str[..length]
-            : $"{str}{(addSpaces ? new string(' ', length - strLength) : string.Empty)}";
+        string str = strFrom ?? string.Empty;
+        int strLength = str.Length;
+        string spaces = addSpaces ? new string(' ', length - strLength) : string.Empty;
+        return strLength > length ? str[..length] : $"{str}{spaces}";
     }
 
     private string? GetCaption()
     {
         if (Caption == null)
+        {
             return null;
-        var parentCaption = ParentMenu?.GetCaption();
+        }
+
+        string? parentCaption = ParentMenu?.GetCaption();
         return parentCaption != null ? $"{parentCaption}/{Caption}" : $"/{Caption}";
     }
 
     public void Show(bool clearBefore = true)
     {
         if (clearBefore)
+        {
             Console.Clear();
-        var caption = GetCaption();
+        }
+
+        string? caption = GetCaption();
         if (caption is not null)
+        {
             Console.WriteLine(caption);
+        }
+
         Console.WriteLine();
 
-        foreach (var menuItem in MenuItems)
+        foreach (CliMenuItem menuItem in MenuItems)
+        {
             menuItem.CliMenuCommand.CountStatus();
+        }
 
-        var width = Console.WindowWidth - 6;
-        var max1 = 0;
-        var max2 = 0;
+        int width = Console.WindowWidth - 6;
+        int max1 = 0;
+        int max2 = 0;
         if (MenuItems.Any(w => w.CliMenuCommand.StatusView == EStatusView.Table))
         {
             max1 = MenuItems.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
                 .Max(m => m.MenuItemName.Length);
             max2 = MenuItems.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
-                .Max(m => m.CliMenuCommand.Status?.Length ?? 0);
-            var k = (max1 + max2 + 3.0) / width;
+                .Max(m => m.CliMenuCommand.StatusString?.Length ?? 0);
+            double k = (max1 + max2 + 3.0) / width;
             if (k > 1)
             {
                 max1 = (int)(max1 / k);
@@ -118,10 +143,10 @@ public sealed class CliMenuSet
             }
         }
 
-        var menuId = 0;
-        foreach (var menuItem in MenuItems)
+        int menuId = 0;
+        foreach (CliMenuItem menuItem in MenuItems)
         {
-            var key = menuItem.Key;
+            string? key = menuItem.Key;
             if (key == null)
             {
                 key = GetKey(menuId);
@@ -135,19 +160,22 @@ public sealed class CliMenuSet
             }
 
             if (key.Length > 3)
+            {
                 key = key[..3];
-            var preSpace = new string(' ', 4 - key.Length);
+            }
+
+            string preSpace = new(' ', 4 - key.Length);
             //Console.WriteLine($"{preSpace}{key}. {menuItem.MenuItemName} {menuItem.CliMenuCommand.GetStatus() ?? string.Empty}");
 
             Console.Write($"{preSpace}{key}. ");
             if (menuItem.CliMenuCommand.NameIsStatus)
             {
-                var currentColor = Console.ForegroundColor;
+                ConsoleColor currentColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(UseLength(menuItem.MenuItemName, width, false));
                 Console.ForegroundColor = currentColor;
             }
-            else if (menuItem.CliMenuCommand.Status == null)
+            else if (menuItem.CliMenuCommand.StatusString == null)
             {
                 Console.WriteLine(UseLength(menuItem.MenuItemName, width, false));
             }
@@ -156,21 +184,24 @@ public sealed class CliMenuSet
                 if (menuItem.CliMenuCommand.StatusView == EStatusView.Table)
                 {
                     Console.Write($"{UseLength(menuItem.MenuItemName, max1)}: ");
-                    var currentColor = Console.ForegroundColor;
+                    ConsoleColor currentColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(UseLength(menuItem.CliMenuCommand.Status, max2, false));
+                    Console.WriteLine(UseLength(menuItem.CliMenuCommand.StatusString, max2, false));
                     Console.ForegroundColor = currentColor;
                 }
                 else
                 {
                     Console.WriteLine(UseLength(
-                        $"{menuItem.MenuItemName} {(string.IsNullOrWhiteSpace(menuItem.CliMenuCommand.Status) ? string.Empty : $"({menuItem.CliMenuCommand.Status})")}",
+                        $"{menuItem.MenuItemName} {(string.IsNullOrWhiteSpace(menuItem.CliMenuCommand.StatusString) ? string.Empty : $"({menuItem.CliMenuCommand.StatusString})")}",
                         width, false));
                 }
             }
         }
 
-        foreach (var errorMessage in _errorMessages) StShared.WriteErrorLine(errorMessage, true);
+        foreach (string errorMessage in _errorMessages)
+        {
+            StShared.WriteErrorLine(errorMessage, true);
+        }
 
         Console.WriteLine(string.Empty);
         Console.Write("enter your choice: ");
@@ -195,7 +226,7 @@ public sealed class CliMenuSet
     {
         return keyId switch
         {
-            < 10 => keyId.ToString(),
+            < 10 => keyId.ToString(CultureInfo.InvariantCulture),
             < 40 => ((char)('a' + (keyId - 10))).ToString(),
             < 70 => ((char)('A' + (keyId - 40))).ToString(),
             < 103 => ((char)('ა' + (keyId - 70))).ToString(),
@@ -218,6 +249,9 @@ public sealed class CliMenuSet
 
     public void FixMenuElements()
     {
-        foreach (var cliMenuItem in MenuItems) cliMenuItem.SetMenuSet(this);
+        foreach (CliMenuItem cliMenuItem in MenuItems)
+        {
+            cliMenuItem.SetMenuSet(this);
+        }
     }
 }

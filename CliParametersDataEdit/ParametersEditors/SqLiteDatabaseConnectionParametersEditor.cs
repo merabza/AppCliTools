@@ -1,8 +1,8 @@
 ﻿using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.Models;
-using LibParameters;
-using SystemToolsShared;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParametersDataEdit.ParametersEditors;
 

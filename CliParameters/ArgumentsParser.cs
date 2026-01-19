@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LibDataInput;
-using LibParameters;
 using Newtonsoft.Json;
-using SystemToolsShared;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParameters;
 
@@ -40,8 +40,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         string? fileName = null;
         if (_argsList.Count > 0)
         {
-            var useIndex = Array.FindIndex(_argsList.ToArray(),
-                t => t.Equals("--use", StringComparison.CurrentCultureIgnoreCase));
+            int useIndex = Array.FindIndex(_argsList.ToArray(), t => t.Equals("--use", StringComparison.Ordinal));
 
             if (useIndex + 1 < _argsList.Count)
             {
@@ -51,20 +50,30 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
             var switches = new List<string>();
             if (useIndex > 0)
+            {
                 switches.AddRange(_argsList.Take(useIndex));
-            if (useIndex + 2 < _argsList.Count)
-                switches.AddRange(_argsList.Skip(useIndex + 2));
+            }
 
-            foreach (var swt in switches.Where(swt =>
-                         _possibleSwitches.Contains(swt, StringComparer.CurrentCultureIgnoreCase)))
+            if (useIndex + 2 < _argsList.Count)
+            {
+                switches.AddRange(_argsList.Skip(useIndex + 2));
+            }
+
+            foreach (string swt in switches.Where(swt => _possibleSwitches.Contains(swt, StringComparer.Ordinal)))
+            {
                 Switches.Add(swt);
+            }
         }
 
         if (Par != null)
+        {
             return EParseResult.Ok;
+        }
 
         if (fileName != null)
+        {
             return EParseResult.Error;
+        }
 
         //გამოვიტანოთ ინფორმაცია კონსოლზე
         Console.WriteLine("Usage:");
@@ -89,17 +98,21 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         TryUseFile(Path.Combine(_pathToContentRoot, _jsonFileName));
 
         if (Par != null)
+        {
             return;
+        }
 
         Console.WriteLine("Try to use current Directory");
         // ReSharper disable once using
-        using var processModule = Process.GetCurrentProcess().MainModule;
+        using ProcessModule? processModule = Process.GetCurrentProcess().MainModule;
 
         if (processModule == null)
+        {
             return;
+        }
 
-        var pathToExe = processModule.FileName;
-        var pathToExeRoot = Path.GetDirectoryName(pathToExe);
+        string pathToExe = processModule.FileName;
+        string? pathToExeRoot = Path.GetDirectoryName(pathToExe);
         if (pathToExeRoot == null)
         {
             Console.WriteLine("Cannot detect executable file path");
@@ -114,7 +127,9 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
     {
         _parLoader.ParametersFileName = startFileName;
         if (startFileName == null)
+        {
             return;
+        }
 
         if (!File.Exists(startFileName))
         {
@@ -127,7 +142,10 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
                 return;
             }
 
-            if (!fileInfo.Directory.Exists) fileInfo.Directory.Create();
+            if (!fileInfo.Directory.Exists)
+            {
+                fileInfo.Directory.Create();
+            }
 
             if (!fileInfo.Directory.Exists)
             {
@@ -137,15 +155,19 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
             if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true,
                     false))
+            {
                 return;
+            }
 
             //შევქმნათ ცარელა პარამეტრები
             var sampleParams = new EmptyParameters();
 
-            var sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
+            string? sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
 
             if (_encKey != null)
+            {
                 sampleParamsJsonText = EncryptDecrypt.EncryptString(sampleParamsJsonText, _encKey);
+            }
 
             //შევინახოთ ინფორმაცია SampleJsonFileName ფაილში 
             File.WriteAllText(startFileName, sampleParamsJsonText);
@@ -158,7 +180,10 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         }
 
         if (_parLoader.TryLoadParameters(startFileName))
+        {
             return;
+        }
+
         Console.WriteLine($"File {startFileName} is not valid parameters file");
     }
 }

@@ -2,5 +2,5 @@
 
 public static class Stats
 {
-    public static int IndentSize = 4;
+    public static int IndentSize { get; set; } = 4;
 }

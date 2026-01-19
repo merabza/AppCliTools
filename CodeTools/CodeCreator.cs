@@ -1,22 +1,22 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace CodeTools;
 
 public /*open*/ class CodeCreator
 {
-    protected readonly CodeFile CodeFile;
     private readonly ILogger _logger;
     private readonly string _placePath;
+    protected readonly CodeFile CodeFile;
 
     protected CodeCreator(ILogger logger, string placePath, string? codeFileName = null)
     {
         _logger = logger;
         _placePath = placePath;
         CodeFile = new CodeFile(codeFileName);
-        _logger.LogInformation("create Code file started -> {codeFileName}", codeFileName);
+        _logger.LogInformation("create Code file started -> {CodeFileName}", codeFileName);
     }
 
     public virtual void CreateFileStructure()
@@ -63,13 +63,16 @@ public /*open*/ class CodeCreator
 
     private void CreateFile(string? codePath = null)
     {
-        var strCode = CodeFile.Output(-1);
-        var placePath = codePath ?? _placePath;
+        string strCode = CodeFile.Output(-1);
+        string placePath = codePath ?? _placePath;
         StShared.CreateFolder(placePath, true);
         if (CodeFile.FileName is null)
+        {
             throw new Exception("CodeFile.FileName is null");
-        var forCreateFileName = Path.Combine(placePath, CodeFile.FileName);
+        }
+
+        string forCreateFileName = Path.Combine(placePath, CodeFile.FileName);
         File.WriteAllText(forCreateFileName, strCode);
-        _logger.LogInformation("Code file created: {forCreateFileName}", forCreateFileName);
+        _logger.LogInformation("Code file created: {ForCreateFileName}", forCreateFileName);
     }
 }

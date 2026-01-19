@@ -1,6 +1,6 @@
 ﻿using CliParameters.FieldEditors;
 using CliParametersEdit.Cruders;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersEdit.FieldEditors;
 

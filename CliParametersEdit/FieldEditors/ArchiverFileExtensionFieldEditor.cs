@@ -1,7 +1,8 @@
-﻿using CliParameters.FieldEditors;
+﻿using System.Globalization;
+using CliParameters.FieldEditors;
 using LibDataInput;
-using LibFileParameters.Models;
-using SystemToolsShared;
+using ParametersManagement.LibFileParameters.Models;
+using SystemTools.SystemToolsShared;
 
 namespace CliParametersEdit.FieldEditors;
 
@@ -17,9 +18,10 @@ public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
         var archiveType = GetValue<EArchiveType>(recordForUpdate, nameof(ArchiverData.Type));
 
         var extensionCandidate = archiveType.ToString();
-        extensionCandidate = (extensionCandidate.Length > 2 ? extensionCandidate[..3] : extensionCandidate).ToLower();
+        extensionCandidate =
+            (extensionCandidate.Length > 2 ? extensionCandidate[..3] : extensionCandidate).ToLower(CultureInfo
+                .CurrentCulture);
 
         SetValue(recordForUpdate, Inputer.InputText(FieldName, GetValue(recordForUpdate, extensionCandidate)));
-        //SetValue(recordForUpdate, Inputer.InputText(FieldName, GetValue(recordForUpdate, true, extensionCandidate)));//20220811
     }
 }

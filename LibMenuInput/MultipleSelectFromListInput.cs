@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using CliMenu;
 using LibDataInput;
 using LibMenuInput.CliMenuCommands;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
+using System.Globalization;
 
 namespace LibMenuInput;
 
 public sealed class MultipleSelectFromListInput : DataInput
 {
-    public readonly Dictionary<string, bool> SourceListWithChecks;
     private readonly string _fieldName;
+    public Dictionary<string, bool> SourceListWithChecks { get; set; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public MultipleSelectFromListInput(string fieldName, Dictionary<string, bool> sourceListWithChecks)
@@ -27,31 +28,39 @@ public sealed class MultipleSelectFromListInput : DataInput
 
             listSet.AddMenuItem(new CliMenuCommand("(Save and exit)"));
 
-            foreach (var listItem in SourceListWithChecks)
+            foreach (KeyValuePair<string, bool> listItem in SourceListWithChecks)
+            {
                 listSet.AddMenuItem(
                     new MultipleSelectFromListElementCliMenuCommand(
-                        listItem)); //$"{(listItem.Value ? "√" : "×")} {listItem.Key}")
+                        listItem));
+            }
 
-            var key = ConsoleKey.Escape.Value().ToLower();
+            string key = ConsoleKey.Escape.Value().ToUpperInvariant();
             listSet.AddMenuItem(key, new CliMenuCommand("(Exit without saving)"), key.Length);
 
             listSet.Show();
-            var ch = Console.ReadKey(true);
+            ConsoleKeyInfo ch = Console.ReadKey(true);
 
-            var menuItem = listSet.GetMenuItemByKey(ch);
+            CliMenuItem? menuItem = listSet.GetMenuItemByKey(ch);
 
             if (menuItem == null)
+            {
                 continue;
+            }
 
             if (menuItem.CountedKey == "0")
+            {
                 return true;
+            }
 
             if (ch.Key == ConsoleKey.Escape)
+            {
                 throw new DataInputEscapeException("Escape");
+            }
 
             var menuCommand = (MultipleSelectFromListElementCliMenuCommand)menuItem.CliMenuCommand;
-            var text = menuCommand.Key;
-            if (!SourceListWithChecks.TryGetValue(text, out var value))
+            string text = menuCommand.Key;
+            if (!SourceListWithChecks.TryGetValue(text, out bool value))
             {
                 Console.WriteLine($"Something is wrong with {_fieldName}.");
                 StShared.Pause();

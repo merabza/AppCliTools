@@ -23,7 +23,7 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
         _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
 
         ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        _parametersEditor.Save(ParametersEditor.GetSaveMessage());
+        _parametersEditor.Save(ParametersEditor.SaveMessage);
         return true;
     }
 

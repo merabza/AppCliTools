@@ -4,8 +4,8 @@ using System.Linq;
 using CliMenu;
 using CliParameters.Cruders;
 using CliParameters.FieldEditors;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters;
 
@@ -36,29 +36,37 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
     public override CliMenuSet GetSubMenu(object record)
     {
         Cruder cruder;
-        var currentValuesDict = GetValue(record) ?? [];
+        Dictionary<string, string> currentValuesDict = GetValue(record) ?? [];
 
         if (_logger is not null && _parametersManager is not null)
+        {
             cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager,
                 currentValuesDict)!;
-        else if (_parametersManager is not null)
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
-        else
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), currentValuesDict)!;
+            return cruder.GetListMenu();
+        }
+
+        cruder = _parametersManager is not null
+            ? (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!
+            : (TCruder)Activator.CreateInstance(typeof(TCruder), currentValuesDict)!;
+
         return cruder.GetListMenu();
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record);
+        Dictionary<string, string>? val = GetValue(record);
 
         if (val is not { Count: > 0 })
+        {
             return "No Details";
+        }
 
         if (val.Count > 1)
+        {
             return $"{val.Count} Details";
+        }
 
-        var kvp = val.Single();
+        KeyValuePair<string, string> kvp = val.Single();
         return kvp.Key;
     }
 }

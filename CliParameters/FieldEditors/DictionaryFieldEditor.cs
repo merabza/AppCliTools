@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using CliMenu;
 using CliParameters.Cruders;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.FieldEditors;
 
@@ -44,13 +44,15 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
         var currentValuesDict = GetValue(record) ?? [];
 
         if (_httpClientFactory is not null && _logger is not null)
+        {
             cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _httpClientFactory, _parametersManager,
                 currentValuesDict)!;
-        else if (_logger is not null)
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager,
-                currentValuesDict)!;
-        else
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
+            return cruder.GetListMenu();
+        }
+
+        cruder = _logger is not null
+            ? (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager, currentValuesDict)!
+            : (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!;
 
         return cruder.GetListMenu();
     }
@@ -60,10 +62,14 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
         var val = GetValue(record);
 
         if (val is null || val.Count <= 0)
+        {
             return "No Details";
+        }
 
         if (val.Count > 1)
+        {
             return $"{val.Count} Details";
+        }
 
         var kvp = val.Single();
         return $"{kvp.Key} - {kvp.Value.GetItemKey()}";

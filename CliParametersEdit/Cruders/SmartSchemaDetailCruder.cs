@@ -2,9 +2,9 @@
 using System.Linq;
 using CliParameters.Cruders;
 using CliParameters.FieldEditors;
-using LibFileParameters.Models;
-using LibParameters;
-using SystemToolsShared;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParametersEdit.Cruders;
 
@@ -35,24 +35,33 @@ public sealed class SmartSchemaDetailCruder : Cruder
     {
         var rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
         if (rbk != null)
+        {
             _currentValuesList.Remove(rbk);
+        }
     }
 
     public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is not SmartSchemaDetail newSmartSchemaDetail)
+        {
             return;
+        }
+
         if (recordKey != newSmartSchemaDetail.PeriodType.ToString())
+        {
             return;
+        }
+
         var rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
-        if (rbk != null)
-            rbk.PreserveCount = newSmartSchemaDetail.PreserveCount;
+        rbk?.PreserveCount = newSmartSchemaDetail.PreserveCount;
     }
 
     protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is SmartSchemaDetail sid)
+        {
             _currentValuesList.Add(sid);
+        }
     }
 
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)

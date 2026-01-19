@@ -8,14 +8,16 @@ using CliParameters.FieldEditors;
 using CliParametersApiClientsEdit.FieldEditors;
 using CliParametersDataEdit.CliMenuCommands;
 using CliParametersDataEdit.FieldEditors;
-using DatabasesManagement;
-using DbTools.Models;
-using LibApiClientParameters;
-using LibDatabaseParameters;
-using LibParameters;
+using DatabaseTools.DbTools.Models;
+using LanguageExt;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
-using SystemToolsShared.Errors;
+using OneOf;
+using ParametersManagement.LibApiClientParameters;
+using ParametersManagement.LibDatabaseParameters;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
+using SystemTools.SystemToolsShared.Errors;
+using ToolsManagement.DatabasesManagement;
 
 namespace CliParametersDataEdit.Cruders;
 
@@ -76,7 +78,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     {
         try
         {
-            var databaseServerConnectionData = GetTItem(item);
+            DatabaseServerConnectionData databaseServerConnectionData = GetTItem(item);
 
             var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
@@ -84,11 +86,12 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
-                databaseServerConnectionData, apiClients, _httpClientFactory, null, null, token).Preserve().Result;
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
+                .CreateDatabaseManager(_logger, true, databaseServerConnectionData, apiClients, _httpClientFactory,
+                    null, null, token).Preserve().Result;
 
             if (createDatabaseManagerResult.IsT1)
             {
@@ -99,9 +102,9 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             Console.WriteLine("Try connect to server...");
 
-            var dbManager = createDatabaseManagerResult.AsT0;
+            IDatabaseManager? dbManager = createDatabaseManagerResult.AsT0;
 
-            var dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
+            Option<Err[]> dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
             if (dbmTestConnectionResult.IsSome)
             {
                 Err.PrintErrorsOnConsole((Err[])dbmTestConnectionResult);
@@ -109,25 +112,28 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             }
 
             if (dbManager is RemoteDatabaseManager)
+            {
                 return true;
+            }
 
             //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
             //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-            var getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
+            OneOf<DbServerInfo, Err[]> getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
             if (getDbServerInfoResult.IsT1)
             {
                 Err.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
                 return false;
             }
 
-            var dbServerInfo = getDbServerInfoResult.AsT0;
+            DbServerInfo? dbServerInfo = getDbServerInfoResult.AsT0;
 
             Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
             Console.WriteLine(
                 $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
-            var isServerLocalResult = dbManager.IsServerLocal(token).Result;
+            OneOf<bool, Err[]> isServerLocalResult = dbManager.IsServerLocal(token).Result;
+            var notOrNot = isServerLocalResult.AsT0 ? string.Empty : "NOT ";
             Console.WriteLine(isServerLocalResult.IsT0
-                ? $"Server is {(isServerLocalResult.AsT0 ? string.Empty : "NOT ")} local"
+                ? $"Server is {notOrNot} local"
                 : "Server is local or not is not detected");
 
             Console.WriteLine($"Server Product Version is {dbServerInfo.ServerProductVersion}");
@@ -146,7 +152,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         }
         catch (Exception e)
         {
-            _logger.LogError(e.Message);
+            _logger.LogError(e, "An exception occurred while validating the database server connection.");
         }
 
         return false;
@@ -155,34 +161,19 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     protected override void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
-        var enableUser = false;
-        var enablePassword = false;
-        var enableSqlServerProps = false;
-        var enableWebAgentProps = false;
 
-        switch (databaseServerConnection.DatabaseServerProvider)
+        var databaseServerProvider = databaseServerConnection.DatabaseServerProvider;
+        (var toReturn, bool enablePassword, bool enableUser, bool enableSqlServerProps, bool enableWebAgentProps) =
+            EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
+        if (toReturn)
         {
-            case EDatabaseProvider.None:
-                EnableAllFieldButOne(nameof(DatabaseServerConnectionData.DatabaseServerProvider), false);
-                return;
-            case EDatabaseProvider.SqlServer:
-                enablePassword = enableUser = !databaseServerConnection.WindowsNtIntegratedSecurity;
-                enableSqlServerProps = true;
-                break;
-            case EDatabaseProvider.SqLite:
-            case EDatabaseProvider.OleDb:
-                enablePassword = true;
-                break;
-            case EDatabaseProvider.WebAgent:
-                enableWebAgentProps = true;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            return;
         }
 
         //EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseServerProvider));
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.DbWebAgentName), enableWebAgentProps);
+
         EnableFieldByName(nameof(DatabaseServerConnectionData.RemoteDbConnectionName), enableWebAgentProps);
         //EnableFieldByName(nameof(DatabaseServerConnectionData.FullDbBackupParameters), !enableWebAgentProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseFoldersSets), !enableWebAgentProps);
@@ -201,12 +192,38 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         if (lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerUser) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerPass) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerAddress))
+        {
             return;
+        }
 
         if (!string.IsNullOrWhiteSpace(databaseServerConnection.ServerAddress) &&
             !string.IsNullOrWhiteSpace(databaseServerConnection.ServerUser) &&
             !string.IsNullOrWhiteSpace(databaseServerConnection.ServerPass))
+        {
             CheckValidation(itemData);
+        }
+    }
+
+    private (bool, bool, bool, bool, bool) EnableDisableByDatabaseProvider(EDatabaseProvider databaseServerProvider,
+        DatabaseServerConnectionData databaseServerConnection)
+    {
+        switch (databaseServerProvider)
+        {
+            case EDatabaseProvider.None:
+                EnableAllFieldButOne(nameof(DatabaseServerConnectionData.DatabaseServerProvider), false);
+                return (true, false, false, false, false);
+            case EDatabaseProvider.SqlServer:
+                var enablePassword = !databaseServerConnection.WindowsNtIntegratedSecurity;
+                return (false, enablePassword, enablePassword, true, false);
+            case EDatabaseProvider.SqLite:
+            case EDatabaseProvider.OleDb:
+                return (false, true, false, false, false);
+            case EDatabaseProvider.WebAgent:
+                return (false, false, false, false, true);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(databaseServerProvider), databaseServerProvider,
+                    "Unexpected database server provider value.");
+        }
     }
 
     public override string GetStatusFor(string name)
@@ -216,18 +233,21 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             $"{databaseServerConnection?.DatabaseServerProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
     }
 
-    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string recordKey)
+    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
     {
-        base.FillDetailsSubMenu(itemSubMenuSet, recordKey);
+        base.FillDetailsSubMenu(itemSubMenuSet, itemName);
 
         var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
-        var databaseServerConnectionDataByKey = parameters.DatabaseServerConnections[recordKey];
+        DatabaseServerConnectionData databaseServerConnectionDataByKey =
+            parameters.DatabaseServerConnections[itemName];
 
         if (databaseServerConnectionDataByKey.DatabaseServerProvider == EDatabaseProvider.WebAgent)
+        {
             return;
+        }
 
         var getDbServerFoldersCliMenuCommand =
-            new GetDbServerFoldersCliMenuCommand(_logger, _httpClientFactory, recordKey, ParametersManager);
+            new GetDbServerFoldersCliMenuCommand(_logger, _httpClientFactory, itemName, ParametersManager);
         itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
     }
 }

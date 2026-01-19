@@ -1,6 +1,6 @@
-﻿using LibParameters;
-using LibToolActions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
+using ToolsManagement.LibToolActions;
 
 namespace CliParameters;
 

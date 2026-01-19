@@ -5,7 +5,7 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
@@ -50,33 +50,44 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
     private static string GetIncludes(FieldData fieldData, int level = 0)
     {
         if (fieldData.SubstituteField == null || fieldData.SubstituteField.Fields.Count == 0)
+        {
             return string.Empty;
+        }
 
-        var res = fieldData.SubstituteField.Fields.Select(field =>
+        List<string> res = fieldData.SubstituteField.Fields.Select(field =>
                 $".{(level > 0 ? "Then" : string.Empty)}Include(i{level}=>i{level}.{fieldData.NavigationFieldName}){GetIncludes(field, level + 1)}")
             .ToList();
 
         if (res.Count <= 1)
+        {
             return res.Aggregate(string.Empty, (current, includeString) => current + includeString);
+        }
 
         res.Sort();
 
-        var changed = true;
+        bool changed = true;
         while (changed)
         {
             changed = false;
             string? toRemove = null;
-            foreach (var includeString in res.Where(includeString =>
-                         res.Any(w => w != includeString && w.StartsWith(includeString)) ||
+            foreach (string includeString in res.Where(includeString =>
+                         res.Any(w => w != includeString && w.StartsWith(includeString, StringComparison.Ordinal)) ||
                          res.Count(w => w == includeString) > 1))
+            {
                 toRemove = includeString;
+            }
 
             if (toRemove == null)
+            {
                 continue;
+            }
 
-            var index = res.FindIndex(f => f == toRemove);
+            int index = res.FindIndex(f => f == toRemove);
             if (index < 0)
+            {
                 continue;
+            }
+
             res.RemoveAt(index);
             changed = true;
         }
@@ -87,14 +98,19 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
     private static Dictionary<string, FieldData[]> GetFields(FieldData fieldData)
     {
         if (fieldData.SubstituteField?.Fields is null || !(fieldData.SubstituteField?.Fields.Count > 0))
-            return new Dictionary<string, FieldData[]> { { fieldData.FullName, [fieldData] } };
-        var dictionary = new Dictionary<string, FieldData[]>();
-        foreach (var fields in fieldData.SubstituteField.Fields.Select(GetFields))
-        foreach (var pair in fields)
         {
-            var tempList = new List<FieldData> { fieldData };
-            tempList.AddRange(pair.Value);
-            dictionary.Add(pair.Key, [.. tempList]);
+            return new Dictionary<string, FieldData[]> { { fieldData.FullName, [fieldData] } };
+        }
+
+        var dictionary = new Dictionary<string, FieldData[]>();
+        foreach (Dictionary<string, FieldData[]> fields in fieldData.SubstituteField.Fields.Select(GetFields))
+        {
+            foreach (KeyValuePair<string, FieldData[]> pair in fields)
+            {
+                var tempList = new List<FieldData> { fieldData };
+                tempList.AddRange(pair.Value);
+                dictionary.Add(pair.Key, [.. tempList]);
+            }
         }
 
         return dictionary;
@@ -102,29 +118,39 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData)
     {
-        var oldTableName = entityData.TableName;
-        var tableName = GetNewTableName(entityData.TableName);
-        var tableNameCapitalCamel = tableName.CapitalizeCamel();
-        var oldTableNameCapitalCamel = oldTableName.CapitalizeCamel();
-        var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
-        var seederModelClassName = tableNameSingular + "SeederModel";
+        string oldTableName = entityData.TableName;
+        string tableName = GetNewTableName(entityData.TableName);
+        string tableNameCapitalCamel = tableName.CapitalizeCamel();
+        string oldTableNameCapitalCamel = oldTableName.CapitalizeCamel();
+        string tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
+        string seederModelClassName = tableNameSingular + "SeederModel";
 
-        var includes = entityData.FieldsData.Aggregate(string.Empty, (current, field) => current + GetIncludes(field));
+        string includes =
+            entityData.FieldsData.Aggregate(string.Empty, (current, field) => current + GetIncludes(field));
 
-        var strFieldsList = string.Empty;
-        var atLeastOneAdded = false;
+        string strFieldsList = string.Empty;
+        bool atLeastOneAdded = false;
 
-        foreach (var (_, fieldList) in entityData.FieldsData.SelectMany(GetFields))
+        foreach ((string _, FieldData[] fieldList) in entityData.FieldsData.SelectMany(GetFields))
         {
             if (atLeastOneAdded)
+            {
                 strFieldsList += ", ";
+            }
 
-            var rightPart = FieldName(fieldList, fieldList.Length);
+            string rightPart = FieldName(fieldList, fieldList.Length);
 
             if (fieldList.Length > 1)
-                for (var i = fieldList.Length - 2; i >= 0; i--)
+            {
+                for (int i = fieldList.Length - 2; i >= 0; i--)
+                {
                     if (fieldList[i].IsNullable)
+                    {
                         rightPart = $"{FieldName(fieldList, i + 1)} == null ? null : ({rightPart})";
+                    }
+                }
+            }
+
             strFieldsList += rightPart;
 
             atLeastOneAdded = true;
@@ -137,19 +163,26 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
             $"SaveJson({tableVarName}, \"{tableName}\")");
 
         if (_runMethodCodeBlock is null)
+        {
             throw new Exception("_runMethodCodeBlock is null");
+        }
+
         _runMethodCodeBlock.AddRange(block.CodeItems);
     }
 
     private static string FieldName(FieldData[] list, int levelCount)
     {
-        var rightPart = "s";
+        var sb = new System.Text.StringBuilder("s");
 
-        var needCount = Math.Min(list.Length, levelCount);
+        int needCount = Math.Min(list.Length, levelCount);
 
-        for (var i = 0; i < needCount; i++)
-            rightPart += $".{(i == list.Length - 1 ? list[i].OldName : list[i].NavigationFieldName)}";
-        return rightPart;
+        for (int i = 0; i < needCount; i++)
+        {
+            sb.Append('.');
+            sb.Append(i == list.Length - 1 ? list[i].OldName : list[i].NavigationFieldName);
+        }
+
+        return sb.ToString();
     }
 
     public override void FinishAndSave()
@@ -157,7 +190,10 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
         var block = new CodeBlock(string.Empty, string.Empty, "Console.WriteLine(\"DataSeederCreator.Run Finished\")",
             "return true");
         if (_runMethodCodeBlock is null)
+        {
             throw new Exception("_runMethodCodeBlock is null");
+        }
+
         _runMethodCodeBlock.AddRange(block.CodeItems);
         base.FinishAndSave();
     }

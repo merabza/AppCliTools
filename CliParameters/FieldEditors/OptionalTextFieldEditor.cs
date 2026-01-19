@@ -18,13 +18,13 @@ public sealed class OptionalTextFieldEditor : FieldEditor<string?>
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var curValue = GetValue(recordForUpdate, _defaultValue);
+        string? curValue = GetValue(recordForUpdate, _defaultValue);
         SetValue(recordForUpdate, Inputer.InputText(FieldName, curValue, _passwordCharacter));
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValue(record) ?? string.Empty;
-        return _passwordCharacter == 0 || val == string.Empty ? val : new string(_passwordCharacter, val.Length);
+        string val = GetValue(record) ?? string.Empty;
+        return _passwordCharacter == 0 || string.IsNullOrEmpty(val) ? val : new string(_passwordCharacter, val.Length);
     }
 }

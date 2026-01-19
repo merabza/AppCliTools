@@ -2,9 +2,9 @@
 using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.ParametersEditors;
-using LibDatabaseParameters;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibDatabaseParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersDataEdit.FieldEditors;
 

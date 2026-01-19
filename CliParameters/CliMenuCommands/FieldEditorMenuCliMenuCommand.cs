@@ -2,7 +2,7 @@
 using CliParameters.Cruders;
 using CliParameters.FieldEditors;
 using LibDataInput;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.CliMenuCommands;
 
@@ -31,7 +31,9 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
 
         if (!_cruder.CheckValidation(_recordForUpdate) &&
             !Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
+        {
             return false;
+        }
 
         //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)

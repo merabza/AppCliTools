@@ -1,5 +1,5 @@
 ﻿using CliMenu;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -18,7 +18,9 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
     protected override bool RunBody()
     {
         if (!string.IsNullOrWhiteSpace(ParentMenuName))
+        {
             return _parametersEditor.EditParametersInSequence();
+        }
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
         return false;

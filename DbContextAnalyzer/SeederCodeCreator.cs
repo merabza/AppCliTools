@@ -5,9 +5,9 @@ using System.Linq;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
-using JetBrainsResharperGlobalToolsWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SystemTools.JetBrainsResharperGlobalToolsWork;
 
 namespace DbContextAnalyzer;
 
@@ -102,14 +102,14 @@ public sealed class SeederCodeCreator
             if (value.Level != lastLevel)
             {
                 lastLevel = value.Level;
-                _logger.LogInformation("Level = {lastLevel}", lastLevel);
+                _logger.LogInformation("Level = {LastLevel}", lastLevel);
             }
 
             var newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
             var devBaseTableEntity = relationsInDevBase.Entities.SingleOrDefault(x =>
-                string.Equals(x.Value.TableName, newTableName, StringComparison.CurrentCultureIgnoreCase));
+                string.Equals(x.Value.TableName, newTableName, StringComparison.Ordinal));
 
-            _logger.LogInformation("TableName = {tableName}", tableName);
+            _logger.LogInformation("TableName = {TableName}", tableName);
 
             var isCarcassType = carcassEntityTypes.Any(a =>
                 string.Equals(Relations.GetTableName(a), tableName, StringComparison.OrdinalIgnoreCase));
@@ -138,13 +138,17 @@ public sealed class SeederCodeCreator
                 new SeederCreator(_logger, _seederCodeCreatorParameters, _excludesRulesParameters, placePath);
             var usedTableName = seederCreator.UseEntity(value, devBaseTableEntity.Value, isCarcassType);
             if (isCarcassType)
+            {
                 usedCarcassEntityTypes.Add(usedTableName);
+            }
 
             //1.1
             creatorForJsonFilesCreator.UseEntity(value);
             //1.2
             if (!isCarcassType)
+            {
                 projectDataSeederCreator.UseEntity(value);
+            }
 
             //1.3
             projectDataSeedersFactoryCreator.UseEntity(value, isCarcassType);
@@ -180,7 +184,9 @@ public sealed class SeederCodeCreator
         var place = new DirectoryInfo(_getJsonCreatorParameters.PlacePath);
         var solutionDir = place.Parent?.Parent;
         if (solutionDir is null)
+        {
             return;
+        }
 
         var processor = new JetBrainsResharperGlobalToolsProcessor(_logger, true);
         processor.Cleanupcode(solutionDir.FullName);

@@ -11,17 +11,25 @@ public /*open*/ class CodeBlockBase
 
     protected CodeBlockBase(object?[] codeList)
     {
-        foreach (var o in codeList)
+        foreach (object? o in codeList)
         {
             if (o == null)
+            {
                 continue;
+            }
+
             switch (o)
             {
                 case string s:
-                    if (s == string.Empty)
+                    if (string.IsNullOrEmpty(s))
+                    {
                         CodeItems.Add(new CodeExtraLine());
+                    }
                     else
+                    {
                         CodeItems.Add(new CodeCommand(s));
+                    }
+
                     break;
                 case FlatCodeBlock fcb:
                     CodeItems.AddRange(fcb.CodeItems);
@@ -48,15 +56,21 @@ public /*open*/ class CodeBlockBase
     public virtual string Output(int indentLevel)
     {
         var sb = new StringBuilder();
-        foreach (var codeItem in CodeItems)
+        foreach (ICodeItem codeItem in CodeItems)
+        {
             sb.Append(codeItem.Output(indentLevel + 1));
+        }
+
         return sb.ToString();
     }
 
     public virtual string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
         var sb = new StringBuilder();
-        foreach (var codeItem in CodeItems) sb.Append(codeItem.OutputCreator(indentLevel + 1, additionalIndentLevel));
+        foreach (ICodeItem codeItem in CodeItems)
+        {
+            sb.Append(codeItem.OutputCreator(indentLevel + 1, additionalIndentLevel));
+        }
 
         return sb.ToString();
     }

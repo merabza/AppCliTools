@@ -8,7 +8,10 @@ public static class Inputer
     {
         var answerInput = new AnswerInput(fieldName, defaultValue);
         if (answerInput.DoInput())
+        {
             return answerInput.Value;
+        }
+
         return useException ? throw new DataInputException($"Invalid input of {fieldName}") : defaultValue;
     }
 
@@ -16,7 +19,10 @@ public static class Inputer
     {
         var boolInput = new BoolDataInput(fieldName, defaultValue);
         if (boolInput.DoInput())
+        {
             return boolInput.Value;
+        }
+
         return useException ? throw new DataInputException($"Invalid input of {fieldName}") : false;
     }
 
@@ -36,8 +42,8 @@ public static class Inputer
 
     public static string InputTextRequired(string fieldName, string? defaultValue = null, char passwordCharacter = '\0')
     {
-        var result = string.Empty;
-        while (result == string.Empty)
+        string result = string.Empty;
+        while (string.IsNullOrEmpty(result))
         {
             Console.WriteLine($"{fieldName} is required");
             result = InputText(fieldName, defaultValue, passwordCharacter) ?? string.Empty;

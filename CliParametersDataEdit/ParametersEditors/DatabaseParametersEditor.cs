@@ -4,10 +4,10 @@ using CliParameters;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.FieldEditors;
 using CliParametersEdit.FieldEditors;
-using DbTools;
-using LibDatabaseParameters;
-using LibParameters;
+using DatabaseTools.DbTools;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibDatabaseParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersDataEdit.ParametersEditors;
 
@@ -57,7 +57,7 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             DatabaseParameters.DefaultBackupFileExtension, true));
         FieldEditors.Add(new TextFieldEditor(nameof(DatabaseParameters.BackupNameMiddlePart),
             DatabaseParameters.DefaultBackupNameMiddlePart, true));
-        //FIXME აქ სასურველია დადგინდეს შეუძლია თუ არა სერვერს კომპრესია და ისე განისაზღვროს ძირითადი მნიშვნელობა
+
         FieldEditors.Add(new BoolNullableFieldEditor(nameof(DatabaseParameters.Compress),
             DatabaseParameters.DefaultCompress, true));
         FieldEditors.Add(new BoolNullableFieldEditor(nameof(DatabaseParameters.Verify),

@@ -4,13 +4,15 @@ using System.Net.Http;
 using System.Threading;
 using CliMenu;
 using CliParameters.FieldEditors;
-using DatabasesManagement;
-using LibApiClientParameters;
 using LibDataInput;
 using LibMenuInput;
-using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared.Errors;
+using OneOf;
+using ParametersManagement.LibApiClientParameters;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared.Errors;
+using ToolsManagement.DatabasesManagement;
+using WebAgentContracts.WebAgentDatabasesApiContracts;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -36,18 +38,19 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
     {
         try
         {
-            var currentRemoteDbConnectionName = GetValue(recordForUpdate);
-            var databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
+            string? currentRemoteDbConnectionName = GetValue(recordForUpdate);
+            string? databaseApiClientName = GetValue<string>(recordForUpdate, _databaseApiClientNameFieldName);
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
-            var createDatabaseManagerResult = DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger,
-                _httpClientFactory, true, databaseApiClientName, apiClients, null, null, token).Result;
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
+                .CreateRemoteDatabaseManager(_logger, _httpClientFactory, true, databaseApiClientName, apiClients, null,
+                    null, token).Result;
 
             var databaseConnectionNames = new List<string>();
             if (createDatabaseManagerResult.IsT1)
@@ -56,22 +59,28 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
             }
             else
             {
-                var apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
-                var getDatabaseFoldersSetsResult = apiClient.GetDatabaseConnectionNames(token).Result;
+                DatabaseApiClient apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
+                OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult =
+                    apiClient.GetDatabaseConnectionNames(token).Result;
                 if (getDatabaseFoldersSetsResult.IsT0)
+                {
                     databaseConnectionNames = getDatabaseFoldersSetsResult.AsT0;
+                }
                 else
+                {
                     Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                }
             }
 
             var databasesMenuSet = new CliMenuSet();
 
-            foreach (var listItem in databaseConnectionNames)
+            foreach (string listItem in databaseConnectionNames)
+            {
                 databasesMenuSet.AddMenuItem(new CliMenuCommand(listItem));
+            }
 
-            var selectedKey = MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentRemoteDbConnectionName);
-
-            if (selectedKey is null)
+            string selectedKey =
+                MenuInputer.InputFromMenuList(FieldName, databasesMenuSet, currentRemoteDbConnectionName) ??
                 throw new DataInputException("Selected invalid Item. ");
 
             SetValue(recordForUpdate, selectedKey);
@@ -82,8 +91,12 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in RemoteDbConnectionNameFieldEditor.UpdateField");
-            throw;
+            var contextualMessage =
+                $"Error in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {FieldName}";
+            _logger.LogError(e,
+                "Error in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {FieldName}",
+                recordKey, FieldName);
+            throw new Exception(contextualMessage, e);
         }
     }
 

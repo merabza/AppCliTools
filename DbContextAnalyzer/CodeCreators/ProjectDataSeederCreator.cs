@@ -3,7 +3,7 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
@@ -30,9 +30,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
             "Logger.LogInformation(\"Seed Project Data Started\")");
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using System", //
-            "using CarcassDataSeeding", //
-            "using Microsoft.Extensions.Logging", //
+            "using System", "using CarcassDataSeeding", "using Microsoft.Extensions.Logging",
             $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(
@@ -44,7 +42,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
 
     public void UseEntity(EntityData entityData)
     {
-        var tableName = GetNewTableName(entityData.TableName);
+        string tableName = GetNewTableName(entityData.TableName);
         var tableNameCapitalCamel = tableName.CapitalizeCamel();
 
         _counter++;
@@ -55,7 +53,9 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
             new CodeBlock($"if (!Use(seederFactory.Create{tableNameCapitalCamel}Seeder()))", "return false"));
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
+        {
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
+        }
 
         _seedProjectSpecificDataMethodCodeBlock.AddRange(block.CodeItems);
     }
@@ -66,7 +66,9 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
             "return true");
 
         if (_seedProjectSpecificDataMethodCodeBlock is null)
+        {
             throw new Exception("_seedProjectSpecificDataMethodCodeBlock is null");
+        }
 
         _seedProjectSpecificDataMethodCodeBlock.AddRange(block.CodeItems);
         base.FinishAndSave();

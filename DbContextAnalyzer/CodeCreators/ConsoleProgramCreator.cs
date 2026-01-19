@@ -34,7 +34,7 @@ public sealed class ConsoleProgramCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var strPossibleSwitches = _possibleSwitches.Count == 0
+        string strPossibleSwitches = _possibleSwitches.Count == 0
             ? string.Empty
             : $", {string.Join(", ", _possibleSwitches.Select(s => $"\"--{s}\""))}";
 

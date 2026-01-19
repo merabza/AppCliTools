@@ -1,5 +1,5 @@
 ﻿using CliParameters.FieldEditors;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters;
 
@@ -25,7 +25,9 @@ public sealed class SubParametersManager<T> : IParametersManager
     {
         Parameters = parameters;
         if (parameters is not T par)
+        {
             return;
+        }
 
         _fieldEditor.SetValue(_record, par);
 

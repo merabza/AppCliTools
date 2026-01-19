@@ -5,7 +5,7 @@ using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer;
 

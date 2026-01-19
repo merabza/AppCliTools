@@ -21,13 +21,16 @@ public sealed class TextDataInput : DataInput
 
     public override bool DoInput()
     {
-        var showDefValue = _defaultValue ?? string.Empty;
+        string showDefValue = _defaultValue ?? string.Empty;
         if (_passwordCharacter != 0 && _defaultValue != null)
+        {
             showDefValue = new string(_passwordCharacter, showDefValue.Length);
-        var prompt = $"Enter {_fieldName} {(_defaultValue == null ? string.Empty : $"[{showDefValue}]")}: ";
+        }
+
+        string prompt = $"Enter {_fieldName} {(_defaultValue == null ? string.Empty : $"[{showDefValue}]")}: ";
         Console.Write(prompt);
 
-        var promptLength = prompt.Length;
+        int promptLength = prompt.Length;
         var sb = new StringBuilder();
         while (true)
         {
@@ -80,7 +83,10 @@ public sealed class TextDataInput : DataInput
                     break;
                 default:
                     if (ch.KeyChar >= 32)
+                    {
                         sb.Append(ch.KeyChar);
+                    }
+
                     //Console.Write(ch.KeyChar);
                     Console.Write(_passwordCharacter == 0 ? ch.KeyChar : _passwordCharacter);
                     break;

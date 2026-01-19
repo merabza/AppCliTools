@@ -1,11 +1,12 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CodeTools;
 using DbContextAnalyzer.Domain;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
@@ -23,20 +24,16 @@ public sealed class SeederModelCreator : SeederCodeCreatorBase
         _modelsFolderName = modelsFolderName;
     }
 
-    public override void CreateFileStructure()
-    {
-    }
-
     public void UseEntity(EntityData entityData)
     {
-        var tableName = GetNewTableName(entityData.TableName);
+        string tableName = GetNewTableName(entityData.TableName);
 
-        var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
-        var className = tableNameSingular + "SeederModel";
+        string tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
+        string className = tableNameSingular + "SeederModel";
 
-        var fieldDataList = entityData.GetFlatFieldData();
+        List<FieldData> fieldDataList = entityData.GetFlatFieldData();
 
-        var constructorParameters = string.Join(", ",
+        string constructorParameters = string.Join(", ",
             fieldDataList.Select(fd => $"{fd.RealTypeName} {ValidateIdentifier(fd.FullName.UnCapitalize())}")
                 .ToArray());
 
@@ -48,7 +45,7 @@ public sealed class SeederModelCreator : SeederCodeCreatorBase
         var classCodeBlock = new CodeBlock("public sealed class " + className, string.Empty,
             new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), constructorCodeBlock);
 
-        var usingSystem = fieldDataList.Any(a => a.RealTypeName is "DateTime" or "DateTime?")
+        CodeCommand? usingSystem = fieldDataList.Any(a => a.RealTypeName is "DateTime" or "DateTime?")
             ? new CodeCommand("using System")
             : null;
 

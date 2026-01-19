@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer;
 
@@ -19,9 +19,11 @@ public static class DbContextCreator
 
         // Use Activator.CreateInstance with nullability check
         // ReSharper disable once using
-        var context = Activator.CreateInstance(typeof(T), optionsBuilder.Options) as T;
-        if (context != null)
+        if (Activator.CreateInstance(typeof(T), optionsBuilder.Options) is T context)
+        {
             return context;
+        }
+
         StShared.WriteErrorLine($"Failed to create an instance of {typeof(T).Name}", true);
         return null;
     }

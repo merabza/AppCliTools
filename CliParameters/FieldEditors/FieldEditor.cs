@@ -1,21 +1,22 @@
-﻿using CliMenu;
+﻿using System.Reflection;
+using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.Cruders;
 using LibDataInput;
-using LibParameters;
-using SystemToolsShared;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParameters.FieldEditors;
 
 public /*open*/ class FieldEditor
 {
+    private readonly bool _isSubObject;
+
     public readonly bool
         EnterFieldDataOnCreate; //ეს ველი მიუთითებს გამოიტანოს თუ არა შექმნისას შეთავაზება ამ ველის მნიშვნელობის შესავსებად
 
     protected readonly string FieldName;
     public readonly string PropertyName;
-    private readonly bool _isSubObject;
-    public bool Enabled = true;
 
     protected FieldEditor(string propertyName, string? propertyDescriptor, bool isSubObject,
         bool enterFieldDataOnCreate = false)
@@ -26,6 +27,8 @@ public /*open*/ class FieldEditor
         FieldName = propertyDescriptor ?? PropertyName.SplitWithSpacesCamelParts();
     }
 
+    public bool Enabled { get; set; } = true;
+
     public virtual void UpdateField(string? recordKey, object recordForUpdate)
     {
     }
@@ -33,17 +36,25 @@ public /*open*/ class FieldEditor
     public void AddParameterEditMenuItem(CliMenuSet menuSet, ParametersEditor parametersEditor)
     {
         if (_isSubObject)
+        {
             menuSet.AddMenuItem(new ParameterSubObjectFieldEditorCliMenuCommand(FieldName, this, parametersEditor));
+        }
         else
+        {
             menuSet.AddMenuItem(new ParameterFieldEditorCliMenuCommand(FieldName, this, parametersEditor));
+        }
     }
 
     public void AddFieldEditMenuItem(CliMenuSet menuSet, ItemData recordForUpdate, Cruder cruder, string recordKey)
     {
         if (_isSubObject)
+        {
             menuSet.AddMenuItem(new SubObjectFieldEditorCliMenuCommand(FieldName, this, recordForUpdate));
+        }
         else
+        {
             menuSet.AddMenuItem(new FieldEditorMenuCliMenuCommand(FieldName, this, recordForUpdate, cruder, recordKey));
+        }
     }
 
     public virtual CliMenuSet? GetSubMenu(object record)
@@ -58,7 +69,7 @@ public /*open*/ class FieldEditor
 
     protected static T? GetValue<T>(object record, string propertyName)
     {
-        var currentRecordPropertyInfo = record.GetType().GetProperty(propertyName);
+        PropertyInfo? currentRecordPropertyInfo = record.GetType().GetProperty(propertyName);
         return currentRecordPropertyInfo is null
             ? throw new DataInputException($"property {propertyName} not found")
             : (T?)currentRecordPropertyInfo.GetValue(record);
@@ -86,25 +97,24 @@ public /*open*/ class FieldEditor<T> : FieldEditor
     // ReSharper disable once MemberCanBeProtected.Global
     public void SetValue(object record, T? value)
     {
-        var recordForUpdatePropertyInfo = record.GetType().GetProperty(PropertyName) ??
-                                          throw new DataInputException(
-                                              $"property {PropertyName} not found in record for update");
+        PropertyInfo recordForUpdatePropertyInfo = record.GetType().GetProperty(PropertyName) ??
+                                                   throw new DataInputException(
+                                                       $"property {PropertyName} not found in record for update");
         recordForUpdatePropertyInfo.SetValue(record, value, null);
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValueOrDefault(record);
+        T? val = GetValueOrDefault(record);
         return val?.ToString() ?? string.Empty;
     }
 
     protected T? GetValueOrDefault(object? record)
     {
-        T? val;
-        if (AutoUsageOfDefaultValue && DefaultValue is not null)
-            val = GetValue(record, (T?)DefaultValue);
-        else
-            val = GetValue(record);
+        T? val = AutoUsageOfDefaultValue && DefaultValue is not null
+            ? GetValue(record, (T?)DefaultValue)
+            : GetValue(record);
+
         return val;
     }
 
@@ -117,14 +127,20 @@ public /*open*/ class FieldEditor<T> : FieldEditor
     protected T? GetValue(object? record, T? defaultValue = default)
     {
         if (record == null)
+        {
             return defaultValue;
-        var currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName) ??
-                                        throw new DataInputException($"property {PropertyName} not found");
+        }
 
-        var toRet = currentRecordPropertyInfo.GetValue(record);
+        PropertyInfo currentRecordPropertyInfo = record.GetType().GetProperty(PropertyName) ??
+                                                 throw new DataInputException($"property {PropertyName} not found");
+
+        object? toRet = currentRecordPropertyInfo.GetValue(record);
         if (toRet is null)
+        {
             return defaultValue;
-        return (T?)toRet ?? defaultValue;
+        }
+
+        return (T)toRet;
     }
 
     public override void SetDefault(ItemData currentItem)

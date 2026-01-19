@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CliParameters.FieldEditors;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.Cruders;
 
@@ -41,25 +41,40 @@ public abstract class SimpleNamesWithDescriptionsCruder : Cruder
     public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is not TextItemData newTextItemData)
+        {
             throw new Exception("newRecord is null in UpdateRecordWithKey");
+        }
+
         if (string.IsNullOrWhiteSpace(newTextItemData.Text))
+        {
             throw new Exception("newReactAppType.Description is empty in UpdateRecordWithKey");
+        }
+
         GetDictionary()[recordKey] = newTextItemData.Text;
     }
 
     protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
     {
         if (newRecord is not TextItemData newTextItemData)
+        {
             throw new Exception("newRecord is null in AddRecordWithKey");
+        }
+
         if (string.IsNullOrWhiteSpace(newTextItemData.Text))
+        {
             throw new Exception("Description is empty in AddRecordWithKey");
+        }
+
         GetDictionary().Add(recordKey, newTextItemData.Text);
     }
 
     public override string? GetStatusFor(string name)
     {
         if (GetDictionary().TryGetValue(name, out var description) && !string.IsNullOrWhiteSpace(description))
+        {
             return description;
+        }
+
         return null;
     }
 }

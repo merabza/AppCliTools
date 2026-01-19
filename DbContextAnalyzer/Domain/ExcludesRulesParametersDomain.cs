@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using DbContextAnalyzer.Models;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.Domain;
 
@@ -20,15 +20,17 @@ public sealed class ExcludesRulesParametersDomain
     {
         ExcludesRulesParameters? excludesRulesParameters = null;
         if (!string.IsNullOrWhiteSpace(excludesRulesParametersFilePath))
+        {
             excludesRulesParameters =
                 FileLoader.LoadDeserializeResolve<ExcludesRulesParameters>(excludesRulesParametersFilePath, true);
+        }
 
-        var se = excludesRulesParameters?.SingularityExceptions
+        Dictionary<string, string> se = excludesRulesParameters?.SingularityExceptions
             .Where(rfn =>
                 !string.IsNullOrWhiteSpace(rfn.TableName) && !string.IsNullOrWhiteSpace(rfn.TableNameSingular))
             .ToDictionary(rfn => rfn.TableName!, rfn => rfn.TableNameSingular!) ?? [];
 
-        var rtn = excludesRulesParameters?.ReplaceTableNames
+        Dictionary<string, string> rtn = excludesRulesParameters?.ReplaceTableNames
             .Where(rfn => !string.IsNullOrWhiteSpace(rfn.OldTableName) && !string.IsNullOrWhiteSpace(rfn.NewTableName))
             .ToDictionary(rfn => rfn.OldTableName!, rfn => rfn.NewTableName!) ?? [];
 
@@ -39,33 +41,47 @@ public sealed class ExcludesRulesParametersDomain
         };
 
         if (excludesRulesParameters is null)
+        {
             return exclRulParDom;
+        }
 
-        foreach (var excludeTable in excludesRulesParameters.ExcludeTables.Where(x => !string.IsNullOrWhiteSpace(x)))
+        foreach (string excludeTable in excludesRulesParameters.ExcludeTables.Where(x => !string.IsNullOrWhiteSpace(x)))
+        {
             exclRulParDom.ExcludeTables.Add(excludeTable);
+        }
 
-        foreach (var tfm in excludesRulesParameters.ExcludeFields.Where(tfm =>
+        foreach (TableFieldModel tfm in excludesRulesParameters.ExcludeFields.Where(tfm =>
                      !string.IsNullOrWhiteSpace(tfm.TableName) && !string.IsNullOrWhiteSpace(tfm.FieldName)))
+        {
             exclRulParDom.ExcludeFields.Add(new TableFieldDomain
             {
                 TableName = tfm.TableName!, FieldName = tfm.FieldName!
             });
+        }
 
-        foreach (var rfn in excludesRulesParameters.ReplaceFieldNames.Where(rfn =>
+        foreach (ReplaceFieldName rfn in excludesRulesParameters.ReplaceFieldNames.Where(rfn =>
                      !string.IsNullOrWhiteSpace(rfn.TableName) && !string.IsNullOrWhiteSpace(rfn.OldFieldName) &&
                      !string.IsNullOrWhiteSpace(rfn.NewFieldName)))
+        {
             exclRulParDom.ReplaceFieldNames.Add(new ReplaceFieldNameDomain
             {
                 TableName = rfn.TableName!, OldFieldName = rfn.OldFieldName!, NewFieldName = rfn.NewFieldName!
             });
+        }
 
-        foreach (var kfn in excludesRulesParameters.KeyFieldNames)
+        foreach (KeyFieldNamesModel kfn in excludesRulesParameters.KeyFieldNames)
         {
             if (string.IsNullOrWhiteSpace(kfn.TableName))
+            {
                 continue;
-            var keys = kfn.Keys.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            }
+
+            List<string> keys = kfn.Keys.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
             if (keys.Count == 0)
+            {
                 continue;
+            }
+
             exclRulParDom.KeyFieldNames.Add(new KeyFieldNamesDomain { TableName = kfn.TableName, Keys = keys });
         }
 
@@ -75,7 +91,7 @@ public sealed class ExcludesRulesParametersDomain
     public Dictionary<string, string> GetReplaceFieldsDictByTableName(string tableName)
     {
         Console.WriteLine($"GetReplaceFieldsDictByTableName tableName = {tableName}");
-        var newTableName = GetReplaceTablesName(tableName);
+        string newTableName = GetReplaceTablesName(tableName);
         return ReplaceFieldNames.Where(w => w.TableName == newTableName)
             .ToDictionary(k => k.OldFieldName, v => v.NewFieldName);
     }
@@ -87,7 +103,7 @@ public sealed class ExcludesRulesParametersDomain
 
     public string GetNewFieldName(string tableName, string oldFieldName)
     {
-        var repField =
+        ReplaceFieldNameDomain? repField =
             ReplaceFieldNames.SingleOrDefault(x => x.TableName == tableName && x.OldFieldName == oldFieldName);
         return repField is null ? oldFieldName : repField.NewFieldName;
     }

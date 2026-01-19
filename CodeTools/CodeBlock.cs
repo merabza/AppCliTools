@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -35,7 +36,7 @@ public sealed class CodeBlock : CodeBlockBase, ICodeItem
 
     public override string Output(int indentLevel)
     {
-        var indent = new string(' ', indentLevel * Stats.IndentSize);
+        string indent = new string(' ', indentLevel * Stats.IndentSize);
         var sb = new StringBuilder();
         if (BlockInOneLine && CodeItems.All(a => a is CodeCommand))
         {
@@ -63,22 +64,29 @@ public sealed class CodeBlock : CodeBlockBase, ICodeItem
 
     public override string OutputCreator(int indentLevel, int additionalIndentLevel)
     {
-        var indent = indentLevel == 0
+        string indent = indentLevel == 0
             ? string.Empty
             : new string(' ', (indentLevel + additionalIndentLevel) * Stats.IndentSize);
         var sb = new StringBuilder();
-        if (indentLevel > 0) sb.Append("," + Environment.NewLine + indent);
+        if (indentLevel > 0)
+        {
+            sb.Append("," + Environment.NewLine + indent);
+        }
+
         if (BlockInOneLine && CodeItems.All(a => a is CodeCommand))
         {
-            sb.Append($"new CodeBlock({BlockHeader.Quotas()}");
+            sb.Append(CultureInfo.InvariantCulture, $"new CodeBlock({BlockHeader.Quotas()}");
             if (Initializer is not null)
-                sb.Append($", {Initializer.Quotas()}");
+            {
+                sb.Append(CultureInfo.InvariantCulture, $", {Initializer.Quotas()}");
+            }
+
             sb.Append(", true");
             sb.Append(CodeItems.Cast<CodeCommand>().Select(s => s.CommandLine.Quotas()));
         }
         else
         {
-            sb.Append($"new CodeBlock({BlockHeader.Quotas()}");
+            sb.Append(CultureInfo.InvariantCulture, $"new CodeBlock({BlockHeader.Quotas()}");
             sb.Append(base.OutputCreator(indentLevel, additionalIndentLevel));
         }
 

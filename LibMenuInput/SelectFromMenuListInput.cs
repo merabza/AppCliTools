@@ -11,7 +11,7 @@ public sealed class SelectFromMenuListInput : DataInput
     private readonly CliMenuSet _listSet;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SelectFromMenuListInput(string fieldName, CliMenuSet listSet, string? defaultValue = default)
+    public SelectFromMenuListInput(string fieldName, CliMenuSet listSet, string? defaultValue = null)
     {
         _fieldName = fieldName;
         _defaultValue = defaultValue;
@@ -24,7 +24,7 @@ public sealed class SelectFromMenuListInput : DataInput
 
     public override bool DoInput()
     {
-        var prompt = $"Select {_fieldName} {(_defaultValue == null ? string.Empty : $"[{_defaultValue}]")}: ";
+        string prompt = $"Select {_fieldName} {(_defaultValue == null ? string.Empty : $"[{_defaultValue}]")}: ";
         Console.Write(prompt);
         _listSet.Show(false);
 
@@ -35,7 +35,7 @@ public sealed class SelectFromMenuListInput : DataInput
             if (menuItem != null)
             {
                 SelectedCliMenuItem = menuItem;
-                var key = ch.Key.Value();
+                string key = ch.Key.Value();
                 if (menuItem.CountedKey == "-")
                 {
                     Id = -1;
@@ -58,7 +58,9 @@ public sealed class SelectFromMenuListInput : DataInput
                     menuItem = _listSet.GetMenuItemWithName(_defaultValue);
 
                     if (menuItem == null)
+                    {
                         continue;
+                    }
 
                     SelectedCliMenuItem = menuItem;
                     Id = menuItem.CountedId;

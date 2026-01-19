@@ -22,7 +22,9 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
         var newRecordName = Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
 
         if (!_cruder.ChangeRecordKey(_recordKey, newRecordName))
+        {
             return false;
+        }
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");

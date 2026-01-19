@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters.Cruders;
 

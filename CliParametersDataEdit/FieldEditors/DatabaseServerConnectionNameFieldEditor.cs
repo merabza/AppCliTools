@@ -1,8 +1,8 @@
 ﻿using System.Net.Http;
 using CliParameters.FieldEditors;
 using CliParametersDataEdit.Cruders;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersDataEdit.FieldEditors;
 
@@ -26,7 +26,7 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
 
     public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
     {
-        var currentDatabaseServerConnectionName = GetValue(recordForUpdate);
+        string? currentDatabaseServerConnectionName = GetValue(recordForUpdate);
 
         //if (currentDatabaseServerConnectionName is null)
         //    throw new Exception("currentDatabaseServerConnectionName is null");
@@ -51,15 +51,17 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         //    // ignored
         //}
 
-        var val = GetValue(record);
+        string? val = GetValue(record);
 
         if (val is null)
+        {
             return string.Empty;
+        }
 
         var databaseServerConnectionCruder =
             DatabaseServerConnectionCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
-        var status = databaseServerConnectionCruder.GetStatusFor(val);
+        string status = databaseServerConnectionCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";
     }
 }

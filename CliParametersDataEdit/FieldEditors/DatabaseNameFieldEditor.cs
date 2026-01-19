@@ -6,15 +6,16 @@ using System.Threading;
 using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
-using DatabasesManagement;
-using DbTools.Models;
-using LibApiClientParameters;
-using LibDatabaseParameters;
+using DatabaseTools.DbTools.Models;
 using LibDataInput;
 using LibMenuInput;
-using LibParameters;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared.Errors;
+using OneOf;
+using ParametersManagement.LibApiClientParameters;
+using ParametersManagement.LibDatabaseParameters;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared.Errors;
+using ToolsManagement.DatabasesManagement;
 
 namespace CliParametersDataEdit.FieldEditors;
 
@@ -42,8 +43,9 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     {
         try
         {
-            var currentDatabaseName = GetValue(recordForUpdate);
-            var databaseServerConnectionName = GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
+            string? currentDatabaseName = GetValue(recordForUpdate);
+            string? databaseServerConnectionName =
+                GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
             var dscParameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
             var databaseServerConnections = new DatabaseServerConnections(dscParameters.DatabaseServerConnections);
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
@@ -53,12 +55,12 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
             using var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            var createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(_logger, true,
-                databaseServerConnectionName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
-                token).Result;
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
+                .CreateDatabaseManager(_logger, true, databaseServerConnectionName, databaseServerConnections,
+                    apiClients, _httpClientFactory, null, null, token).Result;
 
             if (createDatabaseManagerResult.IsT1)
             {
@@ -66,32 +68,43 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 return;
             }
 
-            var getDatabaseNamesResult = createDatabaseManagerResult.AsT0.GetDatabaseNames(token).Result;
+            OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseNamesResult =
+                createDatabaseManagerResult.AsT0.GetDatabaseNames(token).Result;
             if (getDatabaseNamesResult.IsT0)
+            {
                 databaseInfos = getDatabaseNamesResult.AsT0;
+            }
             else
+            {
                 Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+            }
 
             var databasesMenuSet = new CliMenuSet();
             if (_canUseNewDatabaseName)
+            {
                 databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
+            }
 
-            var keys = databaseInfos.Select(s => s.Name).ToList();
-            foreach (var listItem in keys)
+            List<string> keys = databaseInfos.Select(s => s.Name).ToList();
+            foreach (string listItem in keys)
+            {
                 databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+            }
 
-            var selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
+            int selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
 
             if (_canUseNewDatabaseName && selectedId == 0)
             {
-                var newDatabaseName = Inputer.InputTextRequired("New Database Name"); // nameInput.Text;
+                string newDatabaseName = Inputer.InputTextRequired("New Database Name"); // nameInput.Text;
                 SetValue(recordForUpdate, newDatabaseName);
                 return;
             }
 
-            var index = selectedId - (_canUseNewDatabaseName ? 1 : 0);
+            int index = selectedId - (_canUseNewDatabaseName ? 1 : 0);
             if (index < 0 || index >= keys.Count)
+            {
                 throw new DataInputException("Selected invalid ID. ");
+            }
 
             SetValue(recordForUpdate, keys[index]);
         }

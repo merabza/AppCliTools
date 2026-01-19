@@ -13,9 +13,11 @@ public sealed class DateParser : InputParser
 
     public override string? TryAddNextChar(string current, char nextChar)
     {
-        var res = _ddp.TryAddNextChar(current, nextChar);
+        string? res = _ddp.TryAddNextChar(current, nextChar);
         if (res == null)
+        {
             return null;
+        }
 
         var sb = new StringBuilder(res);
         TryAddDelimiter(sb);

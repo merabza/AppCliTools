@@ -15,15 +15,18 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
 
     public override void UpdateField(string? recordKey, object recordForUpdate)
     {
-        var curValue = GetValue(recordForUpdate, DefaultValue);
+        string? curValue = GetValue(recordForUpdate, DefaultValue);
         SetValue(recordForUpdate, Inputer.InputText(FieldName, curValue, _passwordCharacter));
     }
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValueOrDefault(record);
-        if (val is null || _passwordCharacter == 0 || val == string.Empty)
+        string? val = GetValueOrDefault(record);
+        if (val is null || _passwordCharacter == 0 || string.IsNullOrEmpty(val))
+        {
             return val ?? string.Empty;
+        }
+
         return new string(_passwordCharacter, val.Length);
     }
 

@@ -26,7 +26,10 @@ public sealed class CreatorCreatorToolCommand : ToolCommand
     protected override ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
     {
         if (Parameters is null)
+        {
             throw new Exception("Parameters is null in CreatorCreator");
+        }
+
         var createProjectSeederCodeProgramCreator = new CreateProjectSeederCodeProgramCreator(Parameters, _logger);
         createProjectSeederCodeProgramCreator.Go();
 

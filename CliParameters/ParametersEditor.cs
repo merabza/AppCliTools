@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using CliMenu;
 using CliParameters.CliMenuCommands;
 using CliParameters.FieldEditors;
 using LibDataInput;
-using LibParameters;
-using SystemToolsShared;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParameters;
 
 public /*open*/ class ParametersEditor : IFieldEditors
 {
     public const char PasswordChar = '*';
-    protected readonly List<FieldEditor> FieldEditors = [];
+    public const string SaveMessage = "Parameters Saved"; // S3400 fix: use constant instead of method
     private readonly IParametersManager _parametersManager;
+    protected readonly List<FieldEditor> FieldEditors = [];
 
     protected ParametersEditor(string name, IParameters parameters, IParametersManager parametersManager)
     {
@@ -35,9 +37,8 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
     public void EnableFieldByName(string fieldName, bool enable = true)
     {
-        var fieldEditor = FieldEditors.SingleOrDefault(s => s.PropertyName == fieldName);
-        if (fieldEditor != null)
-            fieldEditor.Enabled = enable;
+        FieldEditor? fieldEditor = FieldEditors.SingleOrDefault(s => s.PropertyName == fieldName);
+        fieldEditor?.Enabled = enable;
     }
 
     public static string? GetStatus()
@@ -48,7 +49,10 @@ public /*open*/ class ParametersEditor : IFieldEditors
     public void Save(string message, string? saveAsFilePath = null)
     {
         if (_parametersManager.Parameters is null)
+        {
             throw new Exception("Invalid parameters for save");
+        }
+
         _parametersManager.Save(_parametersManager.Parameters, message, saveAsFilePath);
     }
 
@@ -63,7 +67,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
         FillDetailsSubMenu(parametersEditorMenuSet);
 
-        var key = ConsoleKey.Escape.Value().ToLower();
+        string key = ConsoleKey.Escape.Value().ToUpperInvariant();
         parametersEditorMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null),
             key.Length);
 
@@ -76,8 +80,10 @@ public /*open*/ class ParametersEditor : IFieldEditors
         var editCommand = new EditParametersInSequenceCliMenuCommand(this);
         parametersEditorMenuSet.AddMenuItem(editCommand);
 
-        foreach (var fieldEditor in FieldEditors.Where(w => w.Enabled))
+        foreach (FieldEditor fieldEditor in FieldEditors.Where(w => w.Enabled))
+        {
             fieldEditor.AddParameterEditMenuItem(parametersEditorMenuSet, this);
+        }
     }
 
     //ყველა პარამეტრის რედაქტირება თანმიმდევრობით
@@ -88,7 +94,9 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
         //შეიცვალოს პარამეტრები თანმიმდევრობით
         if (!InputParametersData())
+        {
             return false;
+        }
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         Save($"{Name} parameters Updated");
@@ -101,17 +109,11 @@ public /*open*/ class ParametersEditor : IFieldEditors
     {
         try
         {
-            foreach (var fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
+            foreach (FieldEditor fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
+            {
                 fieldEditor.UpdateField(null, _parametersManager.Parameters);
-            //FIXME IF NEED ვალიდაცია პარამეტრების რედაქტირებისას გვჭირდება თუ არა ჯერ არ ვიცი, ალბათ გვჭირდება და უნდა გაკეთდეს
-            //CheckFieldsEnables(newItem);
+            }
 
-            //if (CheckValidation(newItem)) 
-            //  return newItem;
-
-            //return !Inputer.InputBool($"{recordKey} is not valid {CrudName}, continue input data?", false, false)
-            //  ? null
-            //  : newItem;
             return true;
         }
         catch (DataInputEscapeException)
@@ -126,11 +128,6 @@ public /*open*/ class ParametersEditor : IFieldEditors
             StShared.WriteException(e, true);
             return false;
         }
-    }
-
-    public static string GetSaveMessage()
-    {
-        return "Parameters Saved";
     }
 
     public virtual void CheckFieldsEnables(object record)

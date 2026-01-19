@@ -1,7 +1,7 @@
-﻿using LibFileParameters.Interfaces;
-using LibFileParameters.Models;
-using LibParameters;
-using SystemToolsShared;
+﻿using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParametersEdit.Generators;
 
@@ -25,7 +25,9 @@ public static class StandardSmartSchemas
     private static void CreateSmartSchemaHourly(IParametersWithSmartSchemas parameters)
     {
         if (parameters.SmartSchemas.ContainsKey(HourlySmartSchemaName))
+        {
             return;
+        }
 
         var smartSchema = new SmartSchema { LastPreserveCount = 1 };
 
@@ -38,14 +40,18 @@ public static class StandardSmartSchemas
     private static void CreateSmartSchemaReduce(IParametersWithSmartSchemas parameters)
     {
         if (parameters.SmartSchemas.ContainsKey(ReduceSmartSchemaName))
+        {
             return;
+        }
 
         var smartSchema = new SmartSchema { LastPreserveCount = 1 };
         for (var ep = EPeriodType.Year; ep < EPeriodType.Hour; ep++)
+        {
             smartSchema.Details.Add(new SmartSchemaDetail
             {
                 PeriodType = ep, PreserveCount = ep == EPeriodType.Day ? 2 : 1
             });
+        }
 
         parameters.SmartSchemas.Add(ReduceSmartSchemaName, smartSchema);
     }
@@ -53,11 +59,15 @@ public static class StandardSmartSchemas
     private static void CreateSmartSchemaDailyStandard(IParametersWithSmartSchemas parameters)
     {
         if (parameters.SmartSchemas.ContainsKey(DailyStandardSmartSchemaName))
+        {
             return;
+        }
 
         var smartSchema = new SmartSchema { LastPreserveCount = 1 };
         for (var ep = EPeriodType.Year; ep < EPeriodType.Hour; ep++)
+        {
             smartSchema.Details.Add(new SmartSchemaDetail { PeriodType = ep, PreserveCount = 3 });
+        }
 
         parameters.SmartSchemas.Add(DailyStandardSmartSchemaName, smartSchema);
     }

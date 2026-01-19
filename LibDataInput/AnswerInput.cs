@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LibDataInput;
@@ -19,21 +20,21 @@ public sealed class AnswerInput : DataInput
 
     public override bool DoInput()
     {
-        var defaultAnswer = _defaultValue.ToString().Take(1).ToString();
-        var prompt = Enum.GetValues<EDialogResult>().Aggregate($"{_fieldName} (",
-                         (current, dialogResult) =>
-                             $"{current}/{dialogResult.ToString().First(char.IsUpper).ToString().ToLower()}{dialogResult}") +
-                     $")[{defaultAnswer}]: ";
+        string? defaultAnswer = _defaultValue.ToString().Take(1).ToString();
+        string prompt = Enum.GetValues<EDialogResult>().Aggregate($"{_fieldName} (",
+                            (current, dialogResult) =>
+                                $"{current}/{dialogResult.ToString().First(char.IsUpper).ToString().ToUpperInvariant()}{dialogResult}") +
+                        $")[{defaultAnswer}]: ";
         Console.Write(prompt);
 
-        var mainLetters = Enum.GetValues<EDialogResult>()
+        Dictionary<string, EDialogResult> mainLetters = Enum.GetValues<EDialogResult>()
             .ToDictionary(k => k.ToString().First(char.IsUpper).ToString(), v => v);
 
         while (true)
         {
-            var ch = Console.ReadKey(true);
-            var key = ch.Key == ConsoleKey.Enter ? defaultAnswer : ch.Key.Value().ToLower();
-            if (key != null && mainLetters.TryGetValue(key, out var letter))
+            ConsoleKeyInfo ch = Console.ReadKey(true);
+            string? key = ch.Key == ConsoleKey.Enter ? defaultAnswer : ch.Key.Value().ToUpperInvariant();
+            if (key != null && mainLetters.TryGetValue(key, out EDialogResult letter))
             {
                 Value = letter;
                 Console.Write(key);
@@ -42,11 +43,13 @@ public sealed class AnswerInput : DataInput
             }
 
             if (ch.Key == ConsoleKey.Escape)
+            {
                 throw new DataInputEscapeException("Escape");
+            }
 
-            var answerMustBe = Enum.GetValues<EDialogResult>().Aggregate("Answer must be",
+            string answerMustBe = Enum.GetValues<EDialogResult>().Aggregate("Answer must be",
                 (current, dialogResult) =>
-                    $"{current} '{dialogResult.ToString().First(char.IsUpper).ToString().ToLower()}, ");
+                    $"{current} '{dialogResult.ToString().First(char.IsUpper).ToString().ToUpperInvariant()}, ");
             Console.WriteLine(answerMustBe);
             Console.Write(prompt);
         }

@@ -1,19 +1,16 @@
 ﻿using System;
 using LibDataInput;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace CliMenu;
 
 public /*open*/ class CliMenuCommand
 {
+    private readonly bool _askRunAction;
+
     //public გამოიყენება SupportTools პროექტში
     // ReSharper disable once MemberCanBeProtected.Global
     public readonly string? ParentMenuName;
-    private readonly bool _askRunAction;
-
-    //გამოიყენება SupportTools პროექტში
-    // ReSharper disable once NotAccessedField.Global
-    public CliMenuSet? MenuSet;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuCommand(string name, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
@@ -30,25 +27,29 @@ public /*open*/ class CliMenuCommand
         NameIsStatus = nameIsStatus;
     }
 
+    //გამოიყენება SupportTools პროექტში
+    // ReSharper disable once NotAccessedField.Global
+    public CliMenuSet? MenuSet { get; set; }
+
     public EMenuAction MenuActionOnBodyFail { get; protected set; }
     public EMenuAction MenuActionOnBodySuccess { get; protected set; }
 
     public EMenuAction MenuAction { get; protected set; }
     public string Name { get; }
     public EStatusView StatusView { get; }
-    public string? Status { get; private set; }
+    public string? StatusString { get; private set; }
     public bool NameIsStatus { get; }
 
     public void CountStatus()
     {
-        Status = GetStatus();
+        StatusString = GetStatus();
     }
 
     public void Run()
     {
         if (_askRunAction)
         {
-            var description = GetActionDescription();
+            string? description = GetActionDescription();
             if (description is null)
             {
                 StShared.WriteErrorLine("description is null", true, null, false);

@@ -1,4 +1,4 @@
-﻿using LibDatabaseParameters;
+﻿using ParametersManagement.LibDatabaseParameters;
 
 namespace DbContextAnalyzer.Domain;
 

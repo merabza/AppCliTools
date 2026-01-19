@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using CliParameters.Cruders;
-using LibParameters;
+using ParametersManagement.LibParameters;
 
 namespace CliParameters;
 
 public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
 {
-    protected readonly IParametersManager ParametersManager;
     private readonly Dictionary<string, T> _currentValuesDictionary;
+    protected readonly IParametersManager ParametersManager;
 
     protected ParCruder(IParametersManager parametersManager, Dictionary<string, T> currentValuesDictionary,
         string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
@@ -63,7 +63,9 @@ public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
     private void CheckKey(string recordKey)
     {
         if (!ContainsRecordWithKey(recordKey))
+        {
             throw new Exception($"No Record Found with key {recordKey}");
+        }
     }
 
     protected T GetTItem(ItemData item)

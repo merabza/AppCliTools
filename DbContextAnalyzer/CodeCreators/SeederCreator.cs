@@ -6,7 +6,7 @@ using DbContextAnalyzer.Domain;
 using DbContextAnalyzer.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
@@ -24,46 +24,52 @@ public sealed class SeederCreator : SeederCodeCreatorBase
         _excludesRulesParameters = excludesRulesParameters;
     }
 
-    public override void CreateFileStructure()
-    {
-    }
-
     private string GetRightValue(FieldData fieldData, bool devFieldIsNullable)
     {
         if (fieldData.SubstituteField is null)
+        {
             return
                 $"s.{fieldData.FullName}{(!devFieldIsNullable && fieldData is { IsValueType: true, IsNullable: true } ? ".Value" : string.Empty)}";
+        }
 
-        var substituteTableNameCapitalCamel =
+        string substituteTableNameCapitalCamel =
             GetTableNameSingularCapitalizeCamel(GetNewTableName(fieldData.SubstituteField.TableName));
 
-        var realTypeName = GetRealTypeNameForMethodName(fieldData);
+        string realTypeName = GetRealTypeNameForMethodName(fieldData);
+        var dotValue = devFieldIsNullable ? string.Empty : ".Value";
 
         if (fieldData.SubstituteField.Fields.Count == 0)
+        {
             return fieldData.IsNullableByParents
-                ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){(devFieldIsNullable ? string.Empty : ".Value")}"
+                ? $"tempData.Get{realTypeName}NullableIdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName}){dotValue}"
                 : $"tempData.Get{realTypeName}IdByOldId<{substituteTableNameCapitalCamel}>(s.{fieldData.FullName})";
+        }
 
-        var keyParametersList = string.Join(", ",
+        string keyParametersList = string.Join(", ",
             fieldData.SubstituteField.Fields.Select(s => GetRightValue(s, fieldData.IsNullableByParents)));
         return fieldData.IsNullableByParents
-            ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){(devFieldIsNullable ? string.Empty : ".Value")}"
+            ? $"tempData.Get{realTypeName}NullableIdByKey<{substituteTableNameCapitalCamel}>({keyParametersList}){dotValue}"
             : $"tempData.Get{realTypeName}IdByKey<{substituteTableNameCapitalCamel}>({keyParametersList})";
     }
 
     private static string GetRealTypeNameForDictionaryGeneric(FieldData? fieldData)
     {
         if (fieldData is null)
-            return "int";
-        var realTypeName = fieldData.RealTypeName;
-        if (realTypeName.EndsWith('?'))
-            realTypeName = realTypeName[..^1];
-
-        switch (realTypeName.ToLower())
         {
-            case "int":
+            return "int";
+        }
+
+        string? realTypeName = fieldData.RealTypeName;
+        if (realTypeName.EndsWith('?'))
+        {
+            realTypeName = realTypeName[..^1];
+        }
+
+        switch (realTypeName.ToUpperInvariant())
+        {
+            case "INT":
                 return "int";
-            case "datetime":
+            case "DATETIME":
                 return "DateTime";
             default:
                 realTypeName = realTypeName.UnCapitalize();
@@ -74,10 +80,16 @@ public sealed class SeederCreator : SeederCodeCreatorBase
     private static string GetRealTypeNameForMethodName(FieldData? fieldData)
     {
         if (fieldData is null)
+        {
             return "Int";
-        var realTypeName = fieldData.RealTypeName;
+        }
+
+        string? realTypeName = fieldData.RealTypeName;
         if (realTypeName.EndsWith('?'))
+        {
             realTypeName = realTypeName[..^1];
+        }
+
         realTypeName = realTypeName.Capitalize();
         return realTypeName;
     }
@@ -85,44 +97,45 @@ public sealed class SeederCreator : SeederCodeCreatorBase
     public string UseEntity(EntityData entityData, EntityData? entityDataForDevBase, bool isCarcassType)
     {
         //var usedList = false;
-        var tableName = GetNewTableName(entityData.TableName);
+        string tableName = GetNewTableName(entityData.TableName);
 
         //tableName.ToLower() == "MorphemeRanges"
         Console.WriteLine("UseEntity tableName = {0}", tableName);
 
-        var replaceFieldsDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
+        Dictionary<string, string> replaceFieldsDict =
+            _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 
-        var tableNameCapitalCamel = tableName.CapitalizeCamel();
-        var tableNameCamel = tableName.Camelize();
+        string tableNameCapitalCamel = tableName.CapitalizeCamel();
+        string tableNameCamel = tableName.Camelize();
 
-        var tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
-        var className = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + tableNameCapitalCamel +
-                        "Seeder";
-        var seederModelClassName = tableNameSingular + "SeederModel";
-        var baseClassName = isCarcassType
+        string tableNameSingular = GetTableNameSingularCapitalizeCamel(tableName);
+        string className = (isCarcassType ? _parameters.ProjectPrefixShort : string.Empty) + tableNameCapitalCamel +
+                           "Seeder";
+        string seederModelClassName = tableNameSingular + "SeederModel";
+        string baseClassName = isCarcassType
             ? tableNameCapitalCamel + "Seeder"
             : $"{_parameters.DataSeederBaseClassName}<{tableNameSingular}, {seederModelClassName}>";
-        var seedDataObjectName = tableName.UnCapitalize() + "SeedData";
-        var prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
+        string seedDataObjectName = tableName.UnCapitalize() + "SeedData";
+        string prPref = isCarcassType ? string.Empty : _parameters.ProjectPrefixShort;
 
-        var isIdentity = tableName.ToLower() is "roles" or "users";
-        var isDataTypesOrManyToManyJoins = tableName.ToLower() is "datatypes" or "manytomanyjoins";
+        bool isIdentity = tableName.ToUpperInvariant() is "ROLES" or "USERS";
+        bool isDataTypesOrManyToManyJoins = tableName.ToUpperInvariant() is "DATATYPES" or "MANYTOMANYJOINS";
 
-        var additionalParameters = tableName.ToLower() switch
+        string additionalParameters = tableName.ToUpperInvariant() switch
         {
-            "datatypes" => "ICarcassDataSeederRepository carcassRepo, ",
-            "manytomanyjoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
-            "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
-            "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
+            "DATATYPES" => "ICarcassDataSeederRepository carcassRepo, ",
+            "MANYTOMANYJOINS" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
+            "ROLES" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
+            "USERS" => "UserManager<AppUser> userManager, string secretDataFolder, ",
             _ => string.Empty
         };
 
-        var additionalParameters2 = tableName.ToLower() switch
+        string additionalParameters2 = tableName.ToUpperInvariant() switch
         {
-            "datatypes" => "carcassRepo, ",
-            "manytomanyjoins" => "secretDataFolder, carcassRepo, ",
-            "roles" => "roleManager, secretDataFolder, ",
-            "users" => "userManager, secretDataFolder, ",
+            "DATATYPES" => "carcassRepo, ",
+            "MANYTOMANYJOINS" => "secretDataFolder, carcassRepo, ",
+            "ROLES" => "roleManager, secretDataFolder, ",
+            "USERS" => "userManager, secretDataFolder, ",
             _ => string.Empty
         };
 
@@ -134,22 +147,25 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 $"public override bool AdditionalCheck(List<{seederModelClassName}> jsonData, List<{tableNameSingular}> savedData)");
         CodeBlock? createMethod = null;
 
-        var atLeastOneSubstitute = false;
-        foreach (var w in entityData.FieldsData.Where(w => entityData.SelfRecursiveFields.Count == 0 ||
-                                                           !entityData.SelfRecursiveFields.Select(x => x.Name)
-                                                               .Contains(w.Name)))
+        bool atLeastOneSubstitute = false;
+        foreach (FieldData w in entityData.FieldsData.Where(w => entityData.SelfRecursiveFields.Count == 0 ||
+                                                                 !entityData.SelfRecursiveFields.Select(x => x.Name)
+                                                                     .Contains(w.Name)))
         {
             if (w.SubstituteField == null)
+            {
                 continue;
+            }
+
             atLeastOneSubstitute = true;
             break;
         }
 
-        var primaryKeyFieldNewName =
+        string primaryKeyFieldNewName =
             _excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName);
-        var keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == primaryKeyFieldNewName);
-        var keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
-        var keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
+        FieldData? keyFieldData = entityData.FieldsData.FirstOrDefault(f => f.Name == primaryKeyFieldNewName);
+        string keyRealTypeName = GetRealTypeNameForMethodName(keyFieldData);
+        string keyRealTypeNameForDictionaryGeneric = GetRealTypeNameForDictionaryGeneric(keyFieldData);
 
         if (!isCarcassType)
         {
@@ -158,9 +174,9 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
                 if (entityData.SelfRecursiveFields.Count > 0)
                 {
-                    var seederModelObjectName = seederModelClassName.UnCapitalize();
+                    string seederModelObjectName = seederModelClassName.UnCapitalize();
 
-                    var flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
+                    List<FlatCodeBlock> flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
                             new FlatCodeBlock(
                                 $"var idsDict = _tempData.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
                                 $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(idsDict)",
@@ -170,8 +186,11 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                         .ToList();
 
                     flatCodeBlockForAdditionalCheckMethod = flatCodeBlocks[0];
-                    for (var i = 1; i < flatCodeBlocks.Count; i++)
+                    for (int i = 1; i < flatCodeBlocks.Count; i++)
+                    {
                         flatCodeBlockForAdditionalCheckMethod.Add(flatCodeBlocks[i]);
+                    }
+
                     flatCodeBlockForAdditionalCheckMethod.Add(new FlatCodeBlock("return true"));
                 }
                 else
@@ -186,13 +205,13 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             }
             else if (entityData.OptimalIndexProperties.Count > 0)
             {
-                var optimalIndexFieldsData = entityData.OptimalIndexProperties
+                List<FieldData> optimalIndexFieldsData = entityData.OptimalIndexProperties
                     .Select(prop => entityData.FieldsData.SingleOrDefault(ss => ss.OldName == prop.Name))
                     .OfType<FieldData>().ToList();
 
-                var tupTypeList = string.Join(", ", optimalIndexFieldsData.Select(s => s.RealTypeName));
-                var keyFieldsList = string.Join(", ", optimalIndexFieldsData.Select(s => $"k.{s.Name}"));
-                var keyFields = optimalIndexFieldsData.Count == 1
+                string tupTypeList = string.Join(", ", optimalIndexFieldsData.Select(s => s.RealTypeName));
+                string keyFieldsList = string.Join(", ", optimalIndexFieldsData.Select(s => $"k.{s.Name}"));
+                string keyFields = optimalIndexFieldsData.Count == 1
                     ? $"k.{GetPreferredFieldName(replaceFieldsDict, optimalIndexFieldsData[0].Name)}"
                     : $" new Tuple<{tupTypeList}>({keyFieldsList})";
                 FlatCodeBlock flatCodeBlockForAdditionalCheckMethod;
@@ -202,20 +221,22 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                         $"DataSeederTempData.Instance.SaveIntIdKeys<{tableNameSingular}>(savedData.ToDictionary(k=>{keyFields}, v=>v.{entityData.PrimaryKeyFieldName}))",
                         new CodeBlock($"if (!SetParents({seedDataObjectName}, {tableNameCamel}List))", "return false"),
                         "return true");
-                    var seederModelObjectName = seederModelClassName.UnCapitalize();
-                    var keyFieldName = optimalIndexFieldsData[0].Name;
+                    string seederModelObjectName = seederModelClassName.UnCapitalize();
+                    string keyFieldName = optimalIndexFieldsData[0].Name;
 
                     setParentsMethod = new CodeBlock(
                         $"private bool SetParents(List<{seederModelClassName}> {seedDataObjectName}, List<{tableNameSingular}> {tableNameCamel}List)",
                         "var tempData = DataSeederTempData.Instance",
                         $"var forUpdate = new List<{tableNameSingular}>()");
 
-                    foreach (var entityDataSelfRecursiveField in entityData.SelfRecursiveFields)
+                    foreach (FieldData entityDataSelfRecursiveField in entityData.SelfRecursiveFields)
                     {
                         if (entityDataSelfRecursiveField.SubstituteField is null ||
                             entityDataSelfRecursiveField.SubstituteField.Fields.Count == 0)
+                        {
                             throw new Exception(
                                 "entityData.SelfRecursiveField.SubstituteField is null or without fields");
+                        }
 
                         setParentsMethod.Add(new CodeBlock(
                             $"foreach ({seederModelClassName} {seederModelObjectName} in {seedDataObjectName}.Where(w => w.{entityDataSelfRecursiveField.SubstituteField.Fields[0].FullName} != null))",
@@ -239,14 +260,14 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 additionalCheckMethod.AddRange(flatCodeBlockForAdditionalCheckMethod.CodeItems);
             }
 
-            var fieldsListStr = string.Join(", ", entityData.FieldsData.Where(w =>
+            string fieldsListStr = string.Join(", ", entityData.FieldsData.Where(w =>
                 (entityData.SelfRecursiveFields.Count == 0 ||
                  !entityData.SelfRecursiveFields.Select(s => s.Name).Contains(w.Name)) &&
                 (entityData.UsePrimaryKey || entityData.PrimaryKeyFieldName != w.OldName)).Select(p =>
             {
-                var devFieldData = entityDataForDevBase?.FieldsData.SingleOrDefault(x =>
-                    string.Equals(x.Name, p.Name, StringComparison.CurrentCultureIgnoreCase));
-                var result = $"{p.Name} = {GetRightValue(p, devFieldData?.IsNullable ?? false)}";
+                FieldData? devFieldData = entityDataForDevBase?.FieldsData.SingleOrDefault(x =>
+                    string.Equals(x.Name, p.Name, StringComparison.Ordinal));
+                string result = $"{p.Name} = {GetRightValue(p, devFieldData?.IsNullable ?? false)}";
                 //if (devFieldData is null)
                 //    return result;
 
@@ -261,7 +282,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 createMethod = new CodeBlock(
                     $"protected virtual Dictionary<{keyRealTypeNameForDictionaryGeneric}, {tableNameSingular}> Create{tableNameCapitalCamel}List(List<{seederModelClassName}> {seedDataObjectName})",
                     atLeastOneSubstitute ? "var tempData = DataSeederTempData.Instance" : null,
-                    $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(fieldsListStr == string.Empty ? "()" : $"{{ {fieldsListStr} }}")})");
+                    $"return {seedDataObjectName}.ToDictionary(k => k.{_excludesRulesParameters.GetNewFieldName(tableName, entityData.PrimaryKeyFieldName)}, s => new {tableNameSingular}{(string.IsNullOrWhiteSpace(fieldsListStr) ? "()" : $"{{ {fieldsListStr} }}")})");
                 adaptMethod =
                     new CodeBlock(
                         $"public override List<{tableNameSingular}> Adapt(List<{seederModelClassName}> jsonData)",
@@ -284,7 +305,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            (!isCarcassType && entityData.OptimalIndexProperties.Count > 1) ||
+            !isCarcassType && entityData.OptimalIndexProperties.Count > 1 ||
             keyRealTypeNameForDictionaryGeneric == "DateTime"
                 ? "using System"
                 : null, "using System.Collections.Generic", !isCarcassType ? "using System.Linq" : null,
@@ -293,10 +314,10 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             //                                     entityData.SelfRecursiveField != null))
             //    ? "using CarcassDataSeeding"
             //    : null, 
-            isDataTypesOrManyToManyJoins || (!isCarcassType && (entityData.NeedsToCreateTempData ||
-                                                                atLeastOneSubstitute ||
-                                                                entityData.OptimalIndexProperties.Count > 0 ||
-                                                                entityData.SelfRecursiveFields.Count > 0))
+            isDataTypesOrManyToManyJoins || !isCarcassType && (entityData.NeedsToCreateTempData ||
+                                                               atLeastOneSubstitute ||
+                                                               entityData.OptimalIndexProperties.Count > 0 ||
+                                                               entityData.SelfRecursiveFields.Count > 0)
                 ? "using CarcassDataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
             isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
@@ -327,35 +348,38 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
     public void UseCarcassEntity(IEntityType carcassEntityType)
     {
-        var tableName = Relations.GetTableName(carcassEntityType);
+        string? tableName = Relations.GetTableName(carcassEntityType);
         if (string.IsNullOrWhiteSpace(tableName))
+        {
             return;
+        }
 
         Console.WriteLine("UseEntity tableName = {0}", tableName);
 
-        var tableNameCapitalCamel = tableName.CapitalizeCamel();
+        string tableNameCapitalCamel = tableName.CapitalizeCamel();
 
-        var className = _parameters.ProjectPrefixShort + tableNameCapitalCamel + "Seeder";
-        var baseClassName = tableNameCapitalCamel + "Seeder";
+        string className = _parameters.ProjectPrefixShort + tableNameCapitalCamel + "Seeder";
+        string baseClassName = tableNameCapitalCamel + "Seeder";
 
-        var isIdentity = tableName.ToLower() is "roles" or "users";
-        var isDataTypesOrManyToManyJoins = tableName.ToLower() is "datatypes" or "manytomanyjoins";
+        // FIX: Use ToLowerInvariant() to address CA1304 and CA1311
+        bool isIdentity = tableName.ToUpperInvariant() is "ROLES" or "USERS";
+        bool isDataTypesOrManyToManyJoins = tableName.ToUpperInvariant() is "DATATYPES" or "MANYTOMANYJOINS";
 
-        var additionalParameters = tableName.ToLower() switch
+        string additionalParameters = tableName.ToUpperInvariant() switch
         {
-            "datatypes" => "ICarcassDataSeederRepository carcassRepo, ",
-            "manytomanyjoins" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
-            "roles" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
-            "users" => "UserManager<AppUser> userManager, string secretDataFolder, ",
+            "DATATYPES" => "ICarcassDataSeederRepository carcassRepo, ",
+            "MANYTOMANYJOINS" => "string secretDataFolder, ICarcassDataSeederRepository carcassRepo, ",
+            "ROLES" => "RoleManager<AppRole> roleManager, string secretDataFolder, ",
+            "USERS" => "UserManager<AppUser> userManager, string secretDataFolder, ",
             _ => string.Empty
         };
 
-        var additionalParameters2 = tableName.ToLower() switch
+        string additionalParameters2 = tableName.ToUpperInvariant() switch
         {
-            "datatypes" => "carcassRepo, ",
-            "manytomanyjoins" => "secretDataFolder, carcassRepo, ",
-            "roles" => "roleManager, secretDataFolder, ",
-            "users" => "userManager, secretDataFolder, ",
+            "DATATYPES" => "carcassRepo, ",
+            "MANYTOMANYJOINS" => "secretDataFolder, carcassRepo, ",
+            "ROLES" => "roleManager, secretDataFolder, ",
+            "USERS" => "userManager, secretDataFolder, ",
             _ => string.Empty
         };
 

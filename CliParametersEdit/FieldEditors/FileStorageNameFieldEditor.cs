@@ -1,7 +1,7 @@
 ﻿using CliParameters.FieldEditors;
 using CliParametersEdit.Cruders;
-using LibParameters;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibParameters;
 
 namespace CliParametersEdit.FieldEditors;
 
@@ -32,7 +32,9 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
         var val = GetValue(record);
 
         if (val == null)
+        {
             return string.Empty;
+        }
 
         var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
 

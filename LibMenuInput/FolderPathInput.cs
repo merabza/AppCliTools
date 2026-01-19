@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace LibMenuInput;
@@ -14,10 +13,6 @@ public sealed class FolderPathInput : PathInput
 
     public string? FolderPath => EnteredPath;
 
-    protected override void AddFiles(DirectoryInfo dir, string fileName, List<string> names)
-    {
-    }
-
     protected override bool CheckExists()
     {
         return !IsFileSchema(EnteredPath) || Directory.Exists(EnteredPath);
@@ -25,7 +20,7 @@ public sealed class FolderPathInput : PathInput
 
     private static bool IsFileSchema(string? path)
     {
-        var uriCreated = Uri.TryCreate(path, UriKind.Absolute, out var uri);
-        return !uriCreated || uri is null || uri.Scheme.ToLower() == "file";
+        bool uriCreated = Uri.TryCreate(path, UriKind.Absolute, out Uri? uri);
+        return !uriCreated || uri is null || uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
     }
 }

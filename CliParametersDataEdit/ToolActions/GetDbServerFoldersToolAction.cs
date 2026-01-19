@@ -1,14 +1,14 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DatabasesManagement;
-using LibApiClientParameters;
-using LibDatabaseParameters;
-using LibParameters;
-using LibToolActions;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
-using SystemToolsShared.Errors;
+using ParametersManagement.LibApiClientParameters;
+using ParametersManagement.LibDatabaseParameters;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
+using SystemTools.SystemToolsShared.Errors;
+using ToolsManagement.DatabasesManagement;
+using ToolsManagement.LibToolActions;
 
 namespace CliParametersDataEdit.ToolActions;
 

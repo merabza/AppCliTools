@@ -23,7 +23,11 @@ public sealed class CodeEnum : ICodeItem
         sb.AppendLine(indent + _enumHeader);
         sb.AppendLine(indent + "{");
         var elementIndent = new string(' ', (indentLevel + 1) * Stats.IndentSize);
-        foreach (var enumElement in _enumElementsList) sb.AppendLine(elementIndent + enumElement);
+        foreach (var enumElement in _enumElementsList)
+        {
+            sb.AppendLine(elementIndent + enumElement);
+        }
+
         sb.AppendLine(indent + "}");
 
         return sb.ToString();
@@ -38,7 +42,11 @@ public sealed class CodeEnum : ICodeItem
         sb.AppendLine(indent + _enumHeader);
         sb.AppendLine(indent + "{");
         var elementIndent = new string(' ', (indentLevel + 1) * Stats.IndentSize);
-        foreach (var enumElement in _enumElementsList) sb.AppendLine(elementIndent + enumElement);
+        foreach (var enumElement in _enumElementsList)
+        {
+            sb.AppendLine(elementIndent + enumElement);
+        }
+
         sb.AppendLine(indent + "}");
 
         return sb.ToString();

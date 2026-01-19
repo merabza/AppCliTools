@@ -5,7 +5,7 @@ using CodeTools;
 using DbContextAnalyzer.Domain;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace DbContextAnalyzer.CodeCreators;
 
@@ -26,10 +26,13 @@ public /*open*/ class SeederCodeCreatorBase : CodeCreator
 
     private string GetTableNameSingular(string tableName)
     {
-        if (_excludesRulesParameters.SingularityExceptions.TryGetValue(tableName, out var singular))
+        if (_excludesRulesParameters.SingularityExceptions.TryGetValue(tableName, out string? singular))
+        {
             return singular;
-        var unCapTableName = tableName.UnCapitalize();
-        return _excludesRulesParameters.SingularityExceptions.TryGetValue(unCapTableName, out var exception)
+        }
+
+        string unCapTableName = tableName.UnCapitalize();
+        return _excludesRulesParameters.SingularityExceptions.TryGetValue(unCapTableName, out string? exception)
             ? exception
             : tableName.Singularize();
     }
@@ -45,12 +48,17 @@ public /*open*/ class SeederCodeCreatorBase : CodeCreator
             .Where(p => p.ValueGenerated == ValueGenerated.Never && !ignoreFields.Contains(p.Name)).ToList();
 
         if (props.Count > 0)
+        {
             return (false, props);
+        }
 
         //თუ ცხრილის ველები ყველა ავტომატურად გენერირდება, მაშინ ავიღოთ მხოლოდ ძირითადი გასაღების ველები და ის გავიტანოთ json-ში
         //და ის დაგვჭირდება SeederModel-ში
         props = entityType.GetKeys().SelectMany(s => s.Properties).ToList();
-        if (props.Count != 1) throw new Exception("გასაღები ზუსტად ერთი უნდა იყოს. სხვა ვარიანტები ჯერ არ განიხილება");
+        if (props.Count != 1)
+        {
+            throw new Exception("გასაღები ზუსტად ერთი უნდა იყოს. სხვა ვარიანტები ჯერ არ განიხილება");
+        }
 
         return (true, props);
     }

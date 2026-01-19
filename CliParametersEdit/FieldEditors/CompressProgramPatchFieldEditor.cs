@@ -1,7 +1,7 @@
 ﻿using CliParameters.FieldEditors;
 using CliTools.ArchiverTools;
-using LibFileParameters.Models;
 using LibMenuInput;
+using ParametersManagement.LibFileParameters.Models;
 
 namespace CliParametersEdit.FieldEditors;
 
@@ -18,7 +18,10 @@ public sealed class CompressProgramPatchFieldEditor : FilePathFieldEditor
 
         string? def = null;
         ArchiverDetector? archiverDetector = null;
-        if (fileExtension is not null) archiverDetector = ArchiverDetectorFactory.Create(true, fileExtension);
+        if (fileExtension is not null)
+        {
+            archiverDetector = ArchiverDetectorFactory.Create(true, fileExtension);
+        }
 
         if (archiverDetector is not null)
         {

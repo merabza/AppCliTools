@@ -1,5 +1,7 @@
 ﻿using System.IO;
-using SystemToolsShared;
+using OneOf;
+using SystemTools.SystemToolsShared;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CliTools.ArchiverTools;
 
@@ -14,16 +16,19 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 
     public override ArchiverDetectorResults? Run()
     {
-        switch (FileExtension.ToLower())
+        switch (FileExtension.ToUpperInvariant())
         {
             case Rar:
-                var programPatchRar = CheckArchiverRunner(Rar);
+                string? programPatchRar = CheckArchiverRunner(Rar);
                 return programPatchRar is null ? null : new ArchiverDetectorResults(programPatchRar, programPatchRar);
             case Zip:
-                var programPatchZip = CheckArchiverRunner(Zip);
-                var programPatchUnzip = CheckArchiverRunner(Unzip);
+                string? programPatchZip = CheckArchiverRunner(Zip);
+                string? programPatchUnzip = CheckArchiverRunner(Unzip);
                 if (programPatchZip is null || programPatchUnzip is null)
+                {
                     return null;
+                }
+
                 return new ArchiverDetectorResults(programPatchZip, programPatchUnzip);
             default:
                 return null;
@@ -32,12 +37,19 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 
     private string? CheckArchiverRunner(string archiverName)
     {
-        var runProcessWithOutputResult = StShared.RunProcessWithOutput(UseConsole, null, "which", archiverName);
+        OneOf<(string, int), Err[]> runProcessWithOutputResult =
+            StShared.RunProcessWithOutput(UseConsole, null, "which", archiverName);
         if (runProcessWithOutputResult.IsT1)
+        {
             return null;
-        var archiverRunner = runProcessWithOutputResult.AsT0.Item1;
+        }
+
+        string archiverRunner = runProcessWithOutputResult.AsT0.Item1;
         if (!string.IsNullOrWhiteSpace(archiverRunner) && File.Exists(archiverRunner))
+        {
             return archiverRunner;
+        }
+
         return null;
     }
 }

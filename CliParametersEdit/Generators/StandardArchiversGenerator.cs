@@ -1,8 +1,8 @@
 ﻿using CliTools.ArchiverTools;
-using LibFileParameters.Interfaces;
-using LibFileParameters.Models;
-using LibParameters;
-using SystemToolsShared;
+using ParametersManagement.LibFileParameters.Interfaces;
+using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace CliParametersEdit.Generators;
 
@@ -27,7 +27,9 @@ public static class StandardArchiversGenerator
     {
         var archiverName = archiveType.ToString();
         if (parameters.Archivers.ContainsKey(archiverName))
+        {
             return;
+        }
 
         ArchiverData archiver;
         if (archiveType == EArchiveType.ZipClass)
@@ -44,7 +46,9 @@ public static class StandardArchiversGenerator
         var compressProgramPatch = archiverDetectorResults?.CompressProgramPatch;
 
         if (decompressProgramPatch == null || compressProgramPatch == null)
+        {
             return;
+        }
 
         archiver = new ArchiverData
         {

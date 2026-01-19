@@ -22,8 +22,13 @@ public sealed class BoolDataInput : DataInput
 
         while (true)
         {
-            var ch = Console.ReadKey(true);
-            var key = ch.Key == ConsoleKey.Enter ? _defaultValue ? "y" : "n" : ch.Key.Value().ToLower();
+            ConsoleKeyInfo ch = Console.ReadKey(true);
+            string key = ch.Key switch
+            {
+                ConsoleKey.Enter => _defaultValue ? "y" : "n",
+                _ => ch.Key.Value().ToUpperInvariant()
+            };
+
             if (key is "y" or "n")
             {
                 Value = key == "y";
@@ -33,7 +38,9 @@ public sealed class BoolDataInput : DataInput
             }
 
             if (ch.Key == ConsoleKey.Escape)
+            {
                 throw new DataInputEscapeException("Escape");
+            }
 
             Console.WriteLine("Answer must be 'y' or 'n'");
             Console.Write($"{_fieldName} (y/n)[{(_defaultValue ? "y" : "n")}]: ");

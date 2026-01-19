@@ -26,13 +26,17 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
         {
             menuItem = currentMenu?.GetMenuItemWithName(menuName);
             if (menuItem is null)
+            {
                 return false;
+            }
 
             currentMenu = menuItem.CliMenuCommand.GetSubMenu();
         }
 
         if (menuItem is null)
+        {
             return false;
+        }
 
         MenuActionOnBodySuccess = menuItem.CliMenuCommand.MenuActionOnBodySuccess;
         MenuActionOnBodyFail = menuItem.CliMenuCommand.MenuActionOnBodyFail;

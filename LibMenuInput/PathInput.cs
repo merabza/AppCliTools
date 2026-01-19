@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using LibDataInput;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
 namespace LibMenuInput;
 
@@ -35,63 +35,66 @@ public /*open*/ class PathInput : DataInput
 
         if (!string.IsNullOrWhiteSpace(_defaultValue))
         {
-            var def = _defaultValue;
+            string? def = _defaultValue;
             if (_addDirectorySeparatorChar)
+            {
                 def = _defaultValue.AddNeedLastPart(Path.DirectorySeparatorChar);
+            }
+
             Console.Write(def);
             sb.Append(def);
         }
 
-        var input = Console.ReadKey(true);
+        ConsoleKeyInfo input = Console.ReadKey(true);
 
         while (true)
         {
-            var currentInput = sb.ToString();
+            string currentInput = sb.ToString();
             switch (input.Key)
             {
                 case ConsoleKey.Escape:
                     throw new DataInputEscapeException("Escape");
                 case ConsoleKey.Tab:
-                {
-                    var dirName = Path.GetDirectoryName(currentInput);
-                    var fileName = Path.GetFileName(currentInput);
-                    if (string.IsNullOrWhiteSpace(dirName) || string.IsNullOrWhiteSpace(fileName) ||
-                        !Directory.Exists(dirName))
                     {
-                        input = Console.ReadKey(true);
-                        continue;
+                        string? dirName = Path.GetDirectoryName(currentInput);
+                        string fileName = Path.GetFileName(currentInput);
+                        if (string.IsNullOrWhiteSpace(dirName) || string.IsNullOrWhiteSpace(fileName) ||
+                            !Directory.Exists(dirName))
+                        {
+                            input = Console.ReadKey(true);
+                            continue;
+                        }
+
+                        var dir = new DirectoryInfo(dirName);
+                        List<string> names = dir.GetDirectories($"{fileName}*")
+                            .Select(s => s.Name + Path.DirectorySeparatorChar).ToList();
+                        AddFiles(dir, fileName, names);
+                        names = [.. names.OrderBy(o => o)];
+
+                        string? candidate = names.MinBy(o => o);
+                        if (candidate != null && names.Count > 1)
+                        {
+                            int minimumLength = names.Min(x => x.Length);
+                            int commonChars = Enumerable.Range(0, minimumLength)
+                                .Count(i => names.All(y => y[i] == names[0][i]));
+                            candidate = candidate[..commonChars];
+                        }
+
+                        if (string.IsNullOrWhiteSpace(candidate))
+                        {
+                            input = Console.ReadKey(true);
+                            continue;
+                        }
+
+                        ClearCurrentLine();
+                        sb.Clear();
+
+                        string newVersion = Path.Combine(dirName, candidate);
+
+                        Console.Write(newVersion);
+                        sb.Append(newVersion);
+                        break;
                     }
-
-                    var dir = new DirectoryInfo(dirName);
-                    var names = dir.GetDirectories($"{fileName}*").Select(s => s.Name + Path.DirectorySeparatorChar)
-                        .ToList();
-                    AddFiles(dir, fileName, names);
-                    names = [.. names.OrderBy(o => o)];
-
-                    var candidate = names.MinBy(o => o);
-                    if (candidate != null && names.Count > 1)
-                    {
-                        var minimumLength = names.Min(x => x.Length);
-                        var commonChars = Enumerable.Range(0, minimumLength)
-                            .Count(i => names.All(y => y[i] == names[0][i]));
-                        candidate = candidate[..commonChars];
-                    }
-
-                    if (string.IsNullOrWhiteSpace(candidate))
-                    {
-                        input = Console.ReadKey(true);
-                        continue;
-                    }
-
-                    ClearCurrentLine();
-                    sb.Clear();
-
-                    var newVersion = Path.Combine(dirName, candidate);
-
-                    Console.Write(newVersion);
-                    sb.Append(newVersion);
-                    break;
-                }
                 case ConsoleKey.Backspace:
                     if (currentInput.Length > 0)
                     {
@@ -123,15 +126,18 @@ public /*open*/ class PathInput : DataInput
                     EnteredPath = sb.ToString();
                     Console.WriteLine($"Entered {_fieldName} is: {EnteredPath}");
                     if (_warningIfFileDoesNotExists && !CheckExists())
+                    {
                         StShared.WriteWarningLine($"{EnteredPath} does not exists", true);
+                    }
+
                     return true;
                 default:
-                {
-                    var key = input.KeyChar;
-                    sb.Append(key);
-                    Console.Write(key);
-                    break;
-                }
+                    {
+                        char key = input.KeyChar;
+                        sb.Append(key);
+                        Console.Write(key);
+                        break;
+                    }
             }
 
             input = Console.ReadKey(true);
@@ -151,7 +157,7 @@ public /*open*/ class PathInput : DataInput
 
     private static void ClearCurrentLine()
     {
-        var currentLine = Console.CursorTop;
+        int currentLine = Console.CursorTop;
         Console.SetCursorPosition(0, Console.CursorTop);
         Console.Write(new string(' ', Console.WindowWidth));
         Console.SetCursorPosition(0, currentLine);

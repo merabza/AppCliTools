@@ -1,7 +1,7 @@
 ﻿using CliParameters.FieldEditors;
 using CliTools.ArchiverTools;
-using LibFileParameters.Models;
 using LibMenuInput;
+using ParametersManagement.LibFileParameters.Models;
 
 namespace CliParametersEdit.FieldEditors;
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using CodeTools;
 using DbContextAnalyzer.CodeCreators;
 using DbContextAnalyzer.Models;
@@ -10,10 +11,12 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
 {
     public void Go()
     {
-        var repositoryClassName = $"{par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
-        var repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
-        var repositoryObjectName = $"{par.ProjectPrefixShort.ToLower()}DataSeederRepository"; //gmDataSeederRepository
-        var projectNewDataSeedersFactory = $"{par.ProjectPrefixShort}NewDataSeedersFactory"; //GmNewDataSeedersFactory
+        string repositoryClassName = $"{par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
+        string repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
+        string repositoryObjectName =
+            $"{par.ProjectPrefixShort.ToLower(CultureInfo.CurrentCulture)}DataSeederRepository"; //gmDataSeederRepository
+        string projectNewDataSeedersFactory =
+            $"{par.ProjectPrefixShort}NewDataSeedersFactory"; //GmNewDataSeedersFactory
 
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using CarcassDataSeeding",
             "using CarcassMasterDataDom.Models", "using Microsoft.AspNetCore.Identity", "using LibDatabaseParameters",

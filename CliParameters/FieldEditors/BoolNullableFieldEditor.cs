@@ -17,7 +17,7 @@ public sealed class BoolNullableFieldEditor : FieldEditor<bool?>
 
     public override string GetValueStatus(object? record)
     {
-        var val = GetValueOrDefault(record);
+        bool? val = GetValueOrDefault(record);
         return val?.ToString() ?? string.Empty;
     }
 }

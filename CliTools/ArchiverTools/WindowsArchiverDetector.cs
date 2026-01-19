@@ -14,13 +14,13 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
 
     public override ArchiverDetectorResults? Run()
     {
-        switch (FileExtension.ToLower())
+        switch (FileExtension.ToUpperInvariant())
         {
             case Rar:
-                var programPatchRar = GetProgramPath(WinRar);
+                string? programPatchRar = GetProgramPath(WinRar);
                 return programPatchRar is null ? null : new ArchiverDetectorResults(programPatchRar, programPatchRar);
             case Zip:
-                var programPatchZip = GetProgramPath(WinZip);
+                string? programPatchZip = GetProgramPath(WinZip);
                 return programPatchZip is null ? null : new ArchiverDetectorResults(programPatchZip, programPatchZip);
             default:
                 return null;
@@ -31,20 +31,29 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
     {
         char[] separators = [','];
 
-        var subKeyName = fileType + "\\DefaultIcon";
+        string subKeyName = fileType + "\\DefaultIcon";
 #pragma warning disable CA1416 // Validate platform compatibility
         // ReSharper disable once using
-        using var key = Registry.ClassesRoot.OpenSubKey(subKeyName);
-        var subKeyVal = key?.GetValue(key.GetValueNames()[0])?.ToString();
+        using RegistryKey? key = Registry.ClassesRoot.OpenSubKey(subKeyName);
+        string? subKeyVal = key?.GetValue(key.GetValueNames()[0])?.ToString();
 #pragma warning restore CA1416 // Validate platform compatibility
         if (subKeyVal == null)
+        {
             return null;
-        var splitWords = subKeyVal.Split(separators);
-        var toRet = splitWords[0];
+        }
+
+        string[] splitWords = subKeyVal.Split(separators);
+        string toRet = splitWords[0];
         if (toRet[0] == '\"')
+        {
             toRet = toRet[1..];
+        }
+
         if (toRet[^1] == '\"')
+        {
             toRet = toRet[..^1];
+        }
+
         return toRet;
     }
 }
