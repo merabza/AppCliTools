@@ -1,9 +1,9 @@
 <Solution>
     <Folder Name="/BackendCarcass/">
-        <Project Path="../BackendCarcass/Carcass.Database/Carcass.Database.csproj" />
-        <Project Path="../BackendCarcass/CarcassDb/CarcassDb.csproj" />
-        <Project Path="../BackendCarcass/CarcassMasterData/CarcassMasterData.csproj" />
-        <Project Path="../BackendCarcass/LibCrud/LibCrud.csproj" />
+        <Project Path="../BackendCarcass/BackendCarcass.Database/BackendCarcass.Database.csproj" />
+        <Project Path="../BackendCarcass/BackendCarcass.Db/BackendCarcass.Db.csproj" />
+        <Project Path="../BackendCarcass/BackendCarcass.MasterData/BackendCarcass.MasterData.csproj" />
+        <Project Path="../BackendCarcass/BackendCarcass.LibCrud/BackendCarcass.LibCrud.csproj" />
     </Folder>
     <Folder Name="/BackendCarcassShared/">
         <Project Path="../BackendCarcassShared/BackendCarcassContracts/BackendCarcassContracts.csproj" />
@@ -67,5 +67,5 @@
     <Project Path="AppCliTools.LibDataInput/AppCliTools.LibDataInput.csproj" />
     <Project Path="AppCliTools.LibMenuInput/AppCliTools.LibMenuInput.csproj" />
     <Project Path="AppCliTools.LibSeedCodeCreator/AppCliTools.LibSeedCodeCreator.csproj" />
-    <Project Path="AppCliTools/AppCliTools.csproj" />
+    <Project Path="AppCliTools/AppCliTools.csproj" Id="3f7662f5-453d-4f2d-8edf-a7c033f0794e" />
 </Solution>
