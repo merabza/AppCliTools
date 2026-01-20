@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using ParametersManagement.LibFileParameters.Interfaces;
 using ParametersManagement.LibFileParameters.Models;
 using ParametersManagement.LibParameters;
@@ -21,8 +20,8 @@ public sealed class StandardExcludeSetsGenerator
 
         var gitBinObjExcludeSet = new ExcludeSet
         {
-            FolderFileMasks = new List<string>
-            {
+            FolderFileMasks =
+            [
                 $"*{Path.DirectorySeparatorChar}.git{Path.DirectorySeparatorChar}*",
                 $"*{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}*",
                 $"*{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}*",
@@ -33,30 +32,27 @@ public sealed class StandardExcludeSetsGenerator
                 $"*{Path.DirectorySeparatorChar}node_modules{Path.DirectorySeparatorChar}*",
                 $"*{Path.DirectorySeparatorChar}Temp{Path.DirectorySeparatorChar}*",
                 $"*{Path.DirectorySeparatorChar}temp{Path.DirectorySeparatorChar}*"
-            }
+            ]
         };
 
         //თუ არ არსებობს შეიქმნას GitBinObj სტანდარტული სიმრავლე
         CreateExcludeSet(parameters, "GitBinObj", gitBinObjExcludeSet); //GitBinObj
 
-        var upDownTempExcludeSet = new ExcludeSet
-        {
-            FolderFileMasks = new List<string> { "*.up!", "*.down!", "*.go!", "*.crdownload" }
-        };
+        var upDownTempExcludeSet = new ExcludeSet { FolderFileMasks = ["*.up!", "*.down!", "*.go!", "*.crdownload"] };
 
         //თუ არ არსებობს შეიქმნას UpDownTemp სტანდარტული სიმრავლე
         CreateExcludeSet(parameters, "UpDownTemp", upDownTempExcludeSet); //UpDownTemp
 
         var upDownTempZipExcludeSet = new ExcludeSet
         {
-            FolderFileMasks = new List<string>
-            {
+            FolderFileMasks =
+            [
                 "*.up!",
                 "*.down!",
                 "*.go!",
                 "*.crdownload",
                 "*.zip"
-            }
+            ]
         };
 
         //თუ არ არსებობს შეიქმნას UpDownTemp სტანდარტული სიმრავლე
