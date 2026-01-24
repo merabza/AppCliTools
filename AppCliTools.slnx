@@ -43,6 +43,7 @@
     <Folder Name="/Tests/">
         <Project Path="AppCliTools.CliMenu.Tests/AppCliTools.CliMenu.Tests.csproj" />
         <Project Path="AppCliTools.CliParameters.Tests/AppCliTools.CliParameters.Tests.csproj" />
+        <Project Path="AppCliTools.CliParametersApiClientsEdit.Tests/AppCliTools.CliParametersApiClientsEdit.Tests.csproj" Id="a8033f05-e748-4809-ad5a-f23bf5b687d3" />
     </Folder>
     <Folder Name="/ToolsManagement/">
         <Project Path="../ToolsManagement/ToolsManagement.ApiClientsManagement/ToolsManagement.ApiClientsManagement.csproj" />
