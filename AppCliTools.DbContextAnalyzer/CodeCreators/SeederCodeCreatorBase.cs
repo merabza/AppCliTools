@@ -44,7 +44,7 @@ public /*open*/ class SeederCodeCreatorBase : CodeCreator
 
     protected static (bool, List<IProperty>) GetFieldsProperties(IEntityType entityType, List<string> ignoreFields)
     {
-        var props = entityType.GetProperties()
+        List<IProperty> props = entityType.GetProperties()
             .Where(p => p.ValueGenerated == ValueGenerated.Never && !ignoreFields.Contains(p.Name)).ToList();
 
         if (props.Count > 0)
