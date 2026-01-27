@@ -18,10 +18,10 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
         string projectNewDataSeedersFactory =
             $"{par.ProjectPrefixShort}NewDataSeedersFactory"; //GmNewDataSeedersFactory
 
-        var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using CarcassDataSeeding",
-            "using CarcassMasterDataDom.Models", "using Microsoft.AspNetCore.Identity", "using LibDatabaseParameters",
-            $"using Seed{par.DbProjectNamespace}", $"using {par.DbProjectNamespace}DataSeeding",
-            $"using {par.DbProjectNamespace}NewDataSeeding");
+        var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using BackendCarcass.DataSeeding",
+            "using BackendCarcass.MasterData.Models", "using Microsoft.AspNetCore.Identity",
+            "using ParametersManagement.LibDatabaseParameters", $"using Seed{par.DbProjectNamespace}",
+            $"using {par.DbProjectNamespace}DataSeeding", $"using {par.DbProjectNamespace}NewDataSeeding");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(string.Empty,
             new OneLineComment(" ReSharper disable once using"),
@@ -33,6 +33,8 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
                 "return 8"), string.Empty,
             "var carcassRepo = serviceProvider.GetService<ICarcassDataSeederRepository>()",
             new CodeBlock("if (carcassRepo is null)", "StShared.WriteErrorLine(\"carcassRepo is null\", true)",
+                "return 9"), string.Empty, "var unitOfWork = serviceProvider.GetService<IUnitOfWork>()",
+            new CodeBlock("if (unitOfWork is null)", "StShared.WriteErrorLine(\"unitOfWork is null\", true)",
                 "return 9"), string.Empty,
             $"var {repositoryObjectName} =  serviceProvider.GetService<{repositoryInterfaceName}>()", string.Empty,
             new CodeBlock($"if ({repositoryObjectName} is null)",
@@ -48,7 +50,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.JsonFolderName))",
                 "StShared.WriteErrorLine(\"par.JsonFolderName is empty\", true)", "return 13"), string.Empty,
             string.Empty, "var checkOnly = argParser.Switches.Contains(\"--CheckOnly\")", string.Empty,
-            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}), dataFixRepository, checkOnly)",
+            $"var seeder = new ProjectNewDataSeeder(carcassDataSeeder, new {projectNewDataSeedersFactory}(userManager, roleManager, par.SecretDataFolder, par.JsonFolderName, carcassRepo, {repositoryObjectName}, unitOfWork), dataFixRepository, checkOnly)",
             string.Empty, "return seeder.SeedData() ? 0 : 1", string.Empty);
 
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,

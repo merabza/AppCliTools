@@ -318,12 +318,12 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                                                                atLeastOneSubstitute ||
                                                                entityData.OptimalIndexProperties.Count > 0 ||
                                                                entityData.SelfRecursiveFields.Count > 0)
-                ? "using CarcassDataSeeding"
+                ? "using BackendCarcass.DataSeeding"
                 : null, !isCarcassType ? $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}" : null,
-            isCarcassType ? "using CarcassDataSeeding.Seeders" : null,
+            isCarcassType ? "using BackendCarcass.DataSeeding.Seeders" : null,
             isCarcassType ? null : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
-            isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
-            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using DatabaseToolsShared",
+            isIdentity ? "using BackendCarcass.MasterData.Models" : string.Empty,
+            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using SystemTools.DatabaseToolsShared",
             $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
@@ -385,9 +385,9 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            isDataTypesOrManyToManyJoins ? "using CarcassDataSeeding" : null, "using CarcassDataSeeding.Seeders",
-            isIdentity ? "using CarcassMasterDataDom.Models" : string.Empty,
-            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using DatabaseToolsShared",
+            isDataTypesOrManyToManyJoins ? "using BackendCarcass.DataSeeding" : null, "using BackendCarcass.DataSeeding.Seeders",
+            isIdentity ? "using BackendCarcass.MasterData.Models" : string.Empty,
+            isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using SystemTools.DatabaseToolsShared",
             "using System.Collections.Generic",
             $"namespace {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}", string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",

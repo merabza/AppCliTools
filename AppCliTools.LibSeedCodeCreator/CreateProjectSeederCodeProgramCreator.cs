@@ -17,8 +17,8 @@ public sealed class CreateProjectSeederCodeProgramCreator(CreatorCreatorParamete
         string dbContextClassName = par.DbContextClassName;
 
         var fcbAdditionalUsing = new FlatCodeBlock($"using {scaffoldSeederDbContextProjectName}",
-            $"using {dbContextProjectName}", "using DbContextAnalyzer", "using Microsoft.EntityFrameworkCore",
-            "using DbContextAnalyzer.Models");
+            $"using {dbContextProjectName}", "using AppCliTools.DbContextAnalyzer",
+            "using Microsoft.EntityFrameworkCore", "using AppCliTools.DbContextAnalyzer.Models");
 
         var fcbMainCommands = new FlatCodeBlock(string.Empty, "var starter = new SeederCodeCreatorStarter(logger, par)",
             string.Empty, $"var optionsBuilder = new DbContextOptionsBuilder<{dbScContextClassName}>()", string.Empty,

@@ -30,7 +30,7 @@ public sealed class ProjectDataSeederCreator : SeederCodeCreatorBase
             "Logger.LogInformation(\"Seed Project Data Started\")");
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using System", "using CarcassDataSeeding", "using Microsoft.Extensions.Logging",
+            "using System", "using BackendCarcass.DataSeeding", "using Microsoft.Extensions.Logging",
             $"namespace {_parameters.ProjectNamespace}", string.Empty,
             new CodeBlock("public /*open*/ class ProjectDataSeeder : CarcassDataSeeder",
                 new CodeBlock(

@@ -25,13 +25,13 @@ public sealed class BoolDataInput : DataInput
             ConsoleKeyInfo ch = Console.ReadKey(true);
             string key = ch.Key switch
             {
-                ConsoleKey.Enter => _defaultValue ? "y" : "n",
+                ConsoleKey.Enter => _defaultValue ? "Y" : "N",
                 _ => ch.Key.Value().ToUpperInvariant()
             };
 
-            if (key is "y" or "n")
+            if (key is "Y" or "N")
             {
-                Value = key == "y";
+                Value = key == "Y";
                 Console.Write(key);
                 Console.WriteLine();
                 return true;

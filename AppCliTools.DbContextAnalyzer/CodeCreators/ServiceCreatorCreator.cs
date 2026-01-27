@@ -26,12 +26,13 @@ public sealed class ServiceCreatorCreator : CodeCreator
         string projectDbContextClassName = _par.ProjectDbContextClassName; // + "DbContext"; //GeoModelDbContext
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using CarcassDataSeeding", "using CarcassDb", "using CarcassIdentity", "using CarcassMasterDataDom.Models",
-            string.Empty, $"using {dataSeedingProjectName}", $"using {projectDbProjectName}",
-            $"using {newDataSeedingProjectName}", string.Empty, "using Microsoft.AspNetCore.Identity",
-            "using Microsoft.EntityFrameworkCore", "using Microsoft.Extensions.DependencyInjection",
-            "using SystemTools.SystemToolsShared", string.Empty, $"namespace {_par.SeedProjectNamespace}", string.Empty,
-            new CodeBlock("public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
+            "using BackendCarcass.DataSeeding", "using BackendCarcass.Db", "using CarcassIdentity",
+            "using BackendCarcass.MasterData.Models", string.Empty, $"using {dataSeedingProjectName}",
+            $"using {projectDbProjectName}", $"using {newDataSeedingProjectName}", string.Empty,
+            "using Microsoft.AspNetCore.Identity", "using Microsoft.EntityFrameworkCore",
+            "using Microsoft.Extensions.DependencyInjection", "using SystemTools.SystemToolsShared", string.Empty,
+            $"namespace {_par.SeedProjectNamespace}", string.Empty, new CodeBlock(
+                "public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
                 "private readonly string _connectionString", string.Empty,
                 "private readonly string _excludesRulesParametersFilePath", string.Empty,
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
