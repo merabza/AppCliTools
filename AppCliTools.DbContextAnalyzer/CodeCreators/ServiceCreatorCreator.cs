@@ -30,7 +30,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
             string.Empty, $"using {dataSeedingProjectName}", $"using {projectDbProjectName}",
             $"using {newDataSeedingProjectName}", string.Empty, "using Microsoft.AspNetCore.Identity",
             "using Microsoft.EntityFrameworkCore", "using Microsoft.Extensions.DependencyInjection",
-            "using SystemToolsShared", string.Empty, $"namespace {_par.SeedProjectNamespace}", string.Empty,
+            "using SystemTools.SystemToolsShared", string.Empty, $"namespace {_par.SeedProjectNamespace}", string.Empty,
             new CodeBlock("public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
                 "private readonly string _connectionString", string.Empty,
                 "private readonly string _excludesRulesParametersFilePath", string.Empty,

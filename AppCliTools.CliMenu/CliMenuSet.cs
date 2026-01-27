@@ -91,7 +91,8 @@ public sealed class CliMenuSet
     {
         string str = strFrom ?? string.Empty;
         int strLength = str.Length;
-        string spaces = addSpaces ? new string(' ', length - strLength) : string.Empty;
+        int spacesLength = length > strLength ? length - strLength : 0;
+        string spaces = addSpaces ? new string(' ', spacesLength) : string.Empty;
         return strLength > length ? str[..length] : $"{str}{spaces}";
     }
 
