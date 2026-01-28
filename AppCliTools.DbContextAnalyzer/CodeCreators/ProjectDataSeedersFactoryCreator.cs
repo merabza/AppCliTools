@@ -30,14 +30,15 @@ public sealed class ProjectDataSeedersFactoryCreator : SeederCodeCreatorBase
             "using SystemTools.DatabaseToolsShared", "using Microsoft.AspNetCore.Identity",
             $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}",
             $"using {_parameters.ProjectNamespace}.{_parameters.ProjectSeedersFolderName}",
-            $"namespace {_parameters.ProjectNamespace}", string.Empty, new CodeBlock(
+            "using SystemTools.DomainShared.Repositories", string.Empty, $"namespace {_parameters.ProjectNamespace}",
+            string.Empty, new CodeBlock(
                 $"public /*open*/ class {_parameters.ProjectDataSeedersFactoryClassName} : CarcassDataSeedersFactory",
                 $"protected readonly {_parameters.DataSeederRepositoryInterfaceName} Repo",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), new CodeBlock($"""
                      protected {_parameters.ProjectDataSeedersFactoryClassName}(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, 
                        string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, 
-                       {_parameters.DataSeederRepositoryInterfaceName} repo) : base(userManager, roleManager, secretDataFolder, dataSeedFolder, carcassRepo, 
-                       repo)
+                       {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork) : base(userManager, roleManager, secretDataFolder, dataSeedFolder, carcassRepo, 
+                       repo, unitOfWork)
                      """, "Repo = repo"), _carcassRegion, _projectRegion));
         CodeFile.AddRange(block.CodeItems);
     }
