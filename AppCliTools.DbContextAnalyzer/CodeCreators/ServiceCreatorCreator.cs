@@ -30,9 +30,9 @@ public sealed class ServiceCreatorCreator : CodeCreator
             "using BackendCarcass.MasterData.Models", string.Empty, $"using {dataSeedingProjectName}",
             $"using {projectDbProjectName}", $"using {newDataSeedingProjectName}", string.Empty,
             "using Microsoft.AspNetCore.Identity", "using Microsoft.EntityFrameworkCore",
-            "using Microsoft.Extensions.DependencyInjection", "using SystemTools.SystemToolsShared", string.Empty,
-            $"namespace {_par.SeedProjectNamespace}", string.Empty, new CodeBlock(
-                "public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
+            "using Microsoft.Extensions.DependencyInjection", "using SystemTools.DomainShared.Repositories",
+            "using SystemTools.SystemToolsShared", string.Empty, $"namespace {_par.SeedProjectNamespace}", string.Empty,
+            new CodeBlock("public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,
                 "private readonly string _connectionString", string.Empty,
                 //"private readonly string _excludesRulesParametersFilePath", string.Empty,
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"), new CodeBlock(
