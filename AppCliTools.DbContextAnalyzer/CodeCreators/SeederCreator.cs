@@ -324,6 +324,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             isCarcassType ? null : $"using {_parameters.DbProjectNamespace}.{_parameters.DbProjectModelsFolderName}",
             isIdentity ? "using BackendCarcass.MasterData.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using SystemTools.DatabaseToolsShared",
+            "using SystemTools.DomainShared.Repositories", string.Empty,
             $"namespace {_parameters.ProjectNamespace}.{(isCarcassType ? _parameters.CarcassSeedersFolderName : _parameters.ProjectSeedersFolderName)}",
             string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
