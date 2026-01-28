@@ -51,6 +51,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
                     "services.AddScoped<ICarcassDataSeederRepository, CarcassDataSeederRepository>()", string.Empty,
                     $"services.AddScoped<{repositoryInterfaceName}, {repositoryClassName}>()", string.Empty,
                     "services.AddScoped<IDataFixRepository, DataFixRepository>()", string.Empty,
+                    $"services.AddScoped<IUnitOfWork, {_par.ProjectPrefix}UnitOfWork>()", string.Empty,
                     "services.AddDbContext<CarcassDbContext>(options => options.UseSqlServer(_connectionString))",
                     string.Empty,
                     $"services.AddDbContext<{projectDbContextClassName}>(options => options.UseSqlServer(_connectionString))",
