@@ -26,10 +26,10 @@ public sealed class ServiceCreatorCreator : CodeCreator
         string projectDbContextClassName = _par.ProjectDbContextClassName; // + "DbContext"; //GeoModelDbContext
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            "using BackendCarcass.DataSeeding", "using BackendCarcass.Db", "using CarcassIdentity",
-            "using BackendCarcass.MasterData.Models", string.Empty, $"using {dataSeedingProjectName}",
-            $"using {projectDbProjectName}", $"using {newDataSeedingProjectName}", string.Empty,
-            "using Microsoft.AspNetCore.Identity", "using Microsoft.EntityFrameworkCore",
+            "using BackendCarcass.Database", "using BackendCarcass.DataSeeding", "using BackendCarcass.Db",
+            "using CarcassIdentity", "using BackendCarcass.MasterData.Models", string.Empty,
+            $"using {dataSeedingProjectName}", $"using {projectDbProjectName}", $"using {newDataSeedingProjectName}",
+            string.Empty, "using Microsoft.AspNetCore.Identity", "using Microsoft.EntityFrameworkCore",
             "using Microsoft.Extensions.DependencyInjection", "using SystemTools.SystemToolsShared", string.Empty,
             $"namespace {_par.SeedProjectNamespace}", string.Empty, new CodeBlock(
                 "public sealed class SeedDbServicesCreator : ServicesCreator", string.Empty,

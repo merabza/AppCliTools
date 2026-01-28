@@ -58,10 +58,10 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
         var fcbGetJsonMainServiceCreatorCodeCommands = new FlatCodeBlock(string.Empty,
             new CodeBlock("if (string.IsNullOrWhiteSpace(par.ConnectionStringSeed))",
                 "StShared.WriteErrorLine(\"par.ConnectionStringSeed is empty\", true)", "return 3"), string.Empty,
-            new CodeBlock("if (string.IsNullOrWhiteSpace(par.ExcludesRulesParametersFilePath))",
-                "StShared.WriteErrorLine(\"par.ExcludesRulesParametersFilePath is empty\", true)", "return 13"),
+            //new CodeBlock("if (string.IsNullOrWhiteSpace(par.ExcludesRulesParametersFilePath))",
+            //    "StShared.WriteErrorLine(\"par.ExcludesRulesParametersFilePath is empty\", true)", "return 13"),
             string.Empty,
-            $"var servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"{par.SeedProjectNamespace}\", par.ConnectionStringSeed, par.ExcludesRulesParametersFilePath)");
+            $"var servicesCreator = new SeedDbServicesCreator(par.LogFolder, null, \"{par.SeedProjectNamespace}\", par.ConnectionStringSeed)");//, par.ExcludesRulesParametersFilePath
 
         var seedProjectDbProgramCreator = new ConsoleProgramCreator(logger, fcbSeedProjectDbProgramCreatorUsing,
             fcbGetJsonMainServiceCreatorCodeCommands, fcbGetJsonMainCommands, "SeederParameters",
