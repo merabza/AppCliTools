@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
-      <ProjectReference Include="..\AppCliTools.DbContextAnalyzer\AppCliTools.DbContextAnalyzer.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.DbContextAnalyzer\AppCliTools.DbContextAnalyzer.csproj" />
     </ItemGroup>
 
 </Project>

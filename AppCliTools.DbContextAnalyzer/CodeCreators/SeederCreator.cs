@@ -385,7 +385,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
 
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
-            isDataTypesOrManyToManyJoins ? "using BackendCarcass.DataSeeding" : null, "using BackendCarcass.DataSeeding.Seeders",
+            isDataTypesOrManyToManyJoins ? "using BackendCarcass.DataSeeding" : null,
+            "using BackendCarcass.DataSeeding.Seeders",
             isIdentity ? "using BackendCarcass.MasterData.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using SystemTools.DatabaseToolsShared",
             "using System.Collections.Generic",

@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="xunit" />
+        <PackageReference Include="xunit" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
     </ItemGroup>
 
     <ItemGroup>

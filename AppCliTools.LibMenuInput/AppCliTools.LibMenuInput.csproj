@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
     </ItemGroup>
 
 </Project>

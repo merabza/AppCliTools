@@ -11,12 +11,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
-        <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.LibToolActions\ToolsManagement.LibToolActions.csproj" />
+        <ProjectReference
+            Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
+        <ProjectReference
+            Include="..\..\ToolsManagement\ToolsManagement.LibToolActions\ToolsManagement.LibToolActions.csproj" />
         <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
         <ProjectReference Include="..\AppCliTools.LibDataInput\AppCliTools.LibDataInput.csproj" />
         <ProjectReference Include="..\AppCliTools.LibMenuInput\AppCliTools.LibMenuInput.csproj" />

@@ -13,22 +13,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AppCliTools.CliMenu.Tests\AppCliTools.CliMenu.Tests.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliParameters.Tests\AppCliTools.CliParameters.Tests.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliParametersApiClientsEdit\AppCliTools.CliParametersApiClientsEdit.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliParametersDataEdit\AppCliTools.CliParametersDataEdit.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliParametersEdit\AppCliTools.CliParametersEdit.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliParametersExcludeSetsEdit\AppCliTools.CliParametersExcludeSetsEdit.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliToolsData\AppCliTools.CliToolsData.csproj" />
-      <ProjectReference Include="..\AppCliTools.CliTools\AppCliTools.CliTools.csproj" />
-      <ProjectReference Include="..\AppCliTools.CodeTools\AppCliTools.CodeTools.csproj" />
-      <ProjectReference Include="..\AppCliTools.DbContextAnalyzer\AppCliTools.DbContextAnalyzer.csproj" />
-      <ProjectReference Include="..\AppCliTools.GramParser\AppCliTools.GramParser.csproj" />
-      <ProjectReference Include="..\AppCliTools.LibDataInput\AppCliTools.LibDataInput.csproj" />
-      <ProjectReference Include="..\AppCliTools.LibMenuInput\AppCliTools.LibMenuInput.csproj" />
-      <ProjectReference Include="..\AppCliTools.LibSeedCodeCreator\AppCliTools.LibSeedCodeCreator.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliMenu.Tests\AppCliTools.CliMenu.Tests.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParameters.Tests\AppCliTools.CliParameters.Tests.csproj" />
+        <ProjectReference
+            Include="..\AppCliTools.CliParametersApiClientsEdit\AppCliTools.CliParametersApiClientsEdit.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParametersDataEdit\AppCliTools.CliParametersDataEdit.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParametersEdit\AppCliTools.CliParametersEdit.csproj" />
+        <ProjectReference
+            Include="..\AppCliTools.CliParametersExcludeSetsEdit\AppCliTools.CliParametersExcludeSetsEdit.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliToolsData\AppCliTools.CliToolsData.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliTools\AppCliTools.CliTools.csproj" />
+        <ProjectReference Include="..\AppCliTools.CodeTools\AppCliTools.CodeTools.csproj" />
+        <ProjectReference Include="..\AppCliTools.DbContextAnalyzer\AppCliTools.DbContextAnalyzer.csproj" />
+        <ProjectReference Include="..\AppCliTools.GramParser\AppCliTools.GramParser.csproj" />
+        <ProjectReference Include="..\AppCliTools.LibDataInput\AppCliTools.LibDataInput.csproj" />
+        <ProjectReference Include="..\AppCliTools.LibMenuInput\AppCliTools.LibMenuInput.csproj" />
+        <ProjectReference Include="..\AppCliTools.LibSeedCodeCreator\AppCliTools.LibSeedCodeCreator.csproj" />
     </ItemGroup>
 
 </Project>

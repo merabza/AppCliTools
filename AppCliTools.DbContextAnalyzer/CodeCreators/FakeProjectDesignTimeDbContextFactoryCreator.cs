@@ -31,8 +31,8 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
         string designTimeDbContextFactoryClassName =
             $"{_dbProjectNamespace}DesignTimeDbContextFactory"; //GeoModelDesignTimeDbContextFactory
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
-            $"using {_dbProjectNamespace}", "using BackendCarcass.Database", string.Empty, $"namespace {_projectNamespace}",
-            string.Empty,
+            $"using {_dbProjectNamespace}", "using BackendCarcass.Database", string.Empty,
+            $"namespace {_projectNamespace}", string.Empty,
             new OneLineComment("ეს კლასი საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მიგრაციასთან მუშაობა."),
             new OneLineComment("ანუ დეველოპერ ბაზის წაშლა და ახლიდან დაგენერირება, ან მიგრაციაში ცვლილებების გაკეთება"),
             new OneLineComment(" ReSharper disable once UnusedType.Global"),

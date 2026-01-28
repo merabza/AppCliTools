@@ -18,13 +18,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Figgle.Fonts" />
+        <PackageReference Include="Figgle.Fonts" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
-        <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.LibToolActions\ToolsManagement.LibToolActions.csproj" />
+        <ProjectReference
+            Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
+        <ProjectReference
+            Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
+        <ProjectReference
+            Include="..\..\ToolsManagement\ToolsManagement.LibToolActions\ToolsManagement.LibToolActions.csproj" />
         <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
     </ItemGroup>
 

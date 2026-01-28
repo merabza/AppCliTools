@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="xunit.assert" />
-      <PackageReference Include="xunit.extensibility.core" />
+        <PackageReference Include="xunit.assert" />
+        <PackageReference Include="xunit.extensibility.core" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
     </ItemGroup>
 
     <ItemGroup>

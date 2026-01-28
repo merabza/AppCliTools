@@ -34,13 +34,8 @@ public sealed class ApiClientNameFieldEditorTests
         const bool enterFieldDataOnCreate = true;
 
         // Act
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
-            _parametersManagerMock.Object,
-            useNone,
-            enterFieldDataOnCreate);
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
+            _parametersManagerMock.Object, useNone, enterFieldDataOnCreate);
 
         // Assert
         Assert.NotNull(editor);
@@ -54,10 +49,7 @@ public sealed class ApiClientNameFieldEditorTests
         const string propertyName = "TestProperty";
 
         // Act
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         // Assert
@@ -81,10 +73,7 @@ public sealed class ApiClientNameFieldEditorTests
         };
         _parametersMock.Setup(p => p.ApiClients).Returns(apiClients);
 
-        _ = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        _ = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         var testRecord = new TestRecordWithApiClientName { ApiClientName = existingClientName };
@@ -103,10 +92,7 @@ public sealed class ApiClientNameFieldEditorTests
     {
         // Arrange
         const string propertyName = "ApiClientName";
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         var testRecord = new TestRecordWithApiClientName { ApiClientName = null };
@@ -132,10 +118,7 @@ public sealed class ApiClientNameFieldEditorTests
         };
         _parametersMock.Setup(p => p.ApiClients).Returns(apiClients);
 
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         var testRecord = new TestRecordWithApiClientName { ApiClientName = clientName };
@@ -150,7 +133,8 @@ public sealed class ApiClientNameFieldEditorTests
         Assert.Contains($"({serverUrl})", status);
     }
 
-    [Fact(Skip = "This test requires console interaction which is not available in test environment. GetItemByName writes error and pauses when item not found.")]
+    [Fact(Skip =
+        "This test requires console interaction which is not available in test environment. GetItemByName writes error and pauses when item not found.")]
     public void GetValueStatus_WithNonExistentApiClient_ReturnsNameWithSpace()
     {
         // Arrange
@@ -160,10 +144,7 @@ public sealed class ApiClientNameFieldEditorTests
         var apiClients = new Dictionary<string, ApiClientSettings>();
         _parametersMock.Setup(p => p.ApiClients).Returns(apiClients);
 
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         var testRecord = new TestRecordWithApiClientName { ApiClientName = clientName };
@@ -185,10 +166,7 @@ public sealed class ApiClientNameFieldEditorTests
     {
         // Arrange
         const string propertyName = "ApiClientName";
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         var testRecord = new TestRecordWithApiClientName { ApiClientName = string.Empty };
@@ -206,10 +184,7 @@ public sealed class ApiClientNameFieldEditorTests
     {
         // Arrange
         const string propertyName = "ApiClientName";
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         var testRecord = new TestRecordWithApiClientName { ApiClientName = "   " };
@@ -227,10 +202,7 @@ public sealed class ApiClientNameFieldEditorTests
     {
         // Arrange
         const string propertyName = "ApiClientName";
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
             _parametersManagerMock.Object);
 
         // Act
@@ -248,12 +220,8 @@ public sealed class ApiClientNameFieldEditorTests
         const bool useNone = true;
 
         // Act
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
-            _parametersManagerMock.Object,
-            useNone);
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
+            _parametersManagerMock.Object, useNone);
 
         // Assert
         Assert.NotNull(editor);
@@ -267,13 +235,8 @@ public sealed class ApiClientNameFieldEditorTests
         const bool enterFieldDataOnCreate = true;
 
         // Act
-        var editor = new ApiClientNameFieldEditor(
-            propertyName,
-            _loggerMock.Object,
-            _httpClientFactoryMock.Object,
-            _parametersManagerMock.Object,
-            false,
-            enterFieldDataOnCreate);
+        var editor = new ApiClientNameFieldEditor(propertyName, _loggerMock.Object, _httpClientFactoryMock.Object,
+            _parametersManagerMock.Object, false, enterFieldDataOnCreate);
 
         // Assert
         Assert.NotNull(editor);
