@@ -390,7 +390,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             "using BackendCarcass.DataSeeding.Seeders",
             isIdentity ? "using BackendCarcass.MasterData.Models" : string.Empty,
             isIdentity ? "using Microsoft.AspNetCore.Identity" : string.Empty, "using SystemTools.DatabaseToolsShared",
-            "using System.Collections.Generic",
+            "using System.Collections.Generic", "using SystemTools.DomainShared.Repositories", string.Empty,
             $"namespace {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}", string.Empty,
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
