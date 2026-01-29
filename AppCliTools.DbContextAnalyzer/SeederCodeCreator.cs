@@ -110,7 +110,7 @@ public sealed class SeederCodeCreator
 
             string newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
             KeyValuePair<string, EntityData> devBaseTableEntity = relationsInDevBase.Entities.SingleOrDefault(x =>
-                string.Equals(x.Value.TableName, newTableName, StringComparison.Ordinal));
+                string.Equals(x.Value.TableName, newTableName, StringComparison.OrdinalIgnoreCase));
 
             _logger.LogInformation("TableName = {TableName}", tableName);
 
