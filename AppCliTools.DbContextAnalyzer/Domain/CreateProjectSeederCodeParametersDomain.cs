@@ -8,7 +8,7 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
     public CreateProjectSeederCodeParametersDomain(string projectPrefix, string projectPrefixShort, string logFolder,
         string connectionStringProd, int commandTimeoutProd, string connectionStringDev, int commandTimeoutDev,
         string getJsonProjectPlacePath, string getJsonProjectNamespace, string dataSeedingProjectPlacePath,
-        string dataSeedingProjectNamespace, string dataSeedingProjectSolutionFolder,
+        string dataSeedingProjectNamespace,
         string excludesRulesParametersFilePath, string mainDatabaseProjectName, string projectDbContextClassName)
     {
         ProjectPrefix = projectPrefix;
@@ -22,7 +22,6 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
         GetJsonProjectNamespace = getJsonProjectNamespace;
         DataSeedingProjectPlacePath = dataSeedingProjectPlacePath;
         DataSeedingProjectNamespace = dataSeedingProjectNamespace;
-        DataSeedingProjectSolutionFolder = dataSeedingProjectSolutionFolder;
         ExcludesRulesParametersFilePath = excludesRulesParametersFilePath;
         MainDatabaseProjectName = mainDatabaseProjectName;
         ProjectDbContextClassName = projectDbContextClassName;
@@ -39,7 +38,6 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
     public string GetJsonProjectNamespace { get; }
     public string DataSeedingProjectPlacePath { get; }
     public string DataSeedingProjectNamespace { get; }
-    public string DataSeedingProjectSolutionFolder { get; }
     public string ExcludesRulesParametersFilePath { get; }
     public string MainDatabaseProjectName { get; }
     public string ProjectDbContextClassName { get; }
