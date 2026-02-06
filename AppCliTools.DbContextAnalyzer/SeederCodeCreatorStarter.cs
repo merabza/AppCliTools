@@ -79,6 +79,12 @@ public sealed class SeederCodeCreatorStarter
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(_par.DataSeedingProjectSolutionFolder))
+        {
+            StShared.WriteErrorLine("DataSeedingProjectSolutionFolder is empty", true);
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(_par.MainDatabaseProjectName))
         {
             StShared.WriteErrorLine("MainDatabaseProjectName is empty", true);

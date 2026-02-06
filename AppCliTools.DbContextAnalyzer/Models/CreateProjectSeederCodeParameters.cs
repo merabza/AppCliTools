@@ -13,6 +13,7 @@ public sealed class CreateProjectSeederCodeParameters : IParameters
     public string? GetJsonProjectNamespace { get; set; }
     public string? DataSeedingProjectPlacePath { get; set; }
     public string? DataSeedingProjectNamespace { get; set; }
+    public string? DataSeedingProjectSolutionFolder { get; set; }
     public string? ExcludesRulesParametersFilePath { get; set; }
     public string? MainDatabaseProjectName { get; set; }
     public string? ProjectDbContextClassName { get; set; }
