@@ -8,8 +8,8 @@ public sealed class CreateProjectSeederCodeParametersDomain : IParameters
     public CreateProjectSeederCodeParametersDomain(string projectPrefix, string projectPrefixShort, string logFolder,
         string connectionStringProd, int commandTimeoutProd, string connectionStringDev, int commandTimeoutDev,
         string getJsonProjectPlacePath, string getJsonProjectNamespace, string dataSeedingProjectPlacePath,
-        string dataSeedingProjectNamespace,
-        string excludesRulesParametersFilePath, string mainDatabaseProjectName, string projectDbContextClassName)
+        string dataSeedingProjectNamespace, string excludesRulesParametersFilePath, string mainDatabaseProjectName,
+        string projectDbContextClassName)
     {
         ProjectPrefix = projectPrefix;
         ProjectPrefixShort = projectPrefixShort;
