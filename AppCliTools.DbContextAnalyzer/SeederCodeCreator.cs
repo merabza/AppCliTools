@@ -105,14 +105,20 @@ public sealed class SeederCodeCreator
             if (value.Level != lastLevel)
             {
                 lastLevel = value.Level;
-                _logger.LogInformation("Level = {LastLevel}", lastLevel);
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation("Level = {LastLevel}", lastLevel);
+                }
             }
 
             string newTableName = _excludesRulesParameters.GetReplaceTablesName(tableName);
             KeyValuePair<string, EntityData> devBaseTableEntity = relationsInDevBase.Entities.SingleOrDefault(x =>
                 string.Equals(x.Value.TableName, newTableName, StringComparison.OrdinalIgnoreCase));
 
-            _logger.LogInformation("TableName = {TableName}", tableName);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("TableName = {TableName}", tableName);
+            }
 
             bool isCarcassType = carcassEntityTypes.Any(a =>
                 string.Equals(Relations.GetTableName(a), tableName, StringComparison.OrdinalIgnoreCase));

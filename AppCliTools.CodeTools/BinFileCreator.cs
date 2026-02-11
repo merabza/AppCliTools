@@ -17,7 +17,10 @@ public /*open*/ class BinFileCreator
         Logger = logger;
         _placePath = placePath;
         BinFile = new BinFile(binFileName);
-        Logger.LogInformation("create Code file started -> {BinFileName}", binFileName);
+        if (Logger.IsEnabled(LogLevel.Information))
+        {
+            Logger.LogInformation("create Code file started -> {BinFileName}", binFileName);
+        }
     }
 
     public virtual void CreateFileData()
@@ -41,6 +44,9 @@ public /*open*/ class BinFileCreator
         }
 
         File.WriteAllBytes(forCreateFileName, Convert.FromBase64String(BinFile.Base64String));
-        Logger.LogInformation("Bin file created: {ForCreateFileName}", forCreateFileName);
+        if (Logger.IsEnabled(LogLevel.Information))
+        {
+            Logger.LogInformation("Bin file created: {ForCreateFileName}", forCreateFileName);
+        }
     }
 }

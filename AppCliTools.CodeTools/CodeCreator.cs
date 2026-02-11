@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CodeTools;
@@ -16,7 +17,10 @@ public /*open*/ class CodeCreator
         _logger = logger;
         _placePath = placePath;
         CodeFile = new CodeFile(codeFileName);
-        _logger.LogInformation("create Code file started -> {CodeFileName}", codeFileName);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("create Code file started -> {CodeFileName}", codeFileName);
+        }
     }
 
     public virtual void CreateFileStructure()
@@ -73,6 +77,9 @@ public /*open*/ class CodeCreator
 
         string forCreateFileName = Path.Combine(placePath, CodeFile.FileName);
         File.WriteAllText(forCreateFileName, strCode);
-        _logger.LogInformation("Code file created: {ForCreateFileName}", forCreateFileName);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Code file created: {ForCreateFileName}", forCreateFileName);
+        }
     }
 }
