@@ -225,7 +225,7 @@ public abstract class CliAppLoop
         }
 
         var parMan = new ParametersManager(_par.RecentCommandsFileName, _recentCommands);
-        parMan.Save(_recentCommands);
+        parMan.Save(_recentCommands, null);
     }
 
     private bool GoToMenu(string? menuLinkToGo)
