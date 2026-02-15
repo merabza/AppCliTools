@@ -5,7 +5,7 @@ using System.Linq;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.Cruders;
-using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 

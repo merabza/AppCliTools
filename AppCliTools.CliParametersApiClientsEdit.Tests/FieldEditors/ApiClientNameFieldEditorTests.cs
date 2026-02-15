@@ -8,8 +8,8 @@ namespace AppCliTools.CliParametersApiClientsEdit.Tests.FieldEditors;
 
 public sealed class ApiClientNameFieldEditorTests
 {
-    private readonly Mock<ILogger> _loggerMock;
     private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
+    private readonly Mock<ILogger> _loggerMock;
     private readonly Mock<IParametersManager> _parametersManagerMock;
     private readonly Mock<IParametersWithApiClients> _parametersMock;
 
