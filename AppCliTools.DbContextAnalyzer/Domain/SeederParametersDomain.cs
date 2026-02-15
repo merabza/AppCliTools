@@ -1,4 +1,4 @@
-﻿using ParametersManagement.LibDatabaseParameters;
+﻿using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.DbContextAnalyzer.Domain;
 
