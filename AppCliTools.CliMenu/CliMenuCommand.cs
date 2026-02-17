@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.LibDataInput;
 using SystemTools.SystemToolsShared;
 
@@ -45,11 +47,11 @@ public /*open*/ class CliMenuCommand
         StatusString = GetStatus();
     }
 
-    public void Run()
+    public async ValueTask Run(CancellationToken cancellationToken = default)
     {
         if (_askRunAction)
         {
-            string? description = GetActionDescription();
+            string? description = await GetActionDescription(cancellationToken);
             if (description is null)
             {
                 StShared.WriteErrorLine("description is null", true, null, false);
@@ -68,7 +70,8 @@ public /*open*/ class CliMenuCommand
 
         try
         {
-            MenuAction = RunBody() ? MenuActionOnBodySuccess : MenuActionOnBodyFail;
+            bool result = await RunBody(cancellationToken);
+            MenuAction = result ? MenuActionOnBodySuccess : MenuActionOnBodyFail;
         }
         catch (DataInputEscapeException)
         {
@@ -93,17 +96,17 @@ public /*open*/ class CliMenuCommand
     //    MenuAction = RunBody() ? _menuActionOnBodySuccess : _menuActionOnBodyFail;
     //}
 
-    protected virtual bool RunBody()
+    protected virtual ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
-        return true;
+        return ValueTask.FromResult(true);
     }
 
     //virtual string? საჭიროა SupportTools პროექტში
     // ReSharper disable once ReturnTypeCanBeNotNullable
     // ReSharper disable once VirtualMemberNeverOverridden.Global
-    protected virtual string? GetActionDescription()
+    protected virtual ValueTask<string?> GetActionDescription(CancellationToken cancellationToken = default)
     {
-        return Name;
+        return ValueTask.FromResult<string?>(Name);
     }
 
     public virtual CliMenuSet? GetSubMenu()

@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.LibDataInput;
 
@@ -17,18 +19,18 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
         _recordKey = recordKey;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         string newRecordName = Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
 
         if (!_cruder.ChangeRecordKey(_recordKey, newRecordName))
         {
-            return false;
+            return ValueTask.FromResult(false);
         }
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
-        return true;
+        return ValueTask.FromResult(true);
     }
 
     protected override string GetStatus()

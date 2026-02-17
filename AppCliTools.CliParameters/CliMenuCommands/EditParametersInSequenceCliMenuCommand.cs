@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using SystemTools.SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -15,14 +17,14 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
         _parametersEditor = parametersEditor;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         if (!string.IsNullOrWhiteSpace(ParentMenuName))
         {
-            return _parametersEditor.EditParametersInSequence();
+            return ValueTask.FromResult(_parametersEditor.EditParametersInSequence());
         }
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-        return false;
+        return ValueTask.FromResult(false);
     }
 }

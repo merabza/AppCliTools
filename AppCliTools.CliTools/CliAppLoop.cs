@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliTools.CliMenuCommands;
@@ -44,7 +45,7 @@ public abstract class CliAppLoop
             .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Key));
     }
 
-    public bool Run()
+    public async ValueTask<bool> Run(CancellationToken cancellationToken = default)
     {
         Console.Clear();
         Console.CancelKeyPress += Console_CancelKeyPress;
@@ -85,7 +86,7 @@ public abstract class CliAppLoop
             {
                 try
                 {
-                    _processes.WaitForFinishAll().Wait();
+                    await _processes.WaitForFinishAll();
                 }
                 catch (TaskCanceledException e)
                 {
@@ -123,7 +124,7 @@ public abstract class CliAppLoop
             Console.WriteLine();
 
             CliMenuCommand menuCommand = menuItem.CliMenuCommand;
-            menuCommand.Run();
+            await menuCommand.Run(cancellationToken);
 
             if (menuCommand is not RecentCommandCliMenuCommand)
             {

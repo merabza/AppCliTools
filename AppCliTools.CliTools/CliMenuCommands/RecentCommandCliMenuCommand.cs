@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 
 namespace AppCliTools.CliTools.CliMenuCommands;
 
@@ -15,7 +17,7 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
         _menuLinkWithoutMainMenu = menuLinkWithoutMainMenu;
     }
 
-    protected override bool RunBody()
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         string[] menuLine = _menuLinkWithoutMainMenu.Split('/');
 
@@ -41,7 +43,7 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
         MenuActionOnBodySuccess = menuItem.CliMenuCommand.MenuActionOnBodySuccess;
         MenuActionOnBodyFail = menuItem.CliMenuCommand.MenuActionOnBodyFail;
 
-        menuItem.CliMenuCommand.Run();
+        await menuItem.CliMenuCommand.Run(cancellationToken);
         //MenuAction = menuItem.CliMenuCommand.MenuAction;
         return true;
     }

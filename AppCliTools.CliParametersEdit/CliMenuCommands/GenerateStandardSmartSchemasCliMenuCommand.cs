@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParametersEdit.Generators;
 using AppCliTools.LibDataInput;
 using ParametersManagement.LibFileParameters.Interfaces;
@@ -17,19 +19,19 @@ public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
         _parametersManager = parametersManager;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         var parameters = (IParametersWithSmartSchemas)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Smart Schemas, are you sure?", false, false))
         {
-            return false;
+            return ValueTask.FromResult(false);
         }
 
         StandardSmartSchemas.Generate(_parametersManager);
 
         //შენახვა
         _parametersManager.Save(parameters, "Smart Schemas generated success");
-        return true;
+        return ValueTask.FromResult(true);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParametersDataEdit.ToolActions;
 using Microsoft.Extensions.Logging;
@@ -26,7 +27,7 @@ public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
         _parametersManager = parametersManager;
     }
 
-    protected override bool RunBody()
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         var getDbServerFoldersToolAction =
             new GetDbServerFoldersToolAction(_logger, _httpClientFactory, _dbServerName, _parametersManager);
@@ -38,7 +39,7 @@ public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            return getDbServerFoldersToolAction.Run(token).Result;
+            return await getDbServerFoldersToolAction.Run(token);
         }
         catch (OperationCanceledException)
         {

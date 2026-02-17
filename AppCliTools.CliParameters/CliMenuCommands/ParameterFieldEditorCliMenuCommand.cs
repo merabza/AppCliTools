@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.FieldEditors;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -18,13 +20,13 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
         _parametersEditor = parametersEditor;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
 
         ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         _parametersEditor.Save(ParametersEditor.SaveMessage);
-        return true;
+        return ValueTask.FromResult(true);
     }
 
     protected override string GetStatus()

@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibDataInput;
@@ -24,7 +26,7 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
         _recordKey = recordKey;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         _fieldEditor.UpdateField(_recordKey, _recordForUpdate);
         _cruder.UpdateRecordWithKey(_recordKey, _recordForUpdate);
@@ -32,13 +34,13 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
         if (!_cruder.CheckValidation(_recordForUpdate) &&
             !Inputer.InputBool($"{_recordKey} is not valid, continue input data?", false, false))
         {
-            return false;
+            return ValueTask.FromResult(false);
         }
 
         //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
-        return true;
+        return ValueTask.FromResult(true);
     }
 
     protected override string GetStatus()

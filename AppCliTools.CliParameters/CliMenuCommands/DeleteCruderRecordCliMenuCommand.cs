@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
 using SystemTools.SystemToolsShared;
 
@@ -15,14 +17,14 @@ public sealed class DeleteCruderRecordCliMenuCommand : CliMenuCommand
         _cruder = cruder;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         if (!string.IsNullOrWhiteSpace(ParentMenuName))
         {
-            return _cruder.DeleteRecord(ParentMenuName);
+            return ValueTask.FromResult(_cruder.DeleteRecord(ParentMenuName));
         }
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-        return false;
+        return ValueTask.FromResult(false);
     }
 }

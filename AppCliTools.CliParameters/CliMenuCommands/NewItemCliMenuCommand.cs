@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
 
 namespace AppCliTools.CliParameters.CliMenuCommands;
@@ -14,9 +16,9 @@ public sealed class NewItemCliMenuCommand : CliMenuCommand
         _cruder = cruder;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         MenuAction = EMenuAction.Reload;
-        return _cruder.CreateNewRecord() is not null;
+        return ValueTask.FromResult(_cruder.CreateNewRecord() is not null);
     }
 }
