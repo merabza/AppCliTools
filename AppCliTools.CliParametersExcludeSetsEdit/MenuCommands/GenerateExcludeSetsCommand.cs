@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParametersExcludeSetsEdit.Generators;
 using AppCliTools.LibDataInput;
 using ParametersManagement.LibFileParameters.Interfaces;
@@ -17,13 +19,13 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
         _parametersManager = parametersManager;
     }
 
-    protected override bool RunBody()
+    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Exclude Sets, are you sure?", false, false))
         {
-            return false;
+            return new ValueTask<bool>(false);
         }
 
         var standardExcludeSetsGenerator = new StandardExcludeSetsGenerator(_parametersManager);
@@ -31,6 +33,6 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
 
         //შენახვა
         _parametersManager.Save(parameters, "ExcludeSets generated success");
-        return true;
+        return new ValueTask<bool>(true);
     }
 }
