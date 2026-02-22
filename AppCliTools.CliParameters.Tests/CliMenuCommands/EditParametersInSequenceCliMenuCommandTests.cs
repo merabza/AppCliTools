@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using ParametersManagement.LibParameters;
@@ -303,9 +304,10 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
         public IParameters Parameters { get; set; }
 
-        public void Save(IParameters parameters, string message, string? saveAsFilePath = null)
+        public ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null)
         {
             // No-op for testing
+            return ValueTask.CompletedTask;
         }
     }
 

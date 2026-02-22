@@ -1,4 +1,5 @@
-﻿using AppCliTools.CliParameters.FieldEditors;
+﻿using System.Threading.Tasks;
+using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibParameters;
 
 namespace AppCliTools.CliParameters;
@@ -21,7 +22,7 @@ public sealed class SubParametersManager<T> : IParametersManager
 
     public IParameters Parameters { get; set; }
 
-    public void Save(IParameters parameters, string message, string? saveAsFilePath = null)
+    public async ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null)
     {
         Parameters = parameters;
         if (parameters is not T par)
@@ -31,6 +32,6 @@ public sealed class SubParametersManager<T> : IParametersManager
 
         _fieldEditor.SetValue(_record, par);
 
-        _parentParametersManager.Save(_parentParametersManager.Parameters, message, saveAsFilePath);
+        await _parentParametersManager.Save(_parentParametersManager.Parameters, message, saveAsFilePath);
     }
 }
