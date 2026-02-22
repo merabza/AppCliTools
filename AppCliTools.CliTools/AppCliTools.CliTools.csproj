@@ -1,22 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="DataInput\**" />
-        <Compile Remove="InputParsers\**" />
-        <Compile Remove="Menu\**" />
-        <EmbeddedResource Remove="DataInput\**" />
-        <EmbeddedResource Remove="InputParsers\**" />
-        <EmbeddedResource Remove="Menu\**" />
-        <None Remove="DataInput\**" />
-        <None Remove="InputParsers\**" />
-        <None Remove="Menu\**" />
-    </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="Figgle.Fonts" />
     </ItemGroup>

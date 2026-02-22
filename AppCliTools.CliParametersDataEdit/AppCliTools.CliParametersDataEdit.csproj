@@ -1,16 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="Domain\**" />
-        <EmbeddedResource Remove="Domain\**" />
-        <None Remove="Domain\**" />
-    </ItemGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\..\DatabaseTools\DatabaseTools.DbTools\DatabaseTools.DbTools.csproj" />
         <ProjectReference
@@ -26,10 +15,6 @@
             Include="..\AppCliTools.CliParametersApiClientsEdit\AppCliTools.CliParametersApiClientsEdit.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParametersEdit\AppCliTools.CliParametersEdit.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="ToolActions\" />
     </ItemGroup>
 
 </Project>
