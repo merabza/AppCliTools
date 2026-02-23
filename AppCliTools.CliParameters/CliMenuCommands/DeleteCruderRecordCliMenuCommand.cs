@@ -17,14 +17,14 @@ public sealed class DeleteCruderRecordCliMenuCommand : CliMenuCommand
         _cruder = cruder;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         if (!string.IsNullOrWhiteSpace(ParentMenuName))
         {
-            return ValueTask.FromResult(_cruder.DeleteRecord(ParentMenuName));
+            return await _cruder.DeleteRecord(ParentMenuName, cancellationToken);
         }
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-        return ValueTask.FromResult(false);
+        return false;
     }
 }

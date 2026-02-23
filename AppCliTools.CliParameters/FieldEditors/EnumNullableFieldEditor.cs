@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.LibMenuInput;
 
 namespace AppCliTools.CliParameters.FieldEditors;
@@ -12,10 +14,12 @@ public /*open*/ class EnumNullableFieldEditor<TEnum> : FieldEditor<TEnum?> where
     {
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         TEnum? current = GetValue(recordForUpdate, DefaultValue);
         SetValue(recordForUpdate, MenuInputer.InputFromEnumNullableList(FieldName, current));
+        return ValueTask.CompletedTask;
     }
 
     public override string GetValueStatus(object? record)

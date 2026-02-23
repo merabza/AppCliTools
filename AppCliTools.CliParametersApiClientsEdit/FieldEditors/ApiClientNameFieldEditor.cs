@@ -1,4 +1,6 @@
 ﻿using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.FieldEditors;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
@@ -23,13 +25,16 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
         _useNone = useNone;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         string? currentApiClientName = GetValue(recordForUpdate);
 
         var apiClientCruder = ApiClientCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
-        string? newValue = apiClientCruder.GetNameWithPossibleNewName(FieldName, currentApiClientName, null, _useNone);
+        string? newValue =
+            await apiClientCruder.GetNameWithPossibleNewName(FieldName, currentApiClientName, null, _useNone,
+                cancellationToken);
 
         SetValue(recordForUpdate, newValue);
     }

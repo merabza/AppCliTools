@@ -1,4 +1,6 @@
-﻿using AppCliTools.LibDataInput;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.LibDataInput;
 
 namespace AppCliTools.CliParameters.FieldEditors;
 
@@ -13,10 +15,12 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
         _passwordCharacter = passwordCharacter;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         string? curValue = GetValue(recordForUpdate, DefaultValue);
         SetValue(recordForUpdate, Inputer.InputText(FieldName, curValue, _passwordCharacter));
+        return ValueTask.CompletedTask;
     }
 
     public override string GetValueStatus(object? record)
@@ -29,9 +33,4 @@ public /*open*/ class TextFieldEditor : FieldEditor<string>
 
         return new string(_passwordCharacter, val.Length);
     }
-
-    //public override void SetDefault(ItemData currentItem)
-    //{
-    //    SetValue(currentItem, _defaultValue);
-    //}
 }

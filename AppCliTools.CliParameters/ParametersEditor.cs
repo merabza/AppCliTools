@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.FieldEditors;
@@ -45,14 +47,15 @@ public /*open*/ class ParametersEditor : IFieldEditors
         return null;
     }
 
-    public void Save(string message, string? saveAsFilePath = null)
+    public async ValueTask Save(string message, string? saveAsFilePath = null,
+        CancellationToken cancellationToken = default)
     {
         if (_parametersManager.Parameters is null)
         {
             throw new Exception("Invalid parameters for save");
         }
 
-        _parametersManager.Save(_parametersManager.Parameters, message, saveAsFilePath);
+        await _parametersManager.Save(_parametersManager.Parameters, message, saveAsFilePath, cancellationToken);
     }
 
     private string GetMainMenuCaption()
@@ -86,31 +89,31 @@ public /*open*/ class ParametersEditor : IFieldEditors
     }
 
     //ყველა პარამეტრის რედაქტირება თანმიმდევრობით
-    internal bool EditParametersInSequence()
+    internal async ValueTask<bool> EditParametersInSequence(CancellationToken cancellationToken = default)
     {
         //პარამეტრების შეცვლის პროცესი დაიწყო
         Console.WriteLine($"Edit {Name} parameters started");
 
         //შეიცვალოს პარამეტრები თანმიმდევრობით
-        if (!InputParametersData())
+        if (!await InputParametersData(cancellationToken))
         {
             return false;
         }
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        Save($"{Name} parameters Updated");
+        await Save($"{Name} parameters Updated", null, cancellationToken);
 
         //ყველაფერი კარგად დასრულდა
         return true;
     }
 
-    private bool InputParametersData()
+    private async ValueTask<bool> InputParametersData(CancellationToken cancellationToken = default)
     {
         try
         {
             foreach (FieldEditor fieldEditor in FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled))
             {
-                fieldEditor.UpdateField(null, _parametersManager.Parameters);
+                await fieldEditor.UpdateField(null, _parametersManager.Parameters, cancellationToken);
             }
 
             return true;

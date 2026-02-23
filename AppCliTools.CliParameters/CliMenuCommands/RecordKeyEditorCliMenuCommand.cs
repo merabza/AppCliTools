@@ -19,18 +19,18 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
         _recordKey = recordKey;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         string newRecordName = Inputer.InputTextRequired($"New {_cruder.CrudName} Name for {_recordKey}", _recordKey);
 
-        if (!_cruder.ChangeRecordKey(_recordKey, newRecordName))
+        if (!await _cruder.ChangeRecordKey(_recordKey, newRecordName, cancellationToken))
         {
-            return ValueTask.FromResult(false);
+            return false;
         }
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}");
-        return ValueTask.FromResult(true);
+        await _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}", cancellationToken);
+        return true;
     }
 
     protected override string GetStatus()

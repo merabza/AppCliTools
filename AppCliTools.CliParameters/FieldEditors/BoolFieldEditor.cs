@@ -1,4 +1,6 @@
-﻿using AppCliTools.LibDataInput;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.LibDataInput;
 
 namespace AppCliTools.CliParameters.FieldEditors;
 
@@ -10,8 +12,10 @@ public sealed class BoolFieldEditor : FieldEditor<bool>
     {
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         SetValue(recordForUpdate, Inputer.InputBool(FieldName, GetValue(recordForUpdate, DefaultValue)));
+        return ValueTask.CompletedTask;
     }
 }

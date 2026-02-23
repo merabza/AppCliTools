@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.Cruders;
@@ -28,8 +30,10 @@ public /*open*/ class FieldEditor
 
     public bool Enabled { get; set; } = true;
 
-    public virtual void UpdateField(string? recordKey, object recordForUpdate)
+    public virtual ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
+        return ValueTask.CompletedTask;
     }
 
     public void AddParameterEditMenuItem(CliMenuSet menuSet, ParametersEditor parametersEditor)

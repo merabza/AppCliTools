@@ -1,4 +1,6 @@
-﻿using AppCliTools.LibDataInput;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.LibDataInput;
 
 namespace AppCliTools.CliParameters.FieldEditors;
 
@@ -13,14 +15,10 @@ public sealed class IntFieldEditor : FieldEditor<int>
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, _defaultValue)));
-        //SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, true, _defaultValue)));//20220811
+        return ValueTask.CompletedTask;
     }
-
-    //public override void SetDefault(ItemData currentItem)
-    //{
-    //    SetValue(currentItem, _defaultValue);
-    //}
 }

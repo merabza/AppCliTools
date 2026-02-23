@@ -16,9 +16,9 @@ public sealed class NewItemCliMenuCommand : CliMenuCommand
         _cruder = cruder;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         MenuAction = EMenuAction.Reload;
-        return ValueTask.FromResult(_cruder.CreateNewRecord() is not null);
+        return await _cruder.CreateNewRecord(null, cancellationToken) is not null;
     }
 }

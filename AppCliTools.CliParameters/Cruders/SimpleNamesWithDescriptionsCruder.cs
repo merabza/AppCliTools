@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.FieldEditors;
 using SystemTools.SystemToolsShared;
 
@@ -32,13 +34,15 @@ public abstract class SimpleNamesWithDescriptionsCruder : Cruder
         return reactAppTemplateNames.ContainsKey(recordKey);
     }
 
-    protected override void RemoveRecordWithKey(string recordKey)
+    protected override ValueTask RemoveRecordWithKey(string recordKey, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> reactAppTemplateNames = GetDictionary();
         reactAppTemplateNames.Remove(recordKey);
+        return ValueTask.CompletedTask;
     }
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    public override ValueTask UpdateRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         if (newRecord is not TextItemData newTextItemData)
         {
@@ -51,9 +55,11 @@ public abstract class SimpleNamesWithDescriptionsCruder : Cruder
         }
 
         GetDictionary()[recordKey] = newTextItemData.Text;
+        return ValueTask.CompletedTask;
     }
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    protected override ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         if (newRecord is not TextItemData newTextItemData)
         {
@@ -66,6 +72,7 @@ public abstract class SimpleNamesWithDescriptionsCruder : Cruder
         }
 
         GetDictionary().Add(recordKey, newTextItemData.Text);
+        return ValueTask.CompletedTask;
     }
 
     public override string? GetStatusFor(string name)

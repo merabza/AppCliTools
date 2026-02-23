@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.LibMenuInput;
 
 namespace AppCliTools.CliParameters.FieldEditors;
@@ -14,9 +16,11 @@ public /*open*/ class EnumFieldEditor<TEnum> : FieldEditor<TEnum> where TEnum : 
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         TEnum current = GetValue(recordForUpdate, _defaultValue);
         SetValue(recordForUpdate, MenuInputer.InputFromEnumList(FieldName, current));
+        return ValueTask.CompletedTask;
     }
 }

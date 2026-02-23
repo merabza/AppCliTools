@@ -1,4 +1,6 @@
-﻿using AppCliTools.LibMenuInput;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.LibMenuInput;
 
 namespace AppCliTools.CliParameters.FieldEditors;
 
@@ -13,13 +15,10 @@ public sealed class FolderPathFieldEditor : FieldEditor<string>
         _defaultValue = defaultValue;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         SetValue(recordForUpdate, MenuInputer.InputFolderPath(FieldName, GetValue(recordForUpdate, _defaultValue)));
+        return ValueTask.CompletedTask;
     }
-
-    //public override void SetDefault(ItemData currentItem)
-    //{
-    //    SetValue(currentItem, _defaultValue);
-    //}
 }

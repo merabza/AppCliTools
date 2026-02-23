@@ -20,13 +20,13 @@ public sealed class ParameterFieldEditorCliMenuCommand : CliMenuCommand
         _parametersEditor = parametersEditor;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
-        _fieldEditor.UpdateField(null, _parametersEditor.Parameters);
+        await _fieldEditor.UpdateField(null, _parametersEditor.Parameters, cancellationToken);
 
         ////პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        _parametersEditor.Save(ParametersEditor.SaveMessage);
-        return ValueTask.FromResult(true);
+        await _parametersEditor.Save(ParametersEditor.SaveMessage, null, cancellationToken);
+        return true;
     }
 
     protected override string GetStatus()

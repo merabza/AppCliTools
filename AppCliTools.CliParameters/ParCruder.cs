@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.Cruders;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
@@ -20,9 +22,9 @@ public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
         _currentValuesDictionary = currentValuesDictionary;
     }
 
-    public override void Save(string message)
+    public override ValueTask Save(string message, CancellationToken cancellationToken = default)
     {
-        ParametersManager.Save(ParametersManager.Parameters, message);
+        return ParametersManager.Save(ParametersManager.Parameters, message, null, cancellationToken);
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -40,25 +42,28 @@ public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
         return _currentValuesDictionary.ContainsKey(recordKey);
     }
 
-    protected override void RemoveRecordWithKey(string recordKey)
+    protected override async ValueTask RemoveRecordWithKey(string recordKey,
+        CancellationToken cancellationToken = default)
     {
         CheckKey(recordKey);
         _currentValuesDictionary.Remove(recordKey);
-        Save($"record {recordKey} Removed");
+        await Save($"record {recordKey} Removed", cancellationToken);
     }
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    public override async ValueTask UpdateRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         CheckKey(recordKey);
 
         _currentValuesDictionary[recordKey] = GetTItem(newRecord);
-        Save($"record {recordKey} saved");
+        await Save($"record {recordKey} saved", cancellationToken);
     }
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    protected override async ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         _currentValuesDictionary.Add(recordKey, GetTItem(newRecord));
-        Save($"record {recordKey} Added");
+        await Save($"record {recordKey} Added", cancellationToken);
     }
 
     private void CheckKey(string recordKey)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.FieldEditors;
@@ -68,19 +70,25 @@ public /*open*/ class Cruder : IFieldEditors
         return false;
     }
 
-    protected virtual void RemoveRecordWithKey(string recordKey)
+    protected virtual ValueTask RemoveRecordWithKey(string recordKey, CancellationToken cancellationToken = default)
     {
+        return ValueTask.CompletedTask;
     }
 
-    public virtual void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    public virtual ValueTask UpdateRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
+        return ValueTask.CompletedTask;
     }
 
-    protected virtual void AddRecordWithKey(string recordKey, ItemData newRecord)
+    protected virtual ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
+        return ValueTask.CompletedTask;
     }
 
-    private ItemData? InputRecordData(string? recordKey = null, ItemData? defaultItemData = null)
+    private async ValueTask<ItemData?> InputRecordData(string? recordKey = null, ItemData? defaultItemData = null,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -106,7 +114,7 @@ public /*open*/ class Cruder : IFieldEditors
             foreach (FieldEditor fieldUpdater in FieldEditors.Where(fieldUpdater =>
                          fieldUpdater is { Enabled: true, EnterFieldDataOnCreate: true }))
             {
-                fieldUpdater.UpdateField(recordKey, currentItem);
+                await fieldUpdater.UpdateField(recordKey, currentItem, cancellationToken);
                 CheckFieldsEnables(currentItem, fieldUpdater.PropertyName);
             }
 
@@ -218,7 +226,7 @@ public /*open*/ class Cruder : IFieldEditors
     {
     }
 
-    public bool DeleteRecord(string recordKey)
+    public async ValueTask<bool> DeleteRecord(string recordKey, CancellationToken cancellationToken = default)
     {
         if (!ContainsRecordWithKey(recordKey))
         {
@@ -231,14 +239,15 @@ public /*open*/ class Cruder : IFieldEditors
             return false;
         }
 
-        RemoveRecordWithKey(recordKey);
+        await RemoveRecordWithKey(recordKey, cancellationToken);
         _menuVersion++;
-        Save($"{CrudName} with Name {recordKey} deleted successfully.");
+        await Save($"{CrudName} with Name {recordKey} deleted successfully.", cancellationToken);
 
         return true;
     }
 
-    public string? CreateNewRecord(string? currentStatus = null)
+    public async ValueTask<string?> CreateNewRecord(string? currentStatus = null,
+        CancellationToken cancellationToken = default)
     {
         //ჩანაწერის შექმნის პროცესი დაიწყო
         Console.WriteLine($"Create new {CrudName} started");
@@ -266,7 +275,7 @@ public /*open*/ class Cruder : IFieldEditors
         }
 
         ItemData? defRecordWithStatus = GetDefRecordWithStatus(currentStatus);
-        ItemData? newRecord = InputRecordData(null, defRecordWithStatus);
+        ItemData? newRecord = await InputRecordData(null, defRecordWithStatus, cancellationToken);
 
         if (newRecord is null)
         {
@@ -274,12 +283,11 @@ public /*open*/ class Cruder : IFieldEditors
             return null;
         }
 
-        AddRecordWithKey(newRecordKey, newRecord);
+        await AddRecordWithKey(newRecordKey, newRecord, cancellationToken);
         _menuVersion++;
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        Save($"Create new {CrudName} {newRecordKey} Finished");
-
+        await Save($"Create new {CrudName} {newRecordKey} Finished", cancellationToken);
         //ყველაფერი კარგად დასრულდა
         return newRecordKey;
     }
@@ -290,7 +298,8 @@ public /*open*/ class Cruder : IFieldEditors
         return !nameInput.DoInput() ? null : nameInput.Text;
     }
 
-    public bool EditItemAllFieldsInSequence(string recordKey)
+    public async ValueTask<bool> EditItemAllFieldsInSequence(string recordKey,
+        CancellationToken cancellationToken = default)
     {
         if (!ContainsRecordWithKey(recordKey))
         {
@@ -317,7 +326,7 @@ public /*open*/ class Cruder : IFieldEditors
             }
         }
 
-        ItemData? newRecord = InputRecordData(recordKey);
+        ItemData? newRecord = await InputRecordData(recordKey, null, cancellationToken);
 
         if (newRecord is null)
         {
@@ -332,18 +341,18 @@ public /*open*/ class Cruder : IFieldEditors
                 return false;
             }
 
-            RemoveRecordWithKey(recordKey);
-            AddRecordWithKey(newRecordKey, newRecord);
+            await RemoveRecordWithKey(recordKey, cancellationToken);
+            await AddRecordWithKey(newRecordKey, newRecord, cancellationToken);
         }
         else
         {
-            UpdateRecordWithKey(recordKey, newRecord);
+            await UpdateRecordWithKey(recordKey, newRecord, cancellationToken);
         }
 
         _menuVersion++;
 
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
-        Save($"{CrudName} {newRecordKey} Updated");
+        await Save($"{CrudName} {newRecordKey} Updated", cancellationToken);
 
         //ყველაფერი კარგად დასრულდა
         return true;
@@ -407,8 +416,9 @@ public /*open*/ class Cruder : IFieldEditors
         return null;
     }
 
-    public virtual void Save(string message)
+    public virtual ValueTask Save(string message, CancellationToken cancellationToken = default)
     {
+        return ValueTask.CompletedTask;
     }
 
     public ItemData? GetItemByName(string itemName, bool writeErrorIfNotExists = true)
@@ -428,8 +438,8 @@ public /*open*/ class Cruder : IFieldEditors
         return null;
     }
 
-    public string? GetNameWithPossibleNewName(string fieldName, string? currentName, string? currentStatus = null,
-        bool useNone = false)
+    public async ValueTask<string?> GetNameWithPossibleNewName(string fieldName, string? currentName,
+        string? currentStatus = null, bool useNone = false, CancellationToken cancellationToken = default)
     {
         var listSet = new CliMenuSet();
 
@@ -456,13 +466,8 @@ public /*open*/ class Cruder : IFieldEditors
 
         if (selectedId == 0)
         {
-            string? newName = CreateNewRecord(currentStatus);
-            if (newName != null)
-            {
-                return newName;
-            }
-
-            throw new DataInputException($"{fieldName} does not created");
+            string? newName = await CreateNewRecord(currentStatus, cancellationToken);
+            return newName ?? throw new DataInputException($"{fieldName} does not created");
         }
 
         int index = selectedId - 1; // - oneMore;
@@ -479,7 +484,8 @@ public /*open*/ class Cruder : IFieldEditors
         return null;
     }
 
-    public bool ChangeRecordKey(string recordKey, string newRecordKey)
+    public async ValueTask<bool> ChangeRecordKey(string recordKey, string newRecordKey,
+        CancellationToken cancellationToken = default)
     {
         if (recordKey == newRecordKey)
         {
@@ -502,8 +508,8 @@ public /*open*/ class Cruder : IFieldEditors
             return false;
         }
 
-        RemoveRecordWithKey(recordKey);
-        AddRecordWithKey(newRecordKey, itemData);
+        await RemoveRecordWithKey(recordKey, cancellationToken);
+        await AddRecordWithKey(newRecordKey, itemData, cancellationToken);
         _menuVersion++;
         return true;
     }

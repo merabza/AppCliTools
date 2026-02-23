@@ -17,14 +17,14 @@ public sealed class EditParametersInSequenceCliMenuCommand : CliMenuCommand
         _parametersEditor = parametersEditor;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         if (!string.IsNullOrWhiteSpace(ParentMenuName))
         {
-            return ValueTask.FromResult(_parametersEditor.EditParametersInSequence());
+            return await _parametersEditor.EditParametersInSequence(cancellationToken);
         }
 
         StShared.WriteErrorLine("Empty Parent Menu Name ", true);
-        return ValueTask.FromResult(false);
+        return false;
     }
 }
