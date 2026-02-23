@@ -1,5 +1,7 @@
 ﻿// ReSharper disable ConvertToPrimaryConstructor
 
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibFileParameters.Models;
@@ -16,9 +18,10 @@ public sealed class ArchiverTypeFieldEditor : EnumFieldEditor<EArchiveType>
         _cruder = cruder;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
-        base.UpdateField(recordKey, recordForUpdate);
+        await base.UpdateField(recordKey, recordForUpdate, cancellationToken);
         EArchiveType currentArchiveType = GetValue(recordForUpdate);
         bool enable = currentArchiveType != EArchiveType.ZipClass;
         _cruder.EnableFieldByName(nameof(ArchiverData.CompressProgramPatch), enable);

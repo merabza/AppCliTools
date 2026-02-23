@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibDataInput;
 using ParametersManagement.LibFileParameters.Models;
@@ -13,7 +15,8 @@ public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
     {
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         var archiveType = GetValue<EArchiveType>(recordForUpdate, nameof(ArchiverData.Type));
 
@@ -23,5 +26,6 @@ public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
                 .CurrentCulture);
 
         SetValue(recordForUpdate, Inputer.InputText(FieldName, GetValue(recordForUpdate, extensionCandidate)));
+        return ValueTask.CompletedTask;
     }
 }

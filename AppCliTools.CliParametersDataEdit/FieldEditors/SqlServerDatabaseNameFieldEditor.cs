@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.FieldEditors;
@@ -42,7 +43,8 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         _serverPassPropertyName = serverPassPropertyName;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -73,13 +75,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             DbKit dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
             DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
 
-            // ReSharper disable once using
-            // ReSharper disable once DisposableConstructor
-            using var cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            token.ThrowIfCancellationRequested();
-
-            OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseInfosResult = dc.GetDatabaseInfos(token).Result;
+            OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseInfosResult = await dc.GetDatabaseInfos(cancellationToken);
 
             var databaseInfos = new List<DatabaseInfoModel>();
             if (getDatabaseInfosResult.IsT0)

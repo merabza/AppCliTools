@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.FieldEditors;
@@ -39,7 +40,8 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
         _canUseNewDatabaseName = canUseNewDatabaseName;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -52,15 +54,9 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             var apiClients = new ApiClients(acParameters.ApiClients);
             var databaseInfos = new List<DatabaseInfoModel>();
 
-            // ReSharper disable once using
-            // ReSharper disable once DisposableConstructor
-            using var cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            token.ThrowIfCancellationRequested();
-
-            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
-                .CreateDatabaseManager(_logger, true, databaseServerConnectionName, databaseServerConnections,
-                    apiClients, _httpClientFactory, null, null, token).Result;
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+                await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, databaseServerConnectionName,
+                    databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
 
             if (createDatabaseManagerResult.IsT1)
             {
@@ -69,7 +65,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             }
 
             OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseNamesResult =
-                createDatabaseManagerResult.AsT0.GetDatabaseNames(token).Result;
+                await createDatabaseManagerResult.AsT0.GetDatabaseNames(cancellationToken);
             if (getDatabaseNamesResult.IsT0)
             {
                 databaseInfos = getDatabaseNamesResult.AsT0;

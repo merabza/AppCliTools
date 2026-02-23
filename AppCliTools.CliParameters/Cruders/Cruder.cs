@@ -256,7 +256,7 @@ public /*open*/ class Cruder : IFieldEditors
         if (!_fieldKeyFromItem)
         {
             //ახალი ჩანაწერის სახელის შეტანა პროგრამაში
-            newRecordKey = InputNewRecordName();
+            newRecordKey = await InputNewRecordName(cancellationToken);
             if (string.IsNullOrWhiteSpace(newRecordKey))
             {
                 return null;
@@ -292,10 +292,10 @@ public /*open*/ class Cruder : IFieldEditors
         return newRecordKey;
     }
 
-    protected virtual string? InputNewRecordName()
+    protected virtual ValueTask<string?> InputNewRecordName(CancellationToken cancellationToken = default)
     {
         var nameInput = new TextDataInput($"New {CrudName} Name");
-        return !nameInput.DoInput() ? null : nameInput.Text;
+        return !nameInput.DoInput() ? ValueTask.FromResult<string?>(null) : ValueTask.FromResult(nameInput.Text);
     }
 
     public async ValueTask<bool> EditItemAllFieldsInSequence(string recordKey,

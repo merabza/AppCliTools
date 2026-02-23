@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
 using DatabaseTools.DbTools.Models;
@@ -35,7 +37,9 @@ public sealed class DatabaseFoldersSetCruder : Cruder
         return _currentValuesDictionary.ContainsKey(recordKey);
     }
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    public override async ValueTask UpdateRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
+
     {
         if (newRecord is not DatabaseFoldersSet newSmartSchemaDetail)
         {
@@ -50,10 +54,12 @@ public sealed class DatabaseFoldersSetCruder : Cruder
         cv.Backup = newSmartSchemaDetail.Backup;
         cv.Data = newSmartSchemaDetail.Data;
         cv.DataLog = newSmartSchemaDetail.DataLog;
-        _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} saved");
+        await _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} saved", null,
+            cancellationToken);
     }
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    protected override async ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         if (newRecord is not DatabaseFoldersSet sid)
         {
@@ -61,13 +67,16 @@ public sealed class DatabaseFoldersSetCruder : Cruder
         }
 
         _currentValuesDictionary.Add(recordKey, sid);
-        _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} Added");
+        await _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} Added", null,
+            cancellationToken);
     }
 
-    protected override void RemoveRecordWithKey(string recordKey)
+    protected override async ValueTask RemoveRecordWithKey(string recordKey,
+        CancellationToken cancellationToken = default)
     {
         _currentValuesDictionary.Remove(recordKey);
-        _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} Removed");
+        await _parametersManager.Save(_parametersManager.Parameters, $"record {recordKey} Removed", null,
+            cancellationToken);
     }
 
     public override List<string> GetKeys()

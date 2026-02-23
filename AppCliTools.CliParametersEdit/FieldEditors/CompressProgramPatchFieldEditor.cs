@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliParameters.FieldEditors;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliTools.ArchiverTools;
 using AppCliTools.LibMenuInput;
 using ParametersManagement.LibFileParameters.Models;
@@ -12,7 +14,8 @@ public sealed class CompressProgramPatchFieldEditor : FilePathFieldEditor
     {
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         string? fileExtension = GetValue<string>(recordForUpdate, nameof(ArchiverData.FileExtension));
 
@@ -30,5 +33,6 @@ public sealed class CompressProgramPatchFieldEditor : FilePathFieldEditor
         }
 
         SetValue(recordForUpdate, MenuInputer.InputFolderPath(FieldName, GetValue(recordForUpdate, def)));
+        return ValueTask.CompletedTask;
     }
 }

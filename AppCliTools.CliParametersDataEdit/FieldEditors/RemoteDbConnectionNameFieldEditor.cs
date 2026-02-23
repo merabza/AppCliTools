@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibDataInput;
@@ -34,7 +35,8 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         _databaseApiClientNameFieldName = databaseApiClientNameFieldName;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -43,14 +45,9 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
-            // ReSharper disable once using
-            // ReSharper disable once DisposableConstructor
-            using var cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            token.ThrowIfCancellationRequested();
-            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
-                .CreateRemoteDatabaseManager(_logger, _httpClientFactory, true, databaseApiClientName, apiClients, null,
-                    null, token).Result;
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+                await DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger, _httpClientFactory, true,
+                    databaseApiClientName, apiClients, null, null, cancellationToken);
 
             var databaseConnectionNames = new List<string>();
             if (createDatabaseManagerResult.IsT1)
@@ -61,7 +58,7 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
             {
                 DatabaseApiClient apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
                 OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult =
-                    apiClient.GetDatabaseConnectionNames(token).Result;
+                    await apiClient.GetDatabaseConnectionNames(cancellationToken);
                 if (getDatabaseFoldersSetsResult.IsT0)
                 {
                     databaseConnectionNames = getDatabaseFoldersSetsResult.AsT0;

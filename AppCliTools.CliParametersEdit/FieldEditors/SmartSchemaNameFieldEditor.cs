@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliParameters.FieldEditors;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersEdit.Cruders;
 using ParametersManagement.LibParameters;
 
@@ -15,9 +17,12 @@ public sealed class SmartSchemaNameFieldEditor : FieldEditor<string>
         _parametersManager = parametersManager;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         var smartSchemaCruder = SmartSchemaCruder.Create(_parametersManager);
-        SetValue(recordForUpdate, smartSchemaCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate)));
+        SetValue(recordForUpdate,
+            await smartSchemaCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate), null, false,
+                cancellationToken));
     }
 }

@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliParameters.FieldEditors;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibMenuInput;
 
 namespace AppCliTools.CliParametersEdit.FieldEditors;
@@ -11,8 +13,10 @@ public sealed class FileStoragePathFieldEditor : FieldEditor<string>
     {
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         SetValue(recordForUpdate, MenuInputer.InputFolderPath(FieldName, GetValue(recordForUpdate)));
+        return ValueTask.CompletedTask;
     }
 }

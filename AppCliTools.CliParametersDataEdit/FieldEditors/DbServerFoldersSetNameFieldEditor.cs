@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.FieldEditors;
@@ -38,7 +39,8 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
         //_canUseNewDatabaseName = canUseNewDatabaseName;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -65,14 +67,9 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 return;
             }
 
-            // ReSharper disable once using
-            // ReSharper disable once DisposableConstructor
-            using var cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            token.ThrowIfCancellationRequested();
-            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult = DatabaseManagersFactory
-                .CreateDatabaseManager(_logger, true, databaseServerConnectionData, apiClients, _httpClientFactory,
-                    null, null, token).Preserve().Result;
+            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+                await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, databaseServerConnectionData,
+                    apiClients, _httpClientFactory, null, null, cancellationToken);
             List<string>? databaseFoldersSetNames =
                 databaseServerConnectionData.DatabaseFoldersSets?.Keys.ToList() ?? [];
 
@@ -82,8 +79,8 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             }
             else
             {
-                OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult = createDatabaseManagerResult.AsT0
-                    .GetDatabaseFoldersSetNames(token).Result;
+                OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.AsT0
+                    .GetDatabaseFoldersSetNames(cancellationToken);
                 if (getDatabaseFoldersSetsResult.IsT0)
                 {
                     databaseFoldersSetNames = getDatabaseFoldersSetsResult.AsT0;

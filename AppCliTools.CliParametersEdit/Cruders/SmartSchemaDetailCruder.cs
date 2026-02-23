@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibFileParameters.Models;
@@ -30,37 +32,41 @@ public sealed class SmartSchemaDetailCruder : Cruder
         return _currentValuesList.Select(s => s.PeriodType.ToString()).Contains(recordKey);
     }
 
-    protected override void RemoveRecordWithKey(string recordKey)
+    protected override ValueTask RemoveRecordWithKey(string recordKey, CancellationToken cancellationToken = default)
     {
         SmartSchemaDetail? rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
         if (rbk != null)
         {
             _currentValuesList.Remove(rbk);
         }
+
+        return ValueTask.CompletedTask;
     }
 
-    public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+    public override ValueTask UpdateRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
-        if (newRecord is not SmartSchemaDetail newSmartSchemaDetail)
+        if (newRecord is not SmartSchemaDetail newSmartSchemaDetail ||
+            recordKey != newSmartSchemaDetail.PeriodType.ToString())
         {
-            return;
-        }
-
-        if (recordKey != newSmartSchemaDetail.PeriodType.ToString())
-        {
-            return;
+            return ValueTask.CompletedTask;
         }
 
         SmartSchemaDetail? rbk = _currentValuesList.SingleOrDefault(w => w.PeriodType.ToString() == recordKey);
         rbk?.PreserveCount = newSmartSchemaDetail.PreserveCount;
+
+        return ValueTask.CompletedTask;
     }
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    protected override ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         if (newRecord is SmartSchemaDetail sid)
         {
             _currentValuesList.Add(sid);
         }
+
+        return ValueTask.CompletedTask;
     }
 
     protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)

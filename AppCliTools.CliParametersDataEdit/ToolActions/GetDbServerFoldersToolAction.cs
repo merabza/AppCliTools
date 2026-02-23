@@ -73,7 +73,7 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
 
         dbCon.SetDefaultFolders(dbInfo);
 
-        _parametersManager.Save(parameters, "folders Changed and saved");
+        await _parametersManager.Save(parameters, "folders Changed and saved", null, cancellationToken);
 
         return true;
     }

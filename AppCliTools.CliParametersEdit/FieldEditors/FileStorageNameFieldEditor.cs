@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliParameters.FieldEditors;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersEdit.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
@@ -18,13 +20,16 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
         _parametersManager = parametersManager;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate)
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         string? currentFileStorageName = GetValue(recordForUpdate);
 
         var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
 
-        SetValue(recordForUpdate, fileStorageCruder.GetNameWithPossibleNewName(FieldName, currentFileStorageName));
+        SetValue(recordForUpdate,
+            await fileStorageCruder.GetNameWithPossibleNewName(FieldName, currentFileStorageName, null, false,
+                cancellationToken));
     }
 
     public override string GetValueStatus(object? record)

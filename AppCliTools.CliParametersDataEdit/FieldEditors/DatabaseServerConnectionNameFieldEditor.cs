@@ -1,4 +1,6 @@
 ﻿using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersDataEdit.Cruders;
 using Microsoft.Extensions.Logging;
@@ -24,33 +26,21 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         _useNone = useNone;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         string? currentDatabaseServerConnectionName = GetValue(recordForUpdate);
-
-        //if (currentDatabaseServerConnectionName is null)
-        //    throw new Exception("currentDatabaseServerConnectionName is null");
 
         var databaseServerConnectionCruder =
             DatabaseServerConnectionCruder.Create(_logger, _httpClientFactory, _parametersManager);
 
         SetValue(recordForUpdate,
-            databaseServerConnectionCruder.GetNameWithPossibleNewName(FieldName, currentDatabaseServerConnectionName,
-                null, _useNone));
+            await databaseServerConnectionCruder.GetNameWithPossibleNewName(FieldName,
+                currentDatabaseServerConnectionName, null, _useNone, cancellationToken));
     }
 
     public override string GetValueStatus(object? record)
     {
-        //string? val = null;
-        //try
-        //{
-        //    val = GetValue(record);
-        //}
-        //catch
-        //{
-        //    // ignored
-        //}
-
         string? val = GetValue(record);
 
         if (val is null)

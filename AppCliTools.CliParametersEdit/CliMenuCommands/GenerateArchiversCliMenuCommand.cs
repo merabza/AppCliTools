@@ -19,19 +19,19 @@ public sealed class GenerateArchiversCliMenuCommand : CliMenuCommand
         _parametersManager = parametersManager;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         var parameters = (IParametersWithArchivers)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Archivers, are you sure?", false, false))
         {
-            return ValueTask.FromResult(false);
+            return false;
         }
 
         StandardArchiversGenerator.Generate(true, _parametersManager);
 
         //შენახვა
-        _parametersManager.Save(parameters, "Archivers generated success");
-        return ValueTask.FromResult(true);
+        await _parametersManager.Save(parameters, "Archivers generated success", null, cancellationToken);
+        return true;
     }
 }
