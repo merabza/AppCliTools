@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.Cruders;
@@ -436,11 +438,13 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         public object? LastRecordForUpdate { get; private set; }
         public string? StatusToReturn { get; set; } = "Test Status";
 
-        public override void UpdateField(string? recordKey, object recordForUpdate)
+        public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
+            CancellationToken cancellationToken = default)
         {
             UpdateFieldCalled = true;
             LastRecordKey = recordKey;
             LastRecordForUpdate = recordForUpdate;
+            return ValueTask.CompletedTask;
         }
 
         public override string GetValueStatus(object? record)
@@ -481,19 +485,25 @@ public sealed class FieldEditorMenuCliMenuCommandTests
             return true;
         }
 
-        public override void UpdateRecordWithKey(string recordKey, ItemData newRecord)
+        public override ValueTask UpdateRecordWithKey(string recordKey, ItemData newRecord,
+            CancellationToken cancellationToken = default)
         {
             UpdateRecordWithKeyCalled = true;
             LastRecordKey = recordKey;
             LastNewRecord = newRecord;
+            return ValueTask.CompletedTask;
         }
 
-        protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+        protected override ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+            CancellationToken cancellationToken = default)
         {
+            return ValueTask.CompletedTask;
         }
 
-        protected override void RemoveRecordWithKey(string recordKey)
+        protected override ValueTask RemoveRecordWithKey(string recordKey,
+            CancellationToken cancellationToken = default)
         {
+            return ValueTask.CompletedTask;
         }
 
         public override bool CheckValidation(ItemData item)
@@ -503,10 +513,11 @@ public sealed class FieldEditorMenuCliMenuCommandTests
             return ValidationResult;
         }
 
-        public override void Save(string message)
+        public override ValueTask Save(string message, CancellationToken cancellationToken = default)
         {
             SaveCalled = true;
             LastSaveMessage = message;
+            return ValueTask.CompletedTask;
         }
 
         protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)

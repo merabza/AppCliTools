@@ -1,4 +1,6 @@
-﻿using AppCliTools.CliParameters.FieldEditors;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersExcludeSetsEdit.Cruders;
 using ParametersManagement.LibParameters;
 
@@ -17,10 +19,12 @@ public sealed class ExcludeSetNameFieldEditor : FieldEditor<string>
         _useNone = useNone;
     }
 
-    public override void UpdateField(string? recordKey, object recordForUpdate) //, object currentRecord
+    public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
+        CancellationToken cancellationToken = default)
     {
         var excludeSetCruder = ExcludeSetCruder.Create(_parametersManager);
         SetValue(recordForUpdate,
-            excludeSetCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate), null, _useNone));
+            await excludeSetCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate), null, _useNone,
+                cancellationToken));
     }
 }
