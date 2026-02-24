@@ -19,20 +19,20 @@ public sealed class GenerateExcludeSetsCommand : CliMenuCommand
         _parametersManager = parametersManager;
     }
 
-    protected override ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
+    protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
 
         if (!Inputer.InputBool("This process will change Exclude Sets, are you sure?", false, false))
         {
-            return new ValueTask<bool>(false);
+            return false;
         }
 
         var standardExcludeSetsGenerator = new StandardExcludeSetsGenerator(_parametersManager);
         standardExcludeSetsGenerator.Generate();
 
         //შენახვა
-        _parametersManager.Save(parameters, "ExcludeSets generated success");
-        return new ValueTask<bool>(true);
+        await _parametersManager.Save(parameters, "ExcludeSets generated success", null, cancellationToken);
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
@@ -304,7 +305,8 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
         public IParameters Parameters { get; set; }
 
-        public ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null)
+        public ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null,
+            CancellationToken cancellationToken = default)
         {
             // No-op for testing
             return ValueTask.CompletedTask;

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParametersEdit.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
@@ -24,9 +25,9 @@ public sealed class FileStorageCruderNameCounter
         _currentName = currentName;
     }
 
-    public ValueTask<string?> Count()
+    public ValueTask<string?> Count(CancellationToken cancellationToken = default)
     {
         var fileStorageCruder = FileStorageCruder.Create(_logger, _parametersManager);
-        return fileStorageCruder.GetNameWithPossibleNewName(_fieldName, _currentName);
+        return fileStorageCruder.GetNameWithPossibleNewName(_fieldName, _currentName, null, false, cancellationToken);
     }
 }

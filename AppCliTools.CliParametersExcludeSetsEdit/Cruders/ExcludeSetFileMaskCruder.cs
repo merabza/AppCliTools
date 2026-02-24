@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliParameters;
 using AppCliTools.CliParameters.Cruders;
 using ParametersManagement.LibFileParameters.Interfaces;
@@ -45,21 +47,24 @@ public sealed class ExcludeSetFileMaskCruder : Cruder
         return fileMasks.Contains(recordKey);
     }
 
-    protected override void RemoveRecordWithKey(string recordKey)
+    protected override ValueTask RemoveRecordWithKey(string recordKey, CancellationToken cancellationToken = default)
     {
         List<string> fileMasks = GetFileMasks();
         fileMasks.Remove(recordKey);
+        return ValueTask.CompletedTask;
     }
 
-    protected override void AddRecordWithKey(string recordKey, ItemData newRecord)
+    protected override ValueTask AddRecordWithKey(string recordKey, ItemData newRecord,
+        CancellationToken cancellationToken = default)
     {
         var parameters = (IParametersWithExcludeSets)_parametersManager.Parameters;
         Dictionary<string, ExcludeSet> excludeSets = parameters.ExcludeSets;
         if (!excludeSets.TryGetValue(_excludeSetName, out ExcludeSet? excludeSet))
         {
-            return;
+            return ValueTask.CompletedTask;
         }
 
         excludeSet.FolderFileMasks.Add(recordKey);
+        return ValueTask.CompletedTask;
     }
 }
