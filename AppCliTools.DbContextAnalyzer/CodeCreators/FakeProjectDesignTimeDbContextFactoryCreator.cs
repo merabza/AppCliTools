@@ -29,7 +29,7 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
     {
         string projectMigrationProjectName = _dbProjectNamespace + "Migration"; //GeoModelDbMigration
         string designTimeDbContextFactoryClassName =
-            $"{_dbProjectNamespace}DesignTimeDbContextFactory"; //GeoModelDesignTimeDbContextFactory
+            $"{_dbProjectNamespace.Remove('.')}DesignTimeDbContextFactory"; //GeoModelDesignTimeDbContextFactory
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
             $"using {_dbProjectNamespace}", "using BackendCarcass.Database", string.Empty,
             $"namespace {_projectNamespace}", string.Empty,
