@@ -22,7 +22,8 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
             "using BackendCarcass.MasterData.Models", "using Microsoft.AspNetCore.Identity",
             "using ParametersManagement.LibDatabaseParameters", $"using Seed{par.DbProjectNamespace}",
             $"using {par.DbProjectNamespace}DataSeeding.DataSeeding",
-            $"using {par.DbProjectNamespace}DataSeeding.NewDataSeeding", "using SystemTools.DomainShared.Repositories");
+            $"using {par.DbProjectNamespace}DataSeeding.NewDataSeeding", "using SystemTools.DomainShared.Repositories",
+            $"using {par.SeedProjectNamespace}");
 
         var fcbGetJsonMainCommands = new FlatCodeBlock(string.Empty,
             new OneLineComment(" ReSharper disable once using"),
