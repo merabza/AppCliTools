@@ -9,13 +9,14 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
     private readonly string _connectionStringParameterName;
     private readonly string _dbProjectNamespace;
     private readonly string _parametersFileName;
+    private readonly string _scaffoldSeederProjectName;
     private readonly string _projectDbContextClassName;
     private readonly string _projectNamespace;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public FakeProjectDesignTimeDbContextFactoryCreator(ILogger logger, string projectPlacePath,
         string dbProjectNamespace, string projectNamespace, string projectDbContextClassName,
-        string connectionStringParameterName, string parametersFileName) : base(logger, projectPlacePath,
+        string connectionStringParameterName, string parametersFileName, string scaffoldSeederProjectName) : base(logger, projectPlacePath,
         $"{dbProjectNamespace}DesignTimeDbContextFactory.cs")
     {
         _dbProjectNamespace = dbProjectNamespace;
@@ -23,11 +24,12 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
         _projectDbContextClassName = projectDbContextClassName;
         _connectionStringParameterName = connectionStringParameterName;
         _parametersFileName = parametersFileName;
+        _scaffoldSeederProjectName = scaffoldSeederProjectName;
     }
 
     public override void CreateFileStructure()
     {
-        string projectMigrationProjectName = _dbProjectNamespace + "Migration"; //GeoModelDbMigration
+        string projectMigrationProjectName = _scaffoldSeederProjectName + "DbMigration"; //GeoModelDbMigration
         string designTimeDbContextFactoryClassName =
             $"{_dbProjectNamespace.Replace(".", null)}DesignTimeDbContextFactory"; //GeoModelDesignTimeDbContextFactory
         var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
