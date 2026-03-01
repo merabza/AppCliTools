@@ -20,8 +20,7 @@ public sealed class SeedProjectDbProgramCreator(CreatorCreatorParameters par, IL
 
         var fcbSeedProjectDbProgramCreatorUsing = new FlatCodeBlock("using BackendCarcass.DataSeeding",
             "using BackendCarcass.MasterData.Models", "using Microsoft.AspNetCore.Identity",
-            "using ParametersManagement.LibDatabaseParameters",
-            $"using {par.ProjectPrefix}DataSeeding.DataSeeding",
+            "using ParametersManagement.LibDatabaseParameters", $"using {par.ProjectPrefix}DataSeeding.DataSeeding",
             $"using {par.ProjectPrefix}DataSeeding.NewDataSeeding", "using SystemTools.DomainShared.Repositories",
             $"using {par.SeedProjectNamespace}");
 

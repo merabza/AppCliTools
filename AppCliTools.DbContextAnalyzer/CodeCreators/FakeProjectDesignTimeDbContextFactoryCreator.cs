@@ -16,8 +16,8 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
     // ReSharper disable once ConvertToPrimaryConstructor
     public FakeProjectDesignTimeDbContextFactoryCreator(ILogger logger, string projectPlacePath,
         string dbProjectNamespace, string projectNamespace, string projectDbContextClassName,
-        string connectionStringParameterName, string parametersFileName, string scaffoldSeederProjectName) : base(logger, projectPlacePath,
-        $"{dbProjectNamespace}DesignTimeDbContextFactory.cs")
+        string connectionStringParameterName, string parametersFileName, string scaffoldSeederProjectName) : base(
+        logger, projectPlacePath, $"{dbProjectNamespace}DesignTimeDbContextFactory.cs")
     {
         _dbProjectNamespace = dbProjectNamespace;
         _projectNamespace = projectNamespace;

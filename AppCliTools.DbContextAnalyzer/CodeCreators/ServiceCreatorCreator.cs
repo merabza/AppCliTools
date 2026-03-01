@@ -19,8 +19,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
     public override void CreateFileStructure()
     {
         string dataSeedingProjectName = $"{_par.ProjectPrefix}DataSeeding.DataSeeding"; //GeoModelDataSeeding
-        string newDataSeedingProjectName =
-            $"{_par.ProjectPrefix}DataSeeding.NewDataSeeding"; //GeoModelNewDataSeeding
+        string newDataSeedingProjectName = $"{_par.ProjectPrefix}DataSeeding.NewDataSeeding"; //GeoModelNewDataSeeding
         string projectDbProjectName = _par.DbProjectNamespace; // + "Db"; //GeoModelDb
         string repositoryClassName = $"{_par.ProjectPrefixShort}DataSeederRepository"; //GmDataSeederRepository
         string repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
