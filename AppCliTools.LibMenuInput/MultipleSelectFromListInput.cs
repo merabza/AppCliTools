@@ -33,8 +33,7 @@ public sealed class MultipleSelectFromListInput : DataInput
                 listSet.AddMenuItem(new MultipleSelectFromListElementCliMenuCommand(listItem));
             }
 
-            string key = ConsoleKey.Escape.Value().ToUpperInvariant();
-            listSet.AddMenuItem(key, new CliMenuCommand("(Exit without saving)"), key.Length);
+            listSet.AddEscapeCommand(new CliMenuCommand("(Exit without saving)"));
 
             listSet.Show();
             ConsoleKeyInfo ch = Console.ReadKey(true);

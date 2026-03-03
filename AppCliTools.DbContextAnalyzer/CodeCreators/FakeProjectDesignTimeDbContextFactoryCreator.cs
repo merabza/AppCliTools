@@ -9,9 +9,9 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
     private readonly string _connectionStringParameterName;
     private readonly string _dbProjectNamespace;
     private readonly string _parametersFileName;
-    private readonly string _scaffoldSeederProjectName;
     private readonly string _projectDbContextClassName;
     private readonly string _projectNamespace;
+    private readonly string _scaffoldSeederProjectName;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public FakeProjectDesignTimeDbContextFactoryCreator(ILogger logger, string projectPlacePath,

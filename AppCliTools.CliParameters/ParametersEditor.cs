@@ -7,6 +7,7 @@ using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibDataInput;
+using AppCliTools.LibMenuInput;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
@@ -69,9 +70,7 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
         FillDetailsSubMenu(parametersEditorMenuSet);
 
-        string key = ConsoleKey.Escape.Value().ToUpperInvariant();
-        parametersEditorMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null),
-            key.Length);
+        parametersEditorMenuSet.AddEscapeCommand();
 
         return parametersEditorMenuSet;
     }

@@ -69,14 +69,14 @@ public sealed class CliMenuSet
             return consoleKeyInfo.KeyChar - '0';
         }
 
-        if (IsInRange(consoleKeyInfo.KeyChar, 'a', '~'))
+        if (IsInRange(consoleKeyInfo.KeyChar, 'a', 'z'))
         {
             return consoleKeyInfo.KeyChar - 'a' + 10;
         }
 
         if (IsInRange(consoleKeyInfo.KeyChar, 'A', 'Z'))
         {
-            return consoleKeyInfo.KeyChar - 'A' + 40;
+            return consoleKeyInfo.KeyChar - 'A' + 36;
         }
 
         return -1;
@@ -228,9 +228,9 @@ public sealed class CliMenuSet
         return keyId switch
         {
             < 10 => keyId.ToString(CultureInfo.InvariantCulture),
-            < 40 => ((char)('a' + (keyId - 10))).ToString(),
-            < 70 => ((char)('A' + (keyId - 40))).ToString(),
-            < 103 => ((char)('ა' + (keyId - 70))).ToString(),
+            < 36 => ((char)('a' + (keyId - 10))).ToString(),
+            < 62 => ((char)('A' + (keyId - 36))).ToString(),
+            //< 103 => ((char)('ა' + (keyId - 70))).ToString(),
             _ => null
         };
     }

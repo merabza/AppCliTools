@@ -211,9 +211,7 @@ public /*open*/ class Cruder : IFieldEditors
 
         FillListMenuAdditional(_cruderSubMenuSet);
 
-        // string key = ConsoleKey.Escape.Value().ToLower();
-        string key = ConsoleKey.Escape.Value().ToUpperInvariant();
-        _cruderSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand("Exit to level up menu", null), key.Length);
+        _cruderSubMenuSet.AddEscapeCommand();
 
         return _cruderSubMenuSet;
     }
@@ -403,10 +401,7 @@ public /*open*/ class Cruder : IFieldEditors
 
         FillDetailsSubMenu(itemSubMenuSet, itemName);
 
-        // string key = ConsoleKey.Escape.Value().ToLower();
-        string key = ConsoleKey.Escape.Value().ToUpperInvariant();
-        itemSubMenuSet.AddMenuItem(key, new ExitToMainMenuCliMenuCommand($"Exit to {CrudNamePlural} menu", null),
-            key.Length);
+        itemSubMenuSet.AddEscapeCommand($"Exit to {CrudNamePlural} menu");
 
         return itemSubMenuSet;
     }
