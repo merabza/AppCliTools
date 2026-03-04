@@ -42,6 +42,23 @@ public sealed class SelectFromMenuListInput : DataInput
                     return true;
                 }
 
+                EMenuAction menuAction = SelectedCliMenuItem.CliMenuCommand.MenuActionOnBodySuccess;
+
+                switch (menuAction)
+                {
+                    case EMenuAction.PageUp:
+                        _listSet.PageUp();
+                        break;
+                    case EMenuAction.PageDown:
+                        _listSet.PageDown();
+                        break;
+                }
+
+                if (menuAction != EMenuAction.Nothing)
+                {
+                    continue;
+                }
+
                 Id = menuItem.CountedId;
                 Console.Write(key);
                 Console.WriteLine();

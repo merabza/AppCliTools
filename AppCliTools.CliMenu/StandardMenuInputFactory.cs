@@ -1,10 +1,9 @@
 ﻿using System;
-using AppCliTools.CliMenu;
+using AppCliTools.CliMenu.CliMenuCommands;
 using AppCliTools.LibDataInput;
-using AppCliTools.LibMenuInput.CliMenuCommands;
 using SystemTools.SystemToolsShared;
 
-namespace AppCliTools.LibMenuInput;
+namespace AppCliTools.CliMenu;
 
 public static class StandardMenuInputFactory
 {

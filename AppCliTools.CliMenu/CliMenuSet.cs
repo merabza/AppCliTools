@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using AppCliTools.CliMenu.CliMenuCommands;
+using AppCliTools.LibDataInput;
 using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliMenu;
@@ -9,6 +11,9 @@ namespace AppCliTools.CliMenu;
 public sealed class CliMenuSet
 {
     private readonly List<string> _errorMessages = [];
+    private int _currentPageNumber;
+    private int _pageMaxSize;
+    private int _pagesCount;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public CliMenuSet(string? caption = null, int menuVersion = 0)
@@ -22,6 +27,7 @@ public sealed class CliMenuSet
     //public string Name => _caption ?? string.Empty;
 
     private List<CliMenuItem> MenuItems { get; } = [];
+    private List<CliMenuItem> MenuItemsShown { get; set; } = [];
     public CliMenuSet? ParentMenu { get; set; }
     public string? Caption { get; }
 
@@ -35,14 +41,14 @@ public sealed class CliMenuSet
         int keyId = GetNoKeyId(consoleKeyInfo);
         if (keyId > -1)
         {
-            List<CliMenuItem> menuItemsWithNoKey = MenuItems.Where(w => w.Key == null).ToList();
+            List<CliMenuItem> menuItemsWithNoKey = MenuItemsShown.Where(w => w.Key == null).ToList();
             if (menuItemsWithNoKey.Count <= keyId)
             {
                 return null;
             }
 
             menuItemsWithNoKey[keyId].CountedKey = consoleKeyInfo.KeyChar.ToString();
-            menuItemsWithNoKey[keyId].CountedId = keyId;
+            menuItemsWithNoKey[keyId].CountedId = _currentPageNumber * _pageMaxSize + keyId;
             return menuItemsWithNoKey[keyId];
         }
 
@@ -50,7 +56,7 @@ public sealed class CliMenuSet
             ? consoleKeyInfo.KeyChar.ToString()
             : consoleKeyInfo.Key.ToString().ToLower(CultureInfo.CurrentCulture);
 
-        CliMenuItem? menuItem = MenuItems.SingleOrDefault(w =>
+        CliMenuItem? menuItem = MenuItemsShown.SingleOrDefault(w =>
             w.Key != null && w.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
         if (menuItem == null)
         {
@@ -109,6 +115,8 @@ public sealed class CliMenuSet
 
     public void Show(bool clearBefore = true)
     {
+        CountPageMaxSizeAndCount();
+
         if (clearBefore)
         {
             Console.Clear();
@@ -122,7 +130,36 @@ public sealed class CliMenuSet
 
         Console.WriteLine();
 
-        foreach (CliMenuItem menuItem in MenuItems)
+        if (_currentPageNumber < 0)
+        {
+            _currentPageNumber = 0;
+        }
+
+        if (_currentPageNumber >= _pagesCount)
+        {
+            _currentPageNumber = _pagesCount - 1;
+        }
+
+        MenuItemsShown = MenuItems.Where(w => w.Key is null).Skip(_currentPageNumber * _pageMaxSize).Take(_pageMaxSize)
+            .ToList();
+        if (_pagesCount > 1 && _currentPageNumber > 0)
+        {
+            string key = ConsoleKey.PageUp.Value().Pascalize();
+            MenuItemsShown.Add(new CliMenuItem(key, new PageUpMenuCliMenuCommand(), -1));
+        }
+
+        if (_currentPageNumber < _pagesCount - 1)
+        {
+            string key = ConsoleKey.PageDown.Value().Pascalize();
+            MenuItemsShown.Add(new CliMenuItem(key, new PageDownMenuCliMenuCommand(), -1));
+        }
+
+        foreach (CliMenuItem menuItem in MenuItems.Where(w => w.Key is not null))
+        {
+            MenuItemsShown.Add(menuItem);
+        }
+
+        foreach (CliMenuItem menuItem in MenuItemsShown)
         {
             menuItem.CliMenuCommand.CountStatus();
         }
@@ -130,11 +167,11 @@ public sealed class CliMenuSet
         int width = Console.WindowWidth - 6;
         int max1 = 0;
         int max2 = 0;
-        if (MenuItems.Any(w => w.CliMenuCommand.StatusView == EStatusView.Table))
+        if (MenuItemsShown.Any(w => w.CliMenuCommand.StatusView == EStatusView.Table))
         {
-            max1 = MenuItems.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
+            max1 = MenuItemsShown.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
                 .Max(m => m.MenuItemName.Length);
-            max2 = MenuItems.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
+            max2 = MenuItemsShown.Where(w => w.CliMenuCommand.StatusView == EStatusView.Table)
                 .Max(m => m.CliMenuCommand.StatusString?.Length ?? 0);
             double k = (max1 + max2 + 3.0) / width;
             if (k > 1)
@@ -145,7 +182,7 @@ public sealed class CliMenuSet
         }
 
         int menuId = 0;
-        foreach (CliMenuItem menuItem in MenuItems)
+        foreach (CliMenuItem menuItem in MenuItemsShown)
         {
             string? key = menuItem.Key;
             if (key == null)
@@ -208,6 +245,18 @@ public sealed class CliMenuSet
         Console.Write("enter your choice: ");
     }
 
+    private void CountPageMaxSizeAndCount()
+    {
+        List<CliMenuItem> menuItemsWithNoKey = MenuItems.Where(w => w.Key is null).ToList();
+        _pageMaxSize = Console.WindowHeight - 7 - MenuItems.Count + menuItemsWithNoKey.Count;
+        if (_pageMaxSize > 62)
+        {
+            _pageMaxSize = 62;
+        }
+
+        _pagesCount = (int)Math.Ceiling((double)menuItemsWithNoKey.Count / _pageMaxSize);
+    }
+
     public void AddMenuItem(CliMenuCommand menuCommand, int useId = -1)
     {
         var menuItem = new CliMenuItem(menuCommand, useId);
@@ -254,5 +303,17 @@ public sealed class CliMenuSet
         {
             cliMenuItem.SetMenuSet(this);
         }
+    }
+
+    public void PageUp()
+    {
+        _currentPageNumber--;
+        Show();
+    }
+
+    public void PageDown()
+    {
+        _currentPageNumber++;
+        Show();
     }
 }

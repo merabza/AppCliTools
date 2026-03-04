@@ -166,7 +166,14 @@ public abstract class CliAppLoop
                     {
                         return false;
                     }
-
+                    break;
+                case  EMenuAction.PageUp:
+                    _menuSetsList[_currentMenuSetLevel].PageUp();
+                    refreshList = false;
+                    break; 
+                case EMenuAction.PageDown:
+                    _menuSetsList[_currentMenuSetLevel].PageDown();
+                    refreshList = false;
                     break;
                 default:
                     throw new UnreachableException($"EMenuAction {menuAction} did rot realized");

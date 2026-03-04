@@ -44,12 +44,9 @@ public static class MenuInputer
             return null;
         }
 
-        if (!Enum.TryParse(key, out TEnum dataProvider))
-        {
-            throw new DataInputException($"Invalid selection of {fieldName}");
-        }
-
-        return dataProvider;
+        return !Enum.TryParse(key, out TEnum dataProvider)
+            ? throw new DataInputException($"Invalid selection of {fieldName}")
+            : dataProvider;
     }
 
     public static TEnum InputFromEnumList<TEnum>(string fieldName, TEnum defaultValue) where TEnum : struct, Enum
@@ -62,34 +59,25 @@ public static class MenuInputer
 
         string? key = selectInput.Text;
 
-        if (!Enum.TryParse(key, out TEnum dataProvider))
-        {
-            throw new DataInputException($"Invalid selection of {fieldName}");
-        }
-
-        return dataProvider;
+        return !Enum.TryParse(key, out TEnum dataProvider)
+            ? throw new DataInputException($"Invalid selection of {fieldName}")
+            : dataProvider;
     }
 
     public static List<string> MultipleInputFromList(string caption, Dictionary<string, bool> oldChecks)
     {
         var multipleSelectFromListInput = new MultipleSelectFromListInput(caption, oldChecks);
-        if (!multipleSelectFromListInput.DoInput())
-        {
-            throw new DataInputException($"Input {caption} Escaped");
-        }
-
-        return multipleSelectFromListInput.SourceListWithChecks.Where(w => w.Value).Select(s => s.Key).ToList();
+        return !multipleSelectFromListInput.DoInput()
+            ? throw new DataInputException($"Input {caption} Escaped")
+            : multipleSelectFromListInput.SourceListWithChecks.Where(w => w.Value).Select(s => s.Key).ToList();
     }
 
     public static string? InputFolderPath(string fieldName, string? defaultValue = null)
     {
         var folderInput = new FolderPathInput(fieldName, defaultValue);
-        if (!folderInput.DoInput())
-        {
-            throw new DataInputException($"Invalid input of {fieldName}");
-        }
-
-        return folderInput.FolderPath;
+        return !folderInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : folderInput.FolderPath;
     }
 
     public static string InputFolderPathRequired(string fieldName, string? defaultValue = null)
@@ -108,22 +96,16 @@ public static class MenuInputer
         bool warningIfFileDoesNotExists = true)
     {
         var fileOrFolderPathInput = new FileOrFolderPathInput(fieldName, defaultValue, warningIfFileDoesNotExists);
-        if (!fileOrFolderPathInput.DoInput())
-        {
-            throw new DataInputException($"Invalid input of {fieldName}");
-        }
-
-        return fileOrFolderPathInput.FileOrFolderPath;
+        return !fileOrFolderPathInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : fileOrFolderPathInput.FileOrFolderPath;
     }
 
     public static string? InputFilePath(string fieldName, string? defaultValue, bool warningIfFileDoesNotExists = true)
     {
         var filePathInput = new FilePathInput(fieldName, defaultValue, warningIfFileDoesNotExists);
-        if (!filePathInput.DoInput())
-        {
-            throw new DataInputException($"Invalid input of {fieldName}");
-        }
-
-        return filePathInput.FilePath;
+        return !filePathInput.DoInput()
+            ? throw new DataInputException($"Invalid input of {fieldName}")
+            : filePathInput.FilePath;
     }
 }
