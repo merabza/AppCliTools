@@ -1,6 +1,6 @@
 using System;
 using AppCliTools.CliMenu;
-using AppCliTools.CliParameters.CliMenuCommands;
+using AppCliTools.CliMenu.CliMenuCommands;
 
 namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 
