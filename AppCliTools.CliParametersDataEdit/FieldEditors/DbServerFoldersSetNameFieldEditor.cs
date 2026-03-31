@@ -67,7 +67,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 return;
             }
 
-            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, databaseServerConnectionData,
                     apiClients, _httpClientFactory, null, null, cancellationToken);
             List<string>? databaseFoldersSetNames =
@@ -75,11 +75,11 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
 
             if (createDatabaseManagerResult.IsT1)
             {
-                Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
             }
             else
             {
-                OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.AsT0
+                OneOf<List<string>, Error[]> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.AsT0
                     .GetDatabaseFoldersSetNames(cancellationToken);
                 if (getDatabaseFoldersSetsResult.IsT0)
                 {
@@ -87,7 +87,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 }
                 else
                 {
-                    Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                    Error.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
                 }
             }
 

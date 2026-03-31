@@ -45,19 +45,19 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
-            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger, _httpClientFactory, true,
                     databaseApiClientName, apiClients, null, null, cancellationToken);
 
             var databaseConnectionNames = new List<string>();
             if (createDatabaseManagerResult.IsT1)
             {
-                Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
             }
             else
             {
                 DatabaseApiClient apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
-                OneOf<List<string>, Err[]> getDatabaseFoldersSetsResult =
+                OneOf<List<string>, Error[]> getDatabaseFoldersSetsResult =
                     await apiClient.GetDatabaseConnectionNames(cancellationToken);
                 if (getDatabaseFoldersSetsResult.IsT0)
                 {
@@ -65,7 +65,7 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
                 }
                 else
                 {
-                    Err.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                    Error.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
                 }
             }
 

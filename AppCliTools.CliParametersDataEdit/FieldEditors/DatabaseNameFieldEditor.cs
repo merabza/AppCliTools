@@ -54,17 +54,17 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             var apiClients = new ApiClients(acParameters.ApiClients);
             var databaseInfos = new List<DatabaseInfoModel>();
 
-            OneOf<IDatabaseManager, Err[]> createDatabaseManagerResult =
+            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, databaseServerConnectionName,
                     databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
 
             if (createDatabaseManagerResult.IsT1)
             {
-                Err.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
                 return;
             }
 
-            OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseNamesResult =
+            OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
                 await createDatabaseManagerResult.AsT0.GetDatabaseNames(cancellationToken);
             if (getDatabaseNamesResult.IsT0)
             {
@@ -72,7 +72,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             }
             else
             {
-                Err.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+                Error.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
             }
 
             var databasesMenuSet = new CliMenuSet();

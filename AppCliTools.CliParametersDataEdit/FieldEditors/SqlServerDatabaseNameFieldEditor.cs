@@ -75,7 +75,8 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             DbKit dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
             DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
 
-            OneOf<List<DatabaseInfoModel>, Err[]> getDatabaseInfosResult = await dc.GetDatabaseInfos(cancellationToken);
+            OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseInfosResult =
+                await dc.GetDatabaseInfos(cancellationToken);
 
             var databaseInfos = new List<DatabaseInfoModel>();
             if (getDatabaseInfosResult.IsT0)

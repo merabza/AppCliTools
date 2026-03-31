@@ -62,11 +62,11 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
             using var cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
-            OneOf<string, Err[]> getVersionResult = apiClient.GetVersion(token).Result;
+            OneOf<string, Error[]> getVersionResult = apiClient.GetVersion(token).Result;
 
             if (getVersionResult.IsT1)
             {
-                Err.PrintErrorsOnConsole(getVersionResult.AsT1);
+                Error.PrintErrorsOnConsole(getVersionResult.AsT1);
                 return false;
             }
 
