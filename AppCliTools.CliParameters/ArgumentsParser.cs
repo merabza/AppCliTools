@@ -45,7 +45,10 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
             if (useIndex + 1 < _argsList.Count)
             {
                 fileName = _argsList[useIndex + 1];
-                AnalyzeParamFileName(_argsList[useIndex + 1]);
+                if (!AnalyzeParamFileName(_argsList[useIndex + 1]))
+                {
+                    return EParseResult.Error;
+                }
             }
 
             var switches = new List<string>();
@@ -82,24 +85,22 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         return EParseResult.Usage;
     }
 
-    private void AnalyzeParamFileName(string? startFileName)
+    private bool AnalyzeParamFileName(string? startFileName)
     {
         if (startFileName != null)
         {
             //_parLoader
-            TryUseFile(startFileName);
-            return;
+            return TryUseFile(startFileName);
         }
 
         Console.WriteLine("file name is not specified");
 
         Console.WriteLine($"Try to use current Directory {_pathToContentRoot}");
-        //_parLoader.
-        TryUseFile(Path.Combine(_pathToContentRoot, _jsonFileName));
 
-        if (Par != null)
+        //_parLoader.
+        if (TryUseFile(Path.Combine(_pathToContentRoot, _jsonFileName)) && Par != null)
         {
-            return;
+            return true;
         }
 
         Console.WriteLine("Try to use current Directory");
@@ -108,82 +109,97 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
         if (processModule == null)
         {
-            return;
+            return true;
         }
 
         string pathToExe = processModule.FileName;
         string? pathToExeRoot = Path.GetDirectoryName(pathToExe);
-        if (pathToExeRoot == null)
+        if (pathToExeRoot != null)
         {
-            Console.WriteLine("Cannot detect executable file path");
-            return;
+            //_parLoader.
+            return TryUseFile(Path.Combine(pathToExeRoot, _jsonFileName));
         }
 
-        //_parLoader.
-        TryUseFile(Path.Combine(pathToExeRoot, _jsonFileName));
+        Console.WriteLine("Cannot detect executable file path");
+        return false;
     }
 
-    private void TryUseFile(string? startFileName)
+    private bool TryUseFile(string? startFileName)
     {
         _parLoader.ParametersFileName = startFileName;
         if (startFileName == null)
         {
-            return;
+            return false;
         }
 
-        if (!File.Exists(startFileName))
+        if (File.Exists(startFileName))
         {
-            StShared.WriteWarningLine($"File {startFileName} is not exists", true);
-
-            var fileInfo = new FileInfo(startFileName);
-            if (fileInfo.Directory == null)
+            if (_parLoader.TryLoadParameters(startFileName))
             {
-                StShared.WriteErrorLine($"Invalid file name {startFileName} for Parameters", true);
-                return;
+                return true;
             }
 
-            if (!fileInfo.Directory.Exists)
+            Console.WriteLine($"File {startFileName} is not valid parameters file");
+
+            if (!Inputer.InputBool($"File {startFileName} is Invalid, Create, rewrite and use file with this name?",
+                    false, false))
             {
-                fileInfo.Directory.Create();
+                return false;
             }
 
-            if (!fileInfo.Directory.Exists)
-            {
-                StShared.WriteErrorLine($"Cannot create folder {fileInfo.Directory.Name}", true);
-                return;
-            }
-
-            if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true,
-                    false))
-            {
-                return;
-            }
-
-            //შევქმნათ ცარელა პარამეტრები
-            var sampleParams = new EmptyParameters();
-
-            string? sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
-
-            if (_encKey != null)
-            {
-                sampleParamsJsonText = EncryptDecrypt.EncryptString(sampleParamsJsonText, _encKey);
-            }
-
-            //შევინახოთ ინფორმაცია SampleJsonFileName ფაილში 
-            File.WriteAllText(startFileName, sampleParamsJsonText);
-            Console.WriteLine($"New parameters saved to file {startFileName}");
-            if (!File.Exists(startFileName))
-            {
-                StShared.WriteWarningLine($"File {startFileName} steel does not exists", true);
-                return;
-            }
+            return CreateEmptyParametersFile(startFileName);
         }
 
-        if (_parLoader.TryLoadParameters(startFileName))
+        StShared.WriteWarningLine($"File {startFileName} is not exists", true);
+
+        var fileInfo = new FileInfo(startFileName);
+        if (fileInfo.Directory == null)
         {
-            return;
+            StShared.WriteErrorLine($"Invalid file name {startFileName} for Parameters", true);
+            return false;
         }
 
-        Console.WriteLine($"File {startFileName} is not valid parameters file");
+        if (!fileInfo.Directory.Exists)
+        {
+            fileInfo.Directory.Create();
+        }
+
+        if (!fileInfo.Directory.Exists)
+        {
+            StShared.WriteErrorLine($"Cannot create folder {fileInfo.Directory.Name}", true);
+            return false;
+        }
+
+        if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true, false))
+        {
+            return false;
+        }
+
+        return CreateEmptyParametersFile(startFileName);
+    }
+
+    private bool CreateEmptyParametersFile(string startFileName)
+    {
+        //შევქმნათ ცარელა პარამეტრები
+        var sampleParams = new EmptyParameters();
+
+        string? sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
+
+        if (_encKey != null)
+        {
+            sampleParamsJsonText = EncryptDecrypt.EncryptString(sampleParamsJsonText, _encKey);
+        }
+
+        //შევინახოთ ინფორმაცია SampleJsonFileName ფაილში 
+        File.WriteAllText(startFileName, sampleParamsJsonText);
+        Console.WriteLine($"New parameters saved to file {startFileName}");
+
+        if (File.Exists(startFileName))
+        {
+            return true;
+        }
+
+        StShared.WriteWarningLine($"File {startFileName} steel does not exists", true);
+        return false;
     }
 }
