@@ -13,7 +13,7 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
     where TCruder : Cruder
 {
     private readonly ILogger? _logger;
-    private readonly ParametersManager? _parametersManager;
+    private readonly IParametersManager? _parametersManager;
 
     public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ILogger logger,
         ParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
@@ -22,7 +22,7 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
         _parametersManager = parametersManager;
     }
 
-    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ParametersManager parametersManager) : base(
+    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, IParametersManager parametersManager) : base(
         propertyName, false, null, false, null, true)
     {
         _parametersManager = parametersManager;
