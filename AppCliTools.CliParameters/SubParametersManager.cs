@@ -21,6 +21,8 @@ public sealed class SubParametersManager<T> : IParametersManager
         Parameters = parameters;
     }
 
+    public string? ParametersFileName => null;
+
     public IParameters Parameters { get; set; }
 
     public async ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null,

@@ -4,7 +4,7 @@ using AppCliTools.CliParameters.Cruders;
 
 namespace AppCliTools.CliParameters.CliMenuCommands;
 
-//გამოიყენება ApAgent-ში
+//გამოიყენება Replicator-ში
 // ReSharper disable once UnusedType.Global
 public sealed class CruderListCliMenuCommand : CliMenuCommand
 {

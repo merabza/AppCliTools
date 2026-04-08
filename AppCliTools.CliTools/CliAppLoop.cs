@@ -16,6 +16,7 @@ namespace AppCliTools.CliTools;
 
 public abstract class CliAppLoop
 {
+    private readonly string _appName;
     private readonly string? _header;
     private readonly List<CliMenuSet> _menuSetsList = [];
     private readonly IParametersWithRecentData? _par;
@@ -25,8 +26,10 @@ public abstract class CliAppLoop
     private RecentCommands _recentCommands = new();
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    protected CliAppLoop(IParametersWithRecentData? par = null, string? header = null, IProcesses? processes = null)
+    protected CliAppLoop(string appName, IParametersWithRecentData? par = null, string? header = null,
+        IProcesses? processes = null)
     {
+        _appName = appName;
         _par = par;
         _header = header;
         _processes = processes;
@@ -52,7 +55,7 @@ public abstract class CliAppLoop
 
         if (_header == null)
         {
-            string header = $"{ProgramAttributes.Instance.AppName} {Assembly.GetEntryAssembly()?.GetName().Version}";
+            string header = $"{_appName} {Assembly.GetEntryAssembly()?.GetName().Version}";
             Console.WriteLine(FiggleFonts.Standard.Render(header));
         }
         else

@@ -6,7 +6,7 @@ using ParametersManagement.LibParameters;
 
 namespace AppCliTools.CliParametersEdit.Counters;
 
-//გამოიყენება ApAgent პროექტში
+//გამოიყენება Replicator პროექტში
 // ReSharper disable once UnusedType.Global
 public sealed class FileStorageCruderNameCounter
 {

@@ -17,6 +17,7 @@ namespace AppCliTools.CliParametersDataEdit.ToolActions;
 public sealed class GetDbServerFoldersToolAction : ToolAction
 {
     private const string ActionName = "Get Database Server Folders and save in parameters";
+    private readonly string _appName;
 
     //public const string ActionDescription = "Get Database Server Folders and save in parameters";
     private readonly string _dbServerName;
@@ -26,9 +27,10 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
 
     // ReSharper disable once ConvertToPrimaryConstructor
 
-    public GetDbServerFoldersToolAction(ILogger logger, IHttpClientFactory? httpClientFactory, string dbServerName,
-        IParametersManager parametersManager) : base(logger, ActionName, null, null, true)
+    public GetDbServerFoldersToolAction(string appName, ILogger logger, IHttpClientFactory? httpClientFactory,
+        string dbServerName, IParametersManager parametersManager) : base(logger, ActionName, null, null, true)
     {
+        _appName = appName;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _dbServerName = dbServerName;
@@ -49,8 +51,8 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
         var apiClients = new ApiClients(acParameters.ApiClients);
 
         OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
-            await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, _dbServerName, databaseServerConnections,
-                apiClients, _httpClientFactory, null, null, cancellationToken);
+            await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true, _dbServerName,
+                databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
 
         if (createDatabaseManagerResult.IsT1)
         {

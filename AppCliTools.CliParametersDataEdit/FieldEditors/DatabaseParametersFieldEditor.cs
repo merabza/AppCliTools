@@ -10,12 +10,14 @@ namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseParametersFieldEditor : ParametersFieldEditor<DatabaseParameters, DatabaseParametersEditor>
 {
+    private readonly string _appName;
     private readonly IHttpClientFactory _httpClientFactory;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseParametersFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
-        IParametersManager parametersManager) : base(propertyName, logger, parametersManager)
+    public DatabaseParametersFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
+        string propertyName, IParametersManager parametersManager) : base(propertyName, logger, parametersManager)
     {
+        _appName = appName;
         _httpClientFactory = httpClientFactory;
     }
 
@@ -24,7 +26,7 @@ public sealed class DatabaseParametersFieldEditor : ParametersFieldEditor<Databa
         var serverDatabasesExchangeParametersManager =
             new SubParametersManager<DatabaseParameters>(currentValue, ParametersManager, this, record);
 
-        return new DatabaseParametersEditor(Logger, _httpClientFactory, serverDatabasesExchangeParametersManager,
-            ParametersManager, PropertyName);
+        return new DatabaseParametersEditor(_appName, Logger, _httpClientFactory,
+            serverDatabasesExchangeParametersManager, ParametersManager, PropertyName);
     }
 }

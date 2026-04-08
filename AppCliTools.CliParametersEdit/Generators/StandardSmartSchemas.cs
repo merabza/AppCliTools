@@ -7,7 +7,7 @@ namespace AppCliTools.CliParametersEdit.Generators;
 
 public static class StandardSmartSchemas
 {
-    //public საჭიროა ApAgent პროექტში სამივე კონსტანტისთვის
+    //public საჭიროა Replicator პროექტში სამივე კონსტანტისთვის
     public const string HourlySmartSchemaName = "Hourly";
     public const string ReduceSmartSchemaName = "Reduce";
     public const string DailyStandardSmartSchemaName = "DailyStandard";

@@ -11,16 +11,18 @@ namespace AppCliTools.CliParametersDataEdit.CliMenuCommands;
 
 public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
 {
+    private readonly string _appName;
     private readonly string _dbServerName;
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GetDbServerFoldersCliMenuCommand(ILogger logger, IHttpClientFactory? httpClientFactory, string dbServerName,
-        IParametersManager parametersManager) : base("Get Database Server Folders and save in parameters",
-        EMenuAction.Reload)
+    public GetDbServerFoldersCliMenuCommand(string appName, ILogger logger, IHttpClientFactory? httpClientFactory,
+        string dbServerName, IParametersManager parametersManager) : base(
+        "Get Database Server Folders and save in parameters", EMenuAction.Reload)
     {
+        _appName = appName;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _dbServerName = dbServerName;
@@ -29,8 +31,8 @@ public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
 
     protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
-        var getDbServerFoldersToolAction =
-            new GetDbServerFoldersToolAction(_logger, _httpClientFactory, _dbServerName, _parametersManager);
+        var getDbServerFoldersToolAction = new GetDbServerFoldersToolAction(_appName, _logger, _httpClientFactory,
+            _dbServerName, _parametersManager);
         try
         {
             // ReSharper disable once using

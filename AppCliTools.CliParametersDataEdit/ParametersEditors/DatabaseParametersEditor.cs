@@ -13,7 +13,7 @@ namespace AppCliTools.CliParametersDataEdit.ParametersEditors;
 
 public sealed class DatabaseParametersEditor : ParametersEditor
 {
-    public DatabaseParametersEditor(ILogger logger, IHttpClientFactory httpClientFactory,
+    public DatabaseParametersEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
         IParametersManager parametersManager, IParametersManager listsParametersManager, string propertyName) : base(
         $"{propertyName} {nameof(DatabaseParametersEditor)}", parametersManager)
     {
@@ -21,10 +21,10 @@ public sealed class DatabaseParametersEditor : ParametersEditor
         //ორივეს ერთდროულად შევსება არ შეიძლება.
         //ორივეს ცარელა დატოვება არ შეიძლება
         //მონაცემთა ბაზასთან კავშირის სახელი
-        FieldEditors.Add(new DatabaseServerConnectionNameFieldEditor(logger, httpClientFactory,
+        FieldEditors.Add(new DatabaseServerConnectionNameFieldEditor(appName, logger, httpClientFactory,
             nameof(DatabaseParameters.DbConnectionName), listsParametersManager, true));
 
-        FieldEditors.Add(new DbServerFoldersSetNameFieldEditor(logger, httpClientFactory,
+        FieldEditors.Add(new DbServerFoldersSetNameFieldEditor(appName, logger, httpClientFactory,
             nameof(DatabaseParameters.DbServerFoldersSetName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName)));
 
@@ -37,8 +37,9 @@ public sealed class DatabaseParametersEditor : ParametersEditor
         //თუ განსხვავდება მიმდინარე სახელისგან, ეს ნიშნავს, რომ გვჭირდება მიმდინარე ბაზის შენარჩუნება
         //ხოლო ახალი ბაზისათვის მზად არის ახალი პროგრამა.
         //მას მერე, რაც საჭიროება აღარ იქნება, CurrentBaseName და BaseName სახელები ერთმანეთს უნდა დაემთხვას.
-        FieldEditors.Add(new DatabaseNameFieldEditor(logger, httpClientFactory, nameof(DatabaseParameters.DatabaseName),
-            listsParametersManager, nameof(DatabaseParameters.DbConnectionName), true));
+        FieldEditors.Add(new DatabaseNameFieldEditor(appName, logger, httpClientFactory,
+            nameof(DatabaseParameters.DatabaseName), listsParametersManager,
+            nameof(DatabaseParameters.DbConnectionName), true));
 
         //ჭკვიანი სქემის სახელი. გამოიყენება ძველი დასატოვებელი და წასაშლელი ფაილების განსასაზღვრად. (ეს ბაზის სერვერის მხარეს)
         FieldEditors.Add(new SmartSchemaNameFieldEditor(nameof(DatabaseParameters.SmartSchemaName),

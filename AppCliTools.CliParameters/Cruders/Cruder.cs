@@ -63,7 +63,7 @@ public /*open*/ class Cruder : IFieldEditors
         return [];
     }
 
-    //public საჭიროა ApAgent პროექტისათვის
+    //public საჭიროა Replicator პროექტისათვის
     // ReSharper disable once MemberCanBeProtected.Global
     public virtual bool ContainsRecordWithKey(string recordKey)
     {
@@ -153,7 +153,7 @@ public /*open*/ class Cruder : IFieldEditors
         return defaultItemData ?? new ItemData();
     }
 
-    //public საჭიროა ApAgent.FieldEditors.ArchiverFieldEditor.UpdateField მეთოდისათვის
+    //public საჭიროა Replicator.FieldEditors.ArchiverFieldEditor.UpdateField მეთოდისათვის
     // ReSharper disable once MemberCanBeProtected.Global
     public virtual List<string> GetKeys()
     {

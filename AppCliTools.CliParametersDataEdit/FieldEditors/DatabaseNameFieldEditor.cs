@@ -22,6 +22,7 @@ namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 {
+    private readonly string _appName;
     private readonly bool _canUseNewDatabaseName;
     private readonly string _databaseConnectionNamePropertyName;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -29,10 +30,11 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
-        IParametersManager parametersManager, string databaseConnectionNamePropertyName,
+    public DatabaseNameFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
+        string propertyName, IParametersManager parametersManager, string databaseConnectionNamePropertyName,
         bool canUseNewDatabaseName) : base(propertyName)
     {
+        _appName = appName;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _parametersManager = parametersManager;
@@ -55,8 +57,9 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             var databaseInfos = new List<DatabaseInfoModel>();
 
             OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
-                await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, databaseServerConnectionName,
-                    databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
+                await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
+                    databaseServerConnectionName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
+                    cancellationToken);
 
             if (createDatabaseManagerResult.IsT1)
             {

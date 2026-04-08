@@ -24,14 +24,17 @@ namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
 {
+    private readonly string _appName;
     private readonly string _databaseConnectionNamePropertyName;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    public DbServerFoldersSetNameFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
-        IParametersManager parametersManager, string databaseConnectionNamePropertyName) : base(propertyName)
+    public DbServerFoldersSetNameFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
+        string propertyName, IParametersManager parametersManager,
+        string databaseConnectionNamePropertyName) : base(propertyName)
     {
+        _appName = appName;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _parametersManager = parametersManager;
@@ -68,8 +71,8 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
             }
 
             OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
-                await DatabaseManagersFactory.CreateDatabaseManager(_logger, true, databaseServerConnectionData,
-                    apiClients, _httpClientFactory, null, null, cancellationToken);
+                await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
+                    databaseServerConnectionData, apiClients, _httpClientFactory, null, null, cancellationToken);
             List<string>? databaseFoldersSetNames =
                 databaseServerConnectionData.DatabaseFoldersSets?.Keys.ToList() ?? [];
 

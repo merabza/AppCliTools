@@ -24,7 +24,7 @@ public sealed class ArchiverCruder : ParCruder<ArchiverData>
         FieldEditors.Add(new DecompressProgramPatchFieldEditor(nameof(ArchiverData.DecompressProgramPatch)));
     }
 
-    //Create გამოიყენება ApAgent პროექტში
+    //Create გამოიყენება Replicator პროექტში
     public static ArchiverCruder Create(IParametersManager parametersManager)
     {
         var parameters = (IParametersWithArchivers)parametersManager.Parameters;

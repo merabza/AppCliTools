@@ -263,7 +263,7 @@ public sealed class CliMenuSet
         MenuItems.Add(menuItem);
     }
 
-    //საჭიროა ApAgent პროექტში
+    //საჭიროა Replicator პროექტში
     // ReSharper disable once UnusedMember.Global
     public void InsertMenuItem(int index, CliMenuCommand menuCommand)
     {
