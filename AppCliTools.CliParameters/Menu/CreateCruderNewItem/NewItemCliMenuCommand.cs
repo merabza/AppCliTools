@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
 
-namespace AppCliTools.CliParameters.CliMenuCommands;
+namespace AppCliTools.CliParameters.Menu.CreateCruderNewItem;
 
 public sealed class NewItemCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
-    public string MenuCommandName => $"New {_cruder.CrudName}";
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public NewItemCliMenuCommand(Cruder cruder, string parentMenuName, string commandName) : base(commandName,

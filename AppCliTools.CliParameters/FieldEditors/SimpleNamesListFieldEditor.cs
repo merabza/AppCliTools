@@ -13,7 +13,7 @@ public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<strin
 {
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger? _logger;
-    private readonly ParametersManager _parametersManager;
+    private readonly IParametersManager _parametersManager;
 
     public SimpleNamesListFieldEditor(string propertyName, ParametersManager parametersManager) : base(propertyName,
         false, null, false, null, true)
@@ -29,7 +29,7 @@ public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<strin
     }
 
     public SimpleNamesListFieldEditor(string propertyName, ILogger logger, IHttpClientFactory httpClientFactory,
-        ParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
+        IParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
