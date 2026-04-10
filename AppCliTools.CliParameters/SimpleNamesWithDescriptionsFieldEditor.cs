@@ -16,7 +16,7 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
     private readonly IParametersManager? _parametersManager;
 
     public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ILogger logger,
-        ParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
+        IParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
     {
         _logger = logger;
         _parametersManager = parametersManager;
