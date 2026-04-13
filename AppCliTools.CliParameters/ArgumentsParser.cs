@@ -28,7 +28,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         _possibleSwitches = possibleSwitches;
         _jsonFileName = $"{appName}.json";
         _argsList.AddRange(args);
-        _parLoader = new ParametersLoader<T>(encKey);
+        _parLoader = new ParametersLoader<T>();
     }
 
     public IParameters? Par => _parLoader.Par;
