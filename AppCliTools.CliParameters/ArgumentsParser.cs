@@ -15,20 +15,21 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
     private readonly string _appName;
 
     private readonly List<string> _argsList = [];
-    private readonly string? _encKey;
+
+    //private readonly string? _encKey;
     private readonly string _jsonFileName;
     private readonly ParametersLoader<T> _parLoader;
     private readonly string _pathToContentRoot = Directory.GetCurrentDirectory();
     private readonly string[] _possibleSwitches;
 
-    public ArgumentsParser(IEnumerable<string> args, string appName, string? encKey, params string[] possibleSwitches)
+    public ArgumentsParser(IEnumerable<string> args, string appName, params string[] possibleSwitches)
     {
         _appName = appName;
-        _encKey = encKey;
+        //_encKey = encKey;
         _possibleSwitches = possibleSwitches;
         _jsonFileName = $"{appName}.json";
         _argsList.AddRange(args);
-        _parLoader = new ParametersLoader<T>(encKey);
+        _parLoader = new ParametersLoader<T>();
     }
 
     public IParameters? Par => _parLoader.Par;
@@ -183,12 +184,12 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         //შევქმნათ ცარელა პარამეტრები
         var sampleParams = new EmptyParameters();
 
-        string? sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
+        string sampleParamsJsonText = JsonConvert.SerializeObject(sampleParams);
 
-        if (_encKey != null)
-        {
-            sampleParamsJsonText = EncryptDecrypt.EncryptString(sampleParamsJsonText, _encKey);
-        }
+        //if (_encKey != null)
+        //{
+        //    sampleParamsJsonText = EncryptDecrypt.EncryptString(sampleParamsJsonText, _encKey);
+        //}
 
         //შევინახოთ ინფორმაცია SampleJsonFileName ფაილში 
         File.WriteAllText(startFileName, sampleParamsJsonText);

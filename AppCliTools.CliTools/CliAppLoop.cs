@@ -22,14 +22,14 @@ public class CliAppLoop
     private readonly IMenuBuilder _menuBuilder;
     private readonly List<CliMenuSet> _menuSetsList = [];
     private readonly IProcesses? _processes;
-    private readonly IRecentCommandsService _recentCommandsService;
+    private readonly IRecentCommandsService? _recentCommandsService;
     private readonly List<CliMenuCommand> _selectedMenuCommandsList = [];
 
     private int _currentMenuSetLevel;
     //private RecentCommandsModel _recentCommands = new();
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CliAppLoop(IApplication app, IMenuBuilder menuBuilder, IRecentCommandsService recentCommandsService,
+    public CliAppLoop(IApplication app, IMenuBuilder menuBuilder, IRecentCommandsService? recentCommandsService,
         string? header = null, IProcesses? processes = null)
     {
         _app = app;
@@ -73,7 +73,7 @@ public class CliAppLoop
         _currentMenuSetLevel = 0;
         bool inFirstTime = true;
 
-        _recentCommandsService.LoadRecent();
+        _recentCommandsService?.LoadRecent();
 
         while (true)
         {
@@ -162,11 +162,19 @@ public class CliAppLoop
                     _currentMenuSetLevel--;
                     break;
                 case EMenuAction.Reload:
-                    await _recentCommandsService.SaveRecent(menuCommand);
+                    if (_recentCommandsService != null)
+                    {
+                        await _recentCommandsService.SaveRecent(menuCommand);
+                    }
+
                     StShared.Pause();
                     break;
                 case EMenuAction.ReloadWithoutPause:
-                    await _recentCommandsService.SaveRecent(menuCommand);
+                    if (_recentCommandsService != null)
+                    {
+                        await _recentCommandsService.SaveRecent(menuCommand);
+                    }
+
                     break;
                 case EMenuAction.GoToMenuLink:
                     if (!GoToMenu(menuCommand.GetMenuLinkToGo()) && !ReloadCurrentMenu())
