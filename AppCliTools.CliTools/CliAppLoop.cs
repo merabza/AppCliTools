@@ -18,34 +18,27 @@ namespace AppCliTools.CliTools;
 public class CliAppLoop
 {
     private readonly IApplication _app;
-    private readonly string? _header;
     private readonly IMenuBuilder _menuBuilder;
     private readonly List<CliMenuSet> _menuSetsList = [];
     private readonly IProcesses? _processes;
     private readonly IRecentCommandsService _recentCommandsService;
     private readonly List<CliMenuCommand> _selectedMenuCommandsList = [];
-
     private int _currentMenuSetLevel;
-    //private RecentCommandsModel _recentCommands = new();
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CliAppLoop(IApplication app, IMenuBuilder menuBuilder, IRecentCommandsService recentCommandsService,
-        string? header = null, IProcesses? processes = null)
+    private CliAppLoop(IApplication app, IMenuBuilder menuBuilder, IRecentCommandsService recentCommandsService,
+        IProcesses? processes = null)
     {
         _app = app;
         _menuBuilder = menuBuilder;
         _recentCommandsService = recentCommandsService;
-        _header = header;
         _processes = processes;
     }
 
-    //public abstract CliMenuSet BuildMainMenu();
-
-    //public IEnumerable<RecentCommandCliMenuCommand> GetRecentCommands()
-    //{
-    //    return _recentCommands.Rc.OrderByDescending(x => x.Value)
-    //        .Select(rcKvp => new RecentCommandCliMenuCommand(this, rcKvp.Key));
-    //}
+    public CliAppLoop(CliAppLoopParameters clp) : this(clp.App, clp.MenuBuilder, clp.RecentCommandsService,
+        clp.Processes)
+    {
+    }
 
     private void ShowMenu(bool inFirstTime)
     {
@@ -57,15 +50,8 @@ public class CliAppLoop
         Console.Clear();
         Console.CancelKeyPress += Console_CancelKeyPress;
 
-        if (_header == null)
-        {
-            string header = $"{_app.Name} {Assembly.GetEntryAssembly()?.GetName().Version}";
-            Console.WriteLine(FiggleFonts.Standard.Render(header));
-        }
-        else
-        {
-            Console.WriteLine(_header);
-        }
+        string header = $"{_app.Name} {Assembly.GetEntryAssembly()?.GetName().Version}";
+        Console.WriteLine(FiggleFonts.Standard.Render(header));
 
         Console.WriteLine();
 
