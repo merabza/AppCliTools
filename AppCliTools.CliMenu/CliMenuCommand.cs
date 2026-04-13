@@ -41,6 +41,7 @@ public /*open*/ class CliMenuCommand
     public EStatusView StatusView { get; }
     public string? StatusString { get; private set; }
     public bool NameIsStatus { get; }
+    public string? CommandLink { get; set; }
 
     public void CountStatus()
     {

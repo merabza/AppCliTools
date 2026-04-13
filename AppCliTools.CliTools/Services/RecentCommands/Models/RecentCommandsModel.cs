@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using ParametersManagement.LibParameters;
 
-namespace AppCliTools.CliTools;
+namespace AppCliTools.CliTools.Services.RecentCommands.Models;
 
-public sealed class RecentCommands : IParameters
+public sealed class RecentCommandsModel : IParameters
 {
     public Dictionary<string, DateTime> Rc { get; set; } = [];
 

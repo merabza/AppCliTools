@@ -1,31 +1,55 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using ParametersManagement.LibParameters;
-using SystemTools.SystemToolsShared;
+﻿//using System.Collections.Generic;
+//using System.Linq;
+//using Microsoft.Extensions.DependencyInjection;
+//using ParametersManagement.LibParameters;
+//using SystemTools.SystemToolsShared;
 
-namespace AppCliTools.CliMenu;
+//namespace AppCliTools.CliMenu;
 
-public static class MenuCommandFactory
-{
-    public static CliMenuCommand? CreateMenuCommand(string menuCommandName, ServiceProvider serviceProvider,
-        IParametersManager parametersManager)
-    {
-        Dictionary<string, IMenuCommandFactoryStrategy>? toolCommandStrategies = serviceProvider
-            .GetService<IEnumerable<IMenuCommandFactoryStrategy>>()?.ToDictionary(s => s.MenuCommandName, s => s);
+//public static class MenuCommandFactory
+//{
 
-        if (toolCommandStrategies == null)
-        {
-            StShared.WriteErrorLine("No IMenuCommandFactoryStrategy implementations found", true);
-            return null;
-        }
+//    public static CliMenuCommand? CreateMenuCommand(string menuCommandName, ServiceProvider serviceProvider,
+//        IParametersManager parametersManager)
+//    {
+//        Dictionary<string, IMenuCommandFactoryStrategy>? toolCommandStrategies = serviceProvider
+//            .GetService<IEnumerable<IMenuCommandFactoryStrategy>>()?.ToDictionary(s => s.MenuCommandName, s => s);
 
-        if (toolCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandFactoryStrategy? strategy))
-        {
-            return strategy.CreateMenuCommand(parametersManager);
-        }
+//        if (toolCommandStrategies == null)
+//        {
+//            StShared.WriteErrorLine("No IMenuCommandFactoryStrategy implementations found", true);
+//            return null;
+//        }
 
-        StShared.WriteErrorLine($"No strategy found for menu command {menuCommandName}", true);
-        return null;
-    }
-}
+//        if (toolCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandFactoryStrategy? strategy))
+//        {
+//            return strategy.CreateMenuCommand(parametersManager);
+//        }
+
+//        StShared.WriteErrorLine($"No strategy found for menu command {menuCommandName}", true);
+//        return null;
+//    }
+
+//    public static List<CliMenuCommand> CreateMenuListCommand(string menuCommandName, ServiceProvider serviceProvider,
+//        IParametersManager parametersManager)
+//    {
+//        Dictionary<string, IMenuCommandListFactoryStrategy>? toolCommandStrategies = serviceProvider
+//            .GetService<IEnumerable<IMenuCommandListFactoryStrategy>>()?.ToDictionary(s => s.MenuCommandListName, s => s);
+
+//        if (toolCommandStrategies == null)
+//        {
+//            StShared.WriteErrorLine("No IMenuCommandListFactoryStrategy implementations found", true);
+//            return null;
+//        }
+
+//        if (toolCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandListFactoryStrategy? strategy))
+//        {
+//            return strategy.CreateMenuCommandsList(parametersManager);
+//        }
+
+//        StShared.WriteErrorLine($"No strategy found for menu commands list {menuCommandName}", true);
+//        return null;
+//    }
+//}
+
+

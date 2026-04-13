@@ -1,19 +1,20 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AppCliTools.CliMenu;
+using AppCliTools.CliTools.Services.MenuBuilder;
 
 namespace AppCliTools.CliTools.CliMenuCommands;
 
 public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
 {
-    private readonly CliAppLoop _cliAppLoop;
+    private readonly IMenuBuilder _menuBuilder;
     private readonly string _menuLinkWithoutMainMenu;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RecentCommandCliMenuCommand(CliAppLoop cliAppLoop, string menuLinkWithoutMainMenu) : base(
+    public RecentCommandCliMenuCommand(IMenuBuilder menuBuilder, string menuLinkWithoutMainMenu) : base(
         menuLinkWithoutMainMenu, menuLinkWithoutMainMenu)
     {
-        _cliAppLoop = cliAppLoop;
+        _menuBuilder = menuBuilder;
         _menuLinkWithoutMainMenu = menuLinkWithoutMainMenu;
     }
 
@@ -21,7 +22,7 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
     {
         string[] menuLine = _menuLinkWithoutMainMenu.Split('/');
 
-        CliMenuSet? currentMenu = _cliAppLoop.BuildMainMenu();
+        CliMenuSet? currentMenu = _menuBuilder.BuildMainMenu();
 
         CliMenuItem? menuItem = null;
         foreach (string menuName in menuLine)

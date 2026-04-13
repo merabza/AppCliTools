@@ -1,21 +1,53 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliMenu;
 
 public static class CliMenuSetFactory
 {
     public static CliMenuSet CreateMenuSet(string menuCaption, List<string> menuCommandNames,
-        ServiceProvider serviceProvider, ParametersManager parametersManager)
+        IServiceProvider serviceProvider, IParametersManager parametersManager)
     {
         var mainMenuSet = new CliMenuSet(menuCaption);
 
-        foreach (CliMenuCommand? menuCommand in menuCommandNames.Select(menuCommandName =>
-                     MenuCommandFactory.CreateMenuCommand(menuCommandName, serviceProvider, parametersManager)))
+        Dictionary<string, IMenuCommandFactoryStrategy>? toolCommandStrategies = serviceProvider
+            .GetService<IEnumerable<IMenuCommandFactoryStrategy>>()?.ToDictionary(s => s.MenuCommandName, s => s);
+
+        if (toolCommandStrategies == null)
         {
-            mainMenuSet.AddMenuItem(menuCommand!);
+            StShared.WriteErrorLine("No IMenuCommandFactoryStrategy implementations found", true);
+            return null;
+        }
+
+        Dictionary<string, IMenuCommandListFactoryStrategy>? toolCommandListStrategies = serviceProvider
+            .GetService<IEnumerable<IMenuCommandListFactoryStrategy>>()
+            ?.ToDictionary(s => s.MenuCommandListName, s => s);
+
+        if (toolCommandListStrategies == null)
+        {
+            StShared.WriteErrorLine("No IMenuCommandListFactoryStrategy implementations found", true);
+            return null;
+        }
+
+        foreach (string menuCommandName in menuCommandNames)
+        {
+            if (toolCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandFactoryStrategy? value))
+            {
+                CliMenuCommand menuCommand = value.CreateMenuCommand(parametersManager);
+                mainMenuSet.AddMenuItem(menuCommand);
+            }
+            else if (toolCommandListStrategies.TryGetValue(menuCommandName, out IMenuCommandListFactoryStrategy? list))
+            {
+                List<CliMenuCommand> menuCommandList = list.CreateMenuCommandsList(parametersManager);
+                foreach (CliMenuCommand cliMenuCommand in menuCommandList)
+                {
+                    mainMenuSet.AddMenuItem(cliMenuCommand);
+                }
+            }
         }
 
         return mainMenuSet;
