@@ -8,7 +8,7 @@ namespace AppCliTools.CliTools;
 
 public class CliAppLoopParameters
 {
-    public IRecentCommandsService RecentCommandsService { get; private init; }
+    public IRecentCommandsService? RecentCommandsService { get; private init; }
     public IMenuBuilder MenuBuilder { get; private init; }
     public IApplication App { get; private init; }
     public IProcesses? Processes { get; private init; }
@@ -30,11 +30,6 @@ public class CliAppLoopParameters
         }
 
         var recentCommandsService = serviceProvider.GetService<IRecentCommandsService>();
-        if (recentCommandsService is null)
-        {
-            StShared.WriteErrorLine("recentCommandsService is null", true);
-            return null;
-        }
 
         var processes = serviceProvider.GetService<IProcesses>();
 

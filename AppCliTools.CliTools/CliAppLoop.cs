@@ -26,7 +26,7 @@ public class CliAppLoop
     private int _currentMenuSetLevel;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    private CliAppLoop(IApplication app, IMenuBuilder menuBuilder, IRecentCommandsService recentCommandsService,
+    private CliAppLoop(IApplication app, IMenuBuilder menuBuilder, IRecentCommandsService? recentCommandsService = null,
         IProcesses? processes = null)
     {
         _app = app;
