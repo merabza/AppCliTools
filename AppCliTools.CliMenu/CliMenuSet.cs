@@ -284,16 +284,22 @@ public sealed class CliMenuSet
         };
     }
 
-    public void AddMenuItem(string key, CliMenuCommand menuCommand, int checkKeyLength, int useId = -1)
+    //public void AddMenuItem(string key, CliMenuCommand menuCommand, int checkKeyLength, int useId = -1)
+    //{
+    //    if (key.Length > checkKeyLength)
+    //    {
+    //        _errorMessages.Add($"Length of key {key} is not valid. menu line \"{menuCommand.Name}\" not added");
+    //        return;
+    //    }
+
+    //    var menuItem = new CliMenuItem(key, menuCommand, useId);
+
+    //    MenuItems.Add(menuItem);
+    //}
+
+    public void AddMenuItem(string key, CliMenuCommand menuCommand, int useId = -1)
     {
-        if (key.Length > checkKeyLength)
-        {
-            _errorMessages.Add($"Length of key {key} is not valid. menu line \"{menuCommand.Name}\" not added");
-            return;
-        }
-
         var menuItem = new CliMenuItem(key, menuCommand, useId);
-
         MenuItems.Add(menuItem);
     }
 

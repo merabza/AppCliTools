@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AppCliTools.CliMenu.CliMenuCommands;
 using Microsoft.Extensions.DependencyInjection;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
@@ -10,7 +11,7 @@ namespace AppCliTools.CliMenu;
 public static class CliMenuSetFactory
 {
     public static CliMenuSet CreateMenuSet(string menuCaption, List<string> menuCommandNames,
-        IServiceProvider serviceProvider, IParametersManager parametersManager)
+        IServiceProvider serviceProvider, IParametersManager parametersManager, bool isMainMenu)
     {
         var mainMenuSet = new CliMenuSet(menuCaption);
 
@@ -48,6 +49,15 @@ public static class CliMenuSetFactory
                     mainMenuSet.AddMenuItem(cliMenuCommand);
                 }
             }
+        }
+
+        if (isMainMenu)
+        {
+            mainMenuSet.AddEscapeCommand(new ExitCliMenuCommand());
+        }
+        else
+        {
+            mainMenuSet.AddEscapeCommand();
         }
 
         return mainMenuSet;

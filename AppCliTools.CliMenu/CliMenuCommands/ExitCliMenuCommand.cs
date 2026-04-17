@@ -1,6 +1,4 @@
-﻿using AppCliTools.CliMenu;
-
-namespace AppCliTools.CliTools.CliMenuCommands;
+﻿namespace AppCliTools.CliMenu.CliMenuCommands;
 
 public sealed class ExitCliMenuCommand : CliMenuCommand
 {

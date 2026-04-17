@@ -32,7 +32,7 @@ public sealed class SelectFromListInput : DataInput
 
         if (_useNone)
         {
-            listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
+            listSet.AddMenuItem("-", new CliMenuCommand("(None)"));
         }
 
         foreach (string listItem in _sourceList)

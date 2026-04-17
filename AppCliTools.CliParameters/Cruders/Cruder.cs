@@ -440,7 +440,7 @@ public /*open*/ class Cruder : IFieldEditors
 
         if (useNone)
         {
-            listSet.AddMenuItem("-", new CliMenuCommand("(None)"), 1);
+            listSet.AddMenuItem("-", new CliMenuCommand("(None)"));
         }
 
         int id = 0;
