@@ -3,9 +3,9 @@ using ParametersManagement.LibParameters;
 
 namespace AppCliTools.CliParameters;
 
-public interface IArgumentsParser
+public interface IArgumentsParser<out T> where T : class, IParameters, new()
 {
-    IParameters? Par { get; }
+    T? Par { get; }
     string? ParametersFileName { get; }
     List<string> Switches { get; }
     EParseResult Analysis();

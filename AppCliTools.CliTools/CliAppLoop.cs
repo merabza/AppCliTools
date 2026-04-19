@@ -45,7 +45,7 @@ public class CliAppLoop
         _menuSetsList[_currentMenuSetLevel].Show(!inFirstTime);
     }
 
-    public async ValueTask<bool> Run(CancellationToken cancellationToken = default)
+    public async ValueTask<bool> Run()
     {
         Console.Clear();
         Console.CancelKeyPress += Console_CancelKeyPress;
@@ -117,7 +117,9 @@ public class CliAppLoop
             Console.WriteLine();
 
             CliMenuCommand menuCommand = menuItem.CliMenuCommand;
-            await menuCommand.Run(cancellationToken);
+
+
+            await menuCommand.Run();
 
             if (menuCommand is not RecentCommandCliMenuCommand)
             {

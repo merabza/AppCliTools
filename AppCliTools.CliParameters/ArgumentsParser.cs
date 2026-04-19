@@ -10,7 +10,7 @@ using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters;
 
-public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IParameters, new()
+public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IParameters, new()
 {
     private readonly string _appName;
 
@@ -32,8 +32,8 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         _parLoader = new ParametersLoader<T>();
     }
 
-    public IParameters? Par => _parLoader.Par;
-    public string? ParametersFileName => _parLoader.ParametersFileName;
+    public T? Par => (T?)_parLoader.Par;
+    public string ParametersFileName => _parLoader.ParametersFileName;
     public List<string> Switches { get; } = [];
 
     public EParseResult Analysis()
@@ -125,13 +125,9 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
         return false;
     }
 
-    private bool TryUseFile(string? startFileName)
+    private bool TryUseFile(string startFileName)
     {
         _parLoader.ParametersFileName = startFileName;
-        if (startFileName == null)
-        {
-            return false;
-        }
 
         if (File.Exists(startFileName))
         {
@@ -142,13 +138,8 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
 
             Console.WriteLine($"File {startFileName} is not valid parameters file");
 
-            if (!Inputer.InputBool($"File {startFileName} is Invalid, Create, rewrite and use file with this name?",
-                    false, false))
-            {
-                return false;
-            }
-
-            return CreateEmptyParametersFile(startFileName);
+            return Inputer.InputBool($"File {startFileName} is Invalid, Create, rewrite and use file with this name?",
+                false, false) && CreateEmptyParametersFile(startFileName);
         }
 
         StShared.WriteWarningLine($"File {startFileName} is not exists", true);
@@ -165,21 +156,18 @@ public sealed class ArgumentsParser<T> : IArgumentsParser where T : class, IPara
             fileInfo.Directory.Create();
         }
 
-        if (!fileInfo.Directory.Exists)
+        if (fileInfo.Directory.Exists)
         {
-            StShared.WriteErrorLine($"Cannot create folder {fileInfo.Directory.Name}", true);
-            return false;
+            return Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true,
+                false) && CreateEmptyParametersFile(startFileName);
         }
 
-        if (!Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true, false))
-        {
-            return false;
-        }
+        StShared.WriteErrorLine($"Cannot create folder {fileInfo.Directory.Name}", true);
+        return false;
 
-        return CreateEmptyParametersFile(startFileName);
     }
 
-    private bool CreateEmptyParametersFile(string startFileName)
+    private static bool CreateEmptyParametersFile(string startFileName)
     {
         //შევქმნათ ცარელა პარამეტრები
         var sampleParams = new EmptyParameters();

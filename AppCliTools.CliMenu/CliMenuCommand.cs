@@ -50,27 +50,33 @@ public /*open*/ class CliMenuCommand
 
     public async ValueTask Run(CancellationToken cancellationToken = default)
     {
-        if (_askRunAction)
-        {
-            string? description = await GetActionDescription(cancellationToken);
-            if (description is null)
-            {
-                StShared.WriteErrorLine("description is null", true, null, false);
-                MenuAction = EMenuAction.Reload;
-                return;
-            }
-
-            Console.WriteLine(description);
-
-            if (!Inputer.InputBool("Are you sure, you want to run this action?", true, false))
-            {
-                MenuAction = EMenuAction.Reload;
-                return;
-            }
-        }
+        // ReSharper disable once using
+        // ReSharper disable once DisposableConstructor
+        using var cts = new CancellationTokenSource();
+        CancellationToken token = cts.Token;
+        token.ThrowIfCancellationRequested();
 
         try
         {
+            if (_askRunAction)
+            {
+                string? description = await GetActionDescription(cancellationToken);
+                if (description is null)
+                {
+                    StShared.WriteErrorLine("description is null", true, null, false);
+                    MenuAction = EMenuAction.Reload;
+                    return;
+                }
+
+                Console.WriteLine(description);
+
+                if (!Inputer.InputBool("Are you sure, you want to run this action?", true, false))
+                {
+                    MenuAction = EMenuAction.Reload;
+                    return;
+                }
+            }
+
             bool result = await RunBody(cancellationToken);
             MenuAction = result ? MenuActionOnBodySuccess : MenuActionOnBodyFail;
         }
@@ -84,6 +90,13 @@ public /*open*/ class CliMenuCommand
         {
             Console.WriteLine();
             Console.WriteLine(lie.Message);
+            MenuAction = EMenuAction.Reload;
+        }
+        catch(OperationCanceledException )
+        {
+            Console.WriteLine();
+            Console.WriteLine("Operation canceled... ");
+            StShared.Pause();
             MenuAction = EMenuAction.Reload;
         }
         catch (Exception e)

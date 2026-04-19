@@ -1,6 +1,7 @@
 ﻿using AppCliTools.CliTools.Services.MenuBuilder;
 using AppCliTools.CliTools.Services.RecentCommands;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SystemTools.BackgroundTasks;
 using SystemTools.SystemToolsShared;
 
@@ -13,8 +14,17 @@ public class CliAppLoopParameters
     public IApplication App { get; private init; }
     public IProcesses? Processes { get; private init; }
 
-    public static CliAppLoopParameters? Create(ServiceProvider serviceProvider)
+    public static CliAppLoopParameters? Create<T>(ServiceProvider serviceProvider)
     {
+
+        var logger = serviceProvider.GetService<ILogger<T>>();
+        if (logger is null)
+        {
+            StShared.WriteErrorLine("logger is null", true);
+            return null;
+        }
+
+
         var app = serviceProvider.GetService<IApplication>();
         if (app is null)
         {
