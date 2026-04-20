@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliTools.CliMenuCommands;
@@ -50,7 +49,7 @@ public class CliAppLoop
         Console.Clear();
         Console.CancelKeyPress += Console_CancelKeyPress;
 
-        string header = $"{_app.Name} {Assembly.GetEntryAssembly()?.GetName().Version}";
+        string header = $"{_app.AppName} {Assembly.GetEntryAssembly()?.GetName().Version}";
         Console.WriteLine(FiggleFonts.Standard.Render(header));
 
         Console.WriteLine();
@@ -117,7 +116,6 @@ public class CliAppLoop
             Console.WriteLine();
 
             CliMenuCommand menuCommand = menuItem.CliMenuCommand;
-
 
             await menuCommand.Run();
 

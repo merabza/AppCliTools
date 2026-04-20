@@ -92,7 +92,7 @@ public /*open*/ class CliMenuCommand
             Console.WriteLine(lie.Message);
             MenuAction = EMenuAction.Reload;
         }
-        catch(OperationCanceledException )
+        catch (OperationCanceledException)
         {
             Console.WriteLine();
             Console.WriteLine("Operation canceled... ");

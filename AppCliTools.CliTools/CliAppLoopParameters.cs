@@ -16,14 +16,12 @@ public class CliAppLoopParameters
 
     public static CliAppLoopParameters? Create<T>(ServiceProvider serviceProvider)
     {
-
         var logger = serviceProvider.GetService<ILogger<T>>();
         if (logger is null)
         {
             StShared.WriteErrorLine("logger is null", true);
             return null;
         }
-
 
         var app = serviceProvider.GetService<IApplication>();
         if (app is null)

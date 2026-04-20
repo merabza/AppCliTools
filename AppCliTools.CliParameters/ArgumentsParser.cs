@@ -164,7 +164,6 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
 
         StShared.WriteErrorLine($"Cannot create folder {fileInfo.Directory.Name}", true);
         return false;
-
     }
 
     private static bool CreateEmptyParametersFile(string startFileName)
