@@ -10,7 +10,7 @@ namespace AppCliTools.CliMenu;
 
 public static class CliMenuSetFactory
 {
-    public static CliMenuSet CreateMenuSet(string menuCaption, List<string> menuCommandNames,
+    public static CliMenuSet? CreateMenuSet(string menuCaption, List<string> menuCommandNames,
         IServiceProvider serviceProvider, IParametersManager parametersManager, bool isMainMenu = false)
     {
         var mainMenuSet = new CliMenuSet(menuCaption);

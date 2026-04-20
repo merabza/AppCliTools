@@ -10,8 +10,8 @@ namespace AppCliTools.CliTools;
 public class CliAppLoopParameters
 {
     public IRecentCommandsService? RecentCommandsService { get; private init; }
-    public IMenuBuilder MenuBuilder { get; private init; }
-    public IApplication App { get; private init; }
+    public required IMenuBuilder MenuBuilder { get; init; }
+    public required IApplication App { get; init; }
     public IProcesses? Processes { get; private init; }
 
     public static CliAppLoopParameters? Create<T>(ServiceProvider serviceProvider)

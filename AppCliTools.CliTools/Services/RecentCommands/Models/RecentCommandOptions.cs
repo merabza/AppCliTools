@@ -2,6 +2,6 @@
 
 public class RecentCommandOptions
 {
-    public string RecentCommandsFileName { get; set; }
+    public string? RecentCommandsFileName { get; set; }
     public int RecentCommandsCount { get; set; }
 }

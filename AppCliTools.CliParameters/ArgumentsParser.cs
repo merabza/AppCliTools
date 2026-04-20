@@ -33,7 +33,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
     }
 
     public T? Par => (T?)_parLoader.Par;
-    public string ParametersFileName => _parLoader.ParametersFileName;
+    public string? ParametersFileName => _parLoader.ParametersFileName;
     public List<string> Switches { get; } = [];
 
     public EParseResult Analysis()

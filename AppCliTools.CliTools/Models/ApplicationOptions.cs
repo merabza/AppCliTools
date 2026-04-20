@@ -2,5 +2,5 @@
 
 public class ApplicationOptions
 {
-    public string AppName { get; set; }
+    public required string AppName { get; set; }
 }
