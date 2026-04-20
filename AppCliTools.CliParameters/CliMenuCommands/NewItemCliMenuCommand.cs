@@ -16,8 +16,6 @@ public sealed class NewItemCliMenuCommand : CliMenuCommand
         _cruder = cruder;
     }
 
-    public string MenuCommandName => $"New {_cruder.CrudName}";
-
     protected override async ValueTask<bool> RunBody(CancellationToken cancellationToken = default)
     {
         MenuAction = EMenuAction.Reload;

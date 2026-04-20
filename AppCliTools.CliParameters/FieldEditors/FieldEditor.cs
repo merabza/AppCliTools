@@ -60,6 +60,16 @@ public /*open*/ class FieldEditor
         }
     }
 
+    public CliMenuCommand GetFieldEditMenuItem(ItemData recordForUpdate, Cruder cruder, string recordKey)
+    {
+        if (_isSubObject)
+        {
+            return new SubObjectFieldEditorCliMenuCommand(FieldName, this, recordForUpdate);
+        }
+
+        return new FieldEditorMenuCliMenuCommand(FieldName, this, recordForUpdate, cruder, recordKey);
+    }
+
     public virtual CliMenuSet? GetSubMenu(object record)
     {
         return null;

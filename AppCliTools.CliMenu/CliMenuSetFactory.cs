@@ -15,10 +15,10 @@ public static class CliMenuSetFactory
     {
         var mainMenuSet = new CliMenuSet(menuCaption);
 
-        Dictionary<string, IMenuCommandFactoryStrategy>? toolCommandStrategies = serviceProvider
+        Dictionary<string, IMenuCommandFactoryStrategy>? menuCommandStrategies = serviceProvider
             .GetService<IEnumerable<IMenuCommandFactoryStrategy>>()?.ToDictionary(s => s.MenuCommandName, s => s);
 
-        if (toolCommandStrategies == null)
+        if (menuCommandStrategies == null)
         {
             StShared.WriteErrorLine("No IMenuCommandFactoryStrategy implementations found", true);
             return null;
@@ -36,7 +36,7 @@ public static class CliMenuSetFactory
 
         foreach (string menuCommandName in menuCommandNames)
         {
-            if (toolCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandFactoryStrategy? value))
+            if (menuCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandFactoryStrategy? value))
             {
                 CliMenuCommand menuCommand = value.CreateMenuCommand(parametersManager);
                 mainMenuSet.AddMenuItem(menuCommand);

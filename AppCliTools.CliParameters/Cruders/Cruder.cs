@@ -188,6 +188,30 @@ public /*open*/ class Cruder : IFieldEditors
         }
     }
 
+    public virtual List<CliMenuCommand> GetDetailsSubMenu(string itemName)
+    {
+        ItemData? item = GetItemByName(itemName);
+        if (item == null)
+        {
+            return [];
+        }
+
+        CheckFieldsEnables(item);
+
+        List<CliMenuCommand> result = [];
+
+        if (!_fieldKeyFromItem)
+        {
+            const string fieldName = "Record Name";
+            result.Add(new RecordKeyEditorCliMenuCommand(fieldName, this, itemName));
+        }
+
+        result.AddRange(FieldEditors.Where(fieldUpdater => fieldUpdater.Enabled)
+            .Select(fieldEditor => fieldEditor.GetFieldEditMenuItem(item, this, itemName)));
+
+        return result;
+    }
+
     public CliMenuSet GetListMenu()
     {
         if (_cruderSubMenuSet is not null && _cruderSubMenuSet.MenuVersion == _menuVersion)
