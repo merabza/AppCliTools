@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AppCliTools.CliMenu.CliMenuCommands;
 using Microsoft.Extensions.DependencyInjection;
-using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliMenu;
@@ -11,7 +10,7 @@ namespace AppCliTools.CliMenu;
 public static class CliMenuSetFactory
 {
     public static CliMenuSet? CreateMenuSet(string menuCaption, List<string> menuCommandNames,
-        IServiceProvider serviceProvider, IParametersManager parametersManager, bool isMainMenu = false)
+        IServiceProvider serviceProvider, bool isMainMenu = false)
     {
         var mainMenuSet = new CliMenuSet(menuCaption);
 
@@ -25,8 +24,7 @@ public static class CliMenuSetFactory
         }
 
         Dictionary<string, IMenuCommandListFactoryStrategy>? toolCommandListStrategies = serviceProvider
-            .GetService<IEnumerable<IMenuCommandListFactoryStrategy>>()
-            ?.ToDictionary(s => s.StrategyName, s => s);
+            .GetService<IEnumerable<IMenuCommandListFactoryStrategy>>()?.ToDictionary(s => s.StrategyName, s => s);
 
         if (toolCommandListStrategies == null)
         {
@@ -38,12 +36,12 @@ public static class CliMenuSetFactory
         {
             if (menuCommandStrategies.TryGetValue(menuCommandName, out IMenuCommandFactoryStrategy? value))
             {
-                CliMenuCommand menuCommand = value.CreateMenuCommand(parametersManager);
+                CliMenuCommand menuCommand = value.CreateMenuCommand();
                 mainMenuSet.AddMenuItem(menuCommand);
             }
             else if (toolCommandListStrategies.TryGetValue(menuCommandName, out IMenuCommandListFactoryStrategy? list))
             {
-                List<CliMenuCommand> menuCommandList = list.CreateMenuCommandsList(parametersManager);
+                List<CliMenuCommand> menuCommandList = list.CreateMenuCommandsList();
                 foreach (CliMenuCommand cliMenuCommand in menuCommandList)
                 {
                     mainMenuSet.AddMenuItem(cliMenuCommand);
