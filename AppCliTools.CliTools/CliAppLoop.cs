@@ -14,7 +14,7 @@ using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliTools;
 
-public class CliAppLoop<T>
+public class CliAppLoop
 {
     private readonly IApplication _app;
     private readonly IMenuBuilder _menuBuilder;
@@ -34,7 +34,7 @@ public class CliAppLoop<T>
         _processes = processes;
     }
 
-    public CliAppLoop(CliAppLoopParameters<T> clp) : this(clp.App, clp.MenuBuilder, clp.RecentCommandsService,
+    public CliAppLoop(CliAppLoopParameters clp) : this(clp.App, clp.MenuBuilder, clp.RecentCommandsService,
         clp.Processes)
     {
     }

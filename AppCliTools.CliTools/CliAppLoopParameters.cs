@@ -7,48 +7,47 @@ using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliTools;
 
-public class CliAppLoopParameters<T>
+public class CliAppLoopParameters
 {
     public IRecentCommandsService? RecentCommandsService { get; private init; }
     public IMenuBuilder MenuBuilder { get; private init; }
     public IApplication App { get; private init; }
     public IProcesses? Processes { get; private init; }
-    public ILogger<T>? Logger { get; private init; }
 
-    public static CliAppLoopParameters<T>? Create(ServiceProvider serviceProvider)
+    public static (CliAppLoopParameters?, ILogger<T>?) Create<T>(ServiceProvider serviceProvider)
     {
-        ILogger<T>? logger = serviceProvider.GetService<ILogger<T>>();
+        var logger = serviceProvider.GetService<ILogger<T>>();
         if (logger is null)
         {
             StShared.WriteErrorLine("logger is null", true);
-            return null;
+            return (null, null);
         }
 
         var app = serviceProvider.GetService<IApplication>();
         if (app is null)
         {
             StShared.WriteErrorLine("app is null", true);
-            return null;
+            return (null, logger);
         }
 
         var menuBuilder = serviceProvider.GetService<IMenuBuilder>();
         if (menuBuilder is null)
         {
             StShared.WriteErrorLine("menuBuilder is null", true);
-            return null;
+            return (null, logger);
         }
 
         var recentCommandsService = serviceProvider.GetService<IRecentCommandsService>();
 
         var processes = serviceProvider.GetService<IProcesses>();
 
-        return new CliAppLoopParameters<T>
-        {
-            App = app,
-            MenuBuilder = menuBuilder,
-            RecentCommandsService = recentCommandsService,
-            Processes = processes,
-            Logger = logger
-        };
+        return (
+            new CliAppLoopParameters
+            {
+                App = app,
+                MenuBuilder = menuBuilder,
+                RecentCommandsService = recentCommandsService,
+                Processes = processes
+            }, logger);
     }
 }
