@@ -5,6 +5,6 @@ namespace AppCliTools.CliMenu;
 
 public interface IMenuCommandListFactoryStrategy
 {
-    string MenuCommandListName { get; }
+    string StrategyName { get; }
     List<CliMenuCommand> CreateMenuCommandsList(IParametersManager parametersManager);
 }
