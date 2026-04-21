@@ -7,16 +7,17 @@ using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliTools;
 
-public class CliAppLoopParameters
+public class CliAppLoopParameters<T>
 {
     public IRecentCommandsService? RecentCommandsService { get; private init; }
-    public required IMenuBuilder MenuBuilder { get; init; }
-    public required IApplication App { get; init; }
+    public IMenuBuilder MenuBuilder { get; private init; }
+    public IApplication App { get; private init; }
     public IProcesses? Processes { get; private init; }
+    public ILogger<T>? Logger { get; private init; }
 
-    public static CliAppLoopParameters? Create<T>(ServiceProvider serviceProvider)
+    public static CliAppLoopParameters<T>? Create(ServiceProvider serviceProvider)
     {
-        var logger = serviceProvider.GetService<ILogger<T>>();
+        ILogger<T>? logger = serviceProvider.GetService<ILogger<T>>();
         if (logger is null)
         {
             StShared.WriteErrorLine("logger is null", true);
@@ -41,12 +42,13 @@ public class CliAppLoopParameters
 
         var processes = serviceProvider.GetService<IProcesses>();
 
-        return new CliAppLoopParameters
+        return new CliAppLoopParameters<T>
         {
             App = app,
             MenuBuilder = menuBuilder,
             RecentCommandsService = recentCommandsService,
-            Processes = processes
+            Processes = processes,
+            Logger = logger
         };
     }
 }
