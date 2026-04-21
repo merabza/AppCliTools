@@ -2,6 +2,6 @@
 
 public interface IMenuCommandFactoryStrategy
 {
-    string StrategyName { get; }
+    //string StrategyName { get; }
     CliMenuCommand CreateMenuCommand();
 }

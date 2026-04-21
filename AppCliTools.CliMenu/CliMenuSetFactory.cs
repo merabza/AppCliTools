@@ -15,7 +15,7 @@ public static class CliMenuSetFactory
         var mainMenuSet = new CliMenuSet(menuCaption);
 
         Dictionary<string, IMenuCommandFactoryStrategy>? menuCommandStrategies = serviceProvider
-            .GetService<IEnumerable<IMenuCommandFactoryStrategy>>()?.ToDictionary(s => s.StrategyName, s => s);
+            .GetService<IEnumerable<IMenuCommandFactoryStrategy>>()?.ToDictionary(s => s.GetType().Name, s => s);
 
         if (menuCommandStrategies == null)
         {
