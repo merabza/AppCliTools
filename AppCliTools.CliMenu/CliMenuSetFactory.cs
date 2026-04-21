@@ -24,7 +24,7 @@ public static class CliMenuSetFactory
         }
 
         Dictionary<string, IMenuCommandListFactoryStrategy>? toolCommandListStrategies = serviceProvider
-            .GetService<IEnumerable<IMenuCommandListFactoryStrategy>>()?.ToDictionary(s => s.StrategyName, s => s);
+            .GetService<IEnumerable<IMenuCommandListFactoryStrategy>>()?.ToDictionary(s => s.GetType().Name, s => s);
 
         if (toolCommandListStrategies == null)
         {
