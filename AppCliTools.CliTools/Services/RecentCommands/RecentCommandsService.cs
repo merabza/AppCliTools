@@ -11,25 +11,17 @@ using ParametersManagement.LibParameters;
 
 namespace AppCliTools.CliTools.Services.RecentCommands;
 
-public class RecentCommandsService : IRecentCommandsService
+public class RecentCommandsService(IMenuBuilder menuBuilder, IOptions<RecentCommandOptions> options)
+    : IRecentCommandsService
 {
-    private readonly IMenuBuilder _menuBuilder;
-    private readonly int _recentCommandsCount;
-    private readonly string? _recentCommandsFileName;
+    private readonly int _recentCommandsCount = options.Value.RecentCommandsCount;
+    private readonly string? _recentCommandsFileName = options.Value.RecentCommandsFileName;
     private RecentCommandsModel _recentCommands = new();
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public RecentCommandsService(IMenuBuilder menuBuilder, IOptions<RecentCommandOptions> options)
-    {
-        _menuBuilder = menuBuilder;
-        _recentCommandsFileName = options.Value.RecentCommandsFileName;
-        _recentCommandsCount = options.Value.RecentCommandsCount;
-    }
 
     public IEnumerable<RecentCommandCliMenuCommand> GetRecentCommands()
     {
         return _recentCommands.Rc.OrderByDescending(x => x.Value)
-            .Select(rcKvp => new RecentCommandCliMenuCommand(_menuBuilder, rcKvp.Key));
+            .Select(rcKvp => new RecentCommandCliMenuCommand(menuBuilder, rcKvp.Key));
     }
 
     public void LoadRecent()
