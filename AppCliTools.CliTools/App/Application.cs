@@ -3,12 +3,7 @@ using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliTools.App;
 
-public class Application : IApplication
+public class Application(IOptions<ApplicationOptions> options) : IApplication
 {
-    public Application(IOptions<ApplicationOptions> options)
-    {
-        AppName = options.Value.AppName;
-    }
-
-    public string AppName { get; }
+    public string AppName { get; } = options.Value.AppName;
 }
