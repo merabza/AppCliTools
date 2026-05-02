@@ -8,12 +8,13 @@ using DatabaseTools.DbTools;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParametersDataEdit.ParametersEditors;
 
 public sealed class DatabaseParametersEditor : ParametersEditor
 {
-    public DatabaseParametersEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
+    public DatabaseParametersEditor(IApplication application, ILogger logger, IHttpClientFactory httpClientFactory,
         IParametersManager parametersManager, IParametersManager listsParametersManager, string propertyName) : base(
         $"{propertyName} {nameof(DatabaseParametersEditor)}", parametersManager)
     {
@@ -21,10 +22,10 @@ public sealed class DatabaseParametersEditor : ParametersEditor
         //ორივეს ერთდროულად შევსება არ შეიძლება.
         //ორივეს ცარელა დატოვება არ შეიძლება
         //მონაცემთა ბაზასთან კავშირის სახელი
-        FieldEditors.Add(new DatabaseServerConnectionNameFieldEditor(appName, logger, httpClientFactory,
+        FieldEditors.Add(new DatabaseServerConnectionNameFieldEditor(application, logger, httpClientFactory,
             nameof(DatabaseParameters.DbConnectionName), listsParametersManager, true));
 
-        FieldEditors.Add(new DbServerFoldersSetNameFieldEditor(appName, logger, httpClientFactory,
+        FieldEditors.Add(new DbServerFoldersSetNameFieldEditor(application.AppName, logger, httpClientFactory,
             nameof(DatabaseParameters.DbServerFoldersSetName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName)));
 
@@ -37,7 +38,7 @@ public sealed class DatabaseParametersEditor : ParametersEditor
         //თუ განსხვავდება მიმდინარე სახელისგან, ეს ნიშნავს, რომ გვჭირდება მიმდინარე ბაზის შენარჩუნება
         //ხოლო ახალი ბაზისათვის მზად არის ახალი პროგრამა.
         //მას მერე, რაც საჭიროება აღარ იქნება, CurrentBaseName და BaseName სახელები ერთმანეთს უნდა დაემთხვას.
-        FieldEditors.Add(new DatabaseNameFieldEditor(appName, logger, httpClientFactory,
+        FieldEditors.Add(new DatabaseNameFieldEditor(application.AppName, logger, httpClientFactory,
             nameof(DatabaseParameters.DatabaseName), listsParametersManager,
             nameof(DatabaseParameters.DbConnectionName), true));
 

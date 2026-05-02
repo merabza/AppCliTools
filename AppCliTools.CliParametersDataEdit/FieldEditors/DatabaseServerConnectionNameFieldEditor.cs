@@ -5,23 +5,24 @@ using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersDataEdit.Cruders;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string>
 {
-    private readonly string _appName;
+    private readonly IApplication _application;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
     private readonly bool _useNone;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DatabaseServerConnectionNameFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
-        string propertyName, IParametersManager parametersManager, bool useNone = false,
-        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
+    public DatabaseServerConnectionNameFieldEditor(IApplication application, ILogger logger,
+        IHttpClientFactory httpClientFactory, string propertyName, IParametersManager parametersManager,
+        bool useNone = false, bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {
-        _appName = appName;
+        _application = application;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _parametersManager = parametersManager;
@@ -34,7 +35,7 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         string? currentDatabaseServerConnectionName = GetValue(recordForUpdate);
 
         var databaseServerConnectionCruder =
-            DatabaseServerConnectionCruder.Create(_appName, _logger, _httpClientFactory, _parametersManager);
+            DatabaseServerConnectionCruder.Create(_application, _logger, _httpClientFactory, _parametersManager);
 
         SetValue(recordForUpdate,
             await databaseServerConnectionCruder.GetNameWithPossibleNewName(FieldName,
@@ -51,7 +52,7 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
         }
 
         var databaseServerConnectionCruder =
-            DatabaseServerConnectionCruder.Create(_appName, _logger, _httpClientFactory, _parametersManager);
+            DatabaseServerConnectionCruder.Create(_application, _logger, _httpClientFactory, _parametersManager);
 
         string status = databaseServerConnectionCruder.GetStatusFor(val);
         return $"{val} {(string.IsNullOrWhiteSpace(status) ? string.Empty : $"({status})")}";

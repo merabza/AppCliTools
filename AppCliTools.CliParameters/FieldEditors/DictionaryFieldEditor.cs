@@ -13,6 +13,7 @@ namespace AppCliTools.CliParameters.FieldEditors;
 public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dictionary<string, TItemData>>
     where TCruder : Cruder where TItemData : ItemData
 {
+    private readonly IApplication? _application;
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger? _logger;
     private readonly IParametersManager _parametersManager;
@@ -39,10 +40,27 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
         _httpClientFactory = httpClientFactory;
     }
 
+    public DictionaryFieldEditor(string propertyName, IApplication application, ILogger logger,
+        IHttpClientFactory httpClientFactory, IParametersManager parametersManager,
+        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
+    {
+        _application = application;
+        _logger = logger;
+        _parametersManager = parametersManager;
+        _httpClientFactory = httpClientFactory;
+    }
+
     public override CliMenuSet GetSubMenu(object record)
     {
         Cruder cruder;
         Dictionary<string, TItemData> currentValuesDict = GetValue(record) ?? [];
+
+        if (_application is not null && _httpClientFactory is not null && _logger is not null)
+        {
+            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _application, _logger, _httpClientFactory,
+                _parametersManager, currentValuesDict)!;
+            return cruder.GetListMenu();
+        }
 
         if (_httpClientFactory is not null && _logger is not null)
         {

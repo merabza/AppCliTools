@@ -23,18 +23,18 @@ namespace AppCliTools.CliParametersDataEdit.Cruders;
 
 public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerConnectionData>
 {
-    private readonly string _appName;
+    private readonly IApplication _application;
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
 
     //public კონსტრუქტორი საჭიროა. გამოიყენება რეფლექსიით DictionaryFieldEditor-ში
     // ReSharper disable once MemberCanBePrivate.Global
-    public DatabaseServerConnectionCruder(string appName, ILogger logger, IHttpClientFactory? httpClientFactory,
-        IParametersManager parametersManager,
+    public DatabaseServerConnectionCruder(IApplication application, ILogger logger,
+        IHttpClientFactory? httpClientFactory, IParametersManager parametersManager,
         Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary) : base(parametersManager,
         currentValuesDictionary, "Database Server Connection", "Database Server Connections")
     {
-        _appName = appName;
+        _application = application;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         FieldEditors.Add(new EnumFieldEditor<EDatabaseProvider>(
@@ -63,11 +63,11 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             nameof(DatabaseServerConnectionData.DatabaseFoldersSets), parametersManager));
     }
 
-    public static DatabaseServerConnectionCruder Create(string appName, ILogger logger,
+    public static DatabaseServerConnectionCruder Create(IApplication application, ILogger logger,
         IHttpClientFactory? httpClientFactory, IParametersManager parametersManager)
     {
         var parameters = (IParametersWithDatabaseServerConnections)parametersManager.Parameters;
-        return new DatabaseServerConnectionCruder(appName, logger, httpClientFactory, parametersManager,
+        return new DatabaseServerConnectionCruder(application, logger, httpClientFactory, parametersManager,
             parameters.DatabaseServerConnections);
     }
 
@@ -87,7 +87,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             token.ThrowIfCancellationRequested();
 
             OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult = DatabaseManagersFactory
-                .CreateDatabaseManager(_appName, _logger, true, databaseServerConnectionData, apiClients,
+                .CreateDatabaseManager(_application.AppName, _logger, true, databaseServerConnectionData, apiClients,
                     _httpClientFactory, null, null, token).Preserve().Result;
 
             if (createDatabaseManagerResult.IsT1)
@@ -242,8 +242,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             return;
         }
 
-        var getDbServerFoldersCliMenuCommand =
-            new GetDbServerFoldersCliMenuCommand(_appName, _logger, _httpClientFactory, itemName, ParametersManager);
+        var getDbServerFoldersCliMenuCommand = new GetDbServerFoldersCliMenuCommand(_application.AppName, _logger,
+            _httpClientFactory, itemName, ParametersManager);
         itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
     }
 }
