@@ -5,7 +5,7 @@ using AppCliTools.CliTools.Services.RecentCommands;
 
 namespace AppCliTools.CliTools.Menu.RecentCommandsList;
 
-// ReSharper disable once ClassNeverInstantiated.Global
+// ReSharper disable once UnusedType.Global
 public class RecentCommandsListFactoryStrategy(IRecentCommandsService recentCommandsService)
     : IMenuCommandListFactoryStrategy
 {
