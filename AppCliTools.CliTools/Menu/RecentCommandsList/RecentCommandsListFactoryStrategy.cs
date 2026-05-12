@@ -6,18 +6,11 @@ using AppCliTools.CliTools.Services.RecentCommands;
 namespace AppCliTools.CliTools.Menu.RecentCommandsList;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class RecentCommandsListFactoryStrategy : IMenuCommandListFactoryStrategy
+public class RecentCommandsListFactoryStrategy(IRecentCommandsService recentCommandsService)
+    : IMenuCommandListFactoryStrategy
 {
-    private readonly IRecentCommandsService _recentCommandsService;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public RecentCommandsListFactoryStrategy(IRecentCommandsService recentCommandsService)
-    {
-        _recentCommandsService = recentCommandsService;
-    }
-
     public List<CliMenuCommand> CreateMenuCommandsList()
     {
-        return _recentCommandsService.GetRecentCommands().Cast<CliMenuCommand>().ToList();
+        return recentCommandsService.GetRecentCommands().Cast<CliMenuCommand>().ToList();
     }
 }

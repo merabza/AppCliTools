@@ -31,7 +31,8 @@ public sealed class GenerateStandardRetryStrategyParametersCliMenuCommand : CliM
         StandardRetryStrategyParameters.Generate(_parametersManager);
 
         //შენახვა
-        await _parametersManager.Save(parameters, "Retry Strategy Parameters generated success", null, cancellationToken);
+        await _parametersManager.Save(parameters, "Retry Strategy Parameters generated success", null,
+            cancellationToken);
         return true;
     }
 }
