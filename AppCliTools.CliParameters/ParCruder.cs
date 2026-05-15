@@ -22,7 +22,7 @@ public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
         _currentValuesDictionary = currentValuesDictionary;
     }
 
-    public override ValueTask Save(string message, CancellationToken cancellationToken = default)
+    public override ValueTask<bool> Save(string message, CancellationToken cancellationToken = default)
     {
         return ParametersManager.Save(ParametersManager.Parameters, message, null, cancellationToken);
     }

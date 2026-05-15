@@ -25,18 +25,18 @@ public sealed class SubParametersManager<T> : IParametersManager
 
     public IParameters Parameters { get; set; }
 
-    public async ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null,
+    public async ValueTask<bool> Save(IParameters parameters, string message, string? saveAsFilePath = null,
         CancellationToken cancellationToken = default)
     {
         Parameters = parameters;
         if (parameters is not T par)
         {
-            return;
+            return false;
         }
 
         _fieldEditor.SetValue(_record, par);
 
-        await _parentParametersManager.Save(_parentParametersManager.Parameters, message, saveAsFilePath,
+        return await _parentParametersManager.Save(_parentParametersManager.Parameters, message, saveAsFilePath,
             cancellationToken);
     }
 }

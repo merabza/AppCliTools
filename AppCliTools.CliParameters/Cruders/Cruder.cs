@@ -435,12 +435,12 @@ public /*open*/ class Cruder : IFieldEditors
         return null;
     }
 
-    public virtual ValueTask Save(string message, CancellationToken cancellationToken = default)
+    public virtual ValueTask<bool> Save(string message, CancellationToken cancellationToken = default)
     {
-        return ValueTask.CompletedTask;
+        return ValueTask.FromResult(true);
     }
 
-    public ItemData? GetItemByName(string itemName, bool writeErrorIfNotExists = true)
+    protected ItemData? GetItemByName(string itemName, bool writeErrorIfNotExists = true)
     {
         Dictionary<string, ItemData> cruderDict = GetCrudersDictionary();
 
