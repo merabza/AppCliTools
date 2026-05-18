@@ -332,7 +332,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                     ? $"private Dictionary<{keyRealTypeNameForDictionaryGeneric}, {tableNameSingular}> _tempData = []"
                     : null, new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)"),
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyDatabase, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)"),
                 adaptMethod, additionalCheckMethod, createMethod, setParentsMethod));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
@@ -395,7 +395,7 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             new CodeBlock($"public /*open*/ class {className} : {baseClassName}",
                 new OneLineComment(" ReSharper disable once ConvertToPrimaryConstructor"),
                 new CodeBlock(
-                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)")));
+                    $"public {className}({additionalParameters}string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyDatabase, List<string>? keyFieldNamesList = null) : base({additionalParameters2}dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)")));
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
 

@@ -25,7 +25,7 @@ public sealed class DataSeederBaseGenericClassCreator : CodeCreator
                 $"public /*open*/ class {_parameters.DataSeederBaseClassName}<TDst, TJMo> : DataSeeder<TDst, TJMo> where TDst : class where TJMo : class",
                 //$"protected readonly {_parameters.DataSeederRepositoryInterfaceName} {_parameters.ProjectPrefixShort}Repo",
                 new CodeBlock(
-                    $"protected {_parameters.DataSeederBaseClassName}(string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)"
+                    $"protected {_parameters.DataSeederBaseClassName}(string dataSeedFolder, {_parameters.DataSeederRepositoryInterfaceName} repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyDatabase, List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)"
                     //,$"{_parameters.ProjectPrefixShort}Repo = repo")));
                 )));
         CodeFile.AddRange(block.CodeItems);
