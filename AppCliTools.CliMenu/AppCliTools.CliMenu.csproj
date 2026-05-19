@@ -5,4 +5,8 @@
         <ProjectReference Include="..\AppCliTools.LibDataInput\AppCliTools.LibDataInput.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DependencyInjection\" />
+    </ItemGroup>
+
 </Project>
