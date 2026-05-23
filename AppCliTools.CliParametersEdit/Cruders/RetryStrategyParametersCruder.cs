@@ -17,7 +17,7 @@ public sealed class RetryStrategyParametersCruder : ParCruder<RetryStrategyParam
     // ReSharper disable once MemberCanBePrivate.Global
     public RetryStrategyParametersCruder(IParametersManager parametersManager,
         Dictionary<string, RetryStrategyParameters> currentValuesDictionary) : base(parametersManager,
-        currentValuesDictionary, "Smart Schema", "Smart Schemas")
+        currentValuesDictionary, "Retry Strategy", "Retry Strategies")
     {
         FieldEditors.Add(new IntFieldEditor(nameof(RetryStrategyParameters.MaxRetryAttempts), 3));
         FieldEditors.Add(new EnumFieldEditor<DelayBackoffType>(nameof(RetryStrategyParameters.BackoffType),
