@@ -23,6 +23,6 @@ public sealed class RetryStrategyParametersNameFieldEditor : FieldEditor<string>
         var retryStrategyParametersCruder = RetryStrategyParametersCruder.Create(_parametersManager);
         SetValue(recordForUpdate,
             await retryStrategyParametersCruder.GetNameWithPossibleNewName(FieldName, GetValue(recordForUpdate), null,
-                false, cancellationToken));
+                true, cancellationToken));
     }
 }
