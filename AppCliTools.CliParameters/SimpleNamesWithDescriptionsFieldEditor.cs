@@ -6,6 +6,7 @@ using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibParameters;
+using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters;
 
@@ -36,7 +37,14 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
     public override CliMenuSet GetSubMenu(object record)
     {
         Cruder cruder;
-        Dictionary<string, string> currentValuesDict = GetValue(record) ?? [];
+        Dictionary<string, string>? currentValuesDict = GetValue(record);
+        if (currentValuesDict is null)
+        {
+            //თუ ველის მნიშვნელობა null-ია, შევქმნათ ცარიელი ლექსიკონი და დავუბრუნოთ record-ს,
+            //რომ შემდგომი ცვლილებები რეფერენსით აისახოს თვით თვისებაში
+            currentValuesDict = [];
+            SetValue(record, currentValuesDict);
+        }
 
         if (_logger is not null && _parametersManager is not null)
         {
@@ -50,6 +58,12 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
             : (TCruder)Activator.CreateInstance(typeof(TCruder), currentValuesDict)!;
 
         return cruder.GetListMenu();
+    }
+
+    public override void SetDefault(ItemData currentItem)
+    {
+        //ნაგულისხმევად ცარიელი ლექსიკონი, რომ ახლადშექმნილ ჩანაწერს არ ჰქონდეს null
+        SetValue(currentItem, []);
     }
 
     public override string GetValueStatus(object? record)
