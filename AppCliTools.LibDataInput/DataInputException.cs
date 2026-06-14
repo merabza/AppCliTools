@@ -2,10 +2,4 @@
 
 namespace AppCliTools.LibDataInput;
 
-public /*open*/ class DataInputException : Exception
-{
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public DataInputException(string message) : base(message)
-    {
-    }
-}
+public /*open*/ class DataInputException(string message) : Exception(message);

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using AppCliTools.CliParametersApiClientsEdit.Models;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
+using ToolsManagement.ApiClientsManagement;
 
 namespace AppCliTools.CliParametersApiClientsEdit.Parameters;
 
 public /*open*/ class ApiToolCommandParameters : IParameters
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     protected ApiToolCommandParameters(ApiClientSettingsDomain api)
     {
         Api = api;

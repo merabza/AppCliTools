@@ -1,9 +1,3 @@
 ﻿namespace AppCliTools.LibDataInput;
 
-public sealed class ListIsEmptyException : DataInputException
-{
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public ListIsEmptyException(string message) : base(message)
-    {
-    }
-}
+public sealed class ListIsEmptyException(string message) : DataInputException(message);

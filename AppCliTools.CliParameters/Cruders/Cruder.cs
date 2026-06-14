@@ -24,7 +24,6 @@ public /*open*/ class Cruder : IFieldEditors
     private CliMenuSet? _cruderSubMenuSet;
     private int _menuVersion;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     protected Cruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true)
     {

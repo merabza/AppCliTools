@@ -9,7 +9,7 @@
 //    private readonly FieldEditor<string> _fieldEditor;
 //    private readonly IParametersManager _parametersManager;
 
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public ConnectionStringParametersManager(IParameters parameters, IParametersManager parametersManager,
 //        FieldEditor<string> fieldEditor, object record)
 //    {

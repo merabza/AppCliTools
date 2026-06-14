@@ -19,14 +19,12 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
     private const string ActionName = "Get Database Server Folders and save in parameters";
     private readonly string _appName;
 
-    //public const string ActionDescription = "Get Database Server Folders and save in parameters";
     private readonly string _dbServerName;
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-
     public GetDbServerFoldersToolAction(string appName, ILogger logger, IHttpClientFactory? httpClientFactory,
         string dbServerName, IParametersManager parametersManager) : base(logger, ActionName, null, null, true)
     {

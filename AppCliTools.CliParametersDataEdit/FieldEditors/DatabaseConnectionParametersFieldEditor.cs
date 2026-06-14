@@ -10,7 +10,7 @@
 //    DatabaseConnectionParametersFieldEditor : ParametersFieldEditor<DatabaseConnectionParameters,
 //    DatabaseConnectionParametersEditor>
 //{
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public DatabaseConnectionParametersFieldEditor(ILogger logger, string propertyName,
 //        IParametersManager parametersManager) : base(logger, propertyName, parametersManager)
 //    {

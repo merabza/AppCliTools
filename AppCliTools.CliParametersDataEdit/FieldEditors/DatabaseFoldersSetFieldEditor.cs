@@ -12,7 +12,7 @@
 //{
 //    private readonly IParametersManager _parametersManager;
 
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public DatabaseFoldersSetFieldEditor(IParametersManager parametersManager, string propertyName,
 //        bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
 //    {

@@ -15,7 +15,7 @@
 //    private readonly ILogger _logger;
 //    private readonly IParametersManager _parametersManager;
 
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public ApiClientsFieldEditor(ILogger logger, IHttpClientFactory httpClientFactory, string propertyName,
 //        IParametersManager parametersManager, bool enterFieldDataOnCreate = false) : base(propertyName,
 //        enterFieldDataOnCreate, null, false, null, true)

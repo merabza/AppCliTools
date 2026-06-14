@@ -4,14 +4,12 @@ public sealed class CliMenuItem
 {
     public CliMenuItem(CliMenuCommand cliMenuCommand, int countedId)
     {
-        //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
         CountedId = countedId;
     }
 
     public CliMenuItem(CliMenuCommand cliMenuCommand)
     {
-        //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
     }
 
@@ -19,7 +17,6 @@ public sealed class CliMenuItem
     public CliMenuItem(string? key, CliMenuCommand cliMenuCommand, int countedId)
     {
         Key = key;
-        //MenuItemName = menuItemName;
         CliMenuCommand = cliMenuCommand;
         CountedId = countedId;
     }

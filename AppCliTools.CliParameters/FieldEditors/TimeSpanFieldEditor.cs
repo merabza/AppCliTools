@@ -10,6 +10,7 @@ public sealed class TimeSpanFieldEditor : FieldEditor<TimeSpan>
 {
     private readonly TimeSpan _defaultValue;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public TimeSpanFieldEditor(string propertyName, TimeSpan defaultValue, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)
     {

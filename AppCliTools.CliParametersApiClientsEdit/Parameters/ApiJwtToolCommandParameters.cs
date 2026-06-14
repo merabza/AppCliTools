@@ -1,11 +1,10 @@
-﻿using AppCliTools.CliParametersApiClientsEdit.Models;
-using ParametersManagement.LibApiClientParameters;
+﻿using ParametersManagement.LibApiClientParameters;
+using ToolsManagement.ApiClientsManagement;
 
 namespace AppCliTools.CliParametersApiClientsEdit.Parameters;
 
 public sealed class ApiJwtToolCommandParameters : ApiToolCommandParameters
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     private ApiJwtToolCommandParameters(ApiClientSettingsDomain api, string folderForLocalStorage, string apiName) :
         base(api)
     {

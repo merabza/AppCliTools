@@ -11,7 +11,6 @@ public /*open*/ class ApiCliMenuCommand : CliMenuCommand
     protected readonly IParametersManager ParametersManager;
     protected readonly string TaskName;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     protected ApiCliMenuCommand(IParametersManager parametersManager, string taskName, string actionName,
         EMenuAction menuActionOnBodySuccess = EMenuAction.Reload,
         EMenuAction menuActionOnBodyFail = EMenuAction.Reload) : base(actionName, menuActionOnBodySuccess,

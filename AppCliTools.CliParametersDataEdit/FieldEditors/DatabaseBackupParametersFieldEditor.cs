@@ -10,7 +10,7 @@
 //    DatabaseBackupParametersFieldEditor : ParametersFieldEditor<DatabaseBackupParametersModel,
 //    DatabaseBackupParametersEditor>
 //{
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public DatabaseBackupParametersFieldEditor(ILogger logger, string propertyName,
 //        IParametersManager parametersManager) : base(logger, propertyName, parametersManager)
 //    {
