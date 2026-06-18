@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
-using Microsoft.Extensions.Logging;
-using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters;
@@ -13,30 +11,17 @@ namespace AppCliTools.CliParameters;
 public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEditor<Dictionary<string, string>>
     where TCruder : Cruder
 {
-    private readonly ILogger? _logger;
-    private readonly IParametersManager? _parametersManager;
+    private readonly Func<Dictionary<string, string>, TCruder> _cruderFactory;
 
-    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, ILogger logger,
-        IParametersManager parametersManager) : base(propertyName, false, null, false, null, true)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public SimpleNamesWithDescriptionsFieldEditor(string propertyName,
+        Func<Dictionary<string, string>, TCruder> cruderFactory) : base(propertyName, false, null, false, null, true)
     {
-        _logger = logger;
-        _parametersManager = parametersManager;
-    }
-
-    public SimpleNamesWithDescriptionsFieldEditor(string propertyName, IParametersManager parametersManager) : base(
-        propertyName, false, null, false, null, true)
-    {
-        _parametersManager = parametersManager;
-    }
-
-    public SimpleNamesWithDescriptionsFieldEditor(string propertyName) : base(propertyName, false, null, false, null,
-        true)
-    {
+        _cruderFactory = cruderFactory;
     }
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        Cruder cruder;
         Dictionary<string, string>? currentValuesDict = GetValue(record);
         if (currentValuesDict is null)
         {
@@ -46,18 +31,7 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
             SetValue(record, currentValuesDict);
         }
 
-        if (_logger is not null && _parametersManager is not null)
-        {
-            cruder = (TCruder)Activator.CreateInstance(typeof(TCruder), _logger, _parametersManager,
-                currentValuesDict)!;
-            return cruder.GetListMenu();
-        }
-
-        cruder = _parametersManager is not null
-            ? (TCruder)Activator.CreateInstance(typeof(TCruder), _parametersManager, currentValuesDict)!
-            : (TCruder)Activator.CreateInstance(typeof(TCruder), currentValuesDict)!;
-
-        return cruder.GetListMenu();
+        return _cruderFactory(currentValuesDict).GetListMenu();
     }
 
     public override void SetDefault(ItemData currentItem)

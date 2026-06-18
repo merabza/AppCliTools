@@ -60,7 +60,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt)));
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
         FieldEditors.Add(new DictionaryFieldEditor<DatabaseFoldersSetCruder, DatabaseFoldersSet>(
-            nameof(DatabaseServerConnectionData.DatabaseFoldersSets), parametersManager));
+            nameof(DatabaseServerConnectionData.DatabaseFoldersSets),
+            x => new DatabaseFoldersSetCruder(parametersManager, x)));
     }
 
     public static DatabaseServerConnectionCruder Create(IApplication application, ILogger logger,
