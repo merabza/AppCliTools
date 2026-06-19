@@ -305,11 +305,18 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
 
         public IParameters Parameters { get; set; }
 
-        public ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null,
-            CancellationToken cancellationToken = default)
+        public string? ParametersFileName => throw new NotImplementedException();
+
+        //public ValueTask Save(IParameters parameters, string message, string? saveAsFilePath = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    // No-op for testing
+        //    return ValueTask.CompletedTask;
+        //}
+
+        ValueTask<bool> IParametersManager.Save(IParameters parameters, string message, string? saveAsFilePath, CancellationToken cancellationToken)
         {
-            // No-op for testing
-            return ValueTask.CompletedTask;
+            throw new NotImplementedException();
         }
     }
 
