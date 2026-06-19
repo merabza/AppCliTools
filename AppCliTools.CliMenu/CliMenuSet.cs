@@ -109,7 +109,7 @@ public sealed class CliMenuSet
         ConsoleColor defaultColor = Console.ForegroundColor;
 
         var segments = new List<StatusColorPart> { new(name, defaultColor), new(" (", defaultColor) };
-        for (var i = 0; i < parts.Count; i++)
+        for (int i = 0; i < parts.Count; i++)
         {
             if (i > 0)
             {
