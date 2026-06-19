@@ -102,6 +102,43 @@ public sealed class CliMenuSet
         return strLength > length ? str[..length] : $"{str}{spaces}";
     }
 
+    //ხატავს მენიუს ხაზს "სახელი (სტატუსი)" ფორმატით, სადაც სტატუსის თითოეული ნაწილი თავისი ფერით იხატება.
+    //სტრუქტურული ნაწილები (სახელი, ფრჩხილები, გამყოფები) ჩვეულებრივი ფერით რჩება, საერთო სიგრძე იჭრება width-ით
+    private static void WriteNameWithColoredStatus(string name, IReadOnlyList<StatusColorPart> parts, int width)
+    {
+        ConsoleColor defaultColor = Console.ForegroundColor;
+
+        var segments = new List<StatusColorPart> { new(name, defaultColor), new(" (", defaultColor) };
+        for (var i = 0; i < parts.Count; i++)
+        {
+            if (i > 0)
+            {
+                segments.Add(new StatusColorPart(", ", defaultColor));
+            }
+
+            segments.Add(parts[i]);
+        }
+
+        segments.Add(new StatusColorPart(")", defaultColor));
+
+        int remaining = width;
+        foreach (StatusColorPart segment in segments)
+        {
+            if (remaining <= 0)
+            {
+                break;
+            }
+
+            string toWrite = segment.Text.Length > remaining ? segment.Text[..remaining] : segment.Text;
+            remaining -= toWrite.Length;
+            Console.ForegroundColor = segment.Color;
+            Console.Write(toWrite);
+        }
+
+        Console.ForegroundColor = defaultColor;
+        Console.WriteLine();
+    }
+
     private string? GetCaption()
     {
         if (Caption == null)
@@ -226,6 +263,10 @@ public sealed class CliMenuSet
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(UseLength(menuItem.CliMenuCommand.StatusString, max2, false));
                     Console.ForegroundColor = currentColor;
+                }
+                else if (menuItem.CliMenuCommand.StatusColorParts is { Count: > 0 } colorParts)
+                {
+                    WriteNameWithColoredStatus(menuItem.MenuItemName, colorParts, width);
                 }
                 else
                 {

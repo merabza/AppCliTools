@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCliTools.LibDataInput;
@@ -43,9 +44,13 @@ public /*open*/ class CliMenuCommand
     public bool NameIsStatus { get; }
     public string? CommandLink { get; set; }
 
+    //სტატუსის ფერადი ნაწილები. null ნიშნავს, რომ სტატუსი ჩვეულებრივი ფერით უნდა დაიხატოს
+    public IReadOnlyList<StatusColorPart>? StatusColorParts { get; private set; }
+
     public void CountStatus()
     {
         StatusString = GetStatus();
+        StatusColorParts = BuildStatusColorParts();
     }
 
     public async ValueTask Run(CancellationToken cancellationToken = default)
@@ -129,6 +134,12 @@ public /*open*/ class CliMenuCommand
     }
 
     protected virtual string? GetStatus()
+    {
+        return null;
+    }
+
+    // ReSharper disable once VirtualMemberNeverOverridden.Global
+    protected virtual IReadOnlyList<StatusColorPart>? BuildStatusColorParts()
     {
         return null;
     }
