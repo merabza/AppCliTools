@@ -513,11 +513,11 @@ public sealed class FieldEditorMenuCliMenuCommandTests
             return ValidationResult;
         }
 
-        public override ValueTask Save(string message, CancellationToken cancellationToken = default)
+        public override ValueTask<bool> Save(string message, CancellationToken cancellationToken = default)
         {
             SaveCalled = true;
             LastSaveMessage = message;
-            return ValueTask.CompletedTask;
+            return new ValueTask<bool>(true);
         }
 
         protected override ItemData CreateNewItem(string? recordKey, ItemData? defaultItemData)
