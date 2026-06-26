@@ -23,15 +23,6 @@ public /*open*/ class ApiToolCommandParameters : IParameters
 
     public static ApiToolCommandParameters? Create(IParametersWithApiClients parameters, string apiName)
     {
-        //var parameters = (ProcessorWorkerConsoleParameters)parametersManager.Parameters;
-        //TaskModel? task = parameters.GetTask(taskName);
-        //if (task == null)
-        //{
-        //    StShared.WriteErrorLine($"Task {taskName} does not found", true);
-        //    return null;
-        //}
-
-        //string? apiName = task.ApiName;
         if (string.IsNullOrWhiteSpace(apiName))
         {
             StShared.WriteErrorLine("apiName does not specified for Task", true);
@@ -39,15 +30,8 @@ public /*open*/ class ApiToolCommandParameters : IParameters
         }
 
         ApiClientSettingsDomain api = GetApiClientRequired(parameters, apiName);
-        //string? folderForLocalStorage = parameters.FolderForLocalStorage;
 
-        //if (!string.IsNullOrWhiteSpace(folderForLocalStorage))
-        //{
         return new ApiToolCommandParameters(api);
-        //}
-
-        //StShared.WriteErrorLine("FolderForLocalStorage does not specified in parameters", true);
-        //return null;
     }
 
     protected static ApiClientSettingsDomain GetApiClientRequired(IParametersWithApiClients parameters, string apiKey)
