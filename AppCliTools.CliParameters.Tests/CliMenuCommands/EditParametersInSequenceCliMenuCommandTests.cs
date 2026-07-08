@@ -314,7 +314,8 @@ public sealed class EditParametersInSequenceCliMenuCommandTests
         //    return ValueTask.CompletedTask;
         //}
 
-        ValueTask<bool> IParametersManager.Save(IParameters parameters, string message, string? saveAsFilePath, CancellationToken cancellationToken)
+        ValueTask<bool> IParametersManager.Save(IParameters parameters, string message, string? saveAsFilePath,
+            CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
