@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Net.Http;
 using AppCliTools.CliParametersApiClientsEdit.FieldEditors;
 using Microsoft.Extensions.Logging;
 using Moq;
