@@ -2,11 +2,12 @@
 
     <ItemGroup>
         <PackageReference Include="Figgle.Fonts" />
+        <PackageReference Include="SystemTools.BackgroundTasks" />
+        <PackageReference Include="SystemTools.SystemToolsShared" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.BackgroundTasks\SystemTools.BackgroundTasks.csproj" />
         <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
     </ItemGroup>
 
