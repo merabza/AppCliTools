@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference
-            Include="..\..\ParametersManagement\ParametersManagement.LibFileParameters\ParametersManagement.LibFileParameters.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ParametersManagement.LibFileParameters" />
     </ItemGroup>
 
 </Project>

@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="BackendCarcass.Database" />
+        <PackageReference Include="ParametersManagement.LibParameters" />
         <PackageReference Include="System.CodeDom" />
         <PackageReference Include="SystemTools.JetBrainsResharperGlobalToolsWork" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\BackendCarcass\BackendCarcass.Database\BackendCarcass.Database.csproj" />
-        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
         <ProjectReference Include="..\AppCliTools.CodeTools\AppCliTools.CodeTools.csproj" />
     </ItemGroup>
 

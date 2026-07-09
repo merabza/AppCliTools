@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference
-            Include="..\..\ParametersManagement\ParametersManagement.LibFileParameters\ParametersManagement.LibFileParameters.csproj" />
-        <ProjectReference
-            Include="..\..\ParametersManagement\ParametersManagement.LibParameters\ParametersManagement.LibParameters.csproj" />
-        <ProjectReference
-            Include="..\..\ToolsManagement\ToolsManagement.FileManagersMain\ToolsManagement.FileManagersMain.csproj" />
         <ProjectReference Include="..\AppCliTools.CliMenu\AppCliTools.CliMenu.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
         <ProjectReference Include="..\AppCliTools.CliTools\AppCliTools.CliTools.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ParametersManagement.LibFileParameters" />
+      <PackageReference Include="ParametersManagement.LibParameters" />
+      <PackageReference Include="ToolsManagement.FileManagersMain" />
     </ItemGroup>
 
 </Project>
