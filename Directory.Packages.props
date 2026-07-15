@@ -4,32 +4,32 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="BackendCarcass.Database" Version="1.0.9686.34998" />
-    <PackageVersion Include="DatabaseTools.DbTools" Version="1.0.9686.33837" />
+    <PackageVersion Include="BackendCarcass.Database" Version="1.0.9686.36764" />
+    <PackageVersion Include="DatabaseTools.DbTools" Version="1.0.9686.36920" />
     <PackageVersion Include="Figgle.Fonts" Version="0.6.6" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.10" />
     <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="ParametersManagement.LibApiClientParameters" Version="1.0.9686.34062" />
-    <PackageVersion Include="ParametersManagement.LibDatabaseParameters" Version="1.0.9686.34062" />
-    <PackageVersion Include="ParametersManagement.LibFileParameters" Version="1.0.9686.34062" />
-    <PackageVersion Include="ParametersManagement.LibParameters" Version="1.0.9686.34062" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.27.0.140913" />
-    <PackageVersion Include="System.CodeDom" Version="10.0.9" />
+    <PackageVersion Include="ParametersManagement.LibApiClientParameters" Version="1.0.9686.36920" />
+    <PackageVersion Include="ParametersManagement.LibDatabaseParameters" Version="1.0.9686.36920" />
+    <PackageVersion Include="ParametersManagement.LibFileParameters" Version="1.0.9686.36920" />
+    <PackageVersion Include="ParametersManagement.LibParameters" Version="1.0.9686.36920" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
+    <PackageVersion Include="System.CodeDom" Version="10.0.10" />
     <PackageVersion Include="SystemTools.BackgroundTasks" Version="1.0.9691.25951" />
     <PackageVersion Include="SystemTools.JetBrainsResharperGlobalToolsWork" Version="1.0.9691.25951" />
-    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9691.25951" />
-    <PackageVersion Include="SystemTools.TestApiContracts" Version="1.0.9691.25951" />
-    <PackageVersion Include="ToolsManagement.ApiClientsManagement" Version="1.0.9686.35962" />
-    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9686.35962" />
-    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9686.35962" />
-    <PackageVersion Include="WebAgentContracts.WebAgentDatabasesApiContracts" Version="1.0.9686.34669" />
+    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9691.25983" />
+    <PackageVersion Include="SystemTools.TestApiContracts" Version="1.0.9691.25983" />
+    <PackageVersion Include="ToolsManagement.ApiClientsManagement" Version="1.0.9686.36920" />
+    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9686.36920" />
+    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9686.36920" />
+    <PackageVersion Include="WebAgentContracts.WebAgentDatabasesApiContracts" Version="1.0.9686.36920" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.assert" Version="2.9.3" />
     <PackageVersion Include="xunit.extensibility.core" Version="2.9.3" />
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
 </Project>
