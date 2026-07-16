@@ -8,12 +8,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="ParametersManagement.LibApiClientParameters" />
-      <PackageReference Include="SystemTools.TestApiContracts" />
-      <PackageReference Include="ToolsManagement.ApiClientsManagement" />
+        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibApiClientParameters\ParametersManagement.LibApiClientParameters.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.TestApiContracts\SystemTools.TestApiContracts.csproj" />
+        <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.ApiClientsManagement\ToolsManagement.ApiClientsManagement.csproj" />
     </ItemGroup>
 
 </Project>
