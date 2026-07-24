@@ -16,8 +16,8 @@ public /*open*/ class ParametersEditor : IFieldEditors
 {
     public const char PasswordChar = '*';
     public const string SaveMessage = "Parameters Saved"; // S3400 fix: use constant instead of method
-    private readonly IParametersManager _parametersManager;
     protected readonly List<FieldEditor> FieldEditors = [];
+    private readonly IParametersManager _parametersManager;
 
     protected ParametersEditor(string name, IParameters parameters, IParametersManager parametersManager)
     {

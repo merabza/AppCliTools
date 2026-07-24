@@ -11,8 +11,8 @@ namespace AppCliTools.CliParameters;
 
 public /*open*/ class ParCruder<T> : Cruder where T : ItemData, new()
 {
-    private readonly Dictionary<string, T> _currentValuesDictionary;
     protected readonly IParametersManager ParametersManager;
+    private readonly Dictionary<string, T> _currentValuesDictionary;
 
     protected ParCruder(IParametersManager parametersManager, Dictionary<string, T> currentValuesDictionary,
         string crudName, string crudNamePlural, bool fieldKeyFromItem = false,

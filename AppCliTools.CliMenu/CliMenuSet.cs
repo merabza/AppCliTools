@@ -177,7 +177,8 @@ public sealed class CliMenuSet
             _currentPageNumber = _pagesCount - 1;
         }
 
-        MenuItemsShown = [.. MenuItems.Where(w => w.Key is null).Skip(_currentPageNumber * _pageMaxSize).Take(_pageMaxSize)];
+        MenuItemsShown =
+            [.. MenuItems.Where(w => w.Key is null).Skip(_currentPageNumber * _pageMaxSize).Take(_pageMaxSize)];
         if (_pagesCount > 1 && _currentPageNumber > 0)
         {
             string key = ConsoleKey.PageUp.Value().Pascalize();

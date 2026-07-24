@@ -12,10 +12,10 @@ namespace AppCliTools.DbContextAnalyzer;
 
 public sealed class Relations
 {
+    public readonly Dictionary<string, EntityData> Entities = [];
     private readonly DbContext _dbContext;
     private readonly ExcludesRulesParametersDomain _excludesRulesParameters;
     private readonly Stack<string> _preventLoopList = new();
-    public readonly Dictionary<string, EntityData> Entities = [];
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public Relations(DbContext dbContext, ExcludesRulesParametersDomain excludesRulesParameters)
@@ -289,8 +289,11 @@ public sealed class Relations
         //ამოვკრიბოთ ყველა უნიკალური ინდექსი
         //(არ ვიცი რამდენად საჭიროა იმის შემოწმება, რომ ველები IsNullable არ უნდა იყოს).
         //კიდევ იმასაც ვამოწმებ, რომ უნიკალური ინდექსის ველები ავტოგენერირებადი არ იყოს. (ესეც არ ვიცი რამდენად საჭიროა)
-        List<IIndex> uniKeys = [.. entityType.GetIndexes().Where(w =>
-            w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never))];
+        List<IIndex> uniKeys =
+        [
+            .. entityType.GetIndexes().Where(w =>
+                w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never))
+        ];
 
         //ჯერ გავარკვიოთ საერთოდ უნიკალური ინდექსები გვაქვს თუ კი
         if (uniKeys.Count == 0)
