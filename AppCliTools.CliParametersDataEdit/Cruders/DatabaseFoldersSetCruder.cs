@@ -81,7 +81,7 @@ public sealed class DatabaseFoldersSetCruder : Cruder
 
     public override List<string> GetKeys()
     {
-        return _currentValuesDictionary.Keys.ToList();
+        return [.. _currentValuesDictionary.Keys];
     }
 
     public override string? GetStatusFor(string? name)

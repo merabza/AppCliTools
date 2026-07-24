@@ -11,6 +11,6 @@ public class RecentCommandsListFactoryStrategy(IRecentCommandsService recentComm
 {
     public List<CliMenuCommand> CreateMenuCommandsList()
     {
-        return recentCommandsService.GetRecentCommands().Cast<CliMenuCommand>().ToList();
+        return [.. recentCommandsService.GetRecentCommands()];
     }
 }

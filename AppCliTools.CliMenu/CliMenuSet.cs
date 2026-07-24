@@ -41,7 +41,7 @@ public sealed class CliMenuSet
         int keyId = GetNoKeyId(consoleKeyInfo);
         if (keyId > -1)
         {
-            List<CliMenuItem> menuItemsWithNoKey = MenuItemsShown.Where(w => w.Key == null).ToList();
+            List<CliMenuItem> menuItemsWithNoKey = [.. MenuItemsShown.Where(w => w.Key == null)];
             if (menuItemsWithNoKey.Count <= keyId)
             {
                 return null;
@@ -177,8 +177,7 @@ public sealed class CliMenuSet
             _currentPageNumber = _pagesCount - 1;
         }
 
-        MenuItemsShown = MenuItems.Where(w => w.Key is null).Skip(_currentPageNumber * _pageMaxSize).Take(_pageMaxSize)
-            .ToList();
+        MenuItemsShown = [.. MenuItems.Where(w => w.Key is null).Skip(_currentPageNumber * _pageMaxSize).Take(_pageMaxSize)];
         if (_pagesCount > 1 && _currentPageNumber > 0)
         {
             string key = ConsoleKey.PageUp.Value().Pascalize();
@@ -288,7 +287,7 @@ public sealed class CliMenuSet
 
     private void CountPageMaxSizeAndCount()
     {
-        List<CliMenuItem> menuItemsWithNoKey = MenuItems.Where(w => w.Key is null).ToList();
+        List<CliMenuItem> menuItemsWithNoKey = [.. MenuItems.Where(w => w.Key is null)];
         _pageMaxSize = Console.WindowHeight - 7 - MenuItems.Count + menuItemsWithNoKey.Count;
         if (_pageMaxSize > 62)
         {

@@ -41,7 +41,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
         string? fileName = null;
         if (_argsList.Count > 0)
         {
-            int useIndex = Array.FindIndex(_argsList.ToArray(), t => t.Equals("--use", StringComparison.Ordinal));
+            int useIndex = Array.FindIndex([.. _argsList], t => t.Equals("--use", StringComparison.Ordinal));
 
             if (useIndex + 1 < _argsList.Count)
             {

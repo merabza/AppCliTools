@@ -176,14 +176,16 @@ public sealed class SeederCreator : SeederCodeCreatorBase
                 {
                     string seederModelObjectName = seederModelClassName.UnCapitalize();
 
-                    List<FlatCodeBlock> flatCodeBlocks = entityData.SelfRecursiveFields.Select(s =>
+                    List<FlatCodeBlock> flatCodeBlocks =
+                    [
+                        .. entityData.SelfRecursiveFields.Select(s =>
                             new FlatCodeBlock(
                                 $"var idsDict = _tempData.ToDictionary(k => k.Key, v => v.Value.{entityData.PrimaryKeyFieldName})",
                                 $"DataSeederTempData.Instance.SaveOld{keyRealTypeName}IdsDictTo{keyRealTypeName}Ids<{tableNameSingular}>(idsDict)",
                                 new CodeBlock(
                                     $"foreach (var {seederModelObjectName} in jsonData.Where(w => w.{s.Name} != null))",
                                     $"_tempData[{seederModelObjectName}.{entityData.PrimaryKeyFieldName}].{s.Name} = idsDict[{seederModelObjectName}.{s.Name}!.Value]")))
-                        .ToList();
+                    ];
 
                     flatCodeBlockForAdditionalCheckMethod = flatCodeBlocks[0];
                     for (int i = 1; i < flatCodeBlocks.Count; i++)
@@ -205,9 +207,12 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             }
             else if (entityData.OptimalIndexProperties.Count > 0)
             {
-                List<FieldData> optimalIndexFieldsData = entityData.OptimalIndexProperties
-                    .Select(prop => entityData.FieldsData.SingleOrDefault(ss => ss.OldName == prop.Name))
-                    .OfType<FieldData>().ToList();
+                List<FieldData> optimalIndexFieldsData =
+                [
+                    .. entityData.OptimalIndexProperties
+                        .Select(prop => entityData.FieldsData.SingleOrDefault(ss => ss.OldName == prop.Name))
+                        .OfType<FieldData>()
+                ];
 
                 string tupTypeList = string.Join(", ", optimalIndexFieldsData.Select(s => s.RealTypeName));
                 string keyFieldsList = string.Join(", ", optimalIndexFieldsData.Select(s => $"k.{s.Name}"));

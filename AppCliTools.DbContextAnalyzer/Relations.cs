@@ -78,7 +78,7 @@ public sealed class Relations
         }
 
         //დავადგინოთ ცხრილის მთავარი გასაღები
-        List<IKey> primaryKeys = entityType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
+        List<IKey> primaryKeys = [.. entityType.GetKeys().Where(w => w.IsPrimaryKey())];
 
         //გასაღები უნდა იყოს აუცილებლად 1 ცალი, ჯერჯერობით სხვა ვერსიებს არ განვიხილავთ
         IKey primaryKey = primaryKeys[0];
@@ -143,10 +143,12 @@ public sealed class Relations
             if (exKeyFieldNames is not null)
             {
                 List<string> exKeyFields = exKeyFieldNames.Keys;
-                entityData.OptimalIndexProperties = exKeyFields.Select(keyField =>
-                        entityType.GetProperties().SingleOrDefault(ss => string.Equals(ss.Name,
-                            _excludesRulesParameters.GetNewFieldName(tableName, keyField), StringComparison.Ordinal)))
-                    .OfType<IProperty>().ToList();
+                entityData.OptimalIndexProperties =
+                [
+                    .. exKeyFields.Select(keyField => entityType.GetProperties().SingleOrDefault(ss =>
+                        string.Equals(ss.Name, _excludesRulesParameters.GetNewFieldName(tableName, keyField),
+                            StringComparison.Ordinal))).OfType<IProperty>()
+                ];
             }
             else
             {
@@ -158,8 +160,10 @@ public sealed class Relations
 
         bool usePrimaryKey = primaryKey.Properties[0].ValueGenerated == ValueGenerated.Never;
 
-        List<string> ignoreFields = _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName)
-            .Select(s => s.FieldName).ToList();
+        List<string> ignoreFields =
+        [
+            .. _excludesRulesParameters.ExcludeFields.Where(w => w.TableName == tableName).Select(s => s.FieldName)
+        ];
 
         IEnumerable<IProperty> fieldsBase = entityType.GetProperties().Where(w =>
             (needsToCreateTempData || usePrimaryKey) && w.IsPrimaryKey() ||
@@ -204,7 +208,7 @@ public sealed class Relations
     {
         Dictionary<string, string> replaceDict = _excludesRulesParameters.GetReplaceFieldsDictByTableName(tableName);
 
-        return fieldsBase.Select(Selector).ToList();
+        return [.. fieldsBase.Select(Selector)];
 
         FieldData Selector(IProperty s)
         {
@@ -212,7 +216,7 @@ public sealed class Relations
 
             var fieldData = FieldData.Create(tableClrType, s, preferredName, parent);
 
-            List<IForeignKey> forKeys = s.GetContainingForeignKeys().ToList();
+            List<IForeignKey> forKeys = [.. s.GetContainingForeignKeys()];
 
             switch (forKeys.Count)
             {
@@ -285,8 +289,8 @@ public sealed class Relations
         //ამოვკრიბოთ ყველა უნიკალური ინდექსი
         //(არ ვიცი რამდენად საჭიროა იმის შემოწმება, რომ ველები IsNullable არ უნდა იყოს).
         //კიდევ იმასაც ვამოწმებ, რომ უნიკალური ინდექსის ველები ავტოგენერირებადი არ იყოს. (ესეც არ ვიცი რამდენად საჭიროა)
-        List<IIndex> uniKeys = entityType.GetIndexes().Where(w =>
-            w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never)).ToList();
+        List<IIndex> uniKeys = [.. entityType.GetIndexes().Where(w =>
+            w.IsUnique && !w.Properties.Any(p => p.IsNullable || p.ValueGenerated != ValueGenerated.Never))];
 
         //ჯერ გავარკვიოთ საერთოდ უნიკალური ინდექსები გვაქვს თუ კი
         if (uniKeys.Count == 0)

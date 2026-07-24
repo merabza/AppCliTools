@@ -44,8 +44,11 @@ public /*open*/ class SeederCodeCreatorBase : CodeCreator
 
     protected static (bool, List<IProperty>) GetFieldsProperties(IEntityType entityType, List<string> ignoreFields)
     {
-        List<IProperty> props = entityType.GetProperties()
-            .Where(p => p.ValueGenerated == ValueGenerated.Never && !ignoreFields.Contains(p.Name)).ToList();
+        List<IProperty> props =
+        [
+            .. entityType.GetProperties()
+                .Where(p => p.ValueGenerated == ValueGenerated.Never && !ignoreFields.Contains(p.Name))
+        ];
 
         if (props.Count > 0)
         {
@@ -54,7 +57,7 @@ public /*open*/ class SeederCodeCreatorBase : CodeCreator
 
         //თუ ცხრილის ველები ყველა ავტომატურად გენერირდება, მაშინ ავიღოთ მხოლოდ ძირითადი გასაღების ველები და ის გავიტანოთ json-ში
         //და ის დაგვჭირდება SeederModel-ში
-        props = entityType.GetKeys().SelectMany(s => s.Properties).ToList();
+        props = [.. entityType.GetKeys().SelectMany(s => s.Properties)];
         if (props.Count != 1)
         {
             throw new Exception("გასაღები ზუსტად ერთი უნდა იყოს. სხვა ვარიანტები ჯერ არ განიხილება");

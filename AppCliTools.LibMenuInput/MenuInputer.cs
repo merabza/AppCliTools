@@ -69,7 +69,7 @@ public static class MenuInputer
         var multipleSelectFromListInput = new MultipleSelectFromListInput(caption, oldChecks);
         return !multipleSelectFromListInput.DoInput()
             ? throw new DataInputException($"Input {caption} Escaped")
-            : multipleSelectFromListInput.SourceListWithChecks.Where(w => w.Value).Select(s => s.Key).ToList();
+            : [.. multipleSelectFromListInput.SourceListWithChecks.Where(w => w.Value).Select(s => s.Key)];
     }
 
     public static string? InputFolderPath(string fieldName, string? defaultValue = null)

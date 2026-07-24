@@ -16,7 +16,7 @@ public /*open*/ class DelimiterParser : InputParser
     {
         _minimums = minimums;
         Maxes = maxes;
-        _digits = maxes.Select(s => (int)-Math.Floor(-Math.Log10(s))).ToArray();
+        _digits = [.. maxes.Select(s => (int)-Math.Floor(-Math.Log10(s)))];
         _count = maxes.Length;
     }
 
@@ -46,7 +46,7 @@ public /*open*/ class DelimiterParser : InputParser
             return false;
         }
 
-        return number * 10 > GetMax(digs.Select(int.Parse).ToArray());
+        return number * 10 > GetMax([.. digs.Select(int.Parse)]);
     }
 
     public override bool IsValidNextChar(string current, char nextChar)
@@ -96,7 +96,7 @@ public /*open*/ class DelimiterParser : InputParser
                 return false;
             }
 
-            if (number > GetMax(parsedNumbers.ToArray()))
+            if (number > GetMax([.. parsedNumbers]))
             {
                 return false;
             }

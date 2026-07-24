@@ -76,7 +76,7 @@ public sealed class ExcludesRulesParametersDomain
                 continue;
             }
 
-            List<string> keys = kfn.Keys.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            List<string> keys = [.. kfn.Keys.Where(x => !string.IsNullOrWhiteSpace(x))];
             if (keys.Count == 0)
             {
                 continue;

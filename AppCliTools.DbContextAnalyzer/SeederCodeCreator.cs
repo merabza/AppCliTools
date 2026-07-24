@@ -66,7 +66,7 @@ public sealed class SeederCodeCreator
         projectDataSeederCreator.CreateFileStructure();
 
         //----
-        List<IEntityType> carcassEntityTypes = _carcassContext.Model.GetEntityTypes().ToList();
+        List<IEntityType> carcassEntityTypes = [.. _carcassContext.Model.GetEntityTypes()];
 
         var relations = new Relations(_dbScContext, _excludesRulesParameters);
         relations.DbContextAnalysis();
@@ -164,13 +164,16 @@ public sealed class SeederCodeCreator
         }
         //-------------
 
-        List<IEntityType> notUsedCarcassTypes = (from carcassEntityType in carcassEntityTypes
+        List<IEntityType> notUsedCarcassTypes =
+        [
+            .. from carcassEntityType in carcassEntityTypes
             let tableName = Relations.GetTableName(carcassEntityType)
             where !string.IsNullOrEmpty(tableName)
             let isUsed =
                 usedCarcassEntityTypes.Any(a => string.Equals(a, tableName, StringComparison.OrdinalIgnoreCase))
             where !isUsed
-            select carcassEntityType).ToList();
+            select carcassEntityType
+        ];
 
         foreach (IEntityType carcassEntityType in notUsedCarcassTypes)
         {

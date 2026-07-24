@@ -66,8 +66,10 @@ public /*open*/ class PathInput : DataInput
                         }
 
                         var dir = new DirectoryInfo(dirName);
-                        List<string> names = dir.GetDirectories($"{fileName}*")
-                            .Select(s => s.Name + Path.DirectorySeparatorChar).ToList();
+                        List<string> names =
+                        [
+                            .. dir.GetDirectories($"{fileName}*").Select(s => s.Name + Path.DirectorySeparatorChar)
+                        ];
                         AddFiles(dir, fileName, names);
                         names = [.. names.OrderBy(o => o)];
 

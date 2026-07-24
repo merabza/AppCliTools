@@ -87,7 +87,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             var databasesMenuSet = new CliMenuSet();
             databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
 
-            List<string> keys = databaseInfos.Select(s => s.Name).ToList();
+            List<string> keys = [.. databaseInfos.Select(s => s.Name)];
             foreach (string listItem in keys)
             {
                 databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));

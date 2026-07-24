@@ -55,9 +55,11 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
             return string.Empty;
         }
 
-        List<string> res = fieldData.SubstituteField.Fields.Select(field =>
+        List<string> res =
+        [
+            .. fieldData.SubstituteField.Fields.Select(field =>
                 $".{(level > 0 ? "Then" : string.Empty)}Include(i{level}=>i{level}.{fieldData.NavigationFieldName}){GetIncludes(field, level + 1)}")
-            .ToList();
+        ];
 
         if (res.Count <= 1)
         {

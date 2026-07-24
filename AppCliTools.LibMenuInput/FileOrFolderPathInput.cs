@@ -17,7 +17,7 @@ public sealed class FileOrFolderPathInput : PathInput
 
     protected override void AddFiles(DirectoryInfo dir, string fileName, List<string> names)
     {
-        List<string> fileNames = dir.GetFiles($"{fileName}*").Select(s => s.Name).ToList();
+        List<string> fileNames = [.. dir.GetFiles($"{fileName}*").Select(s => s.Name)];
         names.AddRange(fileNames);
     }
 
