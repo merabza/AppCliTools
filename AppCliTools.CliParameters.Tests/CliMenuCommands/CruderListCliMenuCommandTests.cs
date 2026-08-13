@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.CliMenuCommands;
 using AppCliTools.CliParameters.Cruders;
@@ -367,7 +366,7 @@ public sealed class CruderListCliMenuCommandTests
 
         public override List<string> GetKeys()
         {
-            return _items.Keys.ToList();
+            return [.. _items.Keys];
         }
 
         public void SetKeyCount(int count)

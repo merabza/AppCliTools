@@ -4,7 +4,7 @@ namespace AppCliTools.GramParser;
 
 public class OneAlternative
 {
-    private readonly List<string> _atoms = new();
+    private readonly List<string> _atoms = [];
 
     public OneAlternative(string alternative, bool split = true)
     {

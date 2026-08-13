@@ -26,7 +26,7 @@ public class ParseTree
     }
 
     public Token? Atom { get; }
-    public List<ParseTree> Branches { get; } = new();
+    public List<ParseTree> Branches { get; } = [];
 
     public ParseTree? Parent { get; private set; }
 
