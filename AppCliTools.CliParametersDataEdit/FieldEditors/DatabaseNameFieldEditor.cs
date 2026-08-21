@@ -64,18 +64,25 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             if (createDatabaseManagerResult.IsT1)
             {
                 Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
-                return;
-            }
-
-            OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
-                await createDatabaseManagerResult.AsT0.GetDatabaseNames(cancellationToken);
-            if (getDatabaseNamesResult.IsT0)
-            {
-                databaseInfos = getDatabaseNamesResult.AsT0;
+                //ზოგი პროვაიდერისთვის (მაგ. OleDb) მენეჯერი ჯერ არ არსებობს — ბაზების სია ვერ მიიღება,
+                //მაგრამ სახელის ხელით შეყვანა მაინც შესაძლებელი უნდა იყოს
+                if (!_canUseNewDatabaseName)
+                {
+                    return;
+                }
             }
             else
             {
-                Error.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+                OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
+                    await createDatabaseManagerResult.AsT0.GetDatabaseNames(cancellationToken);
+                if (getDatabaseNamesResult.IsT0)
+                {
+                    databaseInfos = getDatabaseNamesResult.AsT0;
+                }
+                else
+                {
+                    Error.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+                }
             }
 
             var databasesMenuSet = new CliMenuSet();
