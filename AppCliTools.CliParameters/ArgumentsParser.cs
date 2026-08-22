@@ -48,7 +48,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
                 fileName = _argsList[useIndex + 1];
                 if (!AnalyzeParamFileName(_argsList[useIndex + 1]))
                 {
-                    return EParseResult.ErrorOmd;
+                    return EParseResult.ParseError;
                 }
             }
 
@@ -76,7 +76,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
 
         if (fileName != null)
         {
-            return EParseResult.ErrorOmd;
+            return EParseResult.ParseError;
         }
 
         //გამოვიტანოთ ინფორმაცია კონსოლზე
