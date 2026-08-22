@@ -75,7 +75,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             DbKit dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
             DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
 
-            OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseInfosResult =
+            OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseInfosResult =
                 await dc.GetDatabaseInfos(cancellationToken);
 
             var databaseInfos = new List<DatabaseInfoModel>();
@@ -117,7 +117,7 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in SqlServerDatabaseNameFieldEditor.UpdateField: {Message}", e.Message);
+            _logger.LogError(e, "ErrorOmd in SqlServerDatabaseNameFieldEditor.UpdateField: {Message}", e.Message);
             throw new Exception("An error occurred while updating the SQL Server database name field.", e);
         }
     }

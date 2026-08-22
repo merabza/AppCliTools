@@ -48,22 +48,22 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
 
-        OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
+        OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
             await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true, _dbServerName,
                 databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
 
         if (createDatabaseManagerResult.IsT1)
         {
-            Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
             StShared.WriteErrorLine("Database Management Clients could not created", true, _logger);
             return false;
         }
 
-        OneOf<DbServerInfo, Error[]> getDatabaseServerInfoResult =
+        OneOf<DbServerInfo, ErrorOmd[]> getDatabaseServerInfoResult =
             await createDatabaseManagerResult.AsT0.GetDatabaseServerInfo(cancellationToken);
         if (getDatabaseServerInfoResult.IsT1)
         {
-            Error.PrintErrorsOnConsole(getDatabaseServerInfoResult.AsT1);
+            ErrorOmd.PrintErrorsOnConsole(getDatabaseServerInfoResult.AsT1);
             return false;
         }
 

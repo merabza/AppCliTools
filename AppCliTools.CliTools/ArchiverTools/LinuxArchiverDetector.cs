@@ -37,7 +37,7 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 
     private string? CheckArchiverRunner(string archiverName)
     {
-        OneOf<(string, int), Error[]> runProcessWithOutputResult =
+        OneOf<(string, int), ErrorOmd[]> runProcessWithOutputResult =
             StShared.RunProcessWithOutput(UseConsole, null, "which", archiverName);
         if (runProcessWithOutputResult.IsT1)
         {

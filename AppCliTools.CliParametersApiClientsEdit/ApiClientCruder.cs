@@ -62,11 +62,11 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
             using var cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
-            OneOf<string, Error[]> getVersionResult = apiClient.GetVersion(token).Result;
+            OneOf<string, ErrorOmd[]> getVersionResult = apiClient.GetVersion(token).Result;
 
             if (getVersionResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(getVersionResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(getVersionResult.AsT1);
                 return false;
             }
 
@@ -88,7 +88,7 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in method CheckValidation");
+            _logger.LogError(e, "ErrorOmd in method CheckValidation");
             return false;
         }
     }

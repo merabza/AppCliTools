@@ -45,19 +45,19 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
-            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
+            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger, _httpClientFactory, true,
                     databaseApiClientName, apiClients, null, null, cancellationToken);
 
             var databaseConnectionNames = new List<string>();
             if (createDatabaseManagerResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
             }
             else
             {
                 DatabaseApiClient apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
-                OneOf<List<string>, Error[]> getDatabaseFoldersSetsResult =
+                OneOf<List<string>, ErrorOmd[]> getDatabaseFoldersSetsResult =
                     await apiClient.GetDatabaseConnectionNames(cancellationToken);
                 if (getDatabaseFoldersSetsResult.IsT0)
                 {
@@ -65,7 +65,7 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
                 }
                 else
                 {
-                    Error.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                    ErrorOmd.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
                 }
             }
 
@@ -89,9 +89,9 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
         catch (Exception e)
         {
             string contextualMessage =
-                $"Error in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {FieldName}";
+                $"ErrorOmd in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {FieldName}";
             _logger.LogError(e,
-                "Error in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {FieldName}",
+                "ErrorOmd in RemoteDbConnectionNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {FieldName}",
                 recordKey, FieldName);
             throw new Exception(contextualMessage, e);
         }

@@ -87,13 +87,13 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult = DatabaseManagersFactory
+            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult = DatabaseManagersFactory
                 .CreateDatabaseManager(_application.AppName, _logger, true, databaseServerConnectionData, apiClients,
                     _httpClientFactory, null, null, token).Preserve().Result;
 
             if (createDatabaseManagerResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
                 StShared.WriteErrorLine("dbManager could not created", true);
                 return false;
             }
@@ -102,10 +102,10 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             IDatabaseManager? dbManager = createDatabaseManagerResult.AsT0;
 
-            Option<Error[]> dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
+            Option<ErrorOmd[]> dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
             if (dbmTestConnectionResult.IsSome)
             {
-                Error.PrintErrorsOnConsole((Error[])dbmTestConnectionResult);
+                ErrorOmd.PrintErrorsOnConsole((ErrorOmd[])dbmTestConnectionResult);
                 return false;
             }
 
@@ -116,10 +116,10 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
             //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-            OneOf<DbServerInfo, Error[]> getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
+            OneOf<DbServerInfo, ErrorOmd[]> getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
             if (getDbServerInfoResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
                 return false;
             }
 
@@ -128,7 +128,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
             Console.WriteLine(
                 $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
-            OneOf<bool, Error[]> isServerLocalResult = dbManager.IsServerLocal(token).Result;
+            OneOf<bool, ErrorOmd[]> isServerLocalResult = dbManager.IsServerLocal(token).Result;
             string notOrNot = isServerLocalResult.AsT0 ? string.Empty : "NOT ";
             Console.WriteLine(isServerLocalResult.IsT0
                 ? $"Server is {notOrNot} local"

@@ -70,7 +70,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 return;
             }
 
-            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
+            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
                     databaseServerConnectionData, apiClients, _httpClientFactory, null, null, cancellationToken);
             List<string>? databaseFoldersSetNames =
@@ -78,11 +78,11 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
 
             if (createDatabaseManagerResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
             }
             else
             {
-                OneOf<List<string>, Error[]> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.AsT0
+                OneOf<List<string>, ErrorOmd[]> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.AsT0
                     .GetDatabaseFoldersSetNames(cancellationToken);
                 if (getDatabaseFoldersSetsResult.IsT0)
                 {
@@ -90,7 +90,7 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 }
                 else
                 {
-                    Error.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                    ErrorOmd.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
                 }
             }
 
@@ -113,10 +113,10 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
         catch (Exception e)
         {
             _logger.LogError(e,
-                "Error in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {PropertyName}",
+                "ErrorOmd in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {RecordKey}, property: {PropertyName}",
                 recordKey, PropertyName);
             throw new Exception(
-                $"Error occurred in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {PropertyName}",
+                $"ErrorOmd occurred in DbServerFoldersSetNameFieldEditor.UpdateField for recordKey: {recordKey}, property: {PropertyName}",
                 e);
         }
     }

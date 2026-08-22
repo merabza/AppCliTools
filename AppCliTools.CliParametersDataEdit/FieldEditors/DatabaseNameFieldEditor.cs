@@ -56,14 +56,14 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             var apiClients = new ApiClients(acParameters.ApiClients);
             var databaseInfos = new List<DatabaseInfoModel>();
 
-            OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult =
+            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
                     databaseServerConnectionName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
                     cancellationToken);
 
             if (createDatabaseManagerResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
                 //ზოგი პროვაიდერისთვის (მაგ. OleDb) მენეჯერი ჯერ არ არსებობს — ბაზების სია ვერ მიიღება,
                 //მაგრამ სახელის ხელით შეყვანა მაინც შესაძლებელი უნდა იყოს
                 if (!_canUseNewDatabaseName)
@@ -73,7 +73,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             }
             else
             {
-                OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
+                OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseNamesResult =
                     await createDatabaseManagerResult.AsT0.GetDatabaseNames(cancellationToken);
                 if (getDatabaseNamesResult.IsT0)
                 {
@@ -81,7 +81,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 }
                 else
                 {
-                    Error.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+                    ErrorOmd.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
                 }
             }
 
