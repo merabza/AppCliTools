@@ -4,5 +4,5 @@ public enum EParseResult
 {
     Ok,
     Usage,
-    ErrorOmd
+    Error
 }
