@@ -63,7 +63,7 @@ public class CliAppLoop
         {
             if (refreshList)
             {
-                if (!ReloadCurrentMenu())
+                if (!await ReloadCurrentMenu())
                 {
                     StShared.WriteErrorLine("Menu could not loaded", true);
                     return false;
@@ -162,7 +162,7 @@ public class CliAppLoop
 
                     break;
                 case EMenuAction.GoToMenuLink:
-                    if (!GoToMenu(menuCommand.GetMenuLinkToGo()) && !ReloadCurrentMenu())
+                    if (!await GoToMenu(menuCommand.GetMenuLinkToGo()) && !await ReloadCurrentMenu())
                     {
                         return false;
                     }
@@ -195,7 +195,7 @@ public class CliAppLoop
         };
     }
 
-    private bool GoToMenu(string? menuLinkToGo)
+    private async Task<bool> GoToMenu(string? menuLinkToGo)
     {
         if (menuLinkToGo is null)
         {
@@ -207,7 +207,7 @@ public class CliAppLoop
         if (menuLine.Length > 0)
         {
             _currentMenuSetLevel = 0;
-            AddChangeMenu(_menuBuilder.BuildMainMenu());
+            AddChangeMenu(await _menuBuilder.BuildMainMenu());
         }
 
         foreach (string menuName in menuLine)
@@ -227,11 +227,11 @@ public class CliAppLoop
         return true;
     }
 
-    private bool ReloadCurrentMenu()
+    private async Task<bool> ReloadCurrentMenu()
     {
         if (_currentMenuSetLevel == 0)
         {
-            AddChangeMenu(_menuBuilder.BuildMainMenu());
+            AddChangeMenu(await _menuBuilder.BuildMainMenu());
         }
         else
         {

@@ -7,6 +7,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="OneOf" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
         <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibApiClientParameters\ParametersManagement.LibApiClientParameters.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.TestApiContracts\SystemTools.TestApiContracts.csproj" />

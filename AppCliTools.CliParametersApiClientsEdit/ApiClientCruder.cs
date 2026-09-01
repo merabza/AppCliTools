@@ -5,11 +5,10 @@ using System.Threading;
 using AppCliTools.CliParameters;
 using AppCliTools.CliParameters.FieldEditors;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibParameters;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using SystemTools.TestApiContracts;
 
 namespace AppCliTools.CliParametersApiClientsEdit;
@@ -62,15 +61,15 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
             using var cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
-            OneOf<string, ErrorOmd[]> getVersionResult = apiClient.GetVersion(token).Result;
+            Result<string> getVersionResult = apiClient.GetVersion(token).Result;
 
-            if (getVersionResult.IsT1)
+            if (getVersionResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(getVersionResult.AsT1);
+                getVersionResult.Error.PrintErrorsOnConsole();
                 return false;
             }
 
-            string? version = getVersionResult.AsT0;
+            string version = getVersionResult.Value;
 
             if (string.IsNullOrWhiteSpace(version))
             {

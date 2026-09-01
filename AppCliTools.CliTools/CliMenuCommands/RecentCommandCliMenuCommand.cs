@@ -22,7 +22,7 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
     {
         string[] menuLine = _menuLinkWithoutMainMenu.Split('/');
 
-        CliMenuSet? currentMenu = _menuBuilder.BuildMainMenu();
+        CliMenuSet? currentMenu = await _menuBuilder.BuildMainMenu();
 
         CliMenuItem? menuItem = null;
         foreach (string menuName in menuLine)

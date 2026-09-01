@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <PackageReference Include="Figgle.Fonts" />
+        <PackageReference Include="OneOf" />
     </ItemGroup>
 
     <ItemGroup>
