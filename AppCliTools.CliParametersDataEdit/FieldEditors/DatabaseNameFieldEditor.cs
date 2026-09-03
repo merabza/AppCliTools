@@ -11,11 +11,11 @@ using AppCliTools.LibDataInput;
 using AppCliTools.LibMenuInput;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
+using SystemTools.SystemToolsShared;
 using ToolsManagement.DatabasesManagement;
 
 namespace AppCliTools.CliParametersDataEdit.FieldEditors;
@@ -56,14 +56,14 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             var apiClients = new ApiClients(acParameters.ApiClients);
             var databaseInfos = new List<DatabaseInfoModel>();
 
-            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
+            Result<IDatabaseManager> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
                     databaseServerConnectionName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
                     cancellationToken);
 
-            if (createDatabaseManagerResult.IsT1)
+            if (createDatabaseManagerResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                createDatabaseManagerResult.Error.PrintErrorsOnConsole();
                 //ზოგი პროვაიდერისთვის (მაგ. OleDb) მენეჯერი ჯერ არ არსებობს — ბაზების სია ვერ მიიღება,
                 //მაგრამ სახელის ხელით შეყვანა მაინც შესაძლებელი უნდა იყოს
                 if (!_canUseNewDatabaseName)
@@ -73,15 +73,15 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             }
             else
             {
-                OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseNamesResult =
-                    await createDatabaseManagerResult.AsT0.GetDatabaseNames(cancellationToken);
-                if (getDatabaseNamesResult.IsT0)
+                Result<List<DatabaseInfoModel>> getDatabaseNamesResult =
+                    await createDatabaseManagerResult.Value.GetDatabaseNames(cancellationToken);
+                if (getDatabaseNamesResult.IsSuccess)
                 {
-                    databaseInfos = getDatabaseNamesResult.AsT0;
+                    databaseInfos = getDatabaseNamesResult.Value;
                 }
                 else
                 {
-                    ErrorOmd.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+                    getDatabaseNamesResult.Error.PrintErrorsOnConsole();
                 }
             }
 

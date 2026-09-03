@@ -3,13 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
 using SystemTools.BackgroundTasks;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 
 namespace AppCliTools.CliParametersDataEdit.ToolActions;
@@ -48,26 +47,26 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
         var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
         var apiClients = new ApiClients(acParameters.ApiClients);
 
-        OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
+        Result<IDatabaseManager> createDatabaseManagerResult =
             await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true, _dbServerName,
                 databaseServerConnections, apiClients, _httpClientFactory, null, null, cancellationToken);
 
-        if (createDatabaseManagerResult.IsT1)
+        if (createDatabaseManagerResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            createDatabaseManagerResult.Error.PrintErrorsOnConsole();
             StShared.WriteErrorLine("Database Management Clients could not created", true, _logger);
             return false;
         }
 
-        OneOf<DbServerInfo, ErrorOmd[]> getDatabaseServerInfoResult =
-            await createDatabaseManagerResult.AsT0.GetDatabaseServerInfo(cancellationToken);
-        if (getDatabaseServerInfoResult.IsT1)
+        Result<DbServerInfo> getDatabaseServerInfoResult =
+            await createDatabaseManagerResult.Value.GetDatabaseServerInfo(cancellationToken);
+        if (getDatabaseServerInfoResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole(getDatabaseServerInfoResult.AsT1);
+            getDatabaseServerInfoResult.Error.PrintErrorsOnConsole();
             return false;
         }
 
-        DbServerInfo? dbInfo = getDatabaseServerInfoResult.AsT0;
+        DbServerInfo dbInfo = getDatabaseServerInfoResult.Value;
 
         DatabaseServerConnectionData dbCon = parameters.DatabaseServerConnections[_dbServerName];
 

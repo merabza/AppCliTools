@@ -1,7 +1,6 @@
 ﻿using System.IO;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace AppCliTools.CliTools.ArchiverTools;
 
@@ -37,14 +36,14 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 
     private string? CheckArchiverRunner(string archiverName)
     {
-        OneOf<(string, int), ErrorOmd[]> runProcessWithOutputResult =
+        Result<(string, int)> runProcessWithOutputResult =
             StShared.RunProcessWithOutput(UseConsole, null, "which", archiverName);
-        if (runProcessWithOutputResult.IsT1)
+        if (runProcessWithOutputResult.IsFailure)
         {
             return null;
         }
 
-        string archiverRunner = runProcessWithOutputResult.AsT0.Item1;
+        string archiverRunner = runProcessWithOutputResult.Value.Item1;
         if (!string.IsNullOrWhiteSpace(archiverRunner) && File.Exists(archiverRunner))
         {
             return archiverRunner;

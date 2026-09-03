@@ -10,12 +10,11 @@ using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibDataInput;
 using AppCliTools.LibMenuInput;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -70,27 +69,27 @@ public sealed class DbServerFoldersSetNameFieldEditor : FieldEditor<string>
                 return;
             }
 
-            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
+            Result<IDatabaseManager> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
                     databaseServerConnectionData, apiClients, _httpClientFactory, null, null, cancellationToken);
-            List<string>? databaseFoldersSetNames =
+            List<string> databaseFoldersSetNames =
                 databaseServerConnectionData.DatabaseFoldersSets?.Keys.ToList() ?? [];
 
-            if (createDatabaseManagerResult.IsT1)
+            if (createDatabaseManagerResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                createDatabaseManagerResult.Error.PrintErrorsOnConsole();
             }
             else
             {
-                OneOf<List<string>, ErrorOmd[]> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.AsT0
+                Result<List<string>> getDatabaseFoldersSetsResult = await createDatabaseManagerResult.Value
                     .GetDatabaseFoldersSetNames(cancellationToken);
-                if (getDatabaseFoldersSetsResult.IsT0)
+                if (getDatabaseFoldersSetsResult.IsSuccess)
                 {
-                    databaseFoldersSetNames = getDatabaseFoldersSetsResult.AsT0;
+                    databaseFoldersSetNames = getDatabaseFoldersSetsResult.Value;
                 }
                 else
                 {
-                    ErrorOmd.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                    getDatabaseFoldersSetsResult.Error.PrintErrorsOnConsole();
                 }
             }
 

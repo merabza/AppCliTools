@@ -9,14 +9,12 @@ using AppCliTools.CliParametersApiClientsEdit.FieldEditors;
 using AppCliTools.CliParametersDataEdit.CliMenuCommands;
 using AppCliTools.CliParametersDataEdit.FieldEditors;
 using DatabaseTools.DbTools.Models;
-using LanguageExt;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibParameters;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 
 namespace AppCliTools.CliParametersDataEdit.Cruders;
@@ -87,25 +85,25 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult = DatabaseManagersFactory
+            Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
                 .CreateDatabaseManager(_application.AppName, _logger, true, databaseServerConnectionData, apiClients,
                     _httpClientFactory, null, null, token).Preserve().Result;
 
-            if (createDatabaseManagerResult.IsT1)
+            if (createDatabaseManagerResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                createDatabaseManagerResult.Error.PrintErrorsOnConsole();
                 StShared.WriteErrorLine("dbManager could not created", true);
                 return false;
             }
 
             Console.WriteLine("Try connect to server...");
 
-            IDatabaseManager? dbManager = createDatabaseManagerResult.AsT0;
+            IDatabaseManager dbManager = createDatabaseManagerResult.Value;
 
-            Option<ErrorOmd[]> dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
-            if (dbmTestConnectionResult.IsSome)
+            Result dbmTestConnectionResult = dbManager.TestConnection(null, token).Result;
+            if (dbmTestConnectionResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole((ErrorOmd[])dbmTestConnectionResult);
+                dbmTestConnectionResult.Error.PrintErrorsOnConsole();
                 return false;
             }
 
@@ -116,21 +114,21 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
             //თუ დაკავშირება მოხერხდა, მაშინ დადგინდეს სერვერის მხარეს შემდეგი პარამეტრები:
             //ბექაპირების ფოლდერი, ბაზის აღდგენის ფოლდერი, ბაზის ლოგების ფაილის აღდგენის ფოლდერი.
-            OneOf<DbServerInfo, ErrorOmd[]> getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
-            if (getDbServerInfoResult.IsT1)
+            Result<DbServerInfo> getDbServerInfoResult = dbManager.GetDatabaseServerInfo(token).Result;
+            if (getDbServerInfoResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(getDbServerInfoResult.AsT1);
+                getDbServerInfoResult.Error.PrintErrorsOnConsole();
                 return false;
             }
 
-            DbServerInfo? dbServerInfo = getDbServerInfoResult.AsT0;
+            DbServerInfo dbServerInfo = getDbServerInfoResult.Value;
 
             Console.WriteLine($"Server Name is {dbServerInfo.ServerName}");
             Console.WriteLine(
                 $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
-            OneOf<bool, ErrorOmd[]> isServerLocalResult = dbManager.IsServerLocal(token).Result;
-            string notOrNot = isServerLocalResult.AsT0 ? string.Empty : "NOT ";
-            Console.WriteLine(isServerLocalResult.IsT0
+            Result<bool> isServerLocalResult = dbManager.IsServerLocal(token).Result;
+            string notOrNot = isServerLocalResult.Value ? string.Empty : "NOT ";
+            Console.WriteLine(isServerLocalResult.IsSuccess
                 ? $"Server is {notOrNot} local"
                 : "Server is local or not is not detected");
 

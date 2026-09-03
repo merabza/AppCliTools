@@ -8,10 +8,10 @@ using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.LibDataInput;
 using AppCliTools.LibMenuInput;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibParameters;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
+using SystemTools.SystemToolsShared;
 using ToolsManagement.DatabasesManagement;
 using WebAgentContracts.WebAgentDatabasesApiContracts;
 
@@ -45,27 +45,27 @@ public sealed class RemoteDbConnectionNameFieldEditor : FieldEditor<string>
             var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
             var apiClients = new ApiClients(acParameters.ApiClients);
 
-            OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult =
+            Result<IDatabaseManager> createDatabaseManagerResult =
                 await DatabaseManagersFactory.CreateRemoteDatabaseManager(_logger, _httpClientFactory, true,
                     databaseApiClientName, apiClients, null, null, cancellationToken);
 
             var databaseConnectionNames = new List<string>();
-            if (createDatabaseManagerResult.IsT1)
+            if (createDatabaseManagerResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+                createDatabaseManagerResult.Error.PrintErrorsOnConsole();
             }
             else
             {
-                DatabaseApiClient apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.AsT0).ApiClient;
-                OneOf<List<string>, ErrorOmd[]> getDatabaseFoldersSetsResult =
+                DatabaseApiClient apiClient = ((RemoteDatabaseManager)createDatabaseManagerResult.Value).ApiClient;
+                Result<List<string>> getDatabaseFoldersSetsResult =
                     await apiClient.GetDatabaseConnectionNames(cancellationToken);
-                if (getDatabaseFoldersSetsResult.IsT0)
+                if (getDatabaseFoldersSetsResult.IsSuccess)
                 {
-                    databaseConnectionNames = getDatabaseFoldersSetsResult.AsT0;
+                    databaseConnectionNames = getDatabaseFoldersSetsResult.Value;
                 }
                 else
                 {
-                    ErrorOmd.PrintErrorsOnConsole(getDatabaseFoldersSetsResult.AsT1);
+                    getDatabaseFoldersSetsResult.Error.PrintErrorsOnConsole();
                 }
             }
 

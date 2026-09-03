@@ -16,9 +16,8 @@ using DatabaseTools.DbToolsFactory;
 using DatabaseTools.SqlServerDbTools;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -75,13 +74,12 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
             DbKit dbKit = DbKitFactory.GetKit(EDatabaseProvider.SqlServer);
             DbClient dc = new SqlDbClient(_logger, (SqlConnectionStringBuilder)dbConnectionStringBuilder, dbKit, true);
 
-            OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseInfosResult =
-                await dc.GetDatabaseInfos(cancellationToken);
+            Result<List<DatabaseInfoModel>> getDatabaseInfosResult = await dc.GetDatabaseInfos(cancellationToken);
 
             var databaseInfos = new List<DatabaseInfoModel>();
-            if (getDatabaseInfosResult.IsT0)
+            if (getDatabaseInfosResult.IsSuccess)
             {
-                databaseInfos = getDatabaseInfosResult.AsT0;
+                databaseInfos = getDatabaseInfosResult.Value;
             }
 
             var databasesMenuSet = new CliMenuSet();

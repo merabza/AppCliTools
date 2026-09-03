@@ -1,8 +1,9 @@
-﻿using AppCliTools.CliMenu;
+﻿using System.Threading.Tasks;
+using AppCliTools.CliMenu;
 
 namespace AppCliTools.CliTools.Services.MenuBuilder;
 
 public interface IMenuBuilder
 {
-    CliMenuSet? BuildMainMenu();
+    Task<CliMenuSet?> BuildMainMenu();
 }
