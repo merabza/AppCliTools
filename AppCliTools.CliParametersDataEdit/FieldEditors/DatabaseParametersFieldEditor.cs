@@ -14,7 +14,7 @@ public sealed class DatabaseParametersFieldEditor : ParametersFieldEditor<Databa
     private readonly IApplication _application;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public DatabaseParametersFieldEditor(IApplication application, ILogger logger, IHttpClientFactory httpClientFactory,
         string propertyName, IParametersManager parametersManager) : base(propertyName, logger, parametersManager)
     {

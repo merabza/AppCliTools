@@ -12,7 +12,7 @@ public sealed class DictionaryFieldEditor<TCruder, TItemData> : FieldEditor<Dict
 {
     private readonly Func<Dictionary<string, TItemData>, TCruder> _cruderFactory;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public DictionaryFieldEditor(string propertyName, Func<Dictionary<string, TItemData>, TCruder> cruderFactory,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {

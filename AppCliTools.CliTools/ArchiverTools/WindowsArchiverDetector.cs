@@ -7,7 +7,7 @@ public sealed class WindowsArchiverDetector : ArchiverDetector
     private const string WinRar = "WinRar";
     private const string WinZip = "WinZip";
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public WindowsArchiverDetector(bool useConsole, string fileExtension) : base(useConsole, fileExtension)
     {
     }

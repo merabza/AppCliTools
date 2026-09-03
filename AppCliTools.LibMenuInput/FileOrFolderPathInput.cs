@@ -7,7 +7,7 @@ namespace AppCliTools.LibMenuInput;
 
 public sealed class FileOrFolderPathInput : PathInput
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public FileOrFolderPathInput(string fieldName, string? defaultValue = null, bool warningIfFileDoesNotExists = true)
         : base(fieldName, true, defaultValue, warningIfFileDoesNotExists)
     {

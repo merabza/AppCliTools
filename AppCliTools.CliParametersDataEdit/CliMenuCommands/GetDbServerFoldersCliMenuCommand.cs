@@ -17,7 +17,7 @@ public sealed class GetDbServerFoldersCliMenuCommand : CliMenuCommand
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public GetDbServerFoldersCliMenuCommand(string appName, ILogger logger, IHttpClientFactory? httpClientFactory,
         string dbServerName, IParametersManager parametersManager) : base(
         "Get Database Server Folders and save in parameters", EMenuAction.Reload)

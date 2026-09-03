@@ -8,7 +8,7 @@ public sealed class TimeInput : DataInput
     private readonly DateTime _defaultValue;
     private readonly string _fieldName;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public TimeInput(string fieldName, DateTime defaultValue = default)
     {
         _fieldName = fieldName;

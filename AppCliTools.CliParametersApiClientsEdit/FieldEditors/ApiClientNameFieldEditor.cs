@@ -14,7 +14,7 @@ public sealed class ApiClientNameFieldEditor : FieldEditor<string>
     private readonly IParametersManager _parametersManager;
     private readonly bool _useNone;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public ApiClientNameFieldEditor(string propertyName, ILogger logger, IHttpClientFactory httpClientFactory,
         IParametersManager parametersManager, bool useNone = false, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)

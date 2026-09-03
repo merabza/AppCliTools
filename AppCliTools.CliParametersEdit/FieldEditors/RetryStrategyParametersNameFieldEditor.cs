@@ -10,7 +10,7 @@ public sealed class RetryStrategyParametersNameFieldEditor : FieldEditor<string>
 {
     private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public RetryStrategyParametersNameFieldEditor(string propertyName, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {

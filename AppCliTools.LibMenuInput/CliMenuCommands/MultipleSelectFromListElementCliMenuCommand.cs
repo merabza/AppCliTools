@@ -7,7 +7,7 @@ public sealed class MultipleSelectFromListElementCliMenuCommand : CliMenuCommand
 {
     private readonly KeyValuePair<string, bool> _listItem;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public MultipleSelectFromListElementCliMenuCommand(KeyValuePair<string, bool> listItem) : base(
         $"{(listItem.Value ? "√" : "×")} {listItem.Key}")
     {

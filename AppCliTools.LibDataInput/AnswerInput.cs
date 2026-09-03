@@ -9,7 +9,7 @@ public sealed class AnswerInput : DataInput
     private readonly EDialogResult _defaultValue;
     private readonly string _fieldName;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public AnswerInput(string fieldName, EDialogResult defaultValue = EDialogResult.Yes)
     {
         _fieldName = fieldName;

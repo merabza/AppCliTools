@@ -13,7 +13,7 @@ public sealed class CliMenuItem
         CliMenuCommand = cliMenuCommand;
     }
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public CliMenuItem(string? key, CliMenuCommand cliMenuCommand, int countedId)
     {
         Key = key;

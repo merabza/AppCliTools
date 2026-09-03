@@ -13,7 +13,7 @@ public sealed class SimpleNamesWithDescriptionsFieldEditor<TCruder> : FieldEdito
 {
     private readonly Func<Dictionary<string, string>, TCruder> _cruderFactory;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public SimpleNamesWithDescriptionsFieldEditor(string propertyName,
         Func<Dictionary<string, string>, TCruder> cruderFactory) : base(propertyName, false, null, false, null, true)
     {

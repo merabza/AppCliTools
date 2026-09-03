@@ -12,7 +12,7 @@ public sealed class GenerateStandardRetryStrategyParametersCliMenuCommand : CliM
 {
     private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public GenerateStandardRetryStrategyParametersCliMenuCommand(IParametersManager parametersManager) : base(
         "Generate standard Retry Strategy Parameters...", EMenuAction.Reload)
     {

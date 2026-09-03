@@ -10,7 +10,7 @@ public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<strin
 {
     private readonly Func<List<string>, TCruder> _cruderFactory;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public SimpleNamesListFieldEditor(string propertyName, Func<List<string>, TCruder> cruderFactory) : base(
         propertyName, false, null, false, null, true)
     {

@@ -17,7 +17,7 @@ public sealed class DatabaseServerConnectionNameFieldEditor : FieldEditor<string
     private readonly IParametersManager _parametersManager;
     private readonly bool _useNone;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public DatabaseServerConnectionNameFieldEditor(IApplication application, ILogger logger,
         IHttpClientFactory httpClientFactory, string propertyName, IParametersManager parametersManager,
         bool useNone = false, bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)

@@ -12,7 +12,7 @@ public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
 {
     private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public GenerateStandardSmartSchemasCliMenuCommand(IParametersManager parametersManager) : base(
         "Generate standard Smart Schemas...", EMenuAction.Reload)
     {

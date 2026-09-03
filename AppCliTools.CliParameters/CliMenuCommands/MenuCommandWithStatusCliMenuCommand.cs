@@ -6,7 +6,7 @@ public sealed class MenuCommandWithStatusCliMenuCommand : CliMenuCommand
 {
     private readonly string? _status;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public MenuCommandWithStatusCliMenuCommand(string name, string status = "") : base(name)
     {
         _status = status;

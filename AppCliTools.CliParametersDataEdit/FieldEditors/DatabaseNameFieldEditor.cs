@@ -29,7 +29,7 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public DatabaseNameFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
         string propertyName, IParametersManager parametersManager, string databaseConnectionNamePropertyName,
         bool canUseNewDatabaseName) : base(propertyName)

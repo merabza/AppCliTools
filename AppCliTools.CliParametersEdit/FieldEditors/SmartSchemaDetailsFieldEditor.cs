@@ -10,7 +10,7 @@ namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class SmartSchemaDetailsFieldEditor : FieldEditor<List<SmartSchemaDetail>>
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
+    
     public SmartSchemaDetailsFieldEditor(string propertyName, bool enterFieldDataOnCreate = false) : base(propertyName,
         enterFieldDataOnCreate, null, false, null, true)
     {
