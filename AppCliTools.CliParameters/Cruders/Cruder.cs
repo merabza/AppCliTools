@@ -429,6 +429,26 @@ public /*open*/ class Cruder : IFieldEditors
         return itemSubMenuSet;
     }
 
+    //ველის რედაქტორის შემდეგ: შეიცვალა თუ არა ჩანაწერის გასაღები. ის ჩანაწერიდან (GetItemKey) მხოლოდ
+    //fieldKeyFromItem-ის დროს იღება — სხვა შემთხვევაში გასაღები ცალკე Record Name ველია და ველის რედაქტორი მას
+    //ვერ შეცვლის. შეცვლისას სიის მენიუს ვერსია იზრდება, რომ ის თავიდან აეწყოს — ქეშირებული ძველ გასაღებს აჩვენებდა
+    public bool CheckRecordKeyChanged(string recordKey, ItemData record)
+    {
+        if (!_fieldKeyFromItem)
+        {
+            return false;
+        }
+
+        string? newRecordKey = record.GetItemKey();
+        if (newRecordKey is null || newRecordKey == recordKey)
+        {
+            return false;
+        }
+
+        _menuVersion++;
+        return true;
+    }
+
     protected virtual ItemData? GetDefRecordWithStatus(string? currentStatus)
     {
         return null;

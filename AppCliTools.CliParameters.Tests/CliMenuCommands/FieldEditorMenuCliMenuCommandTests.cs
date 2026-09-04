@@ -16,6 +16,7 @@ namespace AppCliTools.CliParameters.Tests.CliMenuCommands;
 // 3. Calls _cruder.CheckValidation(_recordForUpdate)
 // 4. If validation fails, prompts user with Inputer.InputBool (cannot be tested without refactoring)
 // 5. Calls _cruder.Save with a formatted message
+// 6. Calls _cruder.CheckRecordKeyChanged and switches MenuActionOnBodySuccess to LevelUp when the record key changed
 //
 // The RunBody method cannot be fully tested because it uses Inputer.InputBool for user interaction,
 // which would require dependency injection or refactoring to make it testable.
@@ -425,6 +426,71 @@ public sealed class FieldEditorMenuCliMenuCommandTests
         Assert.Equal(2, callCountAfterSecond);
     }
 
+    [Fact]
+    public async Task Run_WhenRecordKeyUnchanged_MenuActionIsReload()
+    {
+        // Arrange
+        var fieldEditor = new TestFieldEditor("Key");
+        var recordForUpdate = new KeyedItemData { Key = "SameKey" };
+        var cruder = new TestCruder(true);
+        var command = new FieldEditorMenuCliMenuCommand("Key", fieldEditor, recordForUpdate, cruder, "SameKey");
+
+        // Act
+        await command.Run();
+
+        // Assert
+        Assert.Equal(EMenuAction.Reload, command.MenuAction);
+        Assert.True(cruder.UpdateRecordWithKeyCalled);
+        Assert.True(cruder.SaveCalled);
+    }
+
+    [Fact]
+    public async Task Run_WhenRecordKeyChanged_MenuActionIsLevelUpAndListMenuIsRebuilt()
+    {
+        // Arrange
+        var fieldEditor = new TestFieldEditor("Key");
+        var recordForUpdate = new KeyedItemData { Key = "NewKey" };
+        var cruder = new TestCruder(true);
+        CliMenuSet listMenuBefore = cruder.GetListMenu();
+        var command = new FieldEditorMenuCliMenuCommand("Key", fieldEditor, recordForUpdate, cruder, "OldKey");
+
+        // Act
+        await command.Run();
+
+        // Assert
+        Assert.Equal(EMenuAction.LevelUp, command.MenuAction);
+        Assert.NotSame(listMenuBefore, cruder.GetListMenu());
+    }
+
+    [Fact]
+    public async Task Run_WhenKeyIsNotFromItem_MenuActionStaysReload()
+    {
+        // Arrange - the record key is a separate Record Name, so a changed item key must not matter
+        var fieldEditor = new TestFieldEditor("Key");
+        var recordForUpdate = new KeyedItemData { Key = "NewKey" };
+        var cruder = new TestCruder();
+        CliMenuSet listMenuBefore = cruder.GetListMenu();
+        var command = new FieldEditorMenuCliMenuCommand("Key", fieldEditor, recordForUpdate, cruder, "OldKey");
+
+        // Act
+        await command.Run();
+
+        // Assert
+        Assert.Equal(EMenuAction.Reload, command.MenuAction);
+        Assert.Same(listMenuBefore, cruder.GetListMenu());
+    }
+
+    //ჩანაწერი, რომლის გასაღებიც ველიდან იღება — გასაღების ცვლილების შემოწმებისთვის
+    private sealed class KeyedItemData : ItemData
+    {
+        public string Key { get; set; } = string.Empty;
+
+        public override string GetItemKey()
+        {
+            return Key;
+        }
+    }
+
     private sealed class TestFieldEditor : FieldEditor
     {
         public TestFieldEditor(string propertyName) : base(propertyName, null, false)
@@ -462,7 +528,7 @@ public sealed class FieldEditorMenuCliMenuCommandTests
 
     private sealed class TestCruder : Cruder
     {
-        public TestCruder() : base("TestCrud", "TestCruds")
+        public TestCruder(bool fieldKeyFromItem = false) : base("TestCrud", "TestCruds", fieldKeyFromItem)
         {
         }
 

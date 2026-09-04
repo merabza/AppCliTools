@@ -40,6 +40,14 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
         //_recordKey = _cruder.FixRecordName(_recordKey, _recordForUpdate);
         //პარამეტრების შენახვა (ცვლილებების გათვალისწინებით)
         await _cruder.Save($"{_cruder.CrudName} {_recordKey} Updated {Name}", cancellationToken);
+
+        //გასაღები ჩანაწერიდან იღება და რედაქტირებით შეიცვალა — ჩანაწერის მენიუ ძველი გასაღებით ვეღარ აეწყობა,
+        //ამიტომ სიაზე ვბრუნდებით, რომელიც თავიდან აეწყობა (როგორც Record Name-ის რედაქტორის შემდეგ)
+        if (_cruder.CheckRecordKeyChanged(_recordKey, _recordForUpdate))
+        {
+            MenuActionOnBodySuccess = EMenuAction.LevelUp;
+        }
+
         return true;
     }
 
