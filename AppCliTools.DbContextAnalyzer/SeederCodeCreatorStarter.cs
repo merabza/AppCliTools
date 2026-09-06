@@ -102,7 +102,7 @@ public sealed class SeederCodeCreatorStarter
         carcassOptionsBuilder.UseSqlServer(_par.ConnectionStringProd);
         // ReSharper disable once using
         // ReSharper disable once DisposableConstructor
-        using var carcassContext = new CarcassDbContext(carcassOptionsBuilder.Options);
+        using var carcassContext = new CarcassDbContext(carcassOptionsBuilder.Options, false);
 
         var getJsonCreatorParameters = new GetJsonCreatorParameters(
             _par.ProjectPrefix.Replace('.', '_') + "DbScContext", _par.ProjectPrefix + "ScaffoldSeederDbSc", "Models",
