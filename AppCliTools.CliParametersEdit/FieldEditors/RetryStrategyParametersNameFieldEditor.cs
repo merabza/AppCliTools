@@ -10,7 +10,6 @@ public sealed class RetryStrategyParametersNameFieldEditor : FieldEditor<string>
 {
     private readonly IParametersManager _parametersManager;
 
-    
     public RetryStrategyParametersNameFieldEditor(string propertyName, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {

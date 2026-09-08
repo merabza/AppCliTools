@@ -9,7 +9,6 @@ public sealed class OptionalTextFieldEditor : FieldEditor<string?>
     private readonly string? _defaultValue;
     private readonly char _passwordCharacter;
 
-    
     public OptionalTextFieldEditor(string propertyName, bool enterFieldDataOnCreate = false,
         string? propertyDescriptor = null, string? defaultValue = null, char passwordCharacter = '\0') : base(
         propertyName, enterFieldDataOnCreate, null, false, propertyDescriptor)

@@ -7,7 +7,6 @@ namespace AppCliTools.CliParameters.FieldEditors;
 
 public /*open*/ class EnumNullableFieldEditor<TEnum> : FieldEditor<TEnum?> where TEnum : struct, Enum
 {
-    
     public EnumNullableFieldEditor(string propertyName, TEnum defaultValue, bool autoUsageOfDefaultValue = false,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, defaultValue,
         autoUsageOfDefaultValue)

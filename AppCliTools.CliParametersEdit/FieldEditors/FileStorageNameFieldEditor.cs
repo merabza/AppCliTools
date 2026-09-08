@@ -12,7 +12,6 @@ public sealed class FileStorageNameFieldEditor : FieldEditor<string>
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    
     public FileStorageNameFieldEditor(ILogger logger, string propertyName, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {

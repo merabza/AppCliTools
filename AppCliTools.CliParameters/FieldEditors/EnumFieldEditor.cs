@@ -9,7 +9,6 @@ public /*open*/ class EnumFieldEditor<TEnum> : FieldEditor<TEnum> where TEnum : 
 {
     private readonly TEnum _defaultValue;
 
-    
     public EnumFieldEditor(string propertyName, TEnum defaultValue, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)
     {

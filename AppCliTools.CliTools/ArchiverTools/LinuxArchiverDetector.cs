@@ -8,7 +8,6 @@ public sealed class LinuxArchiverDetector : ArchiverDetector
 {
     private const string Unzip = "unzip";
 
-    
     public LinuxArchiverDetector(bool useConsole, string fileExtension) : base(useConsole, fileExtension)
     {
     }

@@ -11,7 +11,6 @@ public sealed class RecordKeyEditorCliMenuCommand : CliMenuCommand
     private readonly Cruder _cruder;
     private readonly string _recordKey;
 
-    
     public RecordKeyEditorCliMenuCommand(string fieldName, Cruder cruder, string recordKey) : base(fieldName,
         EMenuAction.LevelUp, EMenuAction.Reload, null, false, EStatusView.Table)
     {

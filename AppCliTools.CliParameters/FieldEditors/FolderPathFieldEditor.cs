@@ -8,7 +8,6 @@ public sealed class FolderPathFieldEditor : FieldEditor<string>
 {
     private readonly string? _defaultValue;
 
-    
     public FolderPathFieldEditor(string propertyName, string? defaultValue = null, bool enterFieldDataOnCreate = false)
         : base(propertyName, enterFieldDataOnCreate)
     {

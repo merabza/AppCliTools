@@ -10,7 +10,6 @@ public sealed class SmartSchemaNameFieldEditor : FieldEditor<string>
 {
     private readonly IParametersManager _parametersManager;
 
-    
     public SmartSchemaNameFieldEditor(string propertyName, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate)
     {

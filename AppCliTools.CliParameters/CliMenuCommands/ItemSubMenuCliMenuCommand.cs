@@ -7,7 +7,6 @@ public sealed class ItemSubMenuCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    
     public ItemSubMenuCliMenuCommand(Cruder cruder, string name, string parentMenuName, bool nameIsStatus = false) :
         base(name, EMenuAction.LoadSubMenu, EMenuAction.Reload, parentMenuName, false, EStatusView.Brackets,
             nameIsStatus)

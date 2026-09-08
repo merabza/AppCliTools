@@ -15,7 +15,6 @@ public sealed class FieldEditorMenuCliMenuCommand : CliMenuCommand
     private readonly ItemData _recordForUpdate;
     private readonly string _recordKey;
 
-    
     public FieldEditorMenuCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate,
         Cruder cruder, string recordKey) : base(fieldName, EMenuAction.Reload, EMenuAction.Reload, null, false,
         EStatusView.Table)

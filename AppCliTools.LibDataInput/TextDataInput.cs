@@ -9,7 +9,6 @@ public sealed class TextDataInput : DataInput
     private readonly string _fieldName;
     private readonly char _passwordCharacter;
 
-    
     public TextDataInput(string fieldName, string? defaultValue = null, char passwordCharacter = '\0')
     {
         _fieldName = fieldName;

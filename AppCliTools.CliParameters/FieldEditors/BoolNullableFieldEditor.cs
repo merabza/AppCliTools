@@ -6,7 +6,6 @@ namespace AppCliTools.CliParameters.FieldEditors;
 
 public sealed class BoolNullableFieldEditor : FieldEditor<bool?>
 {
-    
     public BoolNullableFieldEditor(string propertyName, bool? defaultValue = false,
         bool autoUsageOfDefaultValue = false) : base(propertyName, true, defaultValue, autoUsageOfDefaultValue)
     {

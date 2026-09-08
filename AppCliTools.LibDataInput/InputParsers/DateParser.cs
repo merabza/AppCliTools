@@ -6,7 +6,6 @@ public sealed class DateParser : InputParser
 {
     private readonly DateDelimiterParser _ddp = new();
 
-    
     public DateParser() : base(' ')
     {
     }

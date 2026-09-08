@@ -15,7 +15,6 @@ public sealed class CliMenuSet
     private int _pageMaxSize;
     private int _pagesCount;
 
-    
     public CliMenuSet(string? caption = null, int menuVersion = 0)
     {
         Caption = caption;

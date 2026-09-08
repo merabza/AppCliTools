@@ -8,7 +8,6 @@ public sealed class ParameterSubObjectFieldEditorCliMenuCommand : CliMenuCommand
     private readonly FieldEditor _fieldEditor;
     private readonly ParametersEditor _parametersEditor;
 
-    
     public ParameterSubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor,
         ParametersEditor parametersEditor) : base(fieldName, EMenuAction.LoadSubMenu, EMenuAction.LoadSubMenu, null,
         false, EStatusView.Table)

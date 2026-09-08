@@ -8,7 +8,6 @@ public sealed class IntDataInput : DataInput
     private readonly int _defaultValue;
     private readonly string _fieldName;
 
-    
     public IntDataInput(string fieldName, int defaultValue = 0)
     {
         _fieldName = fieldName;

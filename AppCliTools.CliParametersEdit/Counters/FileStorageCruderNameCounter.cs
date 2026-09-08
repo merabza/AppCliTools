@@ -15,7 +15,6 @@ public sealed class FileStorageCruderNameCounter
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    
     public FileStorageCruderNameCounter(ILogger logger, IParametersManager parametersManager, string fieldName,
         string? currentName)
     {

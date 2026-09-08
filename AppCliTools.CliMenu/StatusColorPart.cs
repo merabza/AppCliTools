@@ -5,7 +5,6 @@ namespace AppCliTools.CliMenu;
 //მენიუს ელემენტის სტატუსის ფერადი ნაწილი - ტექსტი თავის ფერთან ერთად
 public sealed class StatusColorPart
 {
-    
     public StatusColorPart(string text, ConsoleColor color)
     {
         Text = text;

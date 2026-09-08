@@ -29,7 +29,6 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    
     public DatabaseNameFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
         string propertyName, IParametersManager parametersManager, string databaseConnectionNamePropertyName,
         bool canUseNewDatabaseName) : base(propertyName)

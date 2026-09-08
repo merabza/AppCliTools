@@ -10,7 +10,6 @@ namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class ArchiverFileExtensionFieldEditor : TextFieldEditor
 {
-    
     public ArchiverFileExtensionFieldEditor(string propertyName) : base(propertyName)
     {
     }

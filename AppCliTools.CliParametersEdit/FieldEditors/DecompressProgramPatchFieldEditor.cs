@@ -9,7 +9,6 @@ namespace AppCliTools.CliParametersEdit.FieldEditors;
 
 public sealed class DecompressProgramPatchFieldEditor : FilePathFieldEditor
 {
-    
     public DecompressProgramPatchFieldEditor(string propertyName) : base(propertyName)
     {
     }

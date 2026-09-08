@@ -10,7 +10,6 @@ public sealed class SelectFromMenuListInput : DataInput
     private readonly string _fieldName;
     private readonly CliMenuSet _listSet;
 
-    
     public SelectFromMenuListInput(string fieldName, CliMenuSet listSet, string? defaultValue = null)
     {
         _fieldName = fieldName;

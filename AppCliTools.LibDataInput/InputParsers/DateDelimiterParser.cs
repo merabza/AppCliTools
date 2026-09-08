@@ -4,7 +4,6 @@ namespace AppCliTools.LibDataInput.InputParsers;
 
 public sealed class DateDelimiterParser : DelimiterParser
 {
-    
     public DateDelimiterParser() : base('-', [1, 1, 1], [9999, 12, 31])
     {
     }

@@ -13,7 +13,6 @@ public sealed class CliMenuItem
         CliMenuCommand = cliMenuCommand;
     }
 
-    
     public CliMenuItem(string? key, CliMenuCommand cliMenuCommand, int countedId)
     {
         Key = key;

@@ -10,7 +10,6 @@ public sealed class SubObjectFieldEditorCliMenuCommand : CliMenuCommand
 
     private readonly ItemData _recordForUpdate;
 
-    
     public SubObjectFieldEditorCliMenuCommand(string fieldName, FieldEditor fieldEditor, ItemData recordForUpdate) :
         base(fieldName, EMenuAction.LoadSubMenu, EMenuAction.LoadSubMenu, null, false, EStatusView.Table)
     {

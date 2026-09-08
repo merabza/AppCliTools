@@ -1,11 +1,8 @@
 <Solution>
     <Folder Name="/BackendCarcass/">
+        <Project Path="../../BackendCarcass/BackendCarcass/BackendCarcass.Domain/BackendCarcass.Domain.csproj" />
+        <Project Path="../BackendCarcass/BackendCarcass.Application/BackendCarcass.Application.csproj" />
         <Project Path="../BackendCarcass/BackendCarcass.Database/BackendCarcass.Database.csproj" />
-        <Project Path="../BackendCarcass/BackendCarcass.MasterData/BackendCarcass.MasterData.csproj" />
-        <Project Path="../BackendCarcass/BackendCarcass.LibCrud/BackendCarcass.LibCrud.csproj" />
-    </Folder>
-    <Folder Name="/BackendCarcassDomain/">
-        <Project Path="../BackendCarcassDomain/BackendCarcassDomain.Entities/BackendCarcassDomain.Entities.csproj" />
     </Folder>
     <Folder Name="/BackendCarcassShared/">
         <Project Path="../BackendCarcassShared/BackendCarcassShared.Contracts/BackendCarcassShared.Contracts.csproj" />
@@ -35,12 +32,14 @@
     </Folder>
     <Folder Name="/SystemTools/">
         <Project Path="../SystemTools/SystemTools.ApiContracts/SystemTools.ApiContracts.csproj" />
+        <Project Path="../SystemTools/SystemTools.Application.Abstractions/SystemTools.Application.Abstractions.csproj" />
         <Project Path="../SystemTools/SystemTools.BackgroundTasks/SystemTools.BackgroundTasks.csproj" />
         <Project Path="../SystemTools/SystemTools.DatabaseToolsShared/SystemTools.DatabaseToolsShared.csproj" />
         <Project Path="../SystemTools/SystemTools.Domain.Abstractions/SystemTools.Domain.Abstractions.csproj" />
         <Project Path="../SystemTools/SystemTools.JetBrainsResharperGlobalToolsWork/SystemTools.JetBrainsResharperGlobalToolsWork.csproj" />
         <Project Path="../SystemTools/SystemTools.ReCounterContracts/SystemTools.ReCounterContracts.csproj" />
         <Project Path="../SystemTools/SystemTools.RepositoriesShared/SystemTools.RepositoriesShared.csproj" />
+        <Project Path="../SystemTools/SystemTools.SharedKernel/SystemTools.SharedKernel.csproj" />
         <Project Path="../SystemTools/SystemTools.StringMessagesApiContracts/SystemTools.StringMessagesApiContracts.csproj" />
         <Project Path="../SystemTools/SystemTools.SystemToolsShared/SystemTools.SystemToolsShared.csproj" />
         <Project Path="../SystemTools/SystemTools.TestApiContracts/SystemTools.TestApiContracts.csproj" />
@@ -65,7 +64,6 @@
     <Project Path="AppCliTools.CliParametersEdit/AppCliTools.CliParametersEdit.csproj" />
     <Project Path="AppCliTools.CliParametersExcludeSetsEdit/AppCliTools.CliParametersExcludeSetsEdit.csproj" />
     <Project Path="AppCliTools.CliTools/AppCliTools.CliTools.csproj" />
-    <Project Path="AppCliTools.CliToolsData/AppCliTools.CliToolsData.csproj" />
     <Project Path="AppCliTools.CodeTools/AppCliTools.CodeTools.csproj" />
     <Project Path="AppCliTools.DbContextAnalyzer/AppCliTools.DbContextAnalyzer.csproj" />
     <Project Path="AppCliTools.GramParser/AppCliTools.GramParser.csproj" />

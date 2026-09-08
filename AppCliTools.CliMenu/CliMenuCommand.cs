@@ -14,7 +14,6 @@ public /*open*/ class CliMenuCommand
     public readonly string? ParentMenuName;
     private readonly bool _askRunAction;
 
-    
     public CliMenuCommand(string name, EMenuAction menuActionOnBodySuccess = EMenuAction.Nothing,
         EMenuAction menuActionOnBodyFail = EMenuAction.Reload, string? parentMenuName = null, bool askRunAction = false,
         EStatusView statusView = EStatusView.Brackets, bool nameIsStatus = false)

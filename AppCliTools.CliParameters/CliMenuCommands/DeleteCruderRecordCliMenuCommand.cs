@@ -10,7 +10,6 @@ public sealed class DeleteCruderRecordCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    
     public DeleteCruderRecordCliMenuCommand(Cruder cruder, string recordName) : base("Delete this record",
         EMenuAction.LevelUp, EMenuAction.Reload, recordName)
     {

@@ -9,7 +9,6 @@ public sealed class DateTimeParser : InputParser
     private readonly DateDelimiterParser _ddp = new();
     private readonly TimeDelimiterParser _tdp = new();
 
-    
     public DateTimeParser() : base(' ')
     {
     }

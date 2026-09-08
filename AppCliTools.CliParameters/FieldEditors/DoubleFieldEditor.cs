@@ -11,7 +11,6 @@ public sealed class DoubleFieldEditor : FieldEditor<double>
 {
     private readonly double _defaultValue;
 
-    
     public DoubleFieldEditor(string propertyName, double defaultValue = 0, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)
     {

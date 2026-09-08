@@ -23,7 +23,6 @@ public sealed class GetDbServerFoldersToolAction : ToolAction
     private readonly ILogger _logger;
     private readonly IParametersManager _parametersManager;
 
-    
     public GetDbServerFoldersToolAction(string appName, ILogger logger, IHttpClientFactory? httpClientFactory,
         string dbServerName, IParametersManager parametersManager) : base(logger, ActionName, null, null, true)
     {

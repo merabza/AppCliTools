@@ -10,7 +10,6 @@ public sealed class TimeSpanInput : DataInput
     private readonly TimeSpan _defaultValue;
     private readonly string _fieldName;
 
-    
     public TimeSpanInput(string fieldName, TimeSpan defaultValue = default)
     {
         _fieldName = fieldName;

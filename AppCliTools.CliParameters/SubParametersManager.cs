@@ -11,7 +11,6 @@ public sealed class SubParametersManager<T> : IParametersManager
     private readonly IParametersManager _parentParametersManager;
     private readonly object _record;
 
-    
     public SubParametersManager(IParameters parameters, IParametersManager parentParametersManager,
         FieldEditor<T> fieldEditor, object record)
     {

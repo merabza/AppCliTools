@@ -10,7 +10,6 @@ public sealed class CruderListCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    
     public CruderListCliMenuCommand(Cruder cruder) : base(cruder.CrudNamePlural, EMenuAction.LoadSubMenu)
     {
         _cruder = cruder;

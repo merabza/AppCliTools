@@ -10,7 +10,6 @@ public abstract class ParametersFieldEditor<TModel, TEditor> : FieldEditor<TMode
     protected readonly ILogger Logger;
     protected readonly IParametersManager ParametersManager;
 
-    
     protected ParametersFieldEditor(string propertyName, ILogger logger, IParametersManager parametersManager,
         bool enterFieldDataOnCreate = false) : base(propertyName, enterFieldDataOnCreate, null, false, null, true)
     {

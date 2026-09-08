@@ -8,7 +8,6 @@ public sealed class IntFieldEditor : FieldEditor<int>
 {
     private readonly int _defaultValue;
 
-    
     public IntFieldEditor(string propertyName, int defaultValue = 0, bool enterFieldDataOnCreate = false) : base(
         propertyName, enterFieldDataOnCreate)
     {

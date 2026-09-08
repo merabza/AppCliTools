@@ -10,7 +10,6 @@ public sealed class RecentCommandCliMenuCommand : InfoCliMenuCommand
     private readonly IMenuBuilder _menuBuilder;
     private readonly string _menuLinkWithoutMainMenu;
 
-    
     public RecentCommandCliMenuCommand(IMenuBuilder menuBuilder, string menuLinkWithoutMainMenu) : base(
         menuLinkWithoutMainMenu, menuLinkWithoutMainMenu)
     {

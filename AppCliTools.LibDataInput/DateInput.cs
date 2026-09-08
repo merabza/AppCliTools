@@ -10,7 +10,6 @@ public sealed class DateInput : DataInput
     private readonly DateTime _defaultValue;
     private readonly string _fieldName;
 
-    
     public DateInput(string fieldName, DateTime defaultValue = default)
     {
         _fieldName = fieldName;

@@ -7,7 +7,6 @@ public sealed class ListItemCliMenuCommand : CliMenuCommand
 {
     private readonly Cruder _cruder;
 
-    
     public ListItemCliMenuCommand(Cruder cruder, string name) : base(name)
     {
         _cruder = cruder;

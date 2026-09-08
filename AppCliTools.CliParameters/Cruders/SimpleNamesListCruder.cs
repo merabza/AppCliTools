@@ -8,7 +8,6 @@ namespace AppCliTools.CliParameters.Cruders;
 
 public abstract class SimpleNamesListCruder : Cruder
 {
-    
     protected SimpleNamesListCruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true) : base(crudName, crudNamePlural, fieldKeyFromItem, canEditFieldsInSequence)
     {

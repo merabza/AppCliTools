@@ -12,7 +12,6 @@ public sealed class GenerateArchiversCliMenuCommand : CliMenuCommand
 {
     private readonly IParametersManager _parametersManager;
 
-    
     public GenerateArchiversCliMenuCommand(IParametersManager parametersManager) : base(
         "Generate standard Archivers...", EMenuAction.Reload)
     {

@@ -6,7 +6,6 @@ namespace AppCliTools.LibMenuInput;
 
 public sealed class FilePathInput : PathInput
 {
-    
     public FilePathInput(string fieldName, string? defaultValue = null, bool warningIfFileDoesNotExists = true) : base(
         fieldName, false, defaultValue, warningIfFileDoesNotExists)
     {

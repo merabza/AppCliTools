@@ -12,7 +12,6 @@ public sealed class SelectFromListInput : DataInput
     private readonly List<string> _sourceList;
     private readonly bool _useNone;
 
-    
     public SelectFromListInput(string fieldName, List<string> sourceList, string? defaultValue = default,
         bool useNone = false)
     {

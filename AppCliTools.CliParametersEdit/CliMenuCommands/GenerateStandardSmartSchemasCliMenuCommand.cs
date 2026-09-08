@@ -12,7 +12,6 @@ public sealed class GenerateStandardSmartSchemasCliMenuCommand : CliMenuCommand
 {
     private readonly IParametersManager _parametersManager;
 
-    
     public GenerateStandardSmartSchemasCliMenuCommand(IParametersManager parametersManager) : base(
         "Generate standard Smart Schemas...", EMenuAction.Reload)
     {
