@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using AppCliTools.LibDataInput;
 using Newtonsoft.Json;
 using ParametersManagement.LibParameters;
@@ -10,83 +8,47 @@ using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters;
 
-public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IParameters, new()
+public sealed class ParametersService<T> : IParametersService<T> where T : class, IParameters, new()
 {
-    private readonly string _appName;
-
-    private readonly List<string> _argsList = [];
+    private readonly Func<string, bool, bool> _inputBool;
 
     //private readonly string? _encKey;
     private readonly string _jsonFileName;
     private readonly ParametersLoader<T> _parLoader;
     private readonly string _pathToContentRoot = Directory.GetCurrentDirectory();
-    private readonly string[] _possibleSwitches;
 
-    public ArgumentsParser(IEnumerable<string> args, string appName, params string[] possibleSwitches)
+    public ParametersService(string appName) : this(appName,
+        (fieldName, defaultValue) => Inputer.InputBool(fieldName, defaultValue, false))
     {
-        _appName = appName;
+    }
+
+    //კონსოლიდან შეყვანა პარამეტრებადაა გამოტანილი, რომ ტესტებმა პასუხები თვითონ მიაწოდონ
+    // ReSharper disable once ConvertToPrimaryConstructor
+    internal ParametersService(string appName, Func<string, bool, bool> inputBool)
+    {
         //_encKey = encKey;
-        _possibleSwitches = possibleSwitches;
         _jsonFileName = $"{appName}.json";
-        _argsList.AddRange(args);
         _parLoader = new ParametersLoader<T>();
+        _inputBool = inputBool;
     }
 
     public T? Par => (T?)_parLoader.Par;
     public string? ParametersFileName => _parLoader.ParametersFileName;
-    public List<string> Switches { get; } = [];
 
-    public EParseResult Analysis()
+    public EParseResult Analysis(string? parametersFileName)
     {
-        string? fileName = null;
-        if (_argsList.Count > 0)
-        {
-            int useIndex = Array.FindIndex([.. _argsList], t => t.Equals("--use", StringComparison.Ordinal));
-
-            if (useIndex + 1 < _argsList.Count)
-            {
-                fileName = _argsList[useIndex + 1];
-                if (!AnalyzeParamFileName(_argsList[useIndex + 1]))
-                {
-                    return EParseResult.ParseError;
-                }
-            }
-
-            var switches = new List<string>();
-            if (useIndex > 0)
-            {
-                switches.AddRange(_argsList.Take(useIndex));
-            }
-
-            if (useIndex + 2 < _argsList.Count)
-            {
-                switches.AddRange(_argsList.Skip(useIndex + 2));
-            }
-
-            foreach (string swt in switches.Where(swt => _possibleSwitches.Contains(swt, StringComparer.Ordinal)))
-            {
-                Switches.Add(swt);
-            }
-        }
-
-        if (Par != null)
+        //თუ ფაილის სახელი მითითებული არ არის, ჯერ მიმდინარე,
+        //შემდეგ კი გამშვები ფაილის ფოლდერში ვეძებთ {appName}.json ფაილს
+        if (AnalyzeParamFileName(parametersFileName) && Par != null)
         {
             return EParseResult.Ok;
         }
 
-        if (fileName != null)
-        {
-            return EParseResult.ParseError;
-        }
-
-        //გამოვიტანოთ ინფორმაცია კონსოლზე
-        Console.WriteLine("Usage:");
-        Console.WriteLine($"{_appName} --use <file name for use as parameters json>");
-        Console.WriteLine();
-        return EParseResult.Usage;
+        return parametersFileName != null ? EParseResult.ParseError : EParseResult.ShowHelp;
     }
 
-    private bool AnalyzeParamFileName(string? startFileName)
+    //Analysis-ის მიერ null სახელით გამოძახებისას მიმდინარე და გამშვები ფაილის ფოლდერები მოწმდება
+    internal bool AnalyzeParamFileName(string? startFileName)
     {
         if (startFileName != null)
         {
@@ -99,7 +61,7 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
         Console.WriteLine($"Try to use current Directory {_pathToContentRoot}");
 
         //_parLoader.
-        if (TryUseFile(Path.Combine(_pathToContentRoot, _jsonFileName)) && Par != null)
+        if (TryUseFile(Path.Combine(_pathToContentRoot, _jsonFileName), false) && Par != null)
         {
             return true;
         }
@@ -118,14 +80,15 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
         if (pathToExeRoot != null)
         {
             //_parLoader.
-            return TryUseFile(Path.Combine(pathToExeRoot, _jsonFileName));
+            return TryUseFile(Path.Combine(pathToExeRoot, _jsonFileName), false);
         }
 
         Console.WriteLine("Cannot detect executable file path");
         return false;
     }
 
-    private bool TryUseFile(string startFileName)
+    //offerToCreate == false: ავტომატური ძებნისას ფაილი მხოლოდ მოიძებნება, შექმნა არ შემოთავაზდება
+    internal bool TryUseFile(string startFileName, bool offerToCreate = true)
     {
         _parLoader.ParametersFileName = startFileName;
 
@@ -138,11 +101,17 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
 
             Console.WriteLine($"File {startFileName} is not valid parameters file");
 
-            return Inputer.InputBool($"File {startFileName} is Invalid, Create, rewrite and use file with this name?",
-                false, false) && CreateEmptyParametersFile(startFileName);
+            return offerToCreate &&
+                   _inputBool($"File {startFileName} is Invalid, Create, rewrite and use file with this name?",
+                       false) && CreateEmptyParametersFile(startFileName);
         }
 
         StShared.WriteWarningLine($"File {startFileName} is not exists", true);
+
+        if (!offerToCreate)
+        {
+            return false;
+        }
 
         var fileInfo = new FileInfo(startFileName);
         if (fileInfo.Directory == null)
@@ -158,15 +127,15 @@ public sealed class ArgumentsParser<T> : IArgumentsParser<T> where T : class, IP
 
         if (fileInfo.Directory.Exists)
         {
-            return Inputer.InputBool($"File {startFileName} is not exists, Create and use file with this name?", true,
-                false) && CreateEmptyParametersFile(startFileName);
+            return _inputBool($"File {startFileName} is not exists, Create and use file with this name?", true) &&
+                   CreateEmptyParametersFile(startFileName);
         }
 
         StShared.WriteErrorLine($"Cannot create folder {fileInfo.Directory.Name}", true);
         return false;
     }
 
-    private static bool CreateEmptyParametersFile(string startFileName)
+    internal static bool CreateEmptyParametersFile(string startFileName)
     {
         //შევქმნათ ცარელა პარამეტრები
         var sampleParams = new EmptyParameters();

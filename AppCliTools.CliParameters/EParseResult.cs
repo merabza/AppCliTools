@@ -3,6 +3,6 @@
 public enum EParseResult
 {
     Ok,
-    Usage,
+    ShowHelp,
     ParseError
 }
