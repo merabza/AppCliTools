@@ -25,7 +25,7 @@ public sealed class ServiceCreatorCreator : CodeCreator
         string repositoryInterfaceName = $"I{repositoryClassName}"; //IGmDataSeederRepository
         string projectDbContextClassName = _par.ProjectDbContextClassName; // + "DbContext"; //GeoModelDbContext
 
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"),
             "using BackendCarcass.Database", "using BackendCarcass.DataSeeding", "using BackendCarcass.Identity",
             "using BackendCarcass.MasterData.Models", string.Empty, $"using {dataSeedingProjectName}",
             $"using {projectDbProjectName}", $"using {newDataSeedingProjectName}", string.Empty,

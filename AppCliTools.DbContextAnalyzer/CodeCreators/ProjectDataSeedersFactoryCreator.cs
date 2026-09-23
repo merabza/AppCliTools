@@ -25,7 +25,7 @@ public sealed class ProjectDataSeedersFactoryCreator : SeederCodeCreatorBase
 
     public override void CreateFileStructure()
     {
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(ProjectDataSeedersFactoryCreator)} at {DateTime.Now}"),
             "using BackendCarcass.DataSeeding", "using BackendCarcass.MasterData.Models",
             "using SystemTools.DatabaseToolsShared", "using Microsoft.AspNetCore.Identity",
             $"using {_parameters.ProjectNamespace}.{_parameters.CarcassSeedersFolderName}",

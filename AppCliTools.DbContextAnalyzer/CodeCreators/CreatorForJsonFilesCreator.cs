@@ -28,7 +28,7 @@ public sealed class CreatorForJsonFilesCreator : SeederCodeCreatorBase
         _runMethodCodeBlock = new CodeBlock("public bool Run()",
             $"Console.WriteLine(\"{_parameters.ProjectNamespace} Started\")");
 
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(CreatorForJsonFilesCreator)} at {DateTime.Now}"),
             "using System", "using System.IO", "using System.Linq",
             $"using {_parameters.ProjectNamespace}.{_parameters.ModelsFolderName}",
             $"using {_parameters.DbContextProjectName}", "using Newtonsoft.Json", "using Microsoft.EntityFrameworkCore",

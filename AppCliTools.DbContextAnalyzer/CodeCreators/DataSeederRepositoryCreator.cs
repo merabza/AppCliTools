@@ -18,7 +18,7 @@ public sealed class DataSeederRepositoryCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(DataSeederRepositoryCreator)} at {DateTime.Now}"),
             "using SystemTools.DatabaseToolsShared", $"using {_par.DbProjectNamespace}",
             "using Microsoft.Extensions.Logging", $"namespace {_par.ProjectNamespace}", string.Empty,
             new CodeBlock(

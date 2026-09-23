@@ -32,7 +32,7 @@ public sealed class FakeProjectDesignTimeDbContextFactoryCreator : CodeCreator
         string projectMigrationProjectName = _scaffoldSeederProjectName + "DbMigration"; //GeoModelDbMigration
         string designTimeDbContextFactoryClassName =
             $"{_dbProjectNamespace.Replace(".", null)}DesignTimeDbContextFactory"; //GeoModelDesignTimeDbContextFactory
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {GetType().Name} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(FakeProjectDesignTimeDbContextFactoryCreator)} at {DateTime.Now}"),
             $"using {_dbProjectNamespace}", "using BackendCarcass.Database", string.Empty,
             $"namespace {_projectNamespace}", string.Empty,
             new OneLineComment("ეს კლასი საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მიგრაციასთან მუშაობა."),
