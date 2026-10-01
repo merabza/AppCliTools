@@ -308,7 +308,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             //usedList = true;
         }
 
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty,
+            new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
             !isCarcassType && entityData.OptimalIndexProperties.Count > 1 ||
             keyRealTypeNameForDictionaryGeneric == "DateTime"
@@ -389,7 +390,8 @@ public sealed class SeederCreator : SeederCodeCreatorBase
             _ => string.Empty
         };
 
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty,
+            new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"),
             new OneLineComment($"tableName is {tableName}"),
             isDataTypesOrManyToManyJoins ? "using BackendCarcass.DataSeeding" : null,
             "using BackendCarcass.DataSeeding.Seeders",

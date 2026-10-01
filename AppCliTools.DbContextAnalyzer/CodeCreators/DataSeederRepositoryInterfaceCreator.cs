@@ -18,7 +18,8 @@ public sealed class DataSeederRepositoryInterfaceCreator : CodeCreator
 
     public override void CreateFileStructure()
     {
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(DataSeederRepositoryInterfaceCreator)} at {DateTime.Now}"),
+        var block = new CodeBlock(string.Empty,
+            new OneLineComment($"Created by {nameof(DataSeederRepositoryInterfaceCreator)} at {DateTime.Now}"),
             "using SystemTools.DatabaseToolsShared", $"namespace {_parameters.ProjectNamespace}", string.Empty,
             $"public interface {_parameters.DataSeederRepositoryInterfaceName} : IDataSeederRepository");
         CodeFile.AddRange(block.CodeItems);

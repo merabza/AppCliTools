@@ -52,8 +52,9 @@ public sealed class SeederModelCreator : SeederCodeCreatorBase
         classCodeBlock.AddRange(fieldDataList.Select(fd =>
             new CodeBlock($"public {fd.RealTypeName} {fd.FullName}", true, "get", "set")));
 
-        var block = new CodeBlock(string.Empty, new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"),
-            usingSystem, $"namespace {_projectNamespace}.{_modelsFolderName}", string.Empty, classCodeBlock);
+        var block = new CodeBlock(string.Empty,
+            new OneLineComment($"Created by {nameof(SeederCreator)} at {DateTime.Now}"), usingSystem,
+            $"namespace {_projectNamespace}.{_modelsFolderName}", string.Empty, classCodeBlock);
 
         CodeFile.FileName = className + ".cs";
         CodeFile.AddRange(block.CodeItems);
