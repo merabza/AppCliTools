@@ -2,15 +2,27 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters.Cruders;
 
 public abstract class SimpleNamesListCruder : Cruder
 {
+    private readonly IParametersManager? _parametersManager;
+
+    //ამ კონსტრუქტორით შექმნილი cruder ცვლილებას არ ინახავს, თუ მემკვიდრე Save-ს თვითონ არ გადაფარავს
     protected SimpleNamesListCruder(string crudName, string crudNamePlural, bool fieldKeyFromItem = false,
         bool canEditFieldsInSequence = true) : base(crudName, crudNamePlural, fieldKeyFromItem, canEditFieldsInSequence)
     {
+    }
+
+    //სია პარამეტრების ნაწილია, ამიტომ ყოველი ცვლილება parametersManager-ის ძირეული ობიექტის შენახვით სრულდება
+    protected SimpleNamesListCruder(IParametersManager parametersManager, string crudName, string crudNamePlural,
+        bool fieldKeyFromItem = false, bool canEditFieldsInSequence = true) : this(crudName, crudNamePlural,
+        fieldKeyFromItem, canEditFieldsInSequence)
+    {
+        _parametersManager = parametersManager;
     }
 
     protected abstract List<string> GetList();
@@ -48,5 +60,12 @@ public abstract class SimpleNamesListCruder : Cruder
     public override string? GetStatusFor(string name)
     {
         return null;
+    }
+
+    public override ValueTask<bool> Save(string message, CancellationToken cancellationToken = default)
+    {
+        return _parametersManager is null
+            ? base.Save(message, cancellationToken)
+            : _parametersManager.Save(_parametersManager.Parameters, message, null, cancellationToken);
     }
 }

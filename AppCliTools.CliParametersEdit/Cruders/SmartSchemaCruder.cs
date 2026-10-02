@@ -19,7 +19,7 @@ public sealed class SmartSchemaCruder : ParCruder<SmartSchema>
         "Smart Schema", "Smart Schemas")
     {
         FieldEditors.Add(new IntFieldEditor(nameof(SmartSchema.LastPreserveCount), 1));
-        FieldEditors.Add(new SmartSchemaDetailsFieldEditor(nameof(SmartSchema.Details)));
+        FieldEditors.Add(new SmartSchemaDetailsFieldEditor(nameof(SmartSchema.Details), parametersManager));
     }
 
     public static SmartSchemaCruder Create(IParametersManager parametersManager)

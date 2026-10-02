@@ -1,6 +1,6 @@
 <Solution>
     <Folder Name="/BackendCarcass/">
-        <Project Path="../../BackendCarcass/BackendCarcass/BackendCarcass.Domain/BackendCarcass.Domain.csproj" />
+        <Project Path="../BackendCarcass/BackendCarcass.Domain/BackendCarcass.Domain.csproj" />
         <Project Path="../BackendCarcass/BackendCarcass.Application/BackendCarcass.Application.csproj" />
         <Project Path="../BackendCarcass/BackendCarcass.Database/BackendCarcass.Database.csproj" />
     </Folder>
@@ -48,6 +48,7 @@
         <Project Path="AppCliTools.CliMenu.Tests/AppCliTools.CliMenu.Tests.csproj" />
         <Project Path="AppCliTools.CliParameters.Tests/AppCliTools.CliParameters.Tests.csproj" />
         <Project Path="AppCliTools.CliParametersApiClientsEdit.Tests/AppCliTools.CliParametersApiClientsEdit.Tests.csproj" Id="a8033f05-e748-4809-ad5a-f23bf5b687d3" />
+        <Project Path="AppCliTools.CliParametersEdit.Tests/AppCliTools.CliParametersEdit.Tests.csproj" />
     </Folder>
     <Folder Name="/ToolsManagement/">
         <Project Path="../ToolsManagement/ToolsManagement.ApiClientsManagement/ToolsManagement.ApiClientsManagement.csproj" />

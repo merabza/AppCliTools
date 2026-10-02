@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AppCliTools.CliParameters.Cruders;
 using AppCliTools.CliParameters.FieldEditors;
 using ParametersManagement.LibFileParameters.Models;
+using ParametersManagement.LibParameters;
 using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParametersEdit.Cruders;
@@ -12,7 +13,9 @@ namespace AppCliTools.CliParametersEdit.Cruders;
 public sealed class SmartSchemaDetailCruder : Cruder
 {
     private readonly List<SmartSchemaDetail> _currentValuesList;
+    private readonly IParametersManager? _parametersManager;
 
+    //ამ კონსტრუქტორით შექმნილი cruder ცვლილებას არ ინახავს
     public SmartSchemaDetailCruder(List<SmartSchemaDetail> currentValuesList) : base("Smart Schema Detail",
         "Smart Schema Details")
     {
@@ -20,6 +23,13 @@ public sealed class SmartSchemaDetailCruder : Cruder
 
         FieldEditors.Add(new EnumFieldEditor<EPeriodType>(nameof(SmartSchemaDetail.PeriodType), EPeriodType.Day));
         FieldEditors.Add(new IntFieldEditor(nameof(SmartSchemaDetail.PreserveCount)));
+    }
+
+    //დეტალები პარამეტრების ნაწილია, ამიტომ ყოველი ცვლილება parametersManager-ის ძირეული ობიექტის შენახვით სრულდება
+    public SmartSchemaDetailCruder(IParametersManager parametersManager, List<SmartSchemaDetail> currentValuesList) :
+        this(currentValuesList)
+    {
+        _parametersManager = parametersManager;
     }
 
     protected override Dictionary<string, ItemData> GetCrudersDictionary()
@@ -77,5 +87,12 @@ public sealed class SmartSchemaDetailCruder : Cruder
     public override List<string> GetKeys()
     {
         return [.. _currentValuesList.Select(s => s.PeriodType.ToString()).OrderBy(x => x)];
+    }
+
+    public override ValueTask<bool> Save(string message, CancellationToken cancellationToken = default)
+    {
+        return _parametersManager is null
+            ? base.Save(message, cancellationToken)
+            : _parametersManager.Save(_parametersManager.Parameters, message, null, cancellationToken);
     }
 }

@@ -27,7 +27,9 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.Server)));
-        FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey)));
+        //გასაღები საიდუმლოა: შეყვანისას და სტატუსში პაროლივით დაფარული ჩანს
+        FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey), null, false,
+            ParametersEditor.PasswordChar));
     }
 
     public static ApiClientCruder Create(ILogger logger, IHttpClientFactory httpClientFactory,
