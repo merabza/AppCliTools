@@ -27,8 +27,8 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         FieldEditors.Add(new TextFieldEditor(nameof(FileStorageData.UserName)));
         FieldEditors.Add(new TextFieldEditor(nameof(FileStorageData.Password), null, false,
             ParametersEditor.PasswordChar));
-        FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileNameMaxLength), 255));
-        FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileSizeSplitPositionInRow), 4));
+        //FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileNameMaxLength), 255));
+        //FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileSizeSplitPositionInRow), 4));
         FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FtpSiteLsFileOffset), 71));
     }
 
@@ -95,7 +95,7 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         EnableFieldByName(nameof(FileStorageData.Password), enableUserNamePassword);
         bool? isFtp = fileStorageData.IsFtp();
         bool enableFtpProperties = isFtp is not null && isFtp.Value;
-        EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
+        //EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
         EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
     }
 
