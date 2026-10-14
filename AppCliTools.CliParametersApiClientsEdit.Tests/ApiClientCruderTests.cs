@@ -234,7 +234,7 @@ public sealed class ApiClientCruderTests : IDisposable
         Assert.Empty(_server.Requests);
         _logger.Verify(
             x => x.Log(LogLevel.Error, It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((state, _) => state.ToString() == "ErrorOmd in method CheckValidation"),
+                It.Is<It.IsAnyType>((state, _) => state!.ToString() == "ErrorOmd in method CheckValidation"),
                 It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
 
