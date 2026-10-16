@@ -93,7 +93,7 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         bool enableUserNamePassword = isFileSchema is not null && !isFileSchema.Value;
         EnableFieldByName(nameof(FileStorageData.UserName), enableUserNamePassword);
         EnableFieldByName(nameof(FileStorageData.Password), enableUserNamePassword);
-        bool? isFtp = fileStorageData.IsFtp();
+        //bool? isFtp = fileStorageData.IsFtp();
         //bool enableFtpProperties = isFtp is not null && isFtp.Value;
         //EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
         //EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
