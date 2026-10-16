@@ -29,7 +29,7 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
             ParametersEditor.PasswordChar));
         //FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileNameMaxLength), 255));
         //FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FileSizeSplitPositionInRow), 4));
-        //FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FtpSiteLsFileOffset), 71));
+        FieldEditors.Add(new IntFieldEditor(nameof(FileStorageData.FtpSiteLsFileOffset), 71));
     }
 
     public static FileStorageCruder Create(ILogger logger, IParametersManager parametersManager)
@@ -93,10 +93,10 @@ public sealed class FileStorageCruder : ParCruder<FileStorageData>
         bool enableUserNamePassword = isFileSchema is not null && !isFileSchema.Value;
         EnableFieldByName(nameof(FileStorageData.UserName), enableUserNamePassword);
         EnableFieldByName(nameof(FileStorageData.Password), enableUserNamePassword);
-        //bool? isFtp = fileStorageData.IsFtp();
-        //bool enableFtpProperties = isFtp is not null && isFtp.Value;
+        bool? isFtp = fileStorageData.IsFtp();
+        bool enableFtpProperties = isFtp is not null && isFtp.Value;
         //EnableFieldByName(nameof(FileStorageData.FileSizeSplitPositionInRow), enableFtpProperties);
-        //EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
+        EnableFieldByName(nameof(FileStorageData.FtpSiteLsFileOffset), enableFtpProperties);
     }
 
     public override string? GetStatusFor(string name)
