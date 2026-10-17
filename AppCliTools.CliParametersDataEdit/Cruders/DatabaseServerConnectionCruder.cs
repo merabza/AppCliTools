@@ -159,8 +159,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
 
         EDatabaseProvider databaseServerProvider = databaseServerConnection.DatabaseServerProvider;
-        (bool toReturn, bool enablePassword, bool enableUser, bool enableSqlServerProps, bool enableWebAgentProps) =
-            EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
+        (bool toReturn, bool enablePassword, bool enableUser, bool enableServerProps, bool enableSqlServerProps,
+            bool enableWebAgentProps) = EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
         if (toReturn)
         {
             return;
@@ -174,7 +174,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         //EnableFieldByName(nameof(DatabaseServerConnectionData.FullDbBackupParameters), !enableWebAgentProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseFoldersSets), !enableWebAgentProps);
 
-        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerAddress), enableSqlServerProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.ServerAddress), enableServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.WindowsNtIntegratedSecurity), enableSqlServerProps);
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerUser), enableUser);
@@ -182,7 +182,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         EnableFieldByName(nameof(DatabaseServerConnectionData.ServerPass), enablePassword);
 
         EnableFieldByName(nameof(DatabaseServerConnectionData.TrustServerCertificate), enableSqlServerProps);
-        EnableFieldByName(nameof(DatabaseServerConnectionData.ConnectionTimeOut), enableSqlServerProps);
+        EnableFieldByName(nameof(DatabaseServerConnectionData.ConnectionTimeOut), enableServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.Encrypt), enableSqlServerProps);
 
         if (lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerUser) &&
@@ -200,22 +200,25 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         }
     }
 
-    private (bool, bool, bool, bool, bool) EnableDisableByDatabaseProvider(EDatabaseProvider databaseServerProvider,
-        DatabaseServerConnectionData databaseServerConnection)
+    private (bool, bool, bool, bool, bool, bool) EnableDisableByDatabaseProvider(
+        EDatabaseProvider databaseServerProvider, DatabaseServerConnectionData databaseServerConnection)
     {
         switch (databaseServerProvider)
         {
             case EDatabaseProvider.None:
                 EnableAllFieldButOne(nameof(DatabaseServerConnectionData.DatabaseServerProvider), false);
-                return (true, false, false, false, false);
+                return (true, false, false, false, false, false);
             case EDatabaseProvider.SqlServer:
                 bool enablePassword = !databaseServerConnection.WindowsNtIntegratedSecurity;
-                return (false, enablePassword, enablePassword, true, false);
+                return (false, enablePassword, enablePassword, true, true, false);
+            //MariaDB-ს Windows-ის ავთენტიფიკაცია, TrustServerCertificate და Encrypt არ აქვს
+            case EDatabaseProvider.MariaDb:
+                return (false, true, true, true, false, false);
             case EDatabaseProvider.SqLite:
             case EDatabaseProvider.OleDb:
-                return (false, true, false, false, false);
+                return (false, true, false, false, false, false);
             case EDatabaseProvider.WebAgent:
-                return (false, false, false, false, true);
+                return (false, false, false, false, false, true);
             default:
                 throw new ArgumentOutOfRangeException(nameof(databaseServerProvider), databaseServerProvider,
                     "Unexpected database server provider value.");

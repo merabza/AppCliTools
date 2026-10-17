@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.IO;
 using AppCliTools.CliParametersDataEdit.Models;
 using DatabaseTools.DbTools.Models;
+using DatabaseTools.MariaDbTools;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using ParametersManagement.LibDatabaseParameters;
@@ -192,6 +193,11 @@ public static class DbConnectionFactory
                 oleDbConBuilder.Add(JetOleDbDatabasePasswordKey, olePassword);
                 return oleDbConBuilder;
 #pragma warning restore CA1416
+
+            case EDatabaseProvider.MariaDb:
+                return MariaDbConnectionStringFactory.Create(databaseServerConnection.ServerAddress,
+                    databaseServerConnection.ServerUser, databaseServerConnection.ServerPass,
+                    databasesParameters.DatabaseName, databaseServerConnection.ConnectionTimeOut);
 
             case EDatabaseProvider.WebAgent:
             default:
