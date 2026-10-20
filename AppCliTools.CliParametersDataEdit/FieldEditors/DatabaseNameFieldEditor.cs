@@ -22,23 +22,34 @@ namespace AppCliTools.CliParametersDataEdit.FieldEditors;
 
 public sealed class DatabaseNameFieldEditor : FieldEditor<string>
 {
-    private readonly string _appName;
     private readonly bool _canUseNewDatabaseName;
+    private readonly Func<string?, CancellationToken, Task<Result<IDatabaseManager>>> _createDatabaseManager;
     private readonly string _databaseConnectionNamePropertyName;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger _logger;
-    private readonly IParametersManager _parametersManager;
+    private readonly Func<string, CliMenuSet, string?, int> _inputIdFromMenuList;
+    private readonly Func<string, string> _inputTextRequired;
 
     public DatabaseNameFieldEditor(string appName, ILogger logger, IHttpClientFactory httpClientFactory,
         string propertyName, IParametersManager parametersManager, string databaseConnectionNamePropertyName,
-        bool canUseNewDatabaseName) : base(propertyName)
+        bool canUseNewDatabaseName) : this(propertyName, databaseConnectionNamePropertyName, canUseNewDatabaseName,
+        (databaseServerConnectionName, cancellationToken) => CreateDatabaseManager(appName, logger, httpClientFactory,
+            parametersManager, databaseServerConnectionName, cancellationToken), MenuInputer.InputIdFromMenuList,
+        fieldName => Inputer.InputTextRequired(fieldName))
     {
-        _appName = appName;
-        _logger = logger;
-        _httpClientFactory = httpClientFactory;
-        _parametersManager = parametersManager;
+    }
+
+    //ბაზების მენეჯერის შექმნა და კონსოლიდან შეტანა პარამეტრებადაა გამოტანილი, რომ ტესტებმა ბაზების სია და პასუხები
+    //თვითონ მიაწოდონ
+    internal DatabaseNameFieldEditor(string propertyName, string databaseConnectionNamePropertyName,
+        bool canUseNewDatabaseName,
+        Func<string?, CancellationToken, Task<Result<IDatabaseManager>>> createDatabaseManager,
+        Func<string, CliMenuSet, string?, int> inputIdFromMenuList, Func<string, string> inputTextRequired) : base(
+        propertyName)
+    {
         _databaseConnectionNamePropertyName = databaseConnectionNamePropertyName;
         _canUseNewDatabaseName = canUseNewDatabaseName;
+        _createDatabaseManager = createDatabaseManager;
+        _inputIdFromMenuList = inputIdFromMenuList;
+        _inputTextRequired = inputTextRequired;
     }
 
     public override async ValueTask UpdateField(string? recordKey, object recordForUpdate,
@@ -49,16 +60,10 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
             string? currentDatabaseName = GetValue(recordForUpdate);
             string? databaseServerConnectionName =
                 GetValue<string>(recordForUpdate, _databaseConnectionNamePropertyName);
-            var dscParameters = (IParametersWithDatabaseServerConnections)_parametersManager.Parameters;
-            var databaseServerConnections = new DatabaseServerConnections(dscParameters.DatabaseServerConnections);
-            var acParameters = (IParametersWithApiClients)_parametersManager.Parameters;
-            var apiClients = new ApiClients(acParameters.ApiClients);
             var databaseInfos = new List<DatabaseInfoModel>();
 
             Result<IDatabaseManager> createDatabaseManagerResult =
-                await DatabaseManagersFactory.CreateDatabaseManager(_appName, _logger, true,
-                    databaseServerConnectionName, databaseServerConnections, apiClients, _httpClientFactory, null, null,
-                    cancellationToken);
+                await _createDatabaseManager(databaseServerConnectionName, cancellationToken);
 
             if (createDatabaseManagerResult.IsFailure)
             {
@@ -84,23 +89,27 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
                 }
             }
 
+            //ელემენტის id მისი ადგილია სიაში (New Database Name, თუ არის, პირველია), ისევე, როგორც კლავიშით
+            //არჩევისას. Enter მიმდინარე სახელს ტოვებს: სია მისი ელემენტის id-ს აბრუნებს, id-ის გარეშე დამატებულ
+            //ელემენტს კი -1 აქვს, რაც არასწორ არჩევანად ჩაითვლებოდა
+            int id = 0;
             var databasesMenuSet = new CliMenuSet();
             if (_canUseNewDatabaseName)
             {
-                databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"));
+                databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand("New Database Name"), id++);
             }
 
             List<string> keys = [.. databaseInfos.Select(s => s.Name)];
             foreach (string listItem in keys)
             {
-                databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem));
+                databasesMenuSet.AddMenuItem(new MenuCommandWithStatusCliMenuCommand(listItem), id++);
             }
 
-            int selectedId = MenuInputer.InputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
+            int selectedId = _inputIdFromMenuList(FieldName, databasesMenuSet, currentDatabaseName);
 
             if (_canUseNewDatabaseName && selectedId == 0)
             {
-                string newDatabaseName = Inputer.InputTextRequired("New Database Name"); // nameInput.Text;
+                string newDatabaseName = _inputTextRequired("New Database Name"); // nameInput.Text;
                 SetValue(recordForUpdate, newDatabaseName);
                 return;
             }
@@ -127,5 +136,17 @@ public sealed class DatabaseNameFieldEditor : FieldEditor<string>
     public override string GetValueStatus(object? record)
     {
         return GetValue(record) ?? string.Empty;
+    }
+
+    private static Task<Result<IDatabaseManager>> CreateDatabaseManager(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, IParametersManager parametersManager,
+        string? databaseServerConnectionName, CancellationToken cancellationToken)
+    {
+        var dscParameters = (IParametersWithDatabaseServerConnections)parametersManager.Parameters;
+        var databaseServerConnections = new DatabaseServerConnections(dscParameters.DatabaseServerConnections);
+        var acParameters = (IParametersWithApiClients)parametersManager.Parameters;
+        var apiClients = new ApiClients(acParameters.ApiClients);
+        return DatabaseManagersFactory.CreateDatabaseManager(appName, logger, true, databaseServerConnectionName,
+            databaseServerConnections, apiClients, httpClientFactory, null, null, cancellationToken);
     }
 }

@@ -21,7 +21,9 @@ public sealed class SqlServerDatabaseConnectionParametersEditor : ParametersEdit
         FieldEditors.Add(new SqlServerDatabaseNameFieldEditor(logger,
             nameof(SqlServerConnectionParameters.DatabaseName), nameof(SqlServerConnectionParameters.ServerAddress),
             nameof(SqlServerConnectionParameters.WindowsNtIntegratedSecurity),
-            nameof(SqlServerConnectionParameters.ServerUser), nameof(SqlServerConnectionParameters.ServerPass)));
+            nameof(SqlServerConnectionParameters.ServerUser), nameof(SqlServerConnectionParameters.ServerPass),
+            nameof(SqlServerConnectionParameters.ConnectionTimeOut), nameof(SqlServerConnectionParameters.Encrypt),
+            nameof(SqlServerConnectionParameters.TrustServerCertificate)));
         FieldEditors.Add(new IntFieldEditor(nameof(SqlServerConnectionParameters.ConnectionTimeOut)));
         FieldEditors.Add(new BoolFieldEditor(nameof(SqlServerConnectionParameters.Encrypt)));
         FieldEditors.Add(new BoolFieldEditor(nameof(SqlServerConnectionParameters.TrustServerCertificate)));

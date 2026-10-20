@@ -11,4 +11,8 @@
         <ProjectReference Include="..\..\WebAgentContracts\WebAgentContracts.WebAgentDatabasesApiContracts\WebAgentContracts.WebAgentDatabasesApiContracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="AppCliTools.CliParametersDataEdit.Tests" />
+    </ItemGroup>
+
 </Project>
