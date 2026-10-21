@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="BackendCarcass.Database" />
         <PackageReference Include="ParametersManagement.LibParameters" />
         <PackageReference Include="System.CodeDom" />
         <PackageReference Include="SystemTools.JetBrainsResharperGlobalToolsWork" />
@@ -8,7 +9,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AppCliTools.CodeTools\AppCliTools.CodeTools.csproj" />
-        <ProjectReference Include="..\..\BackendCarcass\BackendCarcass.Database\BackendCarcass.Database.csproj" />
     </ItemGroup>
 
 </Project>
