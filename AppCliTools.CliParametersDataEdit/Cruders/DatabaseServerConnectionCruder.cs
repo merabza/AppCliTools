@@ -160,7 +160,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
 
         EDatabaseProvider databaseServerProvider = databaseServerConnection.DatabaseServerProvider;
         (bool toReturn, bool enablePassword, bool enableUser, bool enableServerProps, bool enableSqlServerProps,
-            bool enableWebAgentProps) = EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
+                bool enableWebAgentProps) =
+            EnableDisableByDatabaseProvider(databaseServerProvider, databaseServerConnection);
         if (toReturn)
         {
             return;

@@ -60,9 +60,9 @@ public sealed class SqlServerDatabaseNameFieldEditor : FieldEditor<string>
         string windowsNtIntegratedSecurityPropertyName, string serverUserPropertyName, string serverPassPropertyName,
         string connectionTimeOutPropertyName, string encryptPropertyName, string trustServerCertificatePropertyName,
         bool enterFieldDataOnCreate,
-        Func<SqlServerConnectionParameters, CancellationToken, Task<Result<List<DatabaseInfoModel>>>>
-            getDatabaseInfos, Func<string, CliMenuSet, string?, int> inputIdFromMenuList,
-        Func<string, string> inputTextRequired) : base(propertyName, enterFieldDataOnCreate)
+        Func<SqlServerConnectionParameters, CancellationToken, Task<Result<List<DatabaseInfoModel>>>> getDatabaseInfos,
+        Func<string, CliMenuSet, string?, int> inputIdFromMenuList, Func<string, string> inputTextRequired) : base(
+        propertyName, enterFieldDataOnCreate)
     {
         _logger = logger;
         _serverAddressPropertyName = serverAddressPropertyName;
