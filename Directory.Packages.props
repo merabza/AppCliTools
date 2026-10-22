@@ -4,8 +4,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="BackendCarcass.Database" Version="1.0.9791.18362" />
-    <PackageVersion Include="DatabaseTools.DbTools" Version="1.0.9791.18221" />
+    <PackageVersion Include="BackendCarcass.Database" Version="1.0.9791.19922" />
+    <PackageVersion Include="DatabaseTools.DbTools" Version="1.0.9791.19774" />
     <PackageVersion Include="Figgle.Fonts" Version="0.6.6" />
     <PackageVersion Include="LanguageExt.Core" Version="4.4.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
@@ -13,21 +13,21 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.13" />
     <PackageVersion Include="Moq" Version="4.21.0" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
-    <PackageVersion Include="ParametersManagement.LibApiClientParameters" Version="1.0.9791.18251" />
-    <PackageVersion Include="ParametersManagement.LibDatabaseParameters" Version="1.0.9791.18251" />
-    <PackageVersion Include="ParametersManagement.LibFileParameters" Version="1.0.9791.18251" />
-    <PackageVersion Include="ParametersManagement.LibParameters" Version="1.0.9791.18251" />
+    <PackageVersion Include="ParametersManagement.LibApiClientParameters" Version="1.0.9791.19800" />
+    <PackageVersion Include="ParametersManagement.LibDatabaseParameters" Version="1.0.9791.19800" />
+    <PackageVersion Include="ParametersManagement.LibFileParameters" Version="1.0.9791.19800" />
+    <PackageVersion Include="ParametersManagement.LibParameters" Version="1.0.9791.19800" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.35.0.4138" />
     <PackageVersion Include="System.CodeDom" Version="10.0.13" />
-    <PackageVersion Include="SystemTools.BackgroundTasks" Version="1.0.9791.18147" />
-    <PackageVersion Include="SystemTools.JetBrainsResharperGlobalToolsWork" Version="1.0.9791.18147" />
-    <PackageVersion Include="SystemTools.SharedKernel" Version="1.0.9791.18147" />
-    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9791.18147" />
-    <PackageVersion Include="SystemTools.TestApiContracts" Version="1.0.9791.18147" />
-    <PackageVersion Include="ToolsManagement.ApiClientsManagement" Version="1.0.9791.18317" />
-    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9791.18317" />
-    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9791.18317" />
-    <PackageVersion Include="WebAgentContracts.WebAgentDatabasesApiContracts" Version="1.0.9791.18300" />
+    <PackageVersion Include="SystemTools.BackgroundTasks" Version="1.0.9791.19707" />
+    <PackageVersion Include="SystemTools.JetBrainsResharperGlobalToolsWork" Version="1.0.9791.19707" />
+    <PackageVersion Include="SystemTools.SharedKernel" Version="1.0.9791.19707" />
+    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9791.19707" />
+    <PackageVersion Include="SystemTools.TestApiContracts" Version="1.0.9791.19707" />
+    <PackageVersion Include="ToolsManagement.ApiClientsManagement" Version="1.0.9791.19879" />
+    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9791.19879" />
+    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9791.19879" />
+    <PackageVersion Include="WebAgentContracts.WebAgentDatabasesApiContracts" Version="1.0.9791.19847" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.assert" Version="2.9.3" />
     <PackageVersion Include="xunit.extensibility.core" Version="2.9.3" />
