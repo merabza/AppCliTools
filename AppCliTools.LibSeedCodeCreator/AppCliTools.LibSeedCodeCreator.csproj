@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
-        <ProjectReference Include="..\AppCliTools.DbContextAnalyzer\AppCliTools.DbContextAnalyzer.csproj" />
-    </ItemGroup>
-
-</Project>
