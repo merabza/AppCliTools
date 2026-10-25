@@ -6,18 +6,16 @@ namespace AppCliTools.CliParameters.FieldEditors;
 
 public sealed class IntFieldEditor : FieldEditor<int>
 {
-    private readonly int _defaultValue;
-
+    //ნაგულისხმევი მნიშვნელობა base-ს გადაეცემა: SetDefault ახალ ჩანაწერს მას აძლევს და არა 0-ს
     public IntFieldEditor(string propertyName, int defaultValue = 0, bool enterFieldDataOnCreate = false) : base(
-        propertyName, enterFieldDataOnCreate)
+        propertyName, enterFieldDataOnCreate, defaultValue)
     {
-        _defaultValue = defaultValue;
     }
 
     public override ValueTask UpdateField(string? recordKey, object recordForUpdate,
         CancellationToken cancellationToken = default)
     {
-        SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, _defaultValue)));
+        SetValue(recordForUpdate, Inputer.InputInt(FieldName, GetValue(recordForUpdate, DefaultValue)));
         return ValueTask.CompletedTask;
     }
 }

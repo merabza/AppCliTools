@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.Cruders;
+using SystemTools.SystemToolsShared;
 
 namespace AppCliTools.CliParameters.FieldEditors;
 
@@ -18,8 +19,22 @@ public sealed class SimpleNamesListFieldEditor<TCruder> : FieldEditor<List<strin
 
     public override CliMenuSet GetSubMenu(object record)
     {
-        List<string> currentValuesList = GetValue(record) ?? [];
+        List<string>? currentValuesList = GetValue(record);
+        if (currentValuesList is null)
+        {
+            //თუ ველის მნიშვნელობა null-ია, შევქმნათ ცარიელი სია და დავუბრუნოთ record-ს,
+            //რომ შემდგომი ცვლილებები რეფერენსით აისახოს თვით თვისებაში
+            currentValuesList = [];
+            SetValue(record, currentValuesList);
+        }
+
         return _cruderFactory(currentValuesList).GetListMenu();
+    }
+
+    public override void SetDefault(ItemData currentItem)
+    {
+        //ნაგულისხმევად ცარიელი სია, რომ ახლადშექმნილ ჩანაწერს არ ჰქონდეს null
+        SetValue(currentItem, []);
     }
 
     public override string GetValueStatus(object? record)
