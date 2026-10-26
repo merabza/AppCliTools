@@ -21,9 +21,9 @@
     <PackageVersion Include="SystemTools.SharedKernel" Version="1.0.9791.20931" />
     <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9791.20931" />
     <PackageVersion Include="SystemTools.TestApiContracts" Version="1.0.9791.20931" />
-    <PackageVersion Include="ToolsManagement.ApiClientsManagement" Version="1.0.9795.20261" />
-    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9795.20261" />
-    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9795.20261" />
+    <PackageVersion Include="ToolsManagement.ApiClientsManagement" Version="1.0.9795.21188" />
+    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9795.21188" />
+    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9795.21188" />
     <PackageVersion Include="WebAgentContracts.WebAgentDatabasesApiContracts" Version="1.0.9795.20239" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.assert" Version="2.9.3" />
