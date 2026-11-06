@@ -7,9 +7,9 @@
     <PackageVersion Include="DatabaseTools.DbTools" Version="1.0.9795.20198" />
     <PackageVersion Include="Figgle.Fonts" Version="0.6.6" />
     <PackageVersion Include="LanguageExt.Core" Version="4.4.9" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.14" />
     <PackageVersion Include="Moq" Version="4.21.0" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="ParametersManagement.LibApiClientParameters" Version="1.0.9795.20216" />
