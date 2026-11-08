@@ -2,7 +2,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
-        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibFileParameters\ParametersManagement.LibFileParameters.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ParametersManagement.LibFileParameters" />
     </ItemGroup>
 
 </Project>
