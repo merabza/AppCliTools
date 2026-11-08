@@ -4,8 +4,18 @@ namespace AppCliTools.LibDataInput;
 
 public static class Inputer
 {
+    //true-ს შემთხვევაში InputBool და InputAnswer მომხმარებელს აღარ ელოდებიან და ყოველთვის "yes" პასუხს აბრუნებენ.
+    //შეკითხვა და პასუხი კონსოლზე მაინც იწერება (SupportTools-ის --allyes)
+    public static bool AnswerYesToAll { get; set; }
+
     public static EDialogResult InputAnswer(string fieldName, EDialogResult defaultValue, bool useException = true)
     {
+        if (AnswerYesToAll)
+        {
+            Console.WriteLine($"{fieldName}: Y (yes to all)");
+            return EDialogResult.Yes;
+        }
+
         var answerInput = new AnswerInput(fieldName, defaultValue);
         if (answerInput.DoInput())
         {
@@ -17,6 +27,12 @@ public static class Inputer
 
     public static bool InputBool(string fieldName, bool defaultValue, bool useException = true)
     {
+        if (AnswerYesToAll)
+        {
+            Console.WriteLine($"{fieldName} (y/n)[{(defaultValue ? "y" : "n")}]: Y (yes to all)");
+            return true;
+        }
+
         var boolInput = new BoolDataInput(fieldName, defaultValue);
         if (boolInput.DoInput())
         {
