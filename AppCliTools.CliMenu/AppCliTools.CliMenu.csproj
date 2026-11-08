@@ -8,10 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AppCliTools.LibDataInput\AppCliTools.LibDataInput.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="SystemTools.SystemToolsShared" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
     </ItemGroup>
 
 </Project>
