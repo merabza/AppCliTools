@@ -40,9 +40,12 @@ public sealed class CodeBlock : CodeBlockBase, ICodeItem
         var sb = new StringBuilder();
         if (BlockInOneLine && CodeItems.All(a => a is CodeCommand))
         {
-            var commandsList = new List<string> { BlockHeader, "{" };
-            commandsList.AddRange(CodeItems.Cast<CodeCommand>().Select(s => s.CommandLine + ";"));
-            commandsList.Add("}");
+            List<string> commandsList =
+            [
+                BlockHeader, "{",
+                .. CodeItems.Cast<CodeCommand>().Select(s => s.CommandLine + ";"),
+                "}"
+            ];
             if (Initializer is not null)
             {
                 commandsList.Add(Initializer);

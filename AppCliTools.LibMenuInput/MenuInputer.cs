@@ -28,8 +28,11 @@ public static class MenuInputer
         where TEnum : struct, Enum
     {
         const string none = "__None__";
-        var names = new List<string> { none };
-        names.AddRange(Enum.GetNames<TEnum>());
+        List<string> names =
+        [
+            none,
+            .. Enum.GetNames<TEnum>()
+        ];
 
         var selectInput = new SelectFromListInput(fieldName, names, defaultValue.ToString());
         if (!selectInput.DoInput())
