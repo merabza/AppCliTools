@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters;
 using AppCliTools.CliParameters.FieldEditors;
@@ -22,6 +23,10 @@ namespace AppCliTools.CliParametersDataEdit.Cruders;
 public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerConnectionData>
 {
     private readonly IApplication _application;
+
+    private readonly Func<DatabaseServerConnectionData, ApiClients, CancellationToken,
+        ValueTask<Result<IDatabaseManager>>> _createDatabaseManager;
+
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
 
@@ -29,12 +34,26 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     // ReSharper disable once MemberCanBePrivate.Global
     public DatabaseServerConnectionCruder(IApplication application, ILogger logger,
         IHttpClientFactory? httpClientFactory, IParametersManager parametersManager,
-        Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary) : base(parametersManager,
-        currentValuesDictionary, "Database Server Connection", "Database Server Connections")
+        Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary) : this(application, logger,
+        httpClientFactory, parametersManager, currentValuesDictionary,
+        (databaseServerConnection, apiClients, cancellationToken) => DatabaseManagersFactory.CreateDatabaseManager(
+            application.AppName, logger, true, databaseServerConnection, apiClients, httpClientFactory, null, null,
+            cancellationToken))
+    {
+    }
+
+    //ტესტებისთვის: ბაზის მენეჯერი ბაზის სერვერთან დაკავშირების გარეშე
+    internal DatabaseServerConnectionCruder(IApplication application, ILogger logger,
+        IHttpClientFactory? httpClientFactory, IParametersManager parametersManager,
+        Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary,
+        Func<DatabaseServerConnectionData, ApiClients, CancellationToken, ValueTask<Result<IDatabaseManager>>>
+            createDatabaseManager) : base(parametersManager, currentValuesDictionary, "Database Server Connection",
+        "Database Server Connections")
     {
         _application = application;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
+        _createDatabaseManager = createDatabaseManager;
         FieldEditors.Add(new EnumFieldEditor<EDatabaseProvider>(
             nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseProvider.None));
 
@@ -85,9 +104,8 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             CancellationToken token = cts.Token;
             token.ThrowIfCancellationRequested();
 
-            Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
-                .CreateDatabaseManager(_application.AppName, _logger, true, databaseServerConnectionData, apiClients,
-                    _httpClientFactory, null, null, token).Preserve().Result;
+            Result<IDatabaseManager> createDatabaseManagerResult =
+                _createDatabaseManager(databaseServerConnectionData, apiClients, token).Preserve().Result;
 
             if (createDatabaseManagerResult.IsFailure)
             {
@@ -127,10 +145,16 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
             Console.WriteLine(
                 $"Server is {(dbServerInfo.AllowsCompression ? string.Empty : "NOT ")} Allows Compression");
             Result<bool> isServerLocalResult = dbManager.IsServerLocal(token).Result;
-            string notOrNot = isServerLocalResult.Value ? string.Empty : "NOT ";
-            Console.WriteLine(isServerLocalResult.IsSuccess
-                ? $"Server is {notOrNot} local"
-                : "Server is local or not is not detected");
+            //შეცდომის დროს Value-ს წაკითხვა გამონაკლისს ისვრის, ამიტომ იკითხება მხოლოდ წარმატებისას
+            if (isServerLocalResult.IsSuccess)
+            {
+                string notOrNot = isServerLocalResult.Value ? string.Empty : "NOT ";
+                Console.WriteLine($"Server is {notOrNot} local");
+            }
+            else
+            {
+                Console.WriteLine("Server is local or not is not detected");
+            }
 
             Console.WriteLine($"Server Product Version is {dbServerInfo.ServerProductVersion}");
             Console.WriteLine($"Server Instance Name is {dbServerInfo.ServerInstanceName}");
@@ -248,5 +272,14 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         var getDbServerFoldersCliMenuCommand = new GetDbServerFoldersCliMenuCommand(_application.AppName, _logger,
             _httpClientFactory, itemName, ParametersManager);
         itemSubMenuSet.AddMenuItem(getDbServerFoldersCliMenuCommand);
+
+        if (!DatabaseServerConnectionStringConverter.CanCreateConnectionString(databaseServerConnectionDataByKey
+                .DatabaseServerProvider))
+        {
+            return;
+        }
+
+        itemSubMenuSet.AddMenuItem(new GenerateConnectionStringCliMenuCommand(itemName, ParametersManager));
+        itemSubMenuSet.AddMenuItem(new SetParametersFromConnectionStringCliMenuCommand(itemName, ParametersManager));
     }
 }

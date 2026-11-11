@@ -107,6 +107,12 @@ public static class DbConnectionFactory
         return (null, null, -1);
     }
 
+    //სერვერთან კავშირის ConnectionString ბაზის სახელის გარეშე
+    internal static string? GetServerConnectionString(DatabaseServerConnectionData databaseServerConnection)
+    {
+        return GetDbConnectionString(new DatabaseParameters(), databaseServerConnection);
+    }
+
     private static string? GetDbConnectionString(DatabaseParameters databasesParameters,
         DatabaseServerConnectionData databaseServerConnection)
     {
