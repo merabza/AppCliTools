@@ -76,6 +76,11 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.TrustServerCertificate), true));
         FieldEditors.Add(new BoolFieldEditor(nameof(DatabaseServerConnectionData.Encrypt)));
         FieldEditors.Add(new IntFieldEditor(nameof(DatabaseServerConnectionData.ConnectionTimeOut), 15));
+        //არასავალდებულოა: ბაზების სია ჩანაწერის სერვერიდან მოდის
+        FieldEditors.Add(new DatabaseServerConnectionDatabaseNameFieldEditor(
+            nameof(DatabaseServerConnectionData.DatabaseName),
+            (databaseServerConnection, cancellationToken) =>
+                _createDatabaseManager(databaseServerConnection, GetApiClients(), cancellationToken)));
         FieldEditors.Add(new DictionaryFieldEditor<DatabaseFoldersSetCruder, DatabaseFoldersSet>(
             nameof(DatabaseServerConnectionData.DatabaseFoldersSets),
             x => new DatabaseFoldersSetCruder(parametersManager, x)));
@@ -95,8 +100,7 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         {
             DatabaseServerConnectionData databaseServerConnectionData = GetTItem(item);
 
-            var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
-            var apiClients = new ApiClients(acParameters.ApiClients);
+            ApiClients apiClients = GetApiClients();
 
             // ReSharper disable once using
             // ReSharper disable once DisposableConstructor
@@ -178,6 +182,12 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         return false;
     }
 
+    private ApiClients GetApiClients()
+    {
+        var acParameters = (IParametersWithApiClients)ParametersManager.Parameters;
+        return new ApiClients(acParameters.ApiClients);
+    }
+
     protected override void CheckFieldsEnables(ItemData itemData, string? lastEditedFieldName = null)
     {
         var databaseServerConnection = (DatabaseServerConnectionData)itemData;
@@ -209,6 +219,9 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         EnableFieldByName(nameof(DatabaseServerConnectionData.TrustServerCertificate), enableSqlServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.ConnectionTimeOut), enableServerProps);
         EnableFieldByName(nameof(DatabaseServerConnectionData.Encrypt), enableSqlServerProps);
+        //ბაზის სახელი ConnectionString-ისთვისაა, ამიტომ მხოლოდ იმ პროვაიდერებს აქვთ, რომლებისთვისაც ის იქმნება
+        EnableFieldByName(nameof(DatabaseServerConnectionData.DatabaseName),
+            DatabaseServerConnectionStringConverter.CanCreateConnectionString(databaseServerProvider));
 
         if (lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerUser) &&
             lastEditedFieldName != nameof(DatabaseServerConnectionData.ServerPass) &&

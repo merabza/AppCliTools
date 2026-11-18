@@ -5,12 +5,14 @@ using AppCliTools.CliMenu;
 namespace AppCliTools.CliParametersDataEdit.Tests;
 
 //answers as SelectFromMenuListInput (MenuInputer.InputIdFromMenuList) does: Enter gives the CountedId of the item with
-//the current name, and the key of an item without a key of its own gives the item's position among those items
+//the current name, the key of an item without a key of its own gives the item's position among those items, and the
+//"-" key of the (None) item gives -1
 internal sealed class FakeMenuListInput
 {
     public const string EnterAnswer = "<Enter>";
+    public const string NoneAnswer = "(None)";
 
-    //Enter keeps the current name; any other answer is the name of an offered item
+    //Enter keeps the current name; NoneAnswer presses "-"; any other answer is the name of an offered item
     public string Answer { get; set; } = EnterAnswer;
 
     public List<(string FieldName, CliMenuSet MenuSet, string? CurrentName)> Selections { get; } = [];
@@ -25,6 +27,12 @@ internal sealed class FakeMenuListInput
             CliMenuItem? currentItem = menuSet.GetMenuItemWithName(currentName);
             Assert.NotNull(currentItem);
             return currentItem.CountedId;
+        }
+
+        if (Answer == NoneAnswer)
+        {
+            Assert.Contains(CliMenuTestAccess.GetMenuItems(menuSet), x => x.Key == "-");
+            return -1;
         }
 
         int position = CliMenuTestAccess.GetMenuItems(menuSet).Where(x => x.Key is null).ToList()

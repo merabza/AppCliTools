@@ -102,6 +102,21 @@ public sealed class ConnectionStringCliMenuCommandsTests : IDisposable
     }
 
     [Fact]
+    public async Task Generate_WhenRecordHasDatabaseName_WritesItInTheConnectionString()
+    {
+        // Arrange
+        Record.DatabaseName = "AppDb";
+        var sut = new GenerateConnectionStringCliMenuCommand(ConnectionName, _parametersManager.Object);
+
+        // Act
+        bool result = await CliMenuTestAccess.RunBody(sut);
+
+        // Assert
+        Assert.True(result);
+        Assert.Contains("Initial Catalog=AppDb", _consoleOutput.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task Generate_WhenProviderCanNotCreate_Fails()
     {
         // Arrange
@@ -151,16 +166,17 @@ public sealed class ConnectionStringCliMenuCommandsTests : IDisposable
         Assert.Equal("NewUser", Record.ServerUser);
         Assert.Equal("NewPass", Record.ServerPass);
         Assert.False(Record.Encrypt);
+        Assert.Equal("AppDb", Record.DatabaseName);
         Assert.Equal([$"Database Server Connection {ConnectionName} parameters set from Connection String"],
             _saveMessages);
-        Assert.Contains("Database name AppDb is not stored in Database Server Connection",
-            _consoleOutput.ToString(), StringComparison.Ordinal);
+        Assert.Empty(_consoleOutput.ToString());
     }
 
     [Fact]
-    public async Task Set_WhenStringHasNoDatabase_DoesNotWarn()
+    public async Task Set_WhenStringHasNoDatabase_SavesTheConnectionWithoutDatabase()
     {
         // Arrange
+        Record.DatabaseName = "OldDb";
         var sut = CreateSetCommand(ConnectionName, "Data Source=NewServer;Integrated Security=True");
 
         // Act
@@ -168,6 +184,8 @@ public sealed class ConnectionStringCliMenuCommandsTests : IDisposable
 
         // Assert
         Assert.True(result);
+        Assert.Null(Record.DatabaseName);
+        Assert.Single(_saveMessages);
         Assert.Empty(_consoleOutput.ToString());
     }
 

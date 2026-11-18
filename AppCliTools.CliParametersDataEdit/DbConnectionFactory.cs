@@ -107,10 +107,13 @@ public static class DbConnectionFactory
         return (null, null, -1);
     }
 
-    //სერვერთან კავშირის ConnectionString ბაზის სახელის გარეშე
+    //სერვერთან კავშირის ConnectionString კავშირის ბაზის სახელით (ცარიელი სახელი ნიშნავს, რომ ბაზა არ არის)
     internal static string? GetServerConnectionString(DatabaseServerConnectionData databaseServerConnection)
     {
-        return GetDbConnectionString(new DatabaseParameters(), databaseServerConnection);
+        string? databaseName = string.IsNullOrWhiteSpace(databaseServerConnection.DatabaseName)
+            ? null
+            : databaseServerConnection.DatabaseName;
+        return GetDbConnectionString(new DatabaseParameters { DatabaseName = databaseName }, databaseServerConnection);
     }
 
     private static string? GetDbConnectionString(DatabaseParameters databasesParameters,

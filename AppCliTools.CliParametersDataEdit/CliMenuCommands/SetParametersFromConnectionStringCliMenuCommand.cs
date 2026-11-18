@@ -48,19 +48,12 @@ public sealed class SetParametersFromConnectionStringCliMenuCommand : CliMenuCom
             return false;
         }
 
-        ConnectionStringApplyResult applyResult =
-            DatabaseServerConnectionStringConverter.ApplyConnectionString(databaseServerConnection,
-                connectionString);
-        if (applyResult.Error is not null)
+        string? error =
+            DatabaseServerConnectionStringConverter.ApplyConnectionString(databaseServerConnection, connectionString);
+        if (error is not null)
         {
-            StShared.WriteErrorLine(applyResult.Error, true);
+            StShared.WriteErrorLine(error, true);
             return false;
-        }
-
-        if (applyResult.IgnoredDatabaseName is not null)
-        {
-            StShared.WriteWarningLine(
-                $"Database name {applyResult.IgnoredDatabaseName} is not stored in Database Server Connection", true, null, true);
         }
 
         return await _parametersManager.Save(_parametersManager.Parameters,

@@ -5,6 +5,7 @@
         <ProjectReference Include="..\AppCliTools.CliParametersApiClientsEdit\AppCliTools.CliParametersApiClientsEdit.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParametersEdit\AppCliTools.CliParametersEdit.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\..\ParametersManagement\ParametersManagement.LibDatabaseParameters\ParametersManagement.LibDatabaseParameters.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -13,7 +14,6 @@
 
     <ItemGroup>
       <PackageReference Include="DatabaseTools.DbTools" />
-      <PackageReference Include="ParametersManagement.LibDatabaseParameters" />
       <PackageReference Include="ToolsManagement.DatabasesManagement" />
       <PackageReference Include="WebAgentContracts.WebAgentDatabasesApiContracts" />
     </ItemGroup>

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersDataEdit.Cruders;
+using DatabaseTools.DbTools;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -109,7 +110,10 @@ public sealed class DatabaseServerConnectionCruderTests : IDisposable
         // Arrange
         var record = new DatabaseServerConnectionData
         {
-            DatabaseServerProvider = EDatabaseProvider.SqlServer, Encrypt = true, ConnectionTimeOut = 99
+            DatabaseServerProvider = EDatabaseProvider.SqlServer,
+            Encrypt = true,
+            ConnectionTimeOut = 99,
+            DatabaseName = "AppDb"
         };
 
         // Act
@@ -123,6 +127,8 @@ public sealed class DatabaseServerConnectionCruderTests : IDisposable
         Assert.True(record.TrustServerCertificate);
         Assert.False(record.Encrypt);
         Assert.Equal(15, record.ConnectionTimeOut);
+        //a new connection has no database
+        Assert.Null(record.DatabaseName);
     }
 
     [Fact]
@@ -142,7 +148,7 @@ public sealed class DatabaseServerConnectionCruderTests : IDisposable
         [
             "Record Name", "Database Server Provider", "Server Address", "Windows Nt Integrated Security",
             "Server User", "Server Pass", "Trust Server Certificate", "Encrypt", "Connection Time Out",
-            "Database Folders Sets"
+            "Database Name", "Database Folders Sets"
         ], FieldNames(CreateSut(true)));
     }
 
@@ -171,8 +177,43 @@ public sealed class DatabaseServerConnectionCruderTests : IDisposable
         Assert.Equal(
         [
             "Record Name", "Database Server Provider", "Server Address", "Server User", "Server Pass",
-            "Connection Time Out", "Database Folders Sets"
+            "Connection Time Out", "Database Name", "Database Folders Sets"
         ], FieldNames(CreateSut(true)));
+    }
+
+    //the record may be new or changed and not saved yet, so the list comes from its own fields; the test host has no
+    //console, so the selection throws after the prompt with the current name is printed, and nothing is changed
+    [Fact]
+    public async Task DatabaseNameField_ListsTheDatabasesOfTheRecordItself()
+    {
+        // Arrange
+        Record.DatabaseName = "AppDb";
+        _parameters.ApiClients[WebAgentName] = new ApiClientSettings { Server = "http://127.0.0.1:0/" };
+        _databaseManager.Setup(x => x.GetDatabaseNames(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success(new List<DatabaseInfoModel>
+            {
+                new("AppDb", EDatabaseRecoveryModel.Full, false)
+            }));
+        DatabaseServerConnectionData? passedRecord = null;
+        ApiClients? passedApiClients = null;
+        DatabaseServerConnectionCruder sut = CreateSutWithManager((record, apiClients, _) =>
+        {
+            passedRecord = record;
+            passedApiClients = apiClients;
+            return ValueTask.FromResult(Result.Success(_databaseManager.Object));
+        });
+        FieldEditor databaseNameField = FieldEditors(sut)
+            .Single(x => x.PropertyName == nameof(DatabaseServerConnectionData.DatabaseName));
+
+        // Act
+        await Assert.ThrowsAnyAsync<Exception>(async () =>
+            await databaseNameField.UpdateField(ConnectionName, Record, CancellationToken.None));
+
+        // Assert
+        Assert.Same(Record, passedRecord);
+        Assert.NotNull(passedApiClients!.GetApiClientByKey(WebAgentName));
+        Assert.Contains("Select Database Name [AppDb]: ", _consoleOutput.ToString(), StringComparison.Ordinal);
+        Assert.Equal("AppDb", Record.DatabaseName);
     }
 
     [Theory]

@@ -17,7 +17,7 @@ public static class DatabaseServerConnectionStringConverter
         return databaseProvider is EDatabaseProvider.SqlServer or EDatabaseProvider.MariaDb;
     }
 
-    //ბაზის სახელის გარეშე
+    //კავშირის ბაზის სახელით, თუ ის მითითებულია, და ბაზის სახელის გარეშე, თუ არა
     public static string? CreateConnectionString(DatabaseServerConnectionData databaseServerConnection)
     {
         return CanCreateConnectionString(databaseServerConnection.DatabaseServerProvider)
@@ -25,9 +25,10 @@ public static class DatabaseServerConnectionStringConverter
             : null;
     }
 
-    //პარამეტრები იცვლება მხოლოდ მაშინ, როცა ConnectionString სწორია
-    public static ConnectionStringApplyResult ApplyConnectionString(
-        DatabaseServerConnectionData databaseServerConnection, string connectionString)
+    //აბრუნებს შეცდომას (null - წარმატება). პარამეტრები იცვლება მხოლოდ მაშინ, როცა ConnectionString სწორია. ბაზის
+    //სახელიც ConnectionString-იდან აიღება: ბაზის გარეშე ConnectionString კავშირის ბაზის სახელს წაშლის
+    public static string? ApplyConnectionString(DatabaseServerConnectionData databaseServerConnection,
+        string connectionString)
     {
         try
         {
@@ -37,27 +38,26 @@ public static class DatabaseServerConnectionStringConverter
                     new SqlConnectionStringBuilder(connectionString)),
                 EDatabaseProvider.MariaDb => ApplyMariaDbConnectionString(databaseServerConnection,
                     new MySqlConnectionStringBuilder(connectionString)),
-                _ => new ConnectionStringApplyResult(
-                    $"Connection string can not be used for {databaseServerConnection.DatabaseServerProvider} provider",
-                    null)
+                _ =>
+                    $"Connection string can not be used for {databaseServerConnection.DatabaseServerProvider} provider"
             };
         }
         catch (ArgumentException e)
         {
-            return new ConnectionStringApplyResult($"Connection string is not valid: {e.Message}", null);
+            return $"Connection string is not valid: {e.Message}";
         }
         catch (FormatException e)
         {
-            return new ConnectionStringApplyResult($"Connection string is not valid: {e.Message}", null);
+            return $"Connection string is not valid: {e.Message}";
         }
     }
 
-    private static ConnectionStringApplyResult ApplySqlServerConnectionString(
-        DatabaseServerConnectionData databaseServerConnection, SqlConnectionStringBuilder builder)
+    private static string? ApplySqlServerConnectionString(DatabaseServerConnectionData databaseServerConnection,
+        SqlConnectionStringBuilder builder)
     {
         if (string.IsNullOrWhiteSpace(builder.DataSource))
         {
-            return new ConnectionStringApplyResult("Connection string does not contain Data Source", null);
+            return "Connection string does not contain Data Source";
         }
 
         databaseServerConnection.ServerAddress = builder.DataSource;
@@ -67,15 +67,16 @@ public static class DatabaseServerConnectionStringConverter
         databaseServerConnection.ConnectionTimeOut = builder.ConnectTimeout;
         databaseServerConnection.Encrypt = builder.Encrypt;
         databaseServerConnection.TrustServerCertificate = builder.TrustServerCertificate;
-        return new ConnectionStringApplyResult(null, EmptyToNull(builder.InitialCatalog));
+        databaseServerConnection.DatabaseName = EmptyToNull(builder.InitialCatalog);
+        return null;
     }
 
-    private static ConnectionStringApplyResult ApplyMariaDbConnectionString(
-        DatabaseServerConnectionData databaseServerConnection, MySqlConnectionStringBuilder builder)
+    private static string? ApplyMariaDbConnectionString(DatabaseServerConnectionData databaseServerConnection,
+        MySqlConnectionStringBuilder builder)
     {
         if (string.IsNullOrWhiteSpace(builder.Server))
         {
-            return new ConnectionStringApplyResult("Connection string does not contain Server", null);
+            return "Connection string does not contain Server";
         }
 
         //სერვერის მისამართის ფორმატია "host" ან "host:port" (MariaDbConnectionStringFactory)
@@ -84,7 +85,8 @@ public static class DatabaseServerConnectionStringConverter
         databaseServerConnection.ServerUser = EmptyToNull(builder.UserID);
         databaseServerConnection.ServerPass = EmptyToNull(builder.Password);
         databaseServerConnection.ConnectionTimeOut = (int)builder.ConnectionTimeout;
-        return new ConnectionStringApplyResult(null, EmptyToNull(builder.Database));
+        databaseServerConnection.DatabaseName = EmptyToNull(builder.Database);
+        return null;
     }
 
     private static string? EmptyToNull(string? value)
@@ -92,6 +94,3 @@ public static class DatabaseServerConnectionStringConverter
         return string.IsNullOrEmpty(value) ? null : value;
     }
 }
-
-//Error - შეცდომა (null - წარმატება); IgnoredDatabaseName - ConnectionString-ში მითითებული ბაზა, რომელიც არ ინახება
-public sealed record ConnectionStringApplyResult(string? Error, string? IgnoredDatabaseName);
