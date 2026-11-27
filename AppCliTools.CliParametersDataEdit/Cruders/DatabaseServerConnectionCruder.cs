@@ -9,6 +9,8 @@ using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersApiClientsEdit.FieldEditors;
 using AppCliTools.CliParametersDataEdit.CliMenuCommands;
 using AppCliTools.CliParametersDataEdit.FieldEditors;
+using AppCliTools.CliParametersDataEdit.Models;
+using AppCliTools.CliTools.CliMenuCommands;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibApiClientParameters;
@@ -27,6 +29,10 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     private readonly Func<DatabaseServerConnectionData, ApiClients, CancellationToken,
         ValueTask<Result<IDatabaseManager>>> _createDatabaseManager;
 
+    //კავშირის გამოყენების ადგილები კავშირის სახელით. მათ აპლიკაცია იძლევა, რადგან მხოლოდ მან იცის, რომელი მისი
+    //პარამეტრები მიუთითებს კავშირზე. null — რაოდენობა სტატუსში არ ჩანს და ადგილების სია მენიუში არ არის
+    private readonly Func<string, IReadOnlyList<DatabaseServerConnectionUsage>>? _getUsages;
+
     private readonly IHttpClientFactory? _httpClientFactory;
     private readonly ILogger _logger;
 
@@ -34,11 +40,12 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     // ReSharper disable once MemberCanBePrivate.Global
     public DatabaseServerConnectionCruder(IApplication application, ILogger logger,
         IHttpClientFactory? httpClientFactory, IParametersManager parametersManager,
-        Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary) : this(application, logger,
+        Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary,
+        Func<string, IReadOnlyList<DatabaseServerConnectionUsage>>? getUsages = null) : this(application, logger,
         httpClientFactory, parametersManager, currentValuesDictionary,
         (databaseServerConnection, apiClients, cancellationToken) => DatabaseManagersFactory.CreateDatabaseManager(
             application.AppName, logger, true, databaseServerConnection, apiClients, httpClientFactory, null, null,
-            cancellationToken))
+            cancellationToken), getUsages)
     {
     }
 
@@ -47,13 +54,14 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
         IHttpClientFactory? httpClientFactory, IParametersManager parametersManager,
         Dictionary<string, DatabaseServerConnectionData> currentValuesDictionary,
         Func<DatabaseServerConnectionData, ApiClients, CancellationToken, ValueTask<Result<IDatabaseManager>>>
-            createDatabaseManager) : base(parametersManager, currentValuesDictionary, "Database Server Connection",
-        "Database Server Connections")
+            createDatabaseManager, Func<string, IReadOnlyList<DatabaseServerConnectionUsage>>? getUsages = null) :
+        base(parametersManager, currentValuesDictionary, "Database Server Connection", "Database Server Connections")
     {
         _application = application;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _createDatabaseManager = createDatabaseManager;
+        _getUsages = getUsages;
         FieldEditors.Add(new EnumFieldEditor<EDatabaseProvider>(
             nameof(DatabaseServerConnectionData.DatabaseServerProvider), EDatabaseProvider.None));
 
@@ -266,14 +274,31 @@ public sealed class DatabaseServerConnectionCruder : ParCruder<DatabaseServerCon
     public override string GetStatusFor(string name)
     {
         var databaseServerConnection = (DatabaseServerConnectionData?)GetItemByName(name);
-        return
+        string status =
             $"{databaseServerConnection?.DatabaseServerProvider.ToString()}: {databaseServerConnection?.ServerAddress}";
+        return _getUsages is null ? status : $"{status}, Usage count: {_getUsages(name).Count}";
     }
 
     public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
     {
         base.FillDetailsSubMenu(itemSubMenuSet, itemName);
 
+        AddServerCommands(itemSubMenuSet, itemName);
+
+        if (_getUsages is null)
+        {
+            return;
+        }
+
+        //კავშირის გამოყენების ადგილები ბრძანებების შემდეგ: არჩევისას პროგრამა ადგილის მენიუში გადადის
+        foreach (DatabaseServerConnectionUsage usage in _getUsages(itemName))
+        {
+            itemSubMenuSet.AddMenuItem(new InfoCliMenuCommand(usage.Name, usage.MenuLink));
+        }
+    }
+
+    private void AddServerCommands(CliMenuSet itemSubMenuSet, string itemName)
+    {
         var parameters = (IParametersWithDatabaseServerConnections)ParametersManager.Parameters;
         DatabaseServerConnectionData databaseServerConnectionDataByKey = parameters.DatabaseServerConnections[itemName];
 

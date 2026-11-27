@@ -69,6 +69,28 @@ public sealed class CliMenuSetTests
         Assert.Null(set.GetMenuItemWithName("NotExist"));
     }
 
+    //a menu link goes to the last of the items with the name: the lists come after the commands
+    [Fact]
+    public void GetLastMenuItemWithName_WhenTwoItemsHaveTheName_ReturnsTheLastOne()
+    {
+        var set = new CliMenuSet();
+        var command = new CliMenuCommand("BaGetter");
+        var listItem = new CliMenuCommand("BaGetter");
+        set.AddMenuItem(command);
+        set.AddMenuItem(new CliMenuCommand("Other"));
+        set.AddMenuItem(listItem);
+        Assert.Same(listItem, set.GetLastMenuItemWithName("BaGetter")?.CliMenuCommand);
+        Assert.Throws<InvalidOperationException>(() => set.GetMenuItemWithName("BaGetter"));
+    }
+
+    [Fact]
+    public void GetLastMenuItemWithName_ReturnsNullIfNotFound()
+    {
+        var set = new CliMenuSet();
+        set.AddMenuItem(new CliMenuCommand("Item1"));
+        Assert.Null(set.GetLastMenuItemWithName("NotExist"));
+    }
+
     //keys select from the page the menu showed last, so nothing can be selected before Show
     [Fact]
     public void GetMenuItemByKey_WhenMenuWasNotShown_ReturnsNull()

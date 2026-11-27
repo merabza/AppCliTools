@@ -35,6 +35,14 @@ public sealed class CliMenuSet
         return MenuItems.SingleOrDefault(a => a.MenuItemName == menuItemName);
     }
 
+    //მენიუს ბმულისთვის (CliAppLoop.GoToMenu): ერთნაირი სახელის ჩანაწერებიდან ბოლო. მენიუში სიები (ჯგუფები, პროექტები,
+    //ჩანაწერები) ბრძანებების შემდეგაა და ბმული სიის ჩანაწერზე მიდის, მაგალითად SupportTools-ის მთავარ მენიუში
+    //BaGetter ბრძანებაცაა და BaGetter ჯგუფიც
+    public CliMenuItem? GetLastMenuItemWithName(string menuItemName)
+    {
+        return MenuItems.LastOrDefault(a => a.MenuItemName == menuItemName);
+    }
+
     public CliMenuItem? GetMenuItemByKey(ConsoleKeyInfo consoleKeyInfo)
     {
         int keyId = GetNoKeyId(consoleKeyInfo);

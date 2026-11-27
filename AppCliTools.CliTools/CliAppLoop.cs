@@ -212,12 +212,17 @@ public class CliAppLoop
 
         foreach (string menuName in menuLine)
         {
-            CliMenuItem? menuItem = _menuSetsList[_currentMenuSetLevel].GetMenuItemWithName(menuName);
+            CliMenuItem? menuItem = _menuSetsList[_currentMenuSetLevel].GetLastMenuItemWithName(menuName);
             if (menuItem is null)
             {
+                //პროგრამა რჩება ბოლო ნაპოვნ მენიუში
+                StShared.WriteErrorLine($"Menu item {menuName} of the menu link {menuLinkToGo} not found", true);
                 return false;
             }
 
+            //ბრძანება ისე ინიშნება, თითქოს მომხმარებელმა აირჩია: მენიუს თავიდან აგება (ReloadCurrentMenu) დონის მენიუს
+            //მისი გამხსნელი ბრძანებით აგებს, ამის გარეშე კი ბმულამდე არჩეული ბრძანებების მენიუებს აგებდა
+            AddSelectedCommand(menuItem.CliMenuCommand);
             if (!AddSubMenu(menuItem.CliMenuCommand.GetSubMenu()))
             {
                 return false;

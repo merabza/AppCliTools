@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using AppCliTools.CliMenu;
 using AppCliTools.CliParameters.FieldEditors;
 using AppCliTools.CliParametersDataEdit.Cruders;
+using AppCliTools.CliParametersDataEdit.Models;
+using AppCliTools.CliTools.CliMenuCommands;
 using DatabaseTools.DbTools;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
@@ -272,6 +274,81 @@ public sealed class DatabaseServerConnectionCruderTests : IDisposable
 
         // Act & Assert
         Assert.Equal(expected, ItemMenuNames(CreateSut()).Contains(GetFoldersCommandName));
+    }
+
+    // ---------- usages ----------
+
+    [Fact]
+    public void GetStatusFor_WithUsages_AddsTheUsageCount()
+    {
+        // Arrange
+        DatabaseServerConnectionCruder sut = CreateSutWithUsages(_ => [Usage("Project Creator"), Usage("G/App")]);
+
+        // Act & Assert
+        Assert.Equal("SqlServer: TestSqlServer,1444, Usage count: 2", sut.GetStatusFor(ConnectionName));
+    }
+
+    [Fact]
+    public void GetStatusFor_WhenNothingUsesTheConnection_ShowsZeroUsages()
+    {
+        Assert.Equal("SqlServer: TestSqlServer,1444, Usage count: 0",
+            CreateSutWithUsages(_ => []).GetStatusFor(ConnectionName));
+    }
+
+    //the places come after the commands of the record, right before its exit item, and lead to their menu links
+    [Fact]
+    public void GetItemMenu_WithUsages_ListsThePlacesAsMenuLinksAfterTheCommands()
+    {
+        // Arrange
+        string? askedConnectionName = null;
+        DatabaseServerConnectionCruder sut = CreateSutWithUsages(connectionName =>
+        {
+            askedConnectionName = connectionName;
+            return
+            [
+                Usage("G/App/Dev Database Parameters"),
+                new DatabaseServerConnectionUsage("G/Old/Dev Database Parameters (Uses Database is off)", "G/Old")
+            ];
+        });
+
+        // Act
+        List<CliMenuItem> items = CliMenuTestAccess.GetMenuItems(sut.GetItemMenu(ConnectionName));
+
+        // Assert
+        Assert.Equal(ConnectionName, askedConnectionName);
+        Assert.Equal(
+        [
+            "Set Parameters From Connection String", "G/App/Dev Database Parameters",
+            "G/Old/Dev Database Parameters (Uses Database is off)", "Exit to Database Server Connections menu"
+        ], items.Select(x => x.MenuItemName).TakeLast(4));
+        List<InfoCliMenuCommand> links = [.. items.Select(x => x.CliMenuCommand).OfType<InfoCliMenuCommand>()];
+        Assert.Equal(["G/App/Dev Database Parameters", "G/Old"], links.Select(x => x.GetMenuLinkToGo()));
+    }
+
+    //a web agent connection has no server commands, but its places are listed all the same
+    [Fact]
+    public void GetItemMenu_WebAgentWithUsages_ListsThePlacesAfterTheFields()
+    {
+        // Arrange
+        Record.DatabaseServerProvider = EDatabaseProvider.WebAgent;
+
+        // Act
+        List<string> names = ItemMenuNames(CreateSutWithUsages(_ => [Usage("Project Creator")]));
+
+        // Assert
+        Assert.Equal(["Database Server Provider", "Project Creator", "Exit to Database Server Connections menu"],
+            names.TakeLast(3));
+    }
+
+    [Fact]
+    public void GetItemMenu_WithoutUsages_ListsNoPlaces()
+    {
+        // Act
+        CliMenuSet itemMenu = CreateSut().GetItemMenu(ConnectionName);
+
+        // Assert
+        Assert.Empty(CliMenuTestAccess.GetMenuItems(itemMenu).Select(x => x.CliMenuCommand)
+            .OfType<InfoCliMenuCommand>());
     }
 
     // ---------- CheckValidation with the real DatabaseManagersFactory ----------
@@ -648,6 +725,18 @@ public sealed class DatabaseServerConnectionCruderTests : IDisposable
 
         return new DatabaseServerConnectionCruder(Application(), _logger.Object, httpClientFactory,
             _parametersManager.Object, _parameters.DatabaseServerConnections);
+    }
+
+    private DatabaseServerConnectionCruder CreateSutWithUsages(
+        Func<string, IReadOnlyList<DatabaseServerConnectionUsage>> getUsages)
+    {
+        return new DatabaseServerConnectionCruder(Application(), _logger.Object, null, _parametersManager.Object,
+            _parameters.DatabaseServerConnections, getUsages);
+    }
+
+    private static DatabaseServerConnectionUsage Usage(string menuLink)
+    {
+        return new DatabaseServerConnectionUsage(menuLink, menuLink);
     }
 
     private DatabaseServerConnectionCruder CreateSutWithManager(

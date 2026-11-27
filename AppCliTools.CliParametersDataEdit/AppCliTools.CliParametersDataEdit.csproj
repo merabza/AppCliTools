@@ -5,6 +5,7 @@
         <ProjectReference Include="..\AppCliTools.CliParametersApiClientsEdit\AppCliTools.CliParametersApiClientsEdit.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParametersEdit\AppCliTools.CliParametersEdit.csproj" />
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliTools\AppCliTools.CliTools.csproj" />
     </ItemGroup>
 
     <ItemGroup>
