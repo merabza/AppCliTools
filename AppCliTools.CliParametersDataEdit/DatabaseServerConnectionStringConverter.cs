@@ -38,8 +38,7 @@ public static class DatabaseServerConnectionStringConverter
                     new SqlConnectionStringBuilder(connectionString)),
                 EDatabaseProvider.MariaDb => ApplyMariaDbConnectionString(databaseServerConnection,
                     new MySqlConnectionStringBuilder(connectionString)),
-                _ =>
-                    $"Connection string can not be used for {databaseServerConnection.DatabaseServerProvider} provider"
+                _ => $"Connection string can not be used for {databaseServerConnection.DatabaseServerProvider} provider"
             };
         }
         catch (ArgumentException e)

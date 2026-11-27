@@ -16,15 +16,14 @@ public sealed class SetParametersFromConnectionStringCliMenuCommand : CliMenuCom
     private readonly Func<string?> _inputConnectionString;
     private readonly IParametersManager _parametersManager;
 
-    public SetParametersFromConnectionStringCliMenuCommand(string dbServerName,
-        IParametersManager parametersManager) : this(dbServerName, parametersManager, InputConnectionString)
+    public SetParametersFromConnectionStringCliMenuCommand(string dbServerName, IParametersManager parametersManager) :
+        this(dbServerName, parametersManager, InputConnectionString)
     {
     }
 
     //ტესტებისთვის: Inputer კონსოლს პირდაპირ კითხულობს
-    internal SetParametersFromConnectionStringCliMenuCommand(string dbServerName,
-        IParametersManager parametersManager, Func<string?> inputConnectionString) : base(
-        "Set Parameters From Connection String", EMenuAction.Reload)
+    internal SetParametersFromConnectionStringCliMenuCommand(string dbServerName, IParametersManager parametersManager,
+        Func<string?> inputConnectionString) : base("Set Parameters From Connection String", EMenuAction.Reload)
     {
         _dbServerName = dbServerName;
         _parametersManager = parametersManager;
