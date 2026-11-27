@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AppCliTools.CliParameters\AppCliTools.CliParameters.csproj" />
+        <ProjectReference Include="..\AppCliTools.CliTools\AppCliTools.CliTools.csproj" />
     </ItemGroup>
 
     <ItemGroup>

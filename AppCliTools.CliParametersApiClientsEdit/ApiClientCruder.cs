@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters;
 using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliTools.CliMenuCommands;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibParameters;
@@ -15,17 +17,23 @@ namespace AppCliTools.CliParametersApiClientsEdit;
 
 public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
 {
+    //Api კლიენტის გამოყენების ადგილები კლიენტის სახელით. მათ აპლიკაცია იძლევა, რადგან მხოლოდ მან იცის, რომელი მისი
+    //პარამეტრები მიუთითებს კლიენტზე. null — რაოდენობა სტატუსში არ ჩანს და ადგილების სია მენიუში არ არის
+    private readonly Func<string, IReadOnlyList<ApiClientUsage>>? _getUsages;
+
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
 
     //public გამოიყენება რეფლექსიით DictionaryFieldEditor-ში
     // ReSharper disable once MemberCanBePrivate.Global
     public ApiClientCruder(ILogger logger, IHttpClientFactory httpClientFactory, IParametersManager parametersManager,
-        Dictionary<string, ApiClientSettings> currentValuesDictionary) : base(parametersManager,
+        Dictionary<string, ApiClientSettings> currentValuesDictionary,
+        Func<string, IReadOnlyList<ApiClientUsage>>? getUsages = null) : base(parametersManager,
         currentValuesDictionary, "Api Client", "Api Clients")
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
+        _getUsages = getUsages;
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.Server)));
         //გასაღები საიდუმლოა: შეყვანისას და სტატუსში პაროლივით დაფარული ჩანს
         FieldEditors.Add(new TextFieldEditor(nameof(ApiClientSettings.ApiKey), null, false,
@@ -102,6 +110,29 @@ public sealed class ApiClientCruder : ParCruder<ApiClientSettings>
         }
 
         var apiClient = (ApiClientSettings?)GetItemByName(name);
-        return apiClient?.Server;
+        string? status = apiClient?.Server;
+        if (_getUsages is null)
+        {
+            return status;
+        }
+
+        string usageCount = $"Usage count: {_getUsages(name).Count}";
+        return string.IsNullOrWhiteSpace(status) ? usageCount : $"{status}, {usageCount}";
+    }
+
+    public override void FillDetailsSubMenu(CliMenuSet itemSubMenuSet, string itemName)
+    {
+        base.FillDetailsSubMenu(itemSubMenuSet, itemName);
+
+        if (_getUsages is null)
+        {
+            return;
+        }
+
+        //კლიენტის გამოყენების ადგილები ველების შემდეგ: არჩევისას პროგრამა ადგილის მენიუში გადადის
+        foreach (ApiClientUsage usage in _getUsages(itemName))
+        {
+            itemSubMenuSet.AddMenuItem(new InfoCliMenuCommand(usage.Name, usage.MenuLink));
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCliTools.CliMenu;
+using AppCliTools.CliTools.CliMenuCommands;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ParametersManagement.LibApiClientParameters;
@@ -146,6 +147,116 @@ public sealed class ApiClientCruderTests : IDisposable
         Assert.Equal(expected, status);
     }
 
+    // ---------- usages ----------
+
+    [Fact]
+    public void GetStatusFor_WithUsages_AddsTheUsageCount()
+    {
+        // Arrange
+        string? askedApiClientName = null;
+        ApiClientCruder sut = CreateSutWithUsages(apiClientName =>
+        {
+            askedApiClientName = apiClientName;
+            return [Usage("Support Tools Parameters Editor"), Usage("G/App/Srv|Prod")];
+        });
+
+        // Act
+        string? status = sut.GetStatusFor(ApiClientName);
+
+        // Assert
+        Assert.Equal($"{Server}, Usage count: 2", status);
+        Assert.Equal(ApiClientName, askedApiClientName);
+    }
+
+    [Fact]
+    public void GetStatusFor_WhenNothingUsesTheClient_ShowsZeroUsages()
+    {
+        Assert.Equal($"{Server}, Usage count: 0", CreateSutWithUsages(_ => []).GetStatusFor(ApiClientName));
+    }
+
+    //a client without a server shows only the count
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void GetStatusFor_WithUsagesWhenTheServerIsNotGiven_ShowsOnlyTheUsageCount(string? server)
+    {
+        // Arrange
+        _apiClients[ApiClientName].Server = server;
+
+        // Act
+        string? status = CreateSutWithUsages(_ => [Usage("Support Tools Parameters Editor")])
+            .GetStatusFor(ApiClientName);
+
+        // Assert
+        Assert.Equal("Usage count: 1", status);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void GetStatusFor_WithUsagesWhenTheNameIsNotGiven_ReturnsNullWithoutAskingForThePlaces(string? name)
+    {
+        // Arrange
+        bool asked = false;
+        ApiClientCruder sut = CreateSutWithUsages(_ =>
+        {
+            asked = true;
+            return [];
+        });
+
+        // Act
+        string? status = sut.GetStatusFor(name);
+
+        // Assert
+        Assert.Null(status);
+        Assert.False(asked);
+    }
+
+    //the places come right after the fields of the record, before its exit item, and lead to their menu links
+    [Fact]
+    public void GetItemMenu_WithUsages_ListsThePlacesAsMenuLinksAfterTheFields()
+    {
+        // Arrange
+        string? askedApiClientName = null;
+        ApiClientCruder sut = CreateSutWithUsages(apiClientName =>
+        {
+            askedApiClientName = apiClientName;
+            return
+            [
+                new ApiClientUsage("Support Tools Parameters Editor/Servers/Srv/Web Agent Name",
+                    "Support Tools Parameters Editor/Servers/Srv"),
+                new ApiClientUsage("G/Db/Srv|Prod/Web Agent Name For Check (Project Type is IsDbTools)", "G/Db")
+            ];
+        });
+
+        // Act
+        List<CliMenuItem> items = CliMenuTestAccess.GetMenuItems(sut.GetItemMenu(ApiClientName));
+
+        // Assert
+        Assert.Equal(ApiClientName, askedApiClientName);
+        Assert.Equal(
+        [
+            "Api Key", "Support Tools Parameters Editor/Servers/Srv/Web Agent Name",
+            "G/Db/Srv|Prod/Web Agent Name For Check (Project Type is IsDbTools)", "Exit to Api Clients menu"
+        ], items.Select(x => x.MenuItemName).TakeLast(4));
+        List<InfoCliMenuCommand> links = [.. items.Select(x => x.CliMenuCommand).OfType<InfoCliMenuCommand>()];
+        Assert.Equal(["Support Tools Parameters Editor/Servers/Srv", "G/Db"], links.Select(x => x.GetMenuLinkToGo()));
+    }
+
+    //the api client choices (ApiClientNameFieldEditor) create the cruder without the places
+    [Fact]
+    public void GetItemMenu_WithoutUsages_ListsNoPlaces()
+    {
+        // Act
+        CliMenuSet itemMenu = _sut.GetItemMenu(ApiClientName);
+
+        // Assert
+        Assert.DoesNotContain(CliMenuTestAccess.GetMenuItems(itemMenu), x => x.CliMenuCommand is InfoCliMenuCommand);
+        Assert.Equal("Exit to Api Clients menu", CliMenuTestAccess.GetMenuItems(itemMenu)[^1].MenuItemName);
+    }
+
     //the server is checked by asking the version of its test api
     [Fact]
     public void CheckValidation_WhenServerAnswersWithAVersion_ReturnsTrue()
@@ -211,6 +322,26 @@ public sealed class ApiClientCruderTests : IDisposable
         Assert.Empty(_server.Requests);
     }
 
+    //the client takes its HttpClient from the factory in its constructor, so a cancellation there reaches the check
+    [Fact]
+    public void CheckValidation_WhenTheCheckIsCanceled_ReportsItAndReturnsFalse()
+    {
+        // Arrange
+        _httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Throws(new OperationCanceledException());
+
+        // Act
+        bool result = _sut.CheckValidation(new ApiClientSettings { Server = Server });
+
+        // Assert
+        Assert.False(result);
+        Assert.Empty(_server.Requests);
+        Assert.Contains("Operation was canceled.", _consoleOutput.ToString(), StringComparison.Ordinal);
+        //unlike the other errors, a cancellation is not logged
+        _logger.Verify(
+            x => x.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Never);
+    }
+
     [Fact]
     public void CheckValidation_WhenItemIsNotAnApiClient_ReturnsFalse()
     {
@@ -236,6 +367,17 @@ public sealed class ApiClientCruderTests : IDisposable
             x => x.Log(LogLevel.Error, It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((state, _) => state!.ToString() == "ErrorOmd in method CheckValidation"),
                 It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+    }
+
+    private ApiClientCruder CreateSutWithUsages(Func<string, IReadOnlyList<ApiClientUsage>> getUsages)
+    {
+        return new ApiClientCruder(_logger.Object, _httpClientFactory.Object, _parametersManager.Object, _apiClients,
+            getUsages);
+    }
+
+    private static ApiClientUsage Usage(string menuLink)
+    {
+        return new ApiClientUsage(menuLink, menuLink);
     }
 
     //answers every request with the configured answer and remembers "METHOD path" of every request
