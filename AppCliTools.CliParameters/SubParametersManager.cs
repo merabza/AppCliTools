@@ -38,4 +38,14 @@ public sealed class SubParametersManager<T> : IParametersManager
         return await _parentParametersManager.Save(_parentParametersManager.Parameters, message, saveAsFilePath,
             cancellationToken);
     }
+
+    //ქვეობიექტის მთლიანად წაშლა: ჩანაწერის ველი null ხდება, როგორც შევსებამდე იყო, და მშობლის პარამეტრები
+    //ინახება
+    public async ValueTask<bool> Delete(string message, CancellationToken cancellationToken = default)
+    {
+        _fieldEditor.SetValue(_record, default);
+
+        return await _parentParametersManager.Save(_parentParametersManager.Parameters, message, null,
+            cancellationToken);
+    }
 }

@@ -5,10 +5,14 @@ using ParametersManagement.LibParameters;
 
 namespace AppCliTools.CliParameters.Tests;
 
-//იმახსოვრებს ყოველ Save-ს: რომელი ობიექტი და რა შეტყობინებით შეინახა
+//იმახსოვრებს ყოველ Save-ს: რომელი ობიექტი, რა შეტყობინებით და რა ფაილის სახელით შეინახა. აბრუნებს SaveResult-ს
 internal sealed class RecordingParametersManager : IParametersManager
 {
     public List<(IParameters Parameters, string Message)> Saves { get; } = [];
+
+    public List<string?> SaveAsFilePaths { get; } = [];
+
+    public bool SaveResult { get; set; } = true;
 
     public IParameters Parameters { get; set; } = new RootParameters();
 
@@ -18,7 +22,8 @@ internal sealed class RecordingParametersManager : IParametersManager
         CancellationToken cancellationToken = default)
     {
         Saves.Add((parameters, message));
-        return ValueTask.FromResult(true);
+        SaveAsFilePaths.Add(saveAsFilePath);
+        return ValueTask.FromResult(SaveResult);
     }
 
     private sealed class RootParameters : IParameters

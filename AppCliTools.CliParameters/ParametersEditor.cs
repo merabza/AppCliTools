@@ -69,9 +69,16 @@ public /*open*/ class ParametersEditor : IFieldEditors
 
         FillDetailsSubMenu(parametersEditorMenuSet);
 
+        FillMainMenuAdditional(parametersEditorMenuSet);
+
         parametersEditorMenuSet.AddEscapeCommand();
 
         return parametersEditorMenuSet;
+    }
+
+    //რედაქტორის დამატებითი ბრძანებები ველების შემდეგ (გასვლის ბრძანებამდე)
+    protected virtual void FillMainMenuAdditional(CliMenuSet parametersEditorMenuSet)
+    {
     }
 
     public void FillDetailsSubMenu(CliMenuSet parametersEditorMenuSet)

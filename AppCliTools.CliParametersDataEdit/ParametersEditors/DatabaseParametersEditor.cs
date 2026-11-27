@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net.Http;
+using AppCliTools.CliMenu;
 using AppCliTools.CliParameters;
 using AppCliTools.CliParameters.FieldEditors;
+using AppCliTools.CliParametersDataEdit.CliMenuCommands;
 using AppCliTools.CliParametersDataEdit.FieldEditors;
 using AppCliTools.CliParametersEdit.FieldEditors;
 using DatabaseTools.DbTools;
@@ -14,10 +16,16 @@ namespace AppCliTools.CliParametersDataEdit.ParametersEditors;
 
 public sealed class DatabaseParametersEditor : ParametersEditor
 {
+    private readonly SubParametersManager<DatabaseParameters> _databaseParametersManager;
+    private readonly string _propertyName;
+
     public DatabaseParametersEditor(IApplication application, ILogger logger, IHttpClientFactory httpClientFactory,
-        IParametersManager parametersManager, IParametersManager listsParametersManager, string propertyName) : base(
-        $"{propertyName} {nameof(DatabaseParametersEditor)}", parametersManager)
+        SubParametersManager<DatabaseParameters> parametersManager, IParametersManager listsParametersManager,
+        string propertyName) : base($"{propertyName} {nameof(DatabaseParametersEditor)}", parametersManager)
     {
+        _databaseParametersManager = parametersManager;
+        _propertyName = propertyName;
+
         //შემდეგი 2 პარამეტრიდან გამოიყენება ერთერთი
         //ორივეს ერთდროულად შევსება არ შეიძლება.
         //ორივეს ცარელა დატოვება არ შეიძლება
@@ -66,5 +74,12 @@ public sealed class DatabaseParametersEditor : ParametersEditor
             DatabaseParameters.DefaultVerify, true));
         FieldEditors.Add(new EnumNullableFieldEditor<EBackupType>(nameof(DatabaseParameters.BackupType),
             DatabaseParameters.DefaultBackupType, true));
+    }
+
+    //ველების შემდეგ: რედაქტორის ჩანაწერის მთლიანად წაშლა
+    protected override void FillMainMenuAdditional(CliMenuSet parametersEditorMenuSet)
+    {
+        parametersEditorMenuSet.AddMenuItem(
+            new DeleteDatabaseParametersCliMenuCommand(_databaseParametersManager, _propertyName));
     }
 }
